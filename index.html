@@ -44,7 +44,7 @@
   .ltab:hover{color:#fff;background:rgba(255,255,255,.07)}
   .ltab.on{color:#fff;background:rgba(255,255,255,.12)}
   .lview{flex:1;display:none;flex-direction:column;align-items:center;overflow:auto;padding:34px 24px}
-  #viewSignin{justify-content:center}
+  #viewSignin{justify-content:flex-start}
   .lviewhead{text-align:center;margin-bottom:26px}
   .lviewhead h1{font-size:30px;color:#fff;margin-bottom:8px}
   .lviewhead p{color:rgba(255,255,255,.6);font-size:15px;max-width:620px}
@@ -77,6 +77,21 @@
   .enter{font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:9px}
   .enter.biz{color:#5bb8ff}.enter.firm{color:#bd8cff}
   @media(max-width:760px){.llogo-word{font-size:36px}.llogo-mark{width:56px;height:56px}.llogo-mark svg{width:33px;height:33px}}
+  @media(max-width:640px){
+    .ltopbar{padding:12px 14px;gap:10px;flex-wrap:wrap}
+    .ltopbar-logo{font-size:16px}
+    .ltabs{gap:2px;margin-left:0;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .ltab{padding:7px 11px;font-size:12.5px;white-space:nowrap;flex-shrink:0}
+    .lview{padding:22px 14px}
+    .lviewhead h1{font-size:23px}
+    .lportal-card{padding:20px;min-width:100%}
+    .lcards{gap:14px}
+  }
+  @media(max-width:420px){
+    .llogo-word{font-size:28px}
+    .llogo-mark{width:46px;height:46px}
+    .llogo-tag{font-size:12.5px}
+  }
   /* ============ APP ============ */
   #app.hidden{display:none}
   .topbar{height:58px;background:var(--topbar);backdrop-filter:blur(12px);
@@ -104,7 +119,7 @@
   .navitem .ic{width:18px;text-align:center}
   .navitem .badge{margin-left:auto;background:var(--red);color:#1a0a0a;font-size:10px;
     font-weight:700;border-radius:10px;padding:1px 7px}
-  .main{flex:1;padding:26px 32px;max-width:1100px}
+  .main{flex:1;min-width:0;padding:26px 32px;max-width:1100px}
   .page{display:none}.page.active{display:block}
   h1{font-size:23px;margin-bottom:4px}
   .sub{color:var(--muted);margin-bottom:22px}
@@ -185,7 +200,32 @@
   .lf-btn:hover{filter:brightness(1.07)}
   .lfield{margin-bottom:12px}
   @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}
-    .sidebar{width:64px}.navitem span.txt,.navlabel{display:none}}
+    .sidebar{width:64px}.navitem span.txt,.navlabel{display:none}
+    .main{padding:22px 18px}}
+  @media(max-width:640px){
+    .topbar{padding:0 12px;gap:8px}
+    .logo small{display:none}
+    .logo{font-size:14px}
+    .topuser{gap:6px;font-size:12px}
+    #urole{display:none}
+    #uname{max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .avatar{width:28px;height:28px;font-size:12px}
+    .topbar span[role="img"]{display:none}
+    .logout{padding:6px 9px;font-size:11.5px;white-space:nowrap;flex-shrink:0}
+    .main{padding:16px 12px}
+    .sidebar{width:52px;padding:12px 4px}
+    .navitem{padding:10px 4px;justify-content:center;position:relative}
+    .navitem .badge{position:absolute;top:4px;right:2px}
+    .card{padding:14px}
+    h1{font-size:19px}
+    .banner{flex-wrap:wrap;padding:16px;gap:12px}
+    .banner .btn{width:100%}
+    .modal{padding:20px}
+  }
+  @media(max-width:420px){
+    .stat .num{font-size:22px}
+    .stat .lbl{font-size:11.5px}
+  }
 </style>
 </head>
 <body data-role="business">
@@ -199,6 +239,7 @@
     </div>
     <div class="ltabs">
       <button id="tabSignin" class="ltab on" onclick="switchView('signin')">Sign In</button>
+      <button id="tabSignup" class="ltab" onclick="switchView('signup')">Sign Up</button>
       <button id="tabAbout" class="ltab" onclick="switchView('about')">About Us</button>
       <button id="tabPricing" class="ltab" onclick="switchView('pricing')">Pricing</button>
     </div>
@@ -237,19 +278,74 @@
     </div>
   </div>
 
-  <!-- LOGIN FORM (appears after choosing a portal — demo only) -->
+  <!-- LOGIN FORM (appears after choosing a portal) -->
   <div id="loginForm" style="display:none;width:100%;max-width:420px">
     <div class="lportal-card" id="lfCard" style="cursor:default">
       <div class="lportal-label biz" id="lfLabel">Business Portal</div>
       <h2 id="lfTitle" style="margin-bottom:18px">Business sign in</h2>
-      <div class="lfield"><label class="flabel">Email</label><input id="lfEmail" class="finput" value="finance@alnoor.ae"></div>
-      <div class="lfield"><label class="flabel">Password</label><input class="finput" type="password" value="••••••••"></div>
+      <div class="lfield"><label class="flabel">Email</label><input id="lfEmail" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
+      <div class="lfield"><label class="flabel">Password</label><input id="lfPassword" class="finput" type="password" placeholder="Your password" autocomplete="current-password"></div>
+      <div id="lfErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
       <button class="lf-btn" onclick="doLogin()">Sign in →</button>
       <div style="text-align:center;margin-top:15px"><span class="link" onclick="backToPortals()">← Choose a different portal</span></div>
-      <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">Demo — sign-in isn't functional; any details continue to the dashboard.</div>
+      <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">New here? <span class="link" onclick="switchView('signup')">Create an account</span></div>
     </div>
   </div>
   </div><!-- /viewSignin -->
+
+  <!-- ===== SIGN UP VIEW ===== -->
+  <div id="viewSignup" class="lview">
+  <div class="llogo">
+    <div class="llogo-lockup">
+      <span class="llogo-mark" role="img" aria-label="HisabOne logo"></span>
+      <span class="llogo-word">Hisab<span class="llogo-one">One</span></span>
+    </div>
+    <div class="llogo-tag">Tax &amp; Compliance, Simplified</div>
+  </div>
+
+  <div id="signupPortalSelect">
+    <div class="lprompt">Choose your portal to create an account</div>
+    <div class="lcards">
+      <!-- BUSINESS PORTAL -->
+      <div class="lportal-card biz" onclick="openSignup('business')">
+        <div class="lpc-ic biz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6.5 8-6.5s8 2.5 8 6.5"/></svg></div>
+        <div class="lportal-label biz">Business Portal</div>
+        <h2>Business</h2>
+        <p>Keep track of your registration documents and updates with your Accountant.</p>
+        <span class="enter biz">Sign up →</span>
+      </div>
+
+      <!-- FIRM PORTAL -->
+      <div class="lportal-card firm" onclick="openSignup('firm')">
+        <div class="lpc-ic firm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="3" width="9" height="18" rx="1"/><path d="M13 8h7v13h-7M7 7h2M7 11h2M7 15h2M16 12h1M16 16h1"/></svg></div>
+        <div class="lportal-label firm">Accountant Portal</div>
+        <h2>Accountant</h2>
+        <p>Manage multiple clients, request documents and oversee tax and audit processes end-to-end.</p>
+        <span class="enter firm">Sign up →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGN UP FORM (appears after choosing a portal) -->
+  <div id="signupForm" style="display:none;width:100%;max-width:420px">
+    <div class="lportal-card" id="sfCard" style="cursor:default">
+      <div class="lportal-label biz" id="sfLabel">Business Portal</div>
+      <h2 id="sfTitle" style="margin-bottom:18px">Create your business account</h2>
+      <div class="lfield"><label class="flabel" id="sfNameLabel">Company name</label><input id="sfName" class="finput" placeholder="e.g. Falcon Trading LLC"></div>
+      <div class="lfield"><label class="flabel">Email</label><input id="sfEmail" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
+      <div class="lfield"><label class="flabel">Password</label><input id="sfPassword" class="finput" type="password" placeholder="At least 8 characters" autocomplete="new-password"></div>
+      <div class="lfield"><label class="flabel">Confirm password</label><input id="sfConfirm" class="finput" type="password" placeholder="Re-enter password" autocomplete="new-password"></div>
+      <div class="lfield" style="display:flex;align-items:flex-start;gap:9px">
+        <input id="sfTerms" type="checkbox" style="margin-top:3px;flex-shrink:0">
+        <label for="sfTerms" style="font-size:12.5px;color:rgba(255,255,255,.6)">I agree to the Terms of Service and Privacy Policy</label>
+      </div>
+      <div id="sfErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
+      <button class="lf-btn" onclick="doSignup()">Create account →</button>
+      <div style="text-align:center;margin-top:15px"><span class="link" onclick="backToSignupPortals()">← Choose a different portal</span></div>
+      <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">Already have an account? <span class="link" onclick="switchView('signin')">Sign in</span></div>
+    </div>
+  </div>
+  </div><!-- /viewSignup -->
 
   <!-- ===== ABOUT US VIEW ===== -->
   <div id="viewAbout" class="lview">
@@ -354,8 +450,8 @@
     <div class="spacer"></div>
     <div class="topuser">
       <span style="font-size:18px">🔔</span>
-      <div class="avatar" id="avatar">A</div>
-      <div><div id="uname" style="font-weight:600">Al Noor Trading LLC</div>
+      <div class="avatar" id="avatar">?</div>
+      <div><div id="uname" style="font-weight:600">Your account</div>
         <div style="font-size:11px;opacity:.6" id="urole">Business account</div></div>
       <button class="logout" onclick="logout()">Log out</button>
     </div>
@@ -377,32 +473,45 @@
       <button class="btn" style="flex:1" onclick="otpVerify()">Verify &amp; unlink</button>
       <button class="btn ghost" onclick="closeOtp()">Cancel</button>
     </div>
-    <div class="muted" style="text-align:center;font-size:11.5px;margin-top:12px">Demo code: <b>123456</b> · <span class="link">Resend code</span></div>
+    <div class="muted" style="text-align:center;font-size:11.5px;margin-top:12px">Prototype — enter any 6-digit code to confirm · <span class="link">Resend code</span></div>
   </div>
 </div>
 
 <script>
+/* ---------- ACCOUNTS & SESSION (localStorage-backed — no server yet) ---------- */
+const LS_ACCOUNTS='hisabone_accounts', LS_SESSION='hisabone_session';
+let currentAccount=null;
+function loadAccounts(){ try{return JSON.parse(localStorage.getItem(LS_ACCOUNTS))||[];}catch(e){return [];} }
+function saveAccounts(list){ localStorage.setItem(LS_ACCOUNTS, JSON.stringify(list)); }
+function findAccount(role,email){ return loadAccounts().find(a=>a.role===role && a.email.toLowerCase()===email.toLowerCase()); }
+/* NOT cryptographically secure — this is a front-end-only prototype with no backend yet */
+function simpleHash(s){ let h=0; for(let i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0;} return 'h'+h; }
+function dataKey(id){ return 'hisabone_data_'+id; }
+function loadAccountData(id){ try{return JSON.parse(localStorage.getItem(dataKey(id)));}catch(e){return null;} }
+function saveAccountData(){
+  if(!currentAccount) return;
+  const data = currentAccount.role==='business'
+    ? {linkedFirm, linkedFirmId, bizTaxDocs, bizAuditDocs, vaultDocs, connections}
+    : {clients, firmClients, firmTaxReqs, firmAuditReqs, firmReminders, inviteCode};
+  localStorage.setItem(dataKey(currentAccount.id), JSON.stringify(data));
+}
+function genInviteCode(){ const r=()=>Math.random().toString(36).slice(2,6).toUpperCase(); return 'HSB-'+r()+'-'+r(); }
+
 /* ---------- ACCOUNT LINKING STATE (managed inside the portals) ---------- */
-let clients = ['GreenLeaf Café LLC','Falcon Logistics FZE','Bayan Interiors','Nova Tech DMCC','Al Waha Foodstuff'];
-let linkedFirm = 'Mansoor & Co. Auditors';   // business links ONE firm
+let clients = [];
+let linkedFirm = '';   // business links ONE firm
+let linkedFirmId = '';
+let connections = {fta:false, accounting:false, bank:false};
 
 /* firm: full client database with risk + urgency */
-let firmClients = [
-  {name:'GreenLeaf Café LLC',trn:'1004 5567 8800',deadline:'VAT Q2 · 2 days',docs:'3/5',risk:'high',urgency:'overdue'},
-  {name:'Falcon Logistics FZE',trn:'1009 1123 4500',deadline:'Licence renewal',docs:'4/5',risk:'high',urgency:'overdue'},
-  {name:'Sundus Beauty Salon',trn:'1008 5590 2100',deadline:'VAT Q2 · 6 days',docs:'4/5',risk:'medium',urgency:'soon'},
-  {name:'Bayan Interiors',trn:'—',deadline:'CT registration',docs:'2/5',risk:'medium',urgency:'soon'},
-  {name:'Nova Tech DMCC',trn:'1002 7789 1200',deadline:'VAT Q2 · ready',docs:'5/5',risk:'low',urgency:'ok'},
-  {name:'Al Waha Foodstuff',trn:'1006 3321 9900',deadline:'VAT Q2 · 5 days',docs:'5/5',risk:'low',urgency:'ok'},
-  {name:'Orbit Marketing FZ',trn:'1001 4456 7700',deadline:'CT return Sep',docs:'5/5',risk:'low',urgency:'ok'},
-];
+let firmClients = [];
 let riskFilter='all', urgFilter='all';
 function setRiskFilter(v){riskFilter=v;renderPage();}
 function setUrg(v){urgFilter=v;renderPage();}
 
 /* firm: invite-code linking */
-let inviteCode='HSB-7X4K-92QD';
-function genInvite(){const r=()=>Math.random().toString(36).slice(2,6).toUpperCase();inviteCode='HSB-'+r()+'-'+r();renderPage();}
+let inviteCode='';
+function genInvite(){inviteCode=genInviteCode();renderPage();}
 function copyInvite(){try{navigator.clipboard&&navigator.clipboard.writeText(inviteCode);}catch(e){}
   const b=document.getElementById('copyBtn');if(b)b.textContent='Copied ✓';}
 
@@ -414,43 +523,56 @@ function addClientInApp(){
 }
 function rmClientInApp(i){const n=clients[i];clients.splice(i,1);firmClients=firmClients.filter(c=>c.name!==n);renderPage();}
 
+/* business: link a firm using their invite code (looked up across registered firm accounts) */
+function linkFirmByCode(){
+  const code=(document.getElementById('firmCode').value||'').trim().toUpperCase();
+  const err=document.getElementById('linkErr');
+  if(err) err.style.display='none';
+  if(!code){ if(err){err.textContent='Enter an invite code.';err.style.display='block';} return; }
+  const firmAccs=loadAccounts().filter(a=>a.role==='firm');
+  let match=null;
+  for(const a of firmAccs){ const d=loadAccountData(a.id); if(d && d.inviteCode && d.inviteCode.toUpperCase()===code){match=a;break;} }
+  if(!match){ if(err){err.textContent='No firm found with that invite code.';err.style.display='block';} return; }
+  linkedFirm=match.name; linkedFirmId=match.id;
+  const fd=loadAccountData(match.id)||{};
+  fd.clients=fd.clients||[]; fd.firmClients=fd.firmClients||[];
+  const myName=currentAccount.name;
+  if(!fd.clients.includes(myName)){
+    fd.clients.push(myName);
+    fd.firmClients.push({name:myName,trn:'—',deadline:'Onboarding',docs:'0/'+(bizTaxDocs.length+bizAuditDocs.length),risk:'medium',urgency:'soon'});
+    localStorage.setItem(dataKey(match.id), JSON.stringify(fd));
+  }
+  renderPage();
+}
+/* business: toggle other-connection cards (front-end only, no real integration yet) */
+function toggleConnection(key){ connections[key]=!connections[key]; renderPage(); }
+
 /* firm: tax document requests (with application / urgency / risk) */
-let firmTaxReqs = [
-  {client:'GreenLeaf Café LLC',doc:'June sales invoices',app:'VAT Return Q2 2026',due:'24 Jul · 2 days',urg:'Urgent',risk:'High',st:'Overdue',cls:'p-red'},
-  {client:'GreenLeaf Café LLC',doc:'Bank statement',app:'VAT Return Q2 2026',due:'24 Jul · 2 days',urg:'Urgent',risk:'High',st:'Overdue',cls:'p-red'},
-  {client:'Sundus Beauty Salon',doc:'Purchase invoices',app:'VAT Return Q2 2026',due:'25 Jul · 3 days',urg:'High',risk:'Medium',st:'Awaiting',cls:'p-amber'},
-  {client:'Bayan Interiors',doc:'Trade licence copy',app:'CT Registration',due:'30 Sep',urg:'Medium',risk:'Medium',st:'Just sent',cls:'p-teal'},
-  {client:'Al Waha Foodstuff',doc:'Q2 invoices',app:'VAT Return Q2 2026',due:'27 Jul · 5 days',urg:'Medium',risk:'Low',st:'Received ✓',cls:'p-green'},
-  {client:'Nova Tech DMCC',doc:'Q2 invoices',app:'VAT Return Q2 2026',due:'28 Jul · 6 days',urg:'Low',risk:'Low',st:'Received ✓',cls:'p-green'},
-];
+let firmTaxReqs = [];
 /* firm: audit document requests (with engagement / urgency / risk) */
-let firmAuditReqs = [
-  {client:'Cedar Contracting',doc:'Fixed asset register',app:'Audit FY2025',due:'28 Jul · 6 days',urg:'High',risk:'Medium',st:'Awaiting',cls:'p-amber'},
-  {client:'Cedar Contracting',doc:'Inventory count sheet',app:'Audit FY2025',due:'28 Jul · 6 days',urg:'High',risk:'Medium',st:'Awaiting',cls:'p-amber'},
-  {client:'Orbit Marketing FZ',doc:'General ledger export',app:'Audit FY2025',due:'05 Aug',urg:'Medium',risk:'Low',st:'Just sent',cls:'p-teal'},
-  {client:'Orbit Marketing FZ',doc:'Related-party disclosures',app:'Audit FY2025',due:'05 Aug',urg:'Urgent',risk:'High',st:'Overdue',cls:'p-red'},
-  {client:'Nova Tech DMCC',doc:'Trial balance',app:'Audit FY2025',due:'12 Aug',urg:'Low',risk:'Low',st:'Received ✓',cls:'p-green'},
-  {client:'Al Waha Foodstuff',doc:'Bank confirmations',app:'Audit FY2025',due:'12 Aug',urg:'Medium',risk:'Medium',st:'Received ✓',cls:'p-green'},
-];
+let firmAuditReqs = [];
 /* generalised request form (tax + audit) */
 let formOpen={tax:false,audit:false};
 function toggleReqForm(kind){formOpen[kind]=!formOpen[kind];renderPage();}
 function submitReq(kind){
   const pfx=kind==='tax'?'tq':'aq', g=id=>document.getElementById(pfx+id).value;
-  const obj={client:g('Client'),doc:g('Doc')||'Document',app:g('App'),due:g('Due')||'—',urg:g('Urg'),risk:g('Risk'),st:'Just sent',cls:'p-teal'};
+  const reqId='req_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const obj={id:reqId,client:g('Client'),doc:g('Doc')||'Document',app:g('App'),due:g('Due')||'—',urg:g('Urg'),risk:g('Risk'),st:'Just sent',cls:'p-teal'};
   (kind==='tax'?firmTaxReqs:firmAuditReqs).unshift(obj);
+  /* mirror the request into the linked business account's own document list, if we can find them */
+  const bizAcc=loadAccounts().find(a=>a.role==='business'&&a.name===obj.client);
+  if(bizAcc){
+    const bd=loadAccountData(bizAcc.id)||{};
+    const arrKey=kind==='tax'?'bizTaxDocs':'bizAuditDocs';
+    bd[arrKey]=bd[arrKey]||[];
+    bd[arrKey].unshift({id:reqId,name:obj.doc,note:'For: '+obj.app,due:obj.due,urg:obj.urg,risk:obj.risk,state:'req'});
+    localStorage.setItem(dataKey(bizAcc.id), JSON.stringify(bd));
+  }
   formOpen[kind]=false;renderPage();
 }
 
 /* firm: email reminders */
-let firmReminders = [
-  {client:'GreenLeaf Café LLC',doc:'June sales invoices',last:'Today · 09:02',next:'—',auto:'red'},
-  {client:'GreenLeaf Café LLC',doc:'Bank statement',last:'Today · 09:02',next:'—',auto:'red'},
-  {client:'Sundus Beauty Salon',doc:'Purchase invoices',last:'2 days ago',next:'Tomorrow · 09:00',auto:'green'},
-  {client:'Cedar Contracting',doc:'Fixed asset register',last:'3 days ago',next:'In 3 days',auto:'green'},
-  {client:'Orbit Marketing FZ',doc:'Related-party disclosures',last:'Yesterday',next:'Tomorrow · 09:00',auto:'green'},
-  {client:'Bayan Interiors',doc:'Trade licence copy',last:'Not yet',next:'In 3 days',auto:'green'},
-];
+let firmReminders = [];
 let reminderFormOpen=false;
 function toggleReminderForm(){reminderFormOpen=!reminderFormOpen;renderPage();}
 function submitReminder(){
@@ -460,30 +582,40 @@ function submitReminder(){
 }
 
 /* business: documents requested by accountant + working upload */
-let bizTaxDocs = [
-  {name:'VAT Q2 sales invoices',note:'For: VAT Return Q2 2026',due:'24 Jul · 2 days',urg:'Urgent',risk:'High',state:'req'},
-  {name:'VAT Q2 purchase invoices',note:'For: VAT Return Q2 2026',due:'24 Jul · 2 days',urg:'High',risk:'Medium',state:'done'},
-  {name:'Bank statement (Apr–Jun)',note:'For: VAT Return Q2 2026',due:'24 Jul · 2 days',urg:'Urgent',risk:'High',state:'req'},
-  {name:'Corporate tax computation',note:'For: CT Return FY2025',due:'30 Sep',urg:'Low',risk:'Low',state:'pend'},
-  {name:'Trade licence copy',note:'For: CT Registration',due:'14 Aug',urg:'Medium',risk:'Medium',state:'done'},
-];
-let bizAuditDocs = [
-  {name:'Audited financials FY2024',note:'Statutory financials',due:'Submitted',urg:'Low',risk:'Low',state:'done'},
-  {name:'Trial balance',note:'As at 31 Dec 2025',due:'Submitted',urg:'Low',risk:'Low',state:'done'},
-  {name:'Bank statements (12 months)',note:'All business accounts',due:'Submitted',urg:'Low',risk:'Low',state:'done'},
-  {name:'Sales & purchase invoices',note:'Full year ledger',due:'Submitted',urg:'Low',risk:'Low',state:'done'},
-  {name:'VAT returns (4 quarters)',note:'Q1–Q4 2025',due:'Submitted',urg:'Low',risk:'Low',state:'done'},
-  {name:'General ledger',note:'Detailed GL export',due:'05 Aug',urg:'Medium',risk:'Medium',state:'req'},
-  {name:'Fixed asset register',note:'With depreciation schedule',due:'05 Aug',urg:'High',risk:'Medium',state:'req'},
-  {name:'Inventory count sheet',note:'Year-end stock count',due:'12 Aug',urg:'Medium',risk:'Low',state:'pend'},
-  {name:'Related-party transactions',note:'Disclosures & balances',due:'12 Aug',urg:'High',risk:'High',state:'pend'},
-];
+let bizTaxDocs = [];
+let bizAuditDocs = [];
+/* business: personal document vault (not tied to any request) */
+let vaultDocs = [];
+function uploadVaultDoc(){
+  const inp=document.getElementById('fileInput');
+  inp.value='';
+  inp.onchange=()=>{
+    if(inp.files[0]) vaultDocs.unshift({name:inp.files[0].name, added:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})});
+    inp.onchange=null; renderPage();
+  };
+  inp.click();
+}
+function deleteVaultDoc(i){
+  if(confirm('Delete "'+vaultDocs[i].name+'"? This cannot be undone.')){vaultDocs.splice(i,1);renderPage();}
+}
 function uploadDoc(kind,i){
   const arr = kind==='tax'?bizTaxDocs:bizAuditDocs;
   if(i==null||i<0) return;
   const inp=document.getElementById('fileInput');
   inp.value='';
-  inp.onchange=()=>{arr[i].state='done';inp.onchange=null;renderPage();};
+  inp.onchange=()=>{
+    arr[i].state='done';
+    /* let the linked firm know this request was fulfilled */
+    if(linkedFirmId && arr[i].id){
+      const fd=loadAccountData(linkedFirmId);
+      if(fd){
+        const reqKey=kind==='tax'?'firmTaxReqs':'firmAuditReqs';
+        const match=(fd[reqKey]||[]).find(r=>r.id===arr[i].id);
+        if(match){ match.st='Received ✓'; match.cls='p-green'; localStorage.setItem(dataKey(linkedFirmId), JSON.stringify(fd)); }
+      }
+    }
+    inp.onchange=null; renderPage();
+  };
   inp.click();
 }
 /* business: delete a requested document (with confirmation) */
@@ -496,18 +628,16 @@ function deleteReqDoc(kind,i){
   const arr = kind==='tax'?firmTaxReqs:firmAuditReqs;
   if(confirm('Delete the request for "'+arr[i].doc+'" from '+arr[i].client+'? This cannot be undone.')){arr.splice(i,1);renderPage();}
 }
-/* business: link/change ONE firm */
-function setLinkedFirm(v){linkedFirm=v;renderPage();}
 
 /* ---------- OTP / EMAIL VERIFICATION FOR UNLINKING ---------- */
 let pendingUnlink=null;
 function requestUnlinkFirm(){
   pendingUnlink={type:'firm'};
-  showOtp('Unlink your accountant?','For your security we emailed a 6-digit code to finance@alnoor.ae. Enter it to unlink '+(linkedFirm||'your firm')+'.');
+  showOtp('Unlink your accountant?','For your security we emailed a 6-digit code to '+(currentAccount?currentAccount.email:'your registered email')+'. Enter it to unlink '+(linkedFirm||'your firm')+'.');
 }
 function requestUnlinkClient(i){
   pendingUnlink={type:'client',name:clients[i]};
-  showOtp('Unlink this client?','We emailed a 6-digit code to admin@mansoorco.ae. Enter it to unlink '+clients[i]+'.');
+  showOtp('Unlink this client?','We emailed a 6-digit code to '+(currentAccount?currentAccount.email:'your registered email')+'. Enter it to unlink '+clients[i]+'.');
 }
 function showOtp(title,msg){
   document.getElementById('otpTitle').textContent=title;
@@ -522,20 +652,32 @@ function otpVerify(){
   if(!/^\d{6}$/.test(code)){document.getElementById('otpErr').style.display='block';return;}
   const p=pendingUnlink; document.getElementById('otpModal').style.display='none'; pendingUnlink=null;
   if(!p) return;
-  if(p.type==='firm'){linkedFirm='';}
-  else if(p.type==='client'){const n=p.name;clients=clients.filter(c=>c!==n);firmClients=firmClients.filter(c=>c.name!==n);}
+  if(p.type==='firm'){
+    if(linkedFirmId){
+      const fd=loadAccountData(linkedFirmId);
+      if(fd){ fd.clients=(fd.clients||[]).filter(c=>c!==currentAccount.name); fd.firmClients=(fd.firmClients||[]).filter(c=>c.name!==currentAccount.name); localStorage.setItem(dataKey(linkedFirmId), JSON.stringify(fd)); }
+    }
+    linkedFirm=''; linkedFirmId='';
+  }
+  else if(p.type==='client'){
+    const n=p.name; clients=clients.filter(c=>c!==n); firmClients=firmClients.filter(c=>c.name!==n);
+    loadAccounts().filter(a=>a.role==='business'&&a.name===n).forEach(a=>{
+      const bd=loadAccountData(a.id);
+      if(bd && bd.linkedFirmId===currentAccount.id){ bd.linkedFirm=''; bd.linkedFirmId=''; localStorage.setItem(dataKey(a.id), JSON.stringify(bd)); }
+    });
+  }
   renderPage();
 }
 
-/* ---------- LOGIN top tabs (Sign In / About Us / Pricing) ---------- */
+/* ---------- LOGIN top tabs (Sign In / Sign Up / About Us / Pricing) ---------- */
 function switchView(v){
-  ['Signin','About','Pricing'].forEach(n=>{
+  ['Signin','Signup','About','Pricing'].forEach(n=>{
     const view=document.getElementById('view'+n); if(view) view.style.display=(n.toLowerCase()===v)?'flex':'none';
     const tab=document.getElementById('tab'+n); if(tab) tab.classList.toggle('on', n.toLowerCase()===v);
   });
 }
 
-/* ---------- LOGIN (demo, non-functional auth) ---------- */
+/* ---------- SIGN IN ---------- */
 let loginRole='business';
 function openLogin(r){
   loginRole=r;
@@ -544,23 +686,94 @@ function openLogin(r){
   document.getElementById('lfLabel').textContent=r==='business'?'Business Portal':'Accountant Portal';
   document.getElementById('lfLabel').className='lportal-label '+(r==='business'?'biz':'firm');
   document.getElementById('lfTitle').textContent=r==='business'?'Business sign in':'Accountant sign in';
-  document.getElementById('lfEmail').value=r==='business'?'finance@alnoor.ae':'admin@mansoorco.ae';
+  document.getElementById('lfEmail').value='';
+  document.getElementById('lfPassword').value='';
+  document.getElementById('lfErr').style.display='none';
   document.getElementById('lfCard').className='lportal-card '+(r==='business'?'biz':'firm');
 }
 function backToPortals(){
   document.getElementById('loginForm').style.display='none';
   document.getElementById('portalSelect').style.display='block';
 }
-function doLogin(){ enterApp(loginRole); }
+function showLoginErr(msg){const e=document.getElementById('lfErr');e.textContent=msg;e.style.display='block';}
+function doLogin(){
+  const email=document.getElementById('lfEmail').value.trim();
+  const pass=document.getElementById('lfPassword').value;
+  document.getElementById('lfErr').style.display='none';
+  if(!email||!pass){showLoginErr('Enter your email and password.');return;}
+  const acc=findAccount(loginRole,email);
+  if(!acc || acc.pass!==simpleHash(pass)){showLoginErr('Incorrect email or password for this portal.');return;}
+  loginAs(acc);
+}
+
+/* ---------- SIGN UP ---------- */
+let signupRole='business';
+function openSignup(r){
+  signupRole=r;
+  document.getElementById('signupPortalSelect').style.display='none';
+  document.getElementById('signupForm').style.display='block';
+  document.getElementById('sfLabel').textContent=r==='business'?'Business Portal':'Accountant Portal';
+  document.getElementById('sfLabel').className='lportal-label '+(r==='business'?'biz':'firm');
+  document.getElementById('sfTitle').textContent=r==='business'?'Create your business account':'Create your accountant account';
+  document.getElementById('sfNameLabel').textContent=r==='business'?'Company name':'Firm name';
+  document.getElementById('sfName').placeholder=r==='business'?'e.g. Horizon Trading LLC':'e.g. Horizon Auditors & Co.';
+  ['sfName','sfEmail','sfPassword','sfConfirm'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sfTerms').checked=false;
+  document.getElementById('sfErr').style.display='none';
+  document.getElementById('sfCard').className='lportal-card '+(r==='business'?'biz':'firm');
+}
+function backToSignupPortals(){
+  document.getElementById('signupForm').style.display='none';
+  document.getElementById('signupPortalSelect').style.display='block';
+}
+function showSignupErr(msg){const e=document.getElementById('sfErr');e.textContent=msg;e.style.display='block';}
+function doSignup(){
+  const name=document.getElementById('sfName').value.trim();
+  const email=document.getElementById('sfEmail').value.trim();
+  const pass=document.getElementById('sfPassword').value;
+  const confirm=document.getElementById('sfConfirm').value;
+  const terms=document.getElementById('sfTerms').checked;
+  document.getElementById('sfErr').style.display='none';
+  if(!name){showSignupErr(signupRole==='business'?'Enter your company name.':'Enter your firm name.');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showSignupErr('Enter a valid email address.');return;}
+  if(pass.length<8){showSignupErr('Password must be at least 8 characters.');return;}
+  if(pass!==confirm){showSignupErr('Passwords do not match.');return;}
+  if(!terms){showSignupErr('Please agree to the Terms of Service to continue.');return;}
+  if(findAccount(signupRole,email)){showSignupErr('An account with this email already exists for this portal. Try signing in instead.');return;}
+  const acc={id:'acc_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),role:signupRole,name,email,pass:simpleHash(pass),createdAt:Date.now()};
+  const accs=loadAccounts(); accs.push(acc); saveAccounts(accs);
+  loginAs(acc);
+}
+
+/* ---------- SESSION ---------- */
+function loginAs(acc){
+  currentAccount=acc;
+  localStorage.setItem(LS_SESSION, acc.id);
+  const data=loadAccountData(acc.id)||{};
+  if(acc.role==='business'){
+    linkedFirm=data.linkedFirm||''; linkedFirmId=data.linkedFirmId||'';
+    bizTaxDocs=data.bizTaxDocs||[]; bizAuditDocs=data.bizAuditDocs||[];
+    vaultDocs=data.vaultDocs||[]; connections=data.connections||{fta:false,accounting:false,bank:false};
+  } else {
+    clients=data.clients||[]; firmClients=data.firmClients||[];
+    firmTaxReqs=data.firmTaxReqs||[]; firmAuditReqs=data.firmAuditReqs||[];
+    firmReminders=data.firmReminders||[]; inviteCode=data.inviteCode||genInviteCode();
+  }
+  enterApp(acc.role);
+}
 function enterApp(r){
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   setRole(r);
 }
 function logout(){
+  saveAccountData();
+  currentAccount=null;
+  localStorage.removeItem(LS_SESSION);
   document.getElementById('app').classList.add('hidden');
   document.getElementById('login').classList.remove('hidden');
   backToPortals();
+  backToSignupPortals();
   switchView('signin');
   window.scrollTo(0,0);
 }
@@ -570,8 +783,8 @@ const NAV = {
   business:[
     {id:'dash', ic:'🏠', label:'Dashboard'},
     {id:'guides', ic:'✨', label:'AI Assist'},
-    {id:'btax', ic:'🧾', label:'Tax Documents', badge:'2'},
-    {id:'baudit', ic:'📋', label:'Audit Documents', badge:'4'},
+    {id:'btax', ic:'🧾', label:'Tax Documents'},
+    {id:'baudit', ic:'📋', label:'Audit Documents'},
     {id:'bvat', ic:'🧮', label:'VAT Calculator'},
     {id:'docs', ic:'📂', label:'Documents'},
     {id:'links', ic:'🔗', label:'Linked Firm'},
@@ -579,23 +792,28 @@ const NAV = {
   firm:[
     {id:'fdash', ic:'🏠', label:'Accountant Dashboard'},
     {id:'clients', ic:'👥', label:'Clients'},
-    {id:'taxdocs', ic:'🧾', label:'Tax Documents', badge:'4'},
-    {id:'auditdocs', ic:'📋', label:'Audit Documents', badge:'3'},
+    {id:'taxdocs', ic:'🧾', label:'Tax Documents'},
+    {id:'auditdocs', ic:'📋', label:'Audit Documents'},
     {id:'vat', ic:'🧮', label:'VAT Calculator'},
     {id:'reminders', ic:'📧', label:'Email Reminders'},
   ]
 };
 let role='business', page='dash';
 
+function navBadge(id){
+  if(id==='btax') return bizTaxDocs.filter(d=>d.state!=='done').length;
+  if(id==='baudit') return bizAuditDocs.filter(d=>d.state!=='done').length;
+  if(id==='taxdocs') return firmTaxReqs.filter(r=>!/Received/.test(r.st)).length;
+  if(id==='auditdocs') return firmAuditReqs.filter(r=>!/Received/.test(r.st)).length;
+  return 0;
+}
 function setRole(r){
   role=r; page = (r==='business'?'dash':'fdash');
   document.body.setAttribute('data-role', r);
-  if(r==='business'){document.getElementById('avatar').textContent='A';
-    document.getElementById('uname').textContent='Al Noor Trading LLC';
-    document.getElementById('urole').textContent='Business account';}
-  else{document.getElementById('avatar').textContent='M';
-    document.getElementById('uname').textContent='Mansoor & Co. Auditors';
-    document.getElementById('urole').textContent='Accounting firm · '+clients.length+'+ clients';}
+  const name = currentAccount ? currentAccount.name : (r==='business'?'Your Business':'Your Firm');
+  document.getElementById('avatar').textContent = (name.trim().charAt(0)||(r==='business'?'B':'F')).toUpperCase();
+  document.getElementById('uname').textContent = name;
+  document.getElementById('urole').textContent = r==='business' ? 'Business account' : ('Accounting firm · '+clients.length+' client'+(clients.length===1?'':'s'));
   renderNav(); renderPage();
 }
 function go(p){page=p;renderNav();renderPage();window.scrollTo(0,0);}
@@ -604,51 +822,68 @@ function renderNav(){
   const items = NAV[role];
   document.getElementById('sidebar').innerHTML =
     '<div class="navlabel">'+(role==='business'?'My company':'Practice')+'</div>'+
-    items.map(i=>`<div class="navitem ${page===i.id?'active':''}" onclick="go('${i.id}')">
+    items.map(i=>{const b=navBadge(i.id);return `<div class="navitem ${page===i.id?'active':''}" onclick="go('${i.id}')">
       <span class="ic">${i.ic}</span><span class="txt">${i.label}</span>
-      ${i.badge?`<span class="badge">${i.badge}</span>`:''}</div>`).join('');
+      ${b?`<span class="badge">${b}</span>`:''}</div>`;}).join('');
 }
 function renderPage(){ document.getElementById('main').innerHTML = (PAGES[page]||(()=>'<h1>Coming soon</h1>'))();
-  if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT(); }
+  if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT();
+  saveAccountData(); }
 
 /* ---------- PAGES ---------- */
 const PAGES = {
-dash:()=>`
-  <h1>Good morning, Al Noor 👋</h1>
-  <div class="sub">Here's your compliance status for June 2026.</div>
+dash:()=>{
+  const firstName = currentAccount ? currentAccount.name.split(' ')[0] : 'there';
+  const open = [...bizTaxDocs.map(d=>({...d,kind:'tax'})), ...bizAuditDocs.map(d=>({...d,kind:'audit'}))].filter(d=>d.state!=='done');
+  const urgent = open.filter(d=>d.urg==='Urgent'||d.urg==='High');
+  const totalReq = bizTaxDocs.length + bizAuditDocs.length;
+  const totalDone = bizTaxDocs.filter(d=>d.state==='done').length + bizAuditDocs.filter(d=>d.state==='done').length;
+  const pct = totalReq ? Math.round(totalDone/totalReq*100) : null;
+  return `
+  <h1>Good day, ${firstName} 👋</h1>
+  <div class="sub">Here's your compliance status.</div>
+  ${urgent.length ? `
   <div class="banner">
     <div style="font-size:30px">⚠️</div>
     <div style="flex:1">
-      <div class="big">Your VAT return for Q2 2026 is due in 9 days (28 July)</div>
-      <div style="opacity:.7;font-size:13px">Estimated VAT payable: AED 18,250 · 3 of 4 documents ready</div>
+      <div class="big">${urgent.length} document${urgent.length>1?'s':''} need${urgent.length>1?'':'s'} your attention</div>
+      <div style="opacity:.7;font-size:13px">${totalDone} of ${totalReq} requested documents submitted</div>
     </div>
-    <button class="btn" onclick="go('btax')">Start filing</button>
-  </div>
+    <button class="btn" onclick="go('btax')">Review documents</button>
+  </div>` : linkedFirm ? `
+  <div class="banner">
+    <div style="font-size:30px">✅</div>
+    <div style="flex:1"><div class="big">You're all caught up</div>
+      <div style="opacity:.7;font-size:13px">No urgent documents outstanding right now.</div></div>
+  </div>` : `
+  <div class="banner">
+    <div style="font-size:30px">🔗</div>
+    <div style="flex:1"><div class="big">Link your accountant to get started</div>
+      <div style="opacity:.7;font-size:13px">Once linked, they can request documents and track your filings here.</div></div>
+    <button class="btn" onclick="go('links')">Link a firm</button>
+  </div>`}
   <div class="grid g4 mb14">
-    <div class="card stat"><div class="ic ic-green">✓</div><div class="num">87%</div><div class="lbl">Compliance score</div></div>
-    <div class="card stat"><div class="ic ic-amber">⏳</div><div class="num">2</div><div class="lbl">Deadlines this month</div></div>
-    <div class="card stat"><div class="ic ic-red">📄</div><div class="num">2</div><div class="lbl">Documents expiring</div></div>
-    <div class="card stat"><div class="ic ic-teal">🔗</div><div class="num">1</div><div class="lbl">Linked firm</div></div>
+    <div class="card stat"><div class="ic ic-green">✓</div><div class="num">${pct==null?'—':pct+'%'}</div><div class="lbl">Documents submitted</div></div>
+    <div class="card stat"><div class="ic ic-amber">⏳</div><div class="num">${open.length}</div><div class="lbl">Outstanding requests</div></div>
+    <div class="card stat"><div class="ic ic-red">📂</div><div class="num">${vaultDocs.length}</div><div class="lbl">Documents in vault</div></div>
+    <div class="card stat"><div class="ic ic-teal">🔗</div><div class="num">${linkedFirm?1:0}</div><div class="lbl">Linked firm</div></div>
   </div>
   <div class="grid g2">
     <div class="card">
-      <div class="cardhead"><h3>Upcoming deadlines</h3><span class="link" onclick="go('btax')">View all</span></div>
-      ${deadlineRow('red','VAT Return — Q2 2026','Federal Tax Authority','Due 28 Jul · 9 days')}
-      ${deadlineRow('amber','Trade Licence renewal','Dept. of Economic Development','Due 14 Aug · 26 days')}
-      ${deadlineRow('teal','Corporate Tax Return — FY2025','Federal Tax Authority','Due 30 Sep · 99 days')}
+      <div class="cardhead"><h3>Outstanding document requests</h3><span class="link" onclick="go('btax')">View all</span></div>
+      ${open.length ? open.slice(0,4).map(d=>deadlineRow(d.urg==='Urgent'?'red':(d.urg==='High'?'amber':'teal'), d.name, d.note, d.due)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No outstanding requests.</div>`}
     </div>
     <div class="card">
-      <div class="cardhead"><h3>Documents expiring soon</h3><span class="link" onclick="go('docs')">Manage</span></div>
-      ${deadlineRow('red','Trade Licence','Expires 14 Aug 2026','Renew & upload')}
-      ${deadlineRow('amber','Lease / Ejari','Expires 02 Oct 2026','Renew & upload')}
-      ${deadlineRow('green','VAT Certificate','Valid','No action needed')}
+      <div class="cardhead"><h3>Recent documents</h3><span class="link" onclick="go('docs')">Manage</span></div>
+      ${vaultDocs.length ? vaultDocs.slice(0,4).map(d=>docRow('📄',d.name,'green','Added '+d.added)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No documents uploaded yet.</div>`}
     </div>
   </div>
   <div class="ai mt18">
     <div class="sparkle">✨</div>
-    <div><h3>HisabOne AI noticed something</h3>
-      <p>Your Q2 sales invoices total AED 412,000 — above the AED 375,000 VAT threshold. I've pre-filled 92% of your VAT return from your linked accounting software. Just review and submit.</p></div>
-  </div>`,
+    <div><h3>HisabOne AI</h3>
+      <p>${linkedFirm ? 'Upload the documents your accountant has requested and I’ll keep this dashboard up to date automatically.' : 'Link your accountant and upload your registration documents — I’ll track deadlines and flag anything urgent as soon as there’s data to work with.'}</p></div>
+  </div>`;
+},
 
 guides:()=>`
   <h1>AI Assist</h1>
@@ -665,25 +900,25 @@ guides:()=>`
     </div>
   </div>
   <div class="grid g3 mb14">
-    ${guideCard('🆕','VAT Registration','When & how to register with the FTA','In progress · 3/5 steps')}
+    ${guideCard('🆕','VAT Registration','When & how to register with the FTA','Guide')}
     ${guideCard('🧾','Tax Invoice Format','The fields UAE law requires','Reference')}
-    ${guideCard('🧮','Filing a VAT Return','Quarterly returns on EmaraTax','Not started')}
-    ${guideCard('🏢','Corporate Tax (9%)','Registration & annual return','Not started')}
-    ${guideCard('📋','Audit Preparation','What auditors will ask for','Not started')}
-    ${guideCard('💸','Claiming VAT Refunds','Recovering input VAT','Not started')}
+    ${guideCard('🧮','Filing a VAT Return','Quarterly returns on EmaraTax','Guide')}
+    ${guideCard('🏢','Corporate Tax (9%)','Registration & annual return','Guide')}
+    ${guideCard('📋','Audit Preparation','What auditors will ask for','Guide')}
+    ${guideCard('💸','Claiming VAT Refunds','Recovering input VAT','Guide')}
   </div>
   <div class="card">
-    <div class="cardhead"><h3>VAT Registration — step by step</h3><span class="pill p-amber">In progress</span></div>
-    <div class="step"><div class="stepnum done">✓</div><div><h4>1. Check if you must register</h4>
-      <p>Mandatory once taxable supplies pass <b>AED 375,000</b> in a rolling 12 months. Voluntary from <b>AED 187,500</b>. HisabOne checks this automatically from your linked accounts.</p></div></div>
-    <div class="step"><div class="stepnum done">✓</div><div><h4>2. Gather your documents</h4>
-      <p>Trade licence, Emirates ID & passport of owners, MOA, bank letter, and turnover proof. <span class="link" onclick="go('docs')">3 of 5 ready →</span></p></div></div>
-    <div class="step"><div class="stepnum done">✓</div><div><h4>3. Create an EmaraTax account</h4>
-      <p>Register on the FTA's EmaraTax portal. Or <span class="link" onclick="go('links')">link your linked firm</span> so they file on your behalf.</p></div></div>
+    <div class="cardhead"><h3>VAT Registration — step by step</h3><span class="pill p-gray">Guide</span></div>
+    <div class="step"><div class="stepnum">1</div><div><h4>1. Check if you must register</h4>
+      <p>Mandatory once taxable supplies pass <b>AED 375,000</b> in a rolling 12 months. Voluntary from <b>AED 187,500</b>. HisabOne can check this automatically once your accounts are linked.</p></div></div>
+    <div class="step"><div class="stepnum">2</div><div><h4>2. Gather your documents</h4>
+      <p>Trade licence, Emirates ID &amp; passport of owners, MOA, bank letter, and turnover proof. <span class="link" onclick="go('docs')">Manage your documents →</span></p></div></div>
+    <div class="step"><div class="stepnum">3</div><div><h4>3. Create an EmaraTax account</h4>
+      <p>Register on the FTA's EmaraTax portal. Or <span class="link" onclick="go('links')">link an accountant</span> so they file on your behalf.</p></div></div>
     <div class="step"><div class="stepnum">4</div><div><h4>4. Submit the VAT registration application</h4>
-      <p>Fill business activity, turnover and bank details. HisabOne pre-fills most fields. Review and submit.</p></div></div>
+      <p>Fill in business activity, turnover and bank details, then review and submit.</p></div></div>
     <div class="step"><div class="stepnum">5</div><div><h4>5. Receive your TRN</h4>
-      <p>The FTA issues your Tax Registration Number (usually 5–20 business days). We store it and set your filing reminders.</p></div></div>
+      <p>The FTA issues your Tax Registration Number (usually 5–20 business days). Store it in HisabOne and set your filing reminders.</p></div></div>
   </div>
 
   <div class="card mt18">
@@ -709,20 +944,20 @@ guides:()=>`
     </div>
   </div>
 
-  <div class="card mt18" style="padding:0;overflow:hidden">
+  <div class="card mt18" style="padding:0;overflow-x:auto">
     <div style="padding:14px 18px;border-bottom:1px solid var(--line)"><h3 style="font-size:15px">Sample — what a compliant invoice looks like</h3></div>
     <div style="padding:22px">
       <div style="background:#f7f9fc;color:#1c2a3a;border-radius:12px;padding:24px;font-size:12.5px;line-height:1.5">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
           <div><div style="font-size:18px;font-weight:800;color:#0f2742">TAX INVOICE</div>
-            <div style="margin-top:6px;font-weight:700">Al Noor Trading LLC</div>
-            <div style="color:#6b7a8d">Office 1203, Business Bay, Dubai, UAE<br>TRN: 100 4556 7800 0003</div></div>
+            <div style="margin-top:6px;font-weight:700">Your Company LLC</div>
+            <div style="color:#6b7a8d">Your office address, City, UAE<br>TRN: 100 0000 0000 0003</div></div>
           <div style="text-align:right;color:#6b7a8d">
-            <div><b style="color:#1c2a3a">Invoice No:</b> INV-2026-0418</div>
-            <div><b style="color:#1c2a3a">Date of issue:</b> 24 Jun 2026</div>
-            <div><b style="color:#1c2a3a">Date of supply:</b> 22 Jun 2026</div></div>
+            <div><b style="color:#1c2a3a">Invoice No:</b> INV-0001</div>
+            <div><b style="color:#1c2a3a">Date of issue:</b> DD Mon YYYY</div>
+            <div><b style="color:#1c2a3a">Date of supply:</b> DD Mon YYYY</div></div>
         </div>
-        <div style="margin-bottom:14px"><b>Bill to:</b> Gulf Interiors FZE · Plot 22, JAFZA, Dubai · TRN: 100 8891 2200 0003</div>
+        <div style="margin-bottom:14px"><b>Bill to:</b> Sample Customer LLC · Customer address, City, UAE · TRN: 100 0000 0000 0004</div>
         <table style="width:100%;border-collapse:collapse;font-size:12px">
           <tr style="background:#eef2f7;color:#0f2742">
             <th style="text-align:left;padding:8px;border:0">Description</th>
@@ -765,7 +1000,7 @@ bvat:()=>`
   <div class="card mb14">
     <div class="cardhead"><h3>🧮 VAT calculator</h3></div>
     <div class="grid g3" style="align-items:end">
-      <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" value="1000" oninput="recalcVAT()" style="text-align:right"></div>
+      <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>
       <div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>
       <div><label class="flabel">Mode</label><select id="qcMode" class="finput" oninput="recalcVAT()">
         <option value="add">Add VAT (amount excludes VAT)</option>
@@ -780,38 +1015,29 @@ bvat:()=>`
   <div class="ai"><div class="sparkle">✨</div>
     <div><h3>How it works</h3><p>Choose <b>Add VAT</b> when your figure is before VAT (HisabOne adds 5% on top), or <b>Extract VAT</b> when VAT is already included (HisabOne works out the VAT portion). Results update as you type.</p></div></div>`,
 
-docs:()=>`
+docs:()=>{
+  const openTax=bizTaxDocs.filter(d=>d.state!=='done');
+  const auditDone=bizAuditDocs.filter(d=>d.state==='done').length;
+  return `
   <h1>Documents</h1>
-  <div class="sub">Your secure vault. We watch expiry dates and nudge you before anything lapses.</div>
+  <div class="sub">Your secure vault. Upload documents here, and track what your accountant has requested.</div>
   <div class="grid g2 mb14">
     <div class="card">
-      <div class="cardhead"><h3>Document vault</h3><button class="btn sm">+ Upload</button></div>
-      ${docRow('📄','Trade Licence','red','Expires 14 Aug 2026 · 52 days')}
-      ${docRow('🏠','Lease / Ejari','amber','Expires 02 Oct 2026 · 101 days')}
-      ${docRow('🆔','Emirates ID — Owner','green','Valid till 2028')}
-      ${docRow('🛂','Passport — Owner','green','Valid till 2029')}
-      ${docRow('📜','VAT Certificate (TRN)','green','No expiry')}
-      ${docRow('📑','MOA','green','On file')}
+      <div class="cardhead"><h3>Document vault</h3><button class="btn sm" onclick="uploadVaultDoc()">+ Upload</button></div>
+      ${vaultDocs.length ? vaultDocs.map((d,i)=>vaultDocRow(d,i)).join('') : `<div class="muted" style="text-align:center;padding:22px;font-size:13px">No documents yet. Click + Upload to add your first document.</div>`}
     </div>
     <div>
       <div class="card mb14">
-        <div class="cardhead"><h3>Requests from your firm</h3><span class="pill p-amber">2 open</span></div>
-        ${reqFromFirm('June sales invoices','For: VAT Return Q2','p-red','Due in 2 days')}
-        ${reqFromFirm('Bank statement (June)','For: VAT Return Q2','p-amber','Requested today')}
-        ${reqFromFirm('Fixed asset register','For: Audit FY2025','p-green','Uploaded ✓')}
+        <div class="cardhead"><h3>Requests from your firm</h3>${openTax.length?`<span class="pill p-amber">${openTax.length} open</span>`:''}</div>
+        ${bizTaxDocs.length ? bizTaxDocs.slice(0,4).map(d=>reqFromFirm(d.name,d.note,d.state==='done'?'p-green':(d.urg==='Urgent'?'p-red':'p-amber'),d.state==='done'?'Uploaded ✓':d.due)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No requests yet${linkedFirm?' from your firm.':' — link a firm to receive requests.'}</div>`}
       </div>
       <div class="card mb14">
-        <div class="cardhead"><h3>Audit document checklist</h3><span class="pill p-amber">4/7</span></div>
-        ${checkRow(true,'Audited financials FY2024')}
-        ${checkRow(true,'Trial balance')}
-        ${checkRow(true,'Bank statements (12 mo)')}
-        ${checkRow(true,'Sales & purchase invoices')}
-        ${checkRow(false,'Fixed asset register')}
-        ${checkRow(false,'Inventory count sheet')}
-        ${checkRow(false,'Related-party transactions')}
+        <div class="cardhead"><h3>Audit document checklist</h3>${bizAuditDocs.length?`<span class="pill p-amber">${auditDone}/${bizAuditDocs.length}</span>`:''}</div>
+        ${bizAuditDocs.length ? bizAuditDocs.map(d=>checkRow(d.state==='done',d.name)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No audit documents requested yet.</div>`}
       </div>
     </div>
-  </div>`,
+  </div>`;
+},
 
 links:()=>`
   <h1>Linked Firm &amp; Accounts</h1>
@@ -828,61 +1054,70 @@ links:()=>`
   </div>` : `
   <div class="card mb14">
     <div class="cardhead"><h3>🔗 Link your accounting / audit firm <span class="muted" style="font-weight:400;font-size:12px">(one only)</span></h3></div>
-    <div style="display:flex;gap:10px">
-      <select id="firmPick" style="flex:1;padding:10px 13px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-size:13.5px">
-        <option>Mansoor &amp; Co. Auditors</option><option>Gulf Audit Partners</option><option>Emirates Tax Advisory</option>
-      </select>
-      <button class="btn" onclick="setLinkedFirm(document.getElementById('firmPick').value)">Link firm</button>
+    <p class="muted" style="font-size:12.5px;margin-bottom:10px">Ask your accountant for their invite code from their Clients page, and enter it below.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input id="firmCode" class="finput" style="flex:1;min-width:180px" placeholder="e.g. HSB-XXXX-XXXX">
+      <button class="btn" onclick="linkFirmByCode()">Link firm</button>
     </div>
+    <div id="linkErr" style="color:var(--red);font-size:12.5px;margin-top:8px;display:none"></div>
     <div class="muted" style="font-size:12px;margin-top:9px">📨 Once linked, they send document requests inside each filing process below.</div>
   </div>`}
   <h3 style="font-size:14px;margin-bottom:10px">Document requests from your firm, by process</h3>
-  <div class="grid g2">
-    ${linkProc('🧾 VAT Return — Q2 2026','1 of 2 received',[['June sales invoices','p-red','Due 2 days'],['Bank statement','p-amber','Requested']])}
-    ${linkProc('📋 Audit — FY2025','2 of 3 received',[['Trial balance','p-green','Uploaded ✓'],['Fixed asset register','p-amber','Awaiting']])}
-  </div>
+  ${(bizTaxDocs.length||bizAuditDocs.length) ? `<div class="grid g2">
+    ${bizTaxDocs.length?linkProcFromDocs('🧾 Tax documents',bizTaxDocs):''}
+    ${bizAuditDocs.length?linkProcFromDocs('📋 Audit documents',bizAuditDocs):''}
+  </div>` : `<div class="card muted" style="text-align:center;padding:22px;font-size:13px">No document requests yet${linkedFirm?' — your firm will send requests here.':' — link a firm to start receiving requests.'}</div>`}
   <h3 style="font-size:14px;margin:22px 0 10px">Other connections</h3>
   <div class="grid g3">
-    ${linkCard('🏛️','FTA (EmaraTax)','Connected','p-green','File VAT & CT, auto-pull TRN & history.')}
-    ${linkCard('📊','Accounting software','Connected','p-green','Pulls data to pre-fill returns.')}
-    ${linkCard('🏦','Business bank','Connected','p-green','Reconciles & flags VAT.')}
+    ${connCard('fta','🏛️','FTA (EmaraTax)','File VAT &amp; CT, auto-pull TRN &amp; history.')}
+    ${connCard('accounting','📊','Accounting software','Pulls data to pre-fill returns.')}
+    ${connCard('bank','🏦','Business bank','Reconciles &amp; flags VAT.')}
   </div>
   <div class="note">🔒 You control access and can revoke any connection at any time.</div>`,
 
-fdash:()=>`
+fdash:()=>{
+  const firmName = currentAccount ? currentAccount.name : 'Your Firm';
+  const allReqs = [...firmTaxReqs, ...firmAuditReqs];
+  const received = allReqs.filter(r=>/Received/.test(r.st)).length;
+  const overdue = allReqs.filter(r=>r.st==='Overdue').length;
+  const awaited = allReqs.length - received;
+  const attention = firmClients.filter(c=>c.urgency==='overdue'||c.urgency==='soon');
+  return `
   <h1>Accountant Dashboard</h1>
-  <div class="sub">Mansoor &amp; Co. Auditors · ${clients.length}+ linked clients · June 2026</div>
+  <div class="sub">${firmName} · ${clients.length} linked client${clients.length===1?'':'s'}</div>
   <div class="grid g4 mb14">
-    <div class="card stat"><div class="ic ic-teal">👥</div><div class="num">42</div><div class="lbl">Active clients</div></div>
-    <div class="card stat"><div class="ic ic-red">⏰</div><div class="num">6</div><div class="lbl">Deadlines this week</div></div>
-    <div class="card stat"><div class="ic ic-amber">📨</div><div class="num">11</div><div class="lbl">Documents awaited</div></div>
-    <div class="card stat"><div class="ic ic-green">✓</div><div class="num">38</div><div class="lbl">Filed this quarter</div></div>
+    <div class="card stat"><div class="ic ic-teal">👥</div><div class="num">${clients.length}</div><div class="lbl">Active clients</div></div>
+    <div class="card stat"><div class="ic ic-red">⏰</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
+    <div class="card stat"><div class="ic ic-amber">📨</div><div class="num">${awaited}</div><div class="lbl">Documents awaited</div></div>
+    <div class="card stat"><div class="ic ic-green">✓</div><div class="num">${received}</div><div class="lbl">Documents received</div></div>
   </div>
+  ${clients.length ? `
   <div class="banner">
-    <div style="font-size:30px">⏰</div>
-    <div style="flex:1"><div class="big">6 client VAT returns due in the next 7 days</div>
-      <div style="opacity:.7;font-size:13px">3 clients still owe you documents — chase them in one click</div></div>
+    <div style="font-size:30px">${overdue?'⏰':'✅'}</div>
+    <div style="flex:1"><div class="big">${overdue? overdue+' document'+(overdue>1?'s are':' is')+' overdue' : 'No overdue requests'}</div>
+      <div style="opacity:.7;font-size:13px">${awaited} document${awaited===1?'':'s'} still awaited across all clients</div></div>
     <button class="btn" onclick="go('taxdocs')">Review requests</button>
-  </div>
+  </div>` : `
+  <div class="banner">
+    <div style="font-size:30px">👥</div>
+    <div style="flex:1"><div class="big">Link your first client to get started</div>
+      <div style="opacity:.7;font-size:13px">Share your invite code from the Clients page, or add a client directly.</div></div>
+    <button class="btn" onclick="go('clients')">Go to Clients</button>
+  </div>`}
   <div class="grid g2">
     <div class="card">
       <div class="cardhead"><h3>Clients needing attention</h3><span class="link" onclick="go('clients')">All clients</span></div>
-      ${clientRow('GreenLeaf Café LLC','VAT Q2 due in 2 days · missing 2 docs','p-red','Overdue risk')}
-      ${clientRow('Falcon Logistics FZE','Trade licence expired 4 days ago','p-red','Expired')}
-      ${clientRow('Bayan Interiors','Corporate tax registration pending','p-amber','Action')}
-      ${clientRow('Nova Tech DMCC','VAT Q2 ready to submit','p-teal','Ready')}
+      ${attention.length ? attention.slice(0,4).map(c=>clientRow(c.name,c.deadline,c.risk==='high'?'p-red':(c.risk==='medium'?'p-amber':'p-teal'),c.urgency==='overdue'?'Overdue risk':'Action')).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No clients need attention right now.</div>`}
     </div>
     <div class="card">
-      <div class="cardhead"><h3>Tasks for this week</h3></div>
-      ${deadlineRow('red','6 VAT returns','Due 24–28 Jul','High priority')}
-      ${deadlineRow('amber','3 trade licence renewals','Due this month','Medium')}
-      ${deadlineRow('teal','2 audit engagements','In progress','On track')}
-      ${deadlineRow('green','11 doc requests sent','Awaiting clients','Auto-chasing')}
+      <div class="cardhead"><h3>Recent requests</h3></div>
+      ${allReqs.length ? allReqs.slice(0,4).map(r=>deadlineRow(r.cls==='p-red'?'red':(r.cls==='p-amber'?'amber':(r.cls==='p-green'?'green':'teal')), r.doc, r.client, r.st)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No document requests sent yet.</div>`}
     </div>
   </div>
   <div class="ai mt18"><div class="sparkle">✨</div>
-    <div><h3>HisabOne AI saved your team ~14 hours this week</h3>
-      <p>Auto-prepared 38 VAT returns from linked client accounts, sent 11 document reminders, and flagged 2 clients at risk of penalties. Your staff only review and approve.</p></div></div>`,
+    <div><h3>HisabOne AI</h3>
+      <p>${clients.length ? "I'm tracking deadlines and helping you chase outstanding documents across your linked clients." : "Once you link clients, I'll track their deadlines, chase outstanding documents, and flag anything at risk."}</p></div></div>`;
+},
 
 clients:()=>{
   const order={high:0,medium:1,low:2};
@@ -894,7 +1129,7 @@ clients:()=>{
   <div class="sub">Organised by risk — highest first. Filter by risk or urgency to focus where it matters.</div>
   <div class="card mb14">
     <div class="cardhead"><h3>🔗 Link a new client</h3></div>
-    <p class="muted" style="font-size:12.5px;margin-bottom:13px">Share your firm's invite code — when a client enters it on sign-up, they're linked to you automatically.</p>
+    <p class="muted" style="font-size:12.5px;margin-bottom:13px">Share your firm's invite code — when a business enters it on their Linked Firm page, they're linked to you automatically.</p>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
       <div style="font-family:ui-monospace,Menlo,monospace;font-size:18px;font-weight:700;letter-spacing:2px;background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:11px 18px;color:var(--accent)">${inviteCode}</div>
       <button class="btn sm" id="copyBtn" onclick="copyInvite()">Copy invite</button>
@@ -924,10 +1159,10 @@ clients:()=>{
         <button class="${urgFilter==='ok'?'on':''}" onclick="setUrg('ok')">On track</button>
       </span></div>
   </div>
-  <div class="card" style="padding:0;overflow:hidden">
+  <div class="card" style="padding:0;overflow-x:auto">
     <table>
       <tr><th>Client</th><th>TRN</th><th>Next deadline</th><th>Documents</th><th>Risk</th><th>Urgency</th></tr>
-      ${rows.map(fClientRow).join('') || '<tr><td colspan="6" class="muted" style="text-align:center;padding:22px">No clients match these filters.</td></tr>'}
+      ${rows.map(fClientRow).join('') || `<tr><td colspan="6" class="muted" style="text-align:center;padding:22px">${firmClients.length?'No clients match these filters.':'No clients yet — share your invite code above to link your first client.'}</td></tr>`}
     </table>
   </div>
   <div class="note">Showing ${rows.length} of ${firmClients.length} clients</div>`;
@@ -942,10 +1177,10 @@ reminders:()=>`
   <div class="ai mb14"><div class="sparkle">✨</div>
     <div><h3>Auto-chase cadence</h3><p>HisabOne emails each client on day 3, 6 and 9 after a request until they upload. Toggle it off for any client to chase manually.</p></div></div>
   <div class="grid g4 mb14">
-    <div class="card stat"><div class="ic ic-teal">📧</div><div class="num">23</div><div class="lbl">Reminders sent (7 days)</div></div>
-    <div class="card stat"><div class="ic ic-amber">⏳</div><div class="num">8</div><div class="lbl">Scheduled next 48h</div></div>
-    <div class="card stat"><div class="ic ic-green">✓</div><div class="num">61%</div><div class="lbl">Open rate</div></div>
-    <div class="card stat"><div class="ic ic-red">🔁</div><div class="num">5</div><div class="lbl">Auto-chase active</div></div>
+    <div class="card stat"><div class="ic ic-teal">📧</div><div class="num">${firmReminders.length}</div><div class="lbl">Reminders scheduled</div></div>
+    <div class="card stat"><div class="ic ic-amber">⏳</div><div class="num">${firmReminders.filter(r=>r.next&&r.next!=='—').length}</div><div class="lbl">Upcoming reminders</div></div>
+    <div class="card stat"><div class="ic ic-green">🔁</div><div class="num">${firmReminders.filter(r=>r.auto==='green').length}</div><div class="lbl">Auto-chase active</div></div>
+    <div class="card stat"><div class="ic ic-red">👥</div><div class="num">${clients.length}</div><div class="lbl">Linked clients</div></div>
   </div>
   ${reminderFormOpen?`
   <div class="card mb14" style="border-color:var(--accent)">
@@ -959,26 +1194,26 @@ reminders:()=>`
     <button class="btn" onclick="submitReminder()">Schedule reminder</button>
     <button class="btn ghost" style="margin-left:8px" onclick="toggleReminderForm()">Cancel</button>
   </div>`:''}
-  <div class="card" style="padding:0;overflow:hidden">
+  <div class="card" style="padding:0;overflow-x:auto">
     <div style="padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
       <h3 style="font-size:15px">Reminder schedule</h3>
       <button class="btn sm" onclick="toggleReminderForm()">${reminderFormOpen?'Close':'+ New reminder'}</button></div>
     <table>
       <tr><th>Client</th><th>Document</th><th>Last sent</th><th>Next reminder</th><th>Auto-chase</th><th></th></tr>
-      ${firmReminders.map(r=>remRow(r.client,r.doc,r.last,r.next,r.auto,'Send now')).join('')}
+      ${firmReminders.length ? firmReminders.map(r=>remRow(r.client,r.doc,r.last,r.next,r.auto,'Send now')).join('') : `<tr><td colspan="6" class="muted" style="text-align:center;padding:22px">No reminders scheduled yet.</td></tr>`}
     </table>
   </div>
   <div class="card mt18">
     <div class="cardhead"><h3>📧 Email preview</h3><span class="pill p-gray">Auto-generated</span></div>
+    ${firmReminders.length ? (()=>{ const r=firmReminders[0]; const firm=currentAccount?currentAccount.name:'Your firm'; return `
     <div style="background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px;line-height:1.7">
-      <div class="muted" style="font-size:11.5px;margin-bottom:8px">To: finance@greenleaf.ae · From: Mansoor &amp; Co. via HisabOne</div>
-      <div style="font-weight:700;margin-bottom:8px">Reminder: 2 documents needed for your VAT Return Q2 2026</div>
-      Dear GreenLeaf Café LLC,<br><br>
-      To file your VAT return (due 28 July), we still need: <b>June sales invoices</b> and <b>your bank statement</b>.
-      Please upload them securely via your HisabOne portal — no email attachments needed.<br><br>
+      <div class="muted" style="font-size:11.5px;margin-bottom:8px">To: ${r.client} · From: ${firm} via HisabOne</div>
+      <div style="font-weight:700;margin-bottom:8px">Reminder: ${r.doc} needed</div>
+      Dear ${r.client},<br><br>
+      We still need <b>${r.doc}</b> from you. Please upload it securely via your HisabOne portal — no email attachments needed.<br><br>
       <span class="link">Upload documents →</span><br><br>
-      Thank you,<br>Mansoor &amp; Co. Auditors
-    </div>
+      Thank you,<br>${firm}
+    </div>`; })() : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">Schedule a reminder above to see a live preview here.</div>`}
   </div>`,
 
 vat:()=>{
@@ -1002,7 +1237,7 @@ vat:()=>{
   <div class="card mb14">
     <div class="cardhead"><h3>🧮 Quick VAT calculator</h3></div>
     <div class="grid g4" style="align-items:end">
-      <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" value="10000" oninput="recalcVAT()" style="text-align:right"></div>
+      <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>
       <div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>
       <div><label class="flabel">Mode</label><select id="qcMode" class="finput" oninput="recalcVAT()">
         <option value="add">Add VAT (amount excludes VAT)</option>
@@ -1017,14 +1252,14 @@ vat:()=>{
   </div>
 
   <div class="grid g2 mb14">
-    <div class="card" style="padding:0;overflow:hidden">
+    <div class="card" style="padding:0;overflow-x:auto">
       <div style="padding:14px 18px;border-bottom:1px solid var(--line)"><h3 style="font-size:15px">Output VAT — Sales</h3></div>
       <div style="padding:0 6px"><table>
         <tr><th>Description</th><th style="text-align:right">Net (AED)</th><th>Rate</th><th style="text-align:right">VAT</th></tr>
         ${Array.from({length:N},(_,i)=>salesRow(i)).join('')}
       </table></div>
     </div>
-    <div class="card" style="padding:0;overflow:hidden">
+    <div class="card" style="padding:0;overflow-x:auto">
       <div style="padding:14px 18px;border-bottom:1px solid var(--line)"><h3 style="font-size:15px">Input VAT — Purchases</h3></div>
       <div style="padding:0 6px"><table>
         <tr><th>Description</th><th style="text-align:right">Net (AED)</th><th>Rate</th><th style="text-align:right">VAT</th></tr>
@@ -1150,11 +1385,11 @@ function deadlineRow(c,t,m,r){const col={red:'var(--red)',amber:'var(--amber)',t
   return `<div class="drow"><div class="dbar" style="background:${col}"></div>
     <div style="flex:1"><div class="dtitle">${t}</div><div class="dmeta">${m}</div></div>
     <div class="dmeta" style="text-align:right">${r}</div></div>`;}
-function guideCard(ic,t,d,s){const done=s.includes('progress');
+function guideCard(ic,t,d,s){
   return `<div class="card" style="cursor:pointer" onclick="go('guides')">
     <div style="font-size:26px;margin-bottom:8px">${ic}</div><h3 style="font-size:15px">${t}</h3>
     <p class="muted" style="font-size:12.5px;margin:4px 0 10px">${d}</p>
-    <span class="pill ${done?'p-amber':'p-gray'}">${s}</span></div>`;}
+    <span class="pill p-gray">${s}</span></div>`;}
 /* business: one document table row with deadline, urgency, risk, status + Upload */
 function bizDocRow(kind,i){
   const d=(kind==='tax'?bizTaxDocs:bizAuditDocs)[i];
@@ -1195,7 +1430,7 @@ function bizDocPage(kind){
     <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span class="muted">Document progress</span><span>${done} of ${total} submitted</span></div>
     <div class="bar"><div style="width:${pct}%"></div></div>
   </div>
-  <div class="card" style="padding:0;overflow:hidden">
+  <div class="card" style="padding:0;overflow-x:auto">
     <div style="padding:16px 18px;border-bottom:1px solid var(--line)"><h3 style="font-size:15px">Requested documents</h3></div>
     <table>
       <tr><th>Document</th><th>Deadline</th><th>Urgency</th><th>Risk</th><th>Status</th><th></th></tr>
@@ -1224,7 +1459,7 @@ function reqDocPage(kind){
   <div class="ai mb14"><div class="sparkle">✨</div>
     <div><h3>Auto-chase is on</h3><p>HisabOne reminds clients until every document is uploaded — prioritised by urgency and risk. Received files attach here automatically.</p></div></div>
   ${formOpen[kind]?reqForm(kind):''}
-  <div class="card" style="padding:0;overflow:hidden">
+  <div class="card" style="padding:0;overflow-x:auto">
     <table>
       <tr><th>Client</th><th>Document requested</th><th>${tax?'Application':'Engagement'}</th><th>Deadline</th><th>Urgency</th><th>Risk</th><th>Status</th><th>File</th><th></th></tr>
       ${arr.map((r,i)=>reqRow(r,i,kind)).join('')}
@@ -1272,35 +1507,42 @@ function docRow(ic,n,c,m){const col={red:'var(--red)',amber:'var(--amber)',green
 function reqFromFirm(n,f,cls,s){return `<div class="drow"><div style="font-size:18px">📨</div>
   <div style="flex:1"><div class="dtitle">${n}</div><div class="dmeta">${f}</div></div>
   <span class="pill ${cls}">${s}</span></div>`;}
-function linkProc(title,sub,rows){return `<div class="card">
-  <div class="cardhead"><h3>${title}</h3><span class="pill p-gray">${sub}</span></div>
-  ${rows.map(r=>`<div class="drow"><div style="font-size:16px">📨</div>
-    <div style="flex:1"><div class="dtitle">${r[0]}</div></div>
-    <span class="pill ${r[1]}">${r[2]}</span></div>`).join('')}</div>`;}
+function vaultDocRow(d,i){return `<div class="drow"><div style="font-size:18px">📄</div>
+  <div style="flex:1"><div class="dtitle">${d.name}</div><div class="dmeta">Added ${d.added}</div></div>
+  <button class="iconbtn" title="Delete document" onclick="deleteVaultDoc(${i})">🗑</button></div>`;}
+function linkProcFromDocs(title,arr){
+  const doneCount=arr.filter(d=>d.state==='done').length;
+  return `<div class="card">
+  <div class="cardhead"><h3>${title}</h3><span class="pill p-gray">${doneCount} of ${arr.length} received</span></div>
+  ${arr.map(d=>`<div class="drow"><div style="font-size:16px">📨</div>
+    <div style="flex:1"><div class="dtitle">${d.name}</div></div>
+    <span class="pill ${d.state==='done'?'p-green':(d.urg==='Urgent'?'p-red':'p-amber')}">${d.state==='done'?'Uploaded ✓':d.due}</span></div>`).join('')}</div>`;
+}
 function checkRow(on,t){return `<div class="check"><div class="box ${on?'on':''}">${on?'✓':''}</div>
   <div style="${on?'':'color:var(--muted)'}">${t}</div></div>`;}
 function invField(t){return `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px">
   <span style="color:var(--accent);font-weight:700">✓</span><span>${t}</span></div>`;}
-function linkCard(ic,n,s,cls,d){return `<div class="card">
+function connCard(key,ic,n,d){
+  const on=connections[key];
+  return `<div class="card">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
     <div style="font-size:24px">${ic}</div><div style="flex:1"><h3 style="font-size:14.5px">${n}</h3></div>
-    <span class="pill ${cls}">${s}</span></div>
+    <span class="pill ${on?'p-green':'p-gray'}">${on?'Connected':'Not connected'}</span></div>
   <p class="muted" style="font-size:12.5px;margin-bottom:12px">${d}</p>
-  <button class="btn ghost sm">${s==='Connected'?'Manage':'Connect'}</button></div>`;}
+  <button class="btn ghost sm" onclick="toggleConnection('${key}')">${on?'Disconnect':'Connect'}</button></div>`;}
 function clientRow(n,m,cls,s){return `<div class="drow"><div class="avatar" style="background:var(--panel2);color:var(--accent)">${n[0]}</div>
   <div style="flex:1"><div class="dtitle">${n}</div><div class="dmeta">${m}</div></div>
   <span class="pill ${cls}">${s}</span></div>`;}
-function clientTableRow(n,trn,d,docs,cls,s){return `<tr class="clickable" onclick="go('taxdocs')">
-  <td><b>${n}</b></td><td class="muted">${trn}</td><td>${d}</td><td>${docs}</td>
-  <td><span class="pill ${cls}">${s}</span></td></tr>`;}
-function reqRow6(n,r,proc,due,rem,cls,s){return `<tr><td><b>${n}</b></td><td>${r}</td><td class="muted">${proc}</td>
-  <td>${due}</td><td>${rem}</td><td><span class="pill ${cls}">${s}</span></td></tr>`;}
-function planCard(n,d,price,per,feats,hot){return `<div class="card" style="${hot?'border:2px solid var(--accent);position:relative':''}">
-  ${hot?'<span class="pill p-teal" style="position:absolute;top:-11px;left:18px">Most popular</span>':''}
-  <h3 style="font-size:16px">${n}</h3><p class="muted" style="font-size:12.5px;margin-bottom:12px">${d}</p>
-  <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">${price}</span><span class="muted">${per}</span></div>
-  ${feats.map(f=>`<div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>${f}</div>`).join('')}
-  <button class="btn ${hot?'':'ghost'}" style="width:100%;margin-top:14px">Choose ${n}</button></div>`;}
+
+/* ---------- SESSION RESUME (front-end only — no server) ---------- */
+(function initSession(){
+  const sid=localStorage.getItem(LS_SESSION);
+  if(sid){
+    const acc=loadAccounts().find(a=>a.id===sid);
+    if(acc){ loginAs(acc); return; }
+  }
+  switchView('signin');
+})();
 </script>
 </body>
 </html>

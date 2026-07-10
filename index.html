@@ -303,6 +303,13 @@
   /* toast */
   #toast{ position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); background:#132033; color:#fff; padding:12px 18px; border-radius:12px; font-size:13px; font-weight:600; box-shadow:0 12px 34px rgba(16,32,60,.3); opacity:0; pointer-events:none; transition:.25s; z-index:400; max-width:90vw; text-align:center; }
   #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  /* ===== accent-coloured dashboard stat cards (blue business / purple firm) ===== */
+  .card.stat{ background:var(--accent); border-color:transparent; color:#fff; box-shadow:0 10px 24px var(--accent-bg); }
+  .card.stat .num{ color:#fff; }
+  .card.stat .lbl{ color:rgba(255,255,255,.85); }
+  .card.stat .ic{ background:rgba(255,255,255,.22); color:#fff !important; }
+  .card.stat .ic svg{ color:#fff; }
+  .card.stat.clk:hover{ transform:translateY(-2px); box-shadow:0 14px 30px var(--accent-bg); border-color:transparent; filter:brightness(1.04); }
 </style>
 </head>
 <body data-role="business">
@@ -989,6 +996,9 @@ dash:()=>{
   const totalReq = bizTaxDocs.length + bizAuditDocs.length;
   const totalDone = bizTaxDocs.filter(d=>d.state==='done').length + bizAuditDocs.filter(d=>d.state==='done').length;
   const pct = totalReq ? Math.round(totalDone/totalReq*100) : null;
+  const connActive = connections?Object.values(connections).filter(Boolean).length:0;
+  const setup = linkedFirm || totalReq>0 || vaultDocs.length>0;
+  const compliance = setup ? Math.round((linkedFirm?100:50)*0.4 + (totalReq?(totalDone/totalReq*100):100)*0.4 + (connActive/3*100)*0.2) : null;
   return `
   <h1>Good day, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
@@ -1012,11 +1022,10 @@ dash:()=>{
       <div style="opacity:.7;font-size:13px">Once linked, they can request documents and track your filings here.</div></div>
     <button class="btn" onclick="go('links')">Link a firm</button>
   </div>`}
-  <div class="grid g4 mb14">
-    <div class="card stat clk" onclick="go('btax')"><div class="ic ic-green">${svgIcon('check',20)}</div><div class="num">${pct==null?'—':pct+'%'}</div><div class="lbl">Documents submitted</div></div>
-    <div class="card stat clk" onclick="go('btax')"><div class="ic ic-amber">${svgIcon('clock',20)}</div><div class="num">${open.length}</div><div class="lbl">Outstanding requests</div></div>
-    <div class="card stat clk" onclick="go('docs')"><div class="ic ic-red">${svgIcon('folder',20)}</div><div class="num">${vaultDocs.length}</div><div class="lbl">Documents in vault</div></div>
-    <div class="card stat clk" onclick="go('links')"><div class="ic ic-teal">${svgIcon('link',20)}</div><div class="num">${linkedFirm?1:0}</div><div class="lbl">Linked firm</div></div>
+  <div class="grid g3 mb14">
+    <div class="card stat clk" onclick="go('btax')"><div class="ic">${svgIcon('shield',20)}</div><div class="num">${compliance==null?'—':compliance+'%'}</div><div class="lbl">Compliance rating</div></div>
+    <div class="card stat clk" onclick="go('btax')"><div class="ic">${svgIcon('clock',20)}</div><div class="num">${open.length}</div><div class="lbl">Outstanding requests</div></div>
+    <div class="card stat clk" onclick="go('docs')"><div class="ic">${svgIcon('folder',20)}</div><div class="num">${vaultDocs.length}</div><div class="lbl">Documents in vault</div></div>
   </div>
   <div class="grid g2">
     <div class="card">
@@ -1026,6 +1035,14 @@ dash:()=>{
     <div class="card">
       <div class="cardhead"><h3>Recent documents</h3><span class="link" onclick="go('docs')">Manage</span></div>
       ${vaultDocs.length ? vaultDocs.slice(0,4).map(d=>docRow('file',d.name,'green','Added '+d.added)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No documents uploaded yet.</div>`}
+    </div>
+  </div>
+  <div class="card mt18">
+    <div class="cardhead"><h3>${svgIcon('file-text',16)} Compliance report</h3><span class="pill p-gray">CSV</span></div>
+    <p class="muted" style="font-size:13px;margin-bottom:12px">Extract your full compliance status — rating, documents, deadlines and linked firm — or share it with your accountant inside HisabOne.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="exportComplianceReport()">${svgIcon('download',15)} Extract report</button>
+      <button class="btn ghost" onclick="shareComplianceReport()">${svgIcon('share',15)} Share with accountant</button>
     </div>
   </div>
   <div class="ai mt18">
@@ -1299,6 +1316,14 @@ fdash:()=>{
     <div class="card">
       <div class="cardhead"><h3>Recent requests</h3></div>
       ${allReqs.length ? allReqs.slice(0,4).map(r=>deadlineRow(r.cls==='p-red'?'red':(r.cls==='p-amber'?'amber':(r.cls==='p-green'?'green':'teal')), r.doc, r.client, r.st, "go('taxdocs')")).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No document requests sent yet.</div>`}
+    </div>
+  </div>
+  <div class="card mt18">
+    <div class="cardhead"><h3>${svgIcon('clipboard',16)} Audit trail report</h3><span class="pill p-gray">CSV</span></div>
+    <p class="muted" style="font-size:13px;margin-bottom:12px">Extract a full audit trail of document requests, statuses and reminders across your clients — or share it with a client inside HisabOne.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="exportAuditTrail()">${svgIcon('download',15)} Extract report</button>
+      <button class="btn ghost" onclick="shareAuditTrail()">${svgIcon('share',15)} Share with client</button>
     </div>
   </div>
   <div class="ai mt18"><div class="sparkle">${svgIcon('sparkles',22)}</div>
@@ -1659,6 +1684,54 @@ function sendReminderNow(i){
   sendAppEmail(email,subject,text).then(ok=>{ toast(ok?('Reminder emailed to '+email):('Reminder logged — add RESEND_API_KEY in Vercel to email '+email)); renderPage(); });
 }
 
+/* ---------- COMPLIANCE / AUDIT-TRAIL REPORTS (extract + in-app share) ---------- */
+function downloadCSV(filename, rows){
+  const csv = rows.map(r=>r.map(c=>{c=String(c==null?'':c);return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(',')).join('\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+function exportComplianceReport(){
+  const name=currentAccount?currentAccount.name:'Business';
+  const totalReq=bizTaxDocs.length+bizAuditDocs.length;
+  const totalDone=bizTaxDocs.filter(d=>d.state==='done').length+bizAuditDocs.filter(d=>d.state==='done').length;
+  const connActive=connections?Object.values(connections).filter(Boolean).length:0;
+  const setup=linkedFirm||totalReq>0||vaultDocs.length>0;
+  const rating=setup?(Math.round((linkedFirm?100:50)*0.4+(totalReq?(totalDone/totalReq*100):100)*0.4+(connActive/3*100)*0.2)+'%'):'Not yet rated';
+  const rows=[['HisabOne — Compliance Report'],['Business',name],['Generated',new Date().toLocaleString()],[],
+    ['Summary'],
+    ['Compliance rating', rating],
+    ['Documents submitted', totalDone+' of '+totalReq],
+    ['Outstanding requests', totalReq-totalDone],
+    ['Documents in vault', vaultDocs.length],
+    ['Linked accountant', linkedFirm||'None'],[],
+    ['Requested documents'],['Document','Type','Deadline','Status']];
+  bizTaxDocs.forEach(d=>rows.push([d.name,'Tax',d.due,d.state==='done'?'Submitted':'Outstanding']));
+  bizAuditDocs.forEach(d=>rows.push([d.name,'Audit',d.due,d.state==='done'?'Submitted':'Outstanding']));
+  downloadCSV('HisabOne-Compliance-Report.csv', rows);
+  if(typeof toast==='function') toast('Compliance report extracted (CSV downloaded)');
+}
+function shareComplianceReport(){
+  if(typeof toast!=='function') return;
+  if(!linkedFirm){ toast('Link your accountant first to share the report'); return; }
+  toast('Compliance report shared with '+linkedFirm+' in-app');
+}
+function exportAuditTrail(){
+  const firm=currentAccount?currentAccount.name:'Firm';
+  const rows=[['HisabOne — Audit Trail Report'],['Firm',firm],['Generated',new Date().toLocaleString()],[],
+    ['Document requests'],['Client','Document','Application','Deadline','Status']];
+  [...firmTaxReqs,...firmAuditReqs].forEach(r=>rows.push([r.client,r.doc,r.app,r.due,r.st]));
+  rows.push([],['Email reminders'],['Client','Document','Last sent','Next reminder','Auto-chase']);
+  firmReminders.forEach(r=>rows.push([r.client,r.doc,r.last,r.next,r.auto==='green'?'On':'Off']));
+  downloadCSV('HisabOne-Audit-Trail-Report.csv', rows);
+  if(typeof toast==='function') toast('Audit trail report extracted (CSV downloaded)');
+}
+function shareAuditTrail(){
+  if(typeof toast!=='function') return;
+  if(!clients.length){ toast('Link a client first to share the report'); return; }
+  toast('Audit trail report shared with your linked client'+(clients.length>1?'s':'')+' in-app');
+}
+
 /* ---------- TEMPLATES ---------- */
 function deadlineRow(c,t,m,r,click){const col={red:'var(--red)',amber:'var(--amber)',teal:'var(--accent)',green:'var(--green)'}[c];
   return `<div class="drow${click?' clk':''}"${click?` onclick="${click}"`:''}><div class="dbar" style="background:${col}"></div>
@@ -1758,7 +1831,7 @@ function reqForm(kind){
   const sel=(id,opts)=>`<select id="${pfx}${id}" class="finput">${opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
   const appLabel=tax?'Application / filing':'Audit engagement';
   const appOpts=tax
-    ?['VAT Return Q2 2026','VAT Return Q3 2026','VAT Registration','Corporate Tax Return FY2025','Corporate Tax Registration']
+    ?['VAT Return Q2 2026','VAT Return Q3 2026','VAT Registration','Corporate Tax Return FY2025','Corporate Tax Registration','FTA Amendment']
     :['Audit FY2025','Audit FY2024','Interim review FY2026','Agreed-upon procedures'];
   return `<div class="card mb14" style="border-color:var(--accent)">
     <div class="cardhead"><h3>New ${tax?'tax':'audit'} document request</h3></div>

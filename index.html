@@ -199,6 +199,12 @@
   .lf-btn{width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px;color:#06122a;background:linear-gradient(135deg,#5fe0d0,#56a8f5,#a472f0)}
   .lf-btn:hover{filter:brightness(1.07)}
   .lfield{margin-bottom:12px}
+  .pw-wrap{position:relative}
+  .pw-wrap .finput{width:100%;padding-right:44px}
+  .pw-eye{position:absolute;top:50%;right:6px;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:15px;line-height:1;opacity:.55;padding:6px;border-radius:8px;color:inherit}
+  .pw-eye:hover{opacity:1;background:rgba(255,255,255,.06)}
+  .pw-eye.on{opacity:1}
+  .pw-eye svg{display:block}
   @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}
     .sidebar{width:64px}.navitem span.txt,.navlabel{display:none}
     .main{padding:22px 18px}}
@@ -226,6 +232,77 @@
     .stat .num{font-size:22px}
     .stat .lbl{font-size:11.5px}
   }
+
+  /* ===================== LIGHT THEME (polished) ===================== */
+  :root{
+    --text:#132033; --muted:#5c6b82; --line:#e6ebf2;
+    --panel:#ffffff; --panel2:#f4f7fb;
+    --green:#12a150; --amber:#c47f17; --red:#e03b52;
+    --green-bg:rgba(18,161,80,.12); --amber-bg:rgba(196,127,23,.14); --red-bg:rgba(224,59,82,.12);
+    --bg1:#eef2f8; --bg2:#f7fafd; --accent:#0d9488; --accent-d:#0b7c72;
+    --accent-bg:rgba(13,148,136,.12); --topbar:rgba(255,255,255,.85);
+  }
+  body[data-role="business"]{
+    --bg1:#eef3fa; --bg2:#f7fafd; --accent:#0f8fb0; --accent-d:#0b7290;
+    --accent-bg:rgba(15,143,176,.12); --topbar:rgba(255,255,255,.88);
+  }
+  body[data-role="firm"]{
+    --bg1:#f2eefb; --bg2:#faf8fe; --accent:#7c3aed; --accent-d:#6a2fd0;
+    --accent-bg:rgba(124,58,237,.11); --topbar:rgba(255,255,255,.88);
+  }
+  body{ background:radial-gradient(1100px 640px at 82% -12%, #ffffff, var(--bg1) 62%), var(--bg1); }
+  .card{ box-shadow:0 1px 2px rgba(16,32,60,.04),0 8px 24px rgba(16,32,60,.05); }
+  .topbar{ color:var(--text); box-shadow:0 1px 0 var(--line); }
+  .logout:hover{ color:var(--accent); border-color:var(--accent); }
+  .avatar{ color:#fff; }
+  .btn{ color:#fff; }
+  .btn svg{ vertical-align:-2px; }
+  .btn.ghost{ color:var(--text); background:#fff; }
+  .btn.ghost:hover{ background:var(--panel2); }
+  .seg button.on{ color:#fff; }
+  .stepnum{ color:#fff; }
+  .stepnum.done{ color:#fff; }
+  .navitem .badge{ color:#fff; }
+  .box{ color:#fff; }
+  .bar{ background:#e7ecf3; }
+  .p-gray{ background:#eef2f7; color:var(--muted); }
+  .pw-eye:hover{ background:rgba(16,32,60,.06); }
+  .modal{ background:#fff; box-shadow:0 30px 80px rgba(16,32,60,.22); }
+  .finput:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-bg); }
+  .navitem .ic{ display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; }
+  .navitem .ic svg{ width:18px; height:18px; }
+  .stat .ic{ color:var(--accent); }
+  .stat .ic svg{ width:20px; height:20px; }
+  .ic-amber{ color:var(--amber); } .ic-red{ color:var(--red); } .ic-green{ color:var(--green); } .ic-teal{ color:var(--accent); }
+  .ai .sparkle{ color:var(--accent); display:inline-flex; }
+  .stat.clk{ cursor:pointer; transition:.15s; }
+  .stat.clk:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(16,32,60,.10); border-color:var(--accent); }
+  .drow.clk{ cursor:pointer; }
+  .drow.clk:hover{ background:var(--panel2); border-radius:8px; }
+  /* login light */
+  #login{ background:linear-gradient(135deg,#eef3fb 0%,#f4f6fd 42%,#f7f2fd 100%); }
+  .ltopbar{ border-bottom:1px solid var(--line); }
+  .ltopbar-logo{ color:var(--text); } .ltopbar-logo .one{ color:var(--accent); }
+  .ltab{ color:var(--muted); }
+  .ltab:hover{ color:var(--text); background:rgba(16,32,60,.05); }
+  .ltab.on{ color:var(--text); background:rgba(16,32,60,.08); }
+  .lviewhead h1{ color:var(--text); } .lviewhead p{ color:var(--muted); }
+  .lsectlabel{ color:var(--muted); }
+  .llogo-word{ color:var(--text); } .llogo-tag{ color:var(--muted); } .lprompt{ color:var(--muted); }
+  .lportal-card{ background:#fff; backdrop-filter:none; box-shadow:0 1px 2px rgba(16,32,60,.04),0 10px 30px rgba(16,32,60,.06); }
+  .lportal-card:hover{ background:#fff; box-shadow:0 16px 42px rgba(16,32,60,.12); transform:translateY(-3px); }
+  .lportal-card.biz{ border-color:rgba(15,143,176,.35); }
+  .lportal-card.firm{ border-color:rgba(124,58,237,.32); }
+  .lportal-card h2{ color:var(--text); } .lportal-card p{ color:var(--muted); }
+  .lpc-ic.biz{ background:rgba(15,143,176,.12); color:#0f8fb0; }
+  .lpc-ic.firm{ background:rgba(124,58,237,.12); color:#7c3aed; }
+  .lportal-label.biz{ color:#0f7a97; } .lportal-label.firm{ color:#6a2fd0; }
+  .enter.biz{ color:#0f8fb0; } .enter.firm{ color:#7c3aed; }
+  .finput{ background:#fff; }
+  .lf-btn{ color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-d)); box-shadow:0 8px 22px rgba(13,148,136,.26); }
+  /* toast */
+  #toast{ position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); background:#132033; color:#fff; padding:12px 18px; border-radius:12px; font-size:13px; font-weight:600; box-shadow:0 12px 34px rgba(16,32,60,.3); opacity:0; pointer-events:none; transition:.25s; z-index:400; max-width:90vw; text-align:center; }
+  #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 </head>
 <body data-role="business">
@@ -283,10 +360,17 @@
     <div class="lportal-card" id="lfCard" style="cursor:default">
       <div class="lportal-label biz" id="lfLabel">Business Portal</div>
       <h2 id="lfTitle" style="margin-bottom:18px">Business sign in</h2>
-      <div class="lfield"><label class="flabel">Email</label><input id="lfEmail" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
-      <div class="lfield"><label class="flabel">Password</label><input id="lfPassword" class="finput" type="password" placeholder="Your password" autocomplete="current-password"></div>
+      <form id="loginFormEl" onsubmit="doLogin();return false" autocomplete="on">
+      <div class="lfield"><label class="flabel">Email</label><input id="lfEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
+      <div class="lfield"><label class="flabel">Password</label>
+        <div class="pw-wrap">
+          <input id="lfPassword" name="password" class="finput" type="password" placeholder="Your password" autocomplete="current-password">
+          <button type="button" class="pw-eye" onclick="togglePw(this,'lfPassword')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
       <div id="lfErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
-      <button class="lf-btn" onclick="doLogin()">Sign in →</button>
+      <button type="submit" class="lf-btn">Sign in →</button>
+      </form>
       <div style="text-align:center;margin-top:15px"><span class="link" onclick="backToPortals()">← Choose a different portal</span></div>
       <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">New here? <span class="link" onclick="switchView('signup')">Create an account</span></div>
     </div>
@@ -331,16 +415,28 @@
     <div class="lportal-card" id="sfCard" style="cursor:default">
       <div class="lportal-label biz" id="sfLabel">Business Portal</div>
       <h2 id="sfTitle" style="margin-bottom:18px">Create your business account</h2>
-      <div class="lfield"><label class="flabel" id="sfNameLabel">Company name</label><input id="sfName" class="finput" placeholder="e.g. Falcon Trading LLC"></div>
-      <div class="lfield"><label class="flabel">Email</label><input id="sfEmail" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
-      <div class="lfield"><label class="flabel">Password</label><input id="sfPassword" class="finput" type="password" placeholder="At least 8 characters" autocomplete="new-password"></div>
-      <div class="lfield"><label class="flabel">Confirm password</label><input id="sfConfirm" class="finput" type="password" placeholder="Re-enter password" autocomplete="new-password"></div>
+      <form id="signupFormEl" onsubmit="doSignup();return false" autocomplete="on">
+      <div class="lfield"><label class="flabel" id="sfNameLabel">Company name</label><input id="sfName" name="organization" class="finput" placeholder="e.g. Falcon Trading LLC" autocomplete="organization"></div>
+      <div class="lfield"><label class="flabel">Email</label><input id="sfEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
+      <div class="lfield"><label class="flabel">Password</label>
+        <div class="pw-wrap">
+          <input id="sfPassword" name="new-password" class="finput" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+          <button type="button" class="pw-eye" onclick="togglePw(this,'sfPassword')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+      <div class="lfield"><label class="flabel">Confirm password</label>
+        <div class="pw-wrap">
+          <input id="sfConfirm" class="finput" type="password" placeholder="Re-enter password" autocomplete="new-password">
+          <button type="button" class="pw-eye" onclick="togglePw(this,'sfConfirm')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
       <div class="lfield" style="display:flex;align-items:flex-start;gap:9px">
         <input id="sfTerms" type="checkbox" style="margin-top:3px;flex-shrink:0">
         <label for="sfTerms" style="font-size:12.5px;color:rgba(255,255,255,.6)">I agree to the Terms of Service and Privacy Policy</label>
       </div>
       <div id="sfErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
-      <button class="lf-btn" onclick="doSignup()">Create account →</button>
+      <button type="submit" class="lf-btn">Create account →</button>
+      </form>
       <div style="text-align:center;margin-top:15px"><span class="link" onclick="backToSignupPortals()">← Choose a different portal</span></div>
       <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">Already have an account? <span class="link" onclick="switchView('signin')">Sign in</span></div>
     </div>
@@ -361,9 +457,9 @@
         <p style="color:rgba(255,255,255,.62);font-size:14.5px;line-height:1.75">We believe compliance should be simple, transparent and automated. Our vision is to remove manual follow-up and human error from tax and audit work across the UAE — using AI to prepare filings, track every deadline, and keep businesses and their accountants perfectly in sync, so a penalty is never a surprise.</p>
       </div>
       <div class="grid g3">
-        <div class="lportal-card" style="cursor:default"><div style="font-size:24px;margin-bottom:8px">🔗</div><h3 style="color:#fff;font-size:15px;margin-bottom:5px">Connected</h3><p style="color:rgba(255,255,255,.55);font-size:13px">Businesses and accountants linked securely — no more email or WhatsApp.</p></div>
-        <div class="lportal-card" style="cursor:default"><div style="font-size:24px;margin-bottom:8px">✨</div><h3 style="color:#fff;font-size:15px;margin-bottom:5px">AI-automated</h3><p style="color:rgba(255,255,255,.55);font-size:13px">Filings pre-filled, documents auto-chased, deadlines tracked for you.</p></div>
-        <div class="lportal-card" style="cursor:default"><div style="font-size:24px;margin-bottom:8px">🔒</div><h3 style="color:#fff;font-size:15px;margin-bottom:5px">Secure</h3><p style="color:rgba(255,255,255,.55);font-size:13px">Bank-grade encryption, UAE Pass support, and verified unlinking.</p></div>
+        <div class="lportal-card" style="cursor:default"><div style="margin-bottom:8px;color:var(--accent)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M10.5 6.5l1-1a3.5 3.5 0 0 1 5 5l-1 1"/><path d="M13.5 17.5l-1 1a3.5 3.5 0 0 1-5-5l1-1"/></svg></div><h3 style="color:#fff;font-size:15px;margin-bottom:5px">Connected</h3><p style="color:rgba(255,255,255,.55);font-size:13px">Businesses and accountants linked securely — no more email or WhatsApp.</p></div>
+        <div class="lportal-card" style="cursor:default"><div style="margin-bottom:8px;color:var(--accent)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.7 4.6L18 9.3l-4.3 1.7L12 15.6 10.3 11 6 9.3l4.3-1.7z"/><path d="M18 14l.8 2 2 .8-2 .8L18 20l-.8-2-2-.8 2-.8z"/></svg></div><h3 style="color:#fff;font-size:15px;margin-bottom:5px">AI-automated</h3><p style="color:rgba(255,255,255,.55);font-size:13px">Filings pre-filled, documents auto-chased, deadlines tracked for you.</p></div>
+        <div class="lportal-card" style="cursor:default"><div style="margin-bottom:8px;color:var(--accent)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10" width="13" height="9.5" rx="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3"/></svg></div><h3 style="color:#fff;font-size:15px;margin-bottom:5px">Secure</h3><p style="color:rgba(255,255,255,.55);font-size:13px">Bank-grade encryption, UAE Pass support, and verified unlinking.</p></div>
       </div>
     </div>
   </div>
@@ -378,64 +474,57 @@
       <div class="grid g3" style="margin-bottom:30px">
         <div class="card" style="cursor:default">
           <h3 style="font-size:16px">Starter</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a single small business</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 49</span><span class="muted">/mo</span></div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>FTA filing reminders</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Document vault &amp; expiry alerts</div>
+          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a small business</p>
+          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 199</span><span class="muted">/mo</span></div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Corporate Tax registration &amp; application</div>
           <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>AI Assist &amp; tax guides</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Link 1 accountant</div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Document vault &amp; expiry alerts</div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Link your accountant</div>
           <button class="btn ghost" style="width:100%;margin-top:14px">Choose Starter</button>
         </div>
         <div class="card" style="cursor:default;border:2px solid var(--accent);position:relative">
           <span class="pill p-teal" style="position:absolute;top:-11px;left:18px">Most popular</span>
           <h3 style="font-size:16px">Growth</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For growing companies</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 99</span><span class="muted">/mo</span></div>
+          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a growing business</p>
+          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 299</span><span class="muted">/mo</span></div>
           <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Everything in Starter</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Auto-prepared VAT returns</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>VAT calculator</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Audit document tracking</div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>All VAT &amp; Corporate Tax filings</div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>VAT &amp; CT calculator</div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Automated compliance check</div>
           <button class="btn" style="width:100%;margin-top:14px">Choose Growth</button>
         </div>
         <div class="card" style="cursor:default">
           <h3 style="font-size:16px">Business Pro</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">Full automation</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 149</span><span class="muted">/mo</span></div>
+          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a larger business</p>
+          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 499</span><span class="muted">/mo</span></div>
           <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Everything in Growth</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Corporate tax filing</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Unlimited linked accounts</div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Full audit processes &amp; tracking</div>
+          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Link an external auditor</div>
           <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Priority support</div>
           <button class="btn ghost" style="width:100%;margin-top:14px">Choose Pro</button>
         </div>
       </div>
 
-      <div class="lsectlabel">For Accountants / Audit Firms</div>
-      <div class="grid g2" style="margin-bottom:10px">
-        <div class="card" style="cursor:default">
-          <h3 style="font-size:16px">Practice</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For accounting &amp; audit firms</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 12</span><span class="muted">/client / mo</span></div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Link unlimited clients</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Client database with risk &amp; urgency</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Document requests &amp; auto-chase</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Email reminders</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>VAT calculator + Excel export</div>
-          <button class="btn ghost" style="width:100%;margin-top:14px">Choose Practice</button>
-        </div>
-        <div class="card" style="cursor:default;border:2px solid var(--accent);position:relative">
-          <span class="pill p-teal" style="position:absolute;top:-11px;left:18px">Most popular</span>
-          <h3 style="font-size:16px">Practice Plus</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For multi-team firms</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 19</span><span class="muted">/client / mo</span></div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Everything in Practice</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>White-label client portal</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Team seats &amp; roles</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Audit workflow tools</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Priority support</div>
-          <button class="btn" style="width:100%;margin-top:14px">Choose Practice Plus</button>
+      <div class="lsectlabel">For Accountants &amp; Audit Firms</div>
+      <div class="card" style="cursor:default;margin-bottom:10px">
+        <div style="display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:space-between">
+          <div style="flex:1;min-width:240px">
+            <h3 style="font-size:16px">Partner Programme</h3>
+            <p class="muted" style="font-size:12.5px;margin-bottom:12px">For accounting &amp; audit firms</p>
+            <div style="margin-bottom:8px"><span style="font-size:26px;font-weight:700">Free</span><span class="muted"> to join</span></div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6">Plus <b style="color:var(--text)">10% recurring commission</b> on every client subscription you bring — your clients become a low-cost distribution channel, and the revenue compounds as your book grows.</div>
+          </div>
+          <div style="flex:1;min-width:240px">
+            <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Link unlimited clients</div>
+            <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Client database with risk &amp; urgency</div>
+            <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Document requests &amp; AI auto-chase</div>
+            <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>VAT &amp; CT calculator + Excel export</div>
+            <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>AI Assist for practitioners</div>
+            <button class="btn" style="margin-top:14px">Become a partner</button>
+          </div>
         </div>
       </div>
-      <div class="muted" style="text-align:center;font-size:12px;padding:6px 0 10px">Volume discounts available for firms with 50+ clients. Prices exclude 5% VAT.</div>
+      <div class="muted" style="text-align:center;font-size:12px;padding:6px 0 10px">Prices exclude 5% VAT. A single avoided AED 1,000 late-filing penalty covers five months of the Starter plan.</div>
     </div>
   </div>
 </div>
@@ -449,7 +538,7 @@
     </div>
     <div class="spacer"></div>
     <div class="topuser">
-      <span style="font-size:18px">🔔</span>
+      <span style="display:inline-flex;color:var(--muted)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4.5 1.8 5.8 1.8 5.8H4.2S6 13.5 6 9"/><path d="M10 19a2 2 0 0 0 4 0"/></svg></span>
       <div class="avatar" id="avatar">?</div>
       <div><div id="uname" style="font-weight:600">Your account</div>
         <div style="font-size:11px;opacity:.6" id="urole">Business account</div></div>
@@ -569,6 +658,12 @@ function submitReq(kind){
     localStorage.setItem(dataKey(bizAcc.id), JSON.stringify(bd));
   }
   formOpen[kind]=false;renderPage();
+  if(bizAcc && bizAcc.email){
+    const subject='Document requested: '+obj.doc;
+    const text='Hello '+obj.client+',\n\n'+(currentAccount?currentAccount.name:'Your accountant')+' has requested a document via HisabOne.\n\nDocument: '+obj.doc+'\nFor: '+obj.app+'\nDeadline: '+obj.due+'\nUrgency: '+obj.urg+'\n\nPlease sign in to your HisabOne portal and upload it securely — no email attachments needed.\n\nThank you.';
+    toast('Sending request to '+bizAcc.email+'…');
+    sendAppEmail(bizAcc.email,subject,text).then(ok=>toast(ok?('Request emailed to '+bizAcc.email):('Request saved — add RESEND_API_KEY in Vercel to email '+bizAcc.email)));
+  } else { toast('Request created. Link this client to a HisabOne account to email them automatically.'); }
 }
 
 /* firm: email reminders */
@@ -577,8 +672,11 @@ let reminderFormOpen=false;
 function toggleReminderForm(){reminderFormOpen=!reminderFormOpen;renderPage();}
 function submitReminder(){
   const g=id=>document.getElementById(id).value;
-  firmReminders.unshift({client:g('remClient'),doc:g('remDoc')||'Document',last:'Just scheduled',next:g('remWhen'),auto:g('remAuto')==='On'?'green':'gray'});
+  const rec={client:g('remClient'),doc:g('remDoc')||'Document',last:'Just scheduled',next:g('remWhen'),auto:g('remAuto')==='On'?'green':'gray'};
+  firmReminders.unshift(rec);
+  const sendNow = g('remWhen')==='Immediately' || rec.auto==='green';
   reminderFormOpen=false;renderPage();
+  if(sendNow) sendReminderNow(0);
 }
 
 /* business: documents requested by accountant + working upload */
@@ -675,6 +773,17 @@ function switchView(v){
     const view=document.getElementById('view'+n); if(view) view.style.display=(n.toLowerCase()===v)?'flex':'none';
     const tab=document.getElementById('tab'+n); if(tab) tab.classList.toggle('on', n.toLowerCase()===v);
   });
+}
+
+/* ---------- SHOW / HIDE PASSWORD ---------- */
+function togglePw(btn,id){
+  const inp=document.getElementById(id); if(!inp) return;
+  const reveal = inp.type==='password';
+  inp.type = reveal ? 'text' : 'password';
+  btn.classList.toggle('on', reveal);
+  btn.innerHTML = reveal ? svgIcon('eye-off',17) : svgIcon('eye',17);
+  const lbl = reveal ? 'Hide password' : 'Show password';
+  btn.setAttribute('aria-label', lbl); btn.setAttribute('title', lbl);
 }
 
 /* ---------- SIGN IN ---------- */
@@ -778,24 +887,64 @@ function logout(){
   window.scrollTo(0,0);
 }
 
+/* ---------- SVG ICON SYSTEM (replaces emoji) ---------- */
+const IC = {
+  home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+  sparkles:'<path d="M12 3l1.7 4.6L18 9.3l-4.3 1.7L12 15.6 10.3 11 6 9.3l4.3-1.7z"/><path d="M18 14l.8 2 2 .8-2 .8L18 20l-.8-2-2-.8 2-.8z"/>',
+  'file-text':'<path d="M7 2h7l4 4v16H7z"/><path d="M14 2v4h4"/><path d="M10 12h5M10 16h5M10 8h2"/>',
+  clipboard:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M9 10h6M9 14h4"/>',
+  calc:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01M8.5 14.5h.01M12 14.5h.01M15.5 14.5h.01M8.5 18h7"/>',
+  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  link:'<path d="M9.5 14.5l5-5"/><path d="M10.5 6.5l1-1a3.5 3.5 0 0 1 5 5l-1 1"/><path d="M13.5 17.5l-1 1a3.5 3.5 0 0 1-5-5l1-1"/>',
+  users:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.6 6-5.6s6 2.3 6 5.6"/><path d="M16 5.3a3.2 3.2 0 0 1 0 6.1M17.6 20c0-2.7-1-4.6-2.6-5.6"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/>',
+  inbox:'<path d="M4 13l2.2-8h11.6L20 13"/><path d="M4 13v6h16v-6"/><path d="M4 13h5l1 2h4l1-2h5"/>',
+  refresh:'<path d="M4 9a8 8 0 0 1 13.5-3L20 8"/><path d="M20 4v4h-4"/><path d="M20 15a8 8 0 0 1-13.5 3L4 16"/><path d="M4 20v-4h4"/>',
+  building:'<path d="M5 21V5a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v16"/><path d="M14 10h3a2 2 0 0 1 2 2v9"/><path d="M8 7h2M8 11h2M8 15h2"/><path d="M3 21h18"/>',
+  file:'<path d="M7 2h7l4 4v16H7z"/><path d="M14 2v4h4"/>',
+  'doc-new':'<path d="M7 2h6l5 5v13a2 2 0 0 1-2 2H7z"/><path d="M13 2v5h5"/><path d="M12 11v6M9 14h6"/>',
+  refund:'<circle cx="12" cy="12" r="9"/><path d="M15 9.3c-.7-.9-1.8-1.3-3-1.3-1.9 0-3 .9-3 2s1 1.5 3 2 3 1 3 2.1-1.1 2-3 2c-1.2 0-2.3-.5-3-1.4"/><path d="M12 6.2v11.6"/>',
+  shield:'<rect x="5.5" y="10" width="13" height="9.5" rx="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3"/>',
+  trash:'<path d="M4 7h16"/><path d="M9.5 7V5h5v2"/><path d="M6.5 7l1 13h9l1-13"/><path d="M10 11v6M14 11v6"/>',
+  paperclip:'<path d="M19 11l-7.5 7.5a4.5 4.5 0 0 1-6.4-6.4l7.7-7.7a3 3 0 0 1 4.3 4.3l-7.6 7.6a1.5 1.5 0 0 1-2.2-2.1l6.8-6.8"/>',
+  download:'<path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 20h14"/>',
+  share:'<path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>',
+  warn:'<path d="M12 3.5l9 15.5H3z"/><path d="M12 9.5v4.5"/><path d="M12 17h.01"/>',
+  success:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',
+  bank:'<path d="M3 9.5l9-5 9 5"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 21h18"/>',
+  chart:'<path d="M5 21V11M12 21V4M19 21v-7"/><path d="M3 21h18"/>',
+  fta:'<path d="M3 9.5l9-5 9 5"/><path d="M5 10v7M9 10v7M15 10v7M19 10v7"/><path d="M3 20.5h18M4 9.5h16"/>',
+  bot:'<rect x="5" y="8" width="14" height="11" rx="2.5"/><path d="M12 8V4.5M12 4.5h-1.5"/><circle cx="9.3" cy="13" r="1.1"/><circle cx="14.7" cy="13" r="1.1"/><path d="M9.5 16.5h5"/>',
+  bell:'<path d="M6 9a6 6 0 0 1 12 0c0 4.5 1.8 5.8 1.8 5.8H4.2S6 13.5 6 9"/><path d="M10 19a2 2 0 0 0 4 0"/>',
+  check:'<path d="M20 6L9 17l-5-5"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v4.8l3 1.8"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+  'eye-off':'<path d="M3 3l18 18"/><path d="M10.6 6.1A9.7 9.7 0 0 1 12 6c6.5 0 10 6 10 6a15 15 0 0 1-3.4 3.9M6.5 7.9A15 15 0 0 0 2 12s3.5 7 10 7a9.5 9.5 0 0 0 4-.9"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+  _default:'<circle cx="12" cy="12" r="8"/>'
+};
+function svgIcon(n,sz){ sz=sz||18; var p=IC[n]||IC._default;
+  return '<svg viewBox="0 0 24 24" width="'+sz+'" height="'+sz+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'; }
+
 /* ---------- NAV CONFIG ---------- */
 const NAV = {
   business:[
-    {id:'dash', ic:'🏠', label:'Dashboard'},
-    {id:'guides', ic:'✨', label:'AI Assist'},
-    {id:'btax', ic:'🧾', label:'Tax Documents'},
-    {id:'baudit', ic:'📋', label:'Audit Documents'},
-    {id:'bvat', ic:'🧮', label:'VAT Calculator'},
-    {id:'docs', ic:'📂', label:'Documents'},
-    {id:'links', ic:'🔗', label:'Linked Firm'},
+    {id:'dash', ic:'home', label:'Dashboard'},
+    {id:'guides', ic:'sparkles', label:'AI Assist'},
+    {id:'btax', ic:'file-text', label:'Tax Documents'},
+    {id:'baudit', ic:'clipboard', label:'Audit Documents'},
+    {id:'bvat', ic:'calc', label:'VAT Calculator'},
+    {id:'docs', ic:'folder', label:'Documents'},
+    {id:'links', ic:'link', label:'Linked Firm'},
   ],
   firm:[
-    {id:'fdash', ic:'🏠', label:'Accountant Dashboard'},
-    {id:'clients', ic:'👥', label:'Clients'},
-    {id:'taxdocs', ic:'🧾', label:'Tax Documents'},
-    {id:'auditdocs', ic:'📋', label:'Audit Documents'},
-    {id:'vat', ic:'🧮', label:'VAT Calculator'},
-    {id:'reminders', ic:'📧', label:'Email Reminders'},
+    {id:'fdash', ic:'home', label:'Accountant Dashboard'},
+    {id:'fguides', ic:'sparkles', label:'AI Assist'},
+    {id:'clients', ic:'users', label:'Clients'},
+    {id:'taxdocs', ic:'file-text', label:'Tax Documents'},
+    {id:'auditdocs', ic:'clipboard', label:'Audit Documents'},
+    {id:'vat', ic:'calc', label:'VAT Calculator'},
+    {id:'ct', ic:'building', label:'Corporate Tax'},
+    {id:'reminders', ic:'mail', label:'Email Reminders'},
   ]
 };
 let role='business', page='dash';
@@ -823,11 +972,12 @@ function renderNav(){
   document.getElementById('sidebar').innerHTML =
     '<div class="navlabel">'+(role==='business'?'My company':'Practice')+'</div>'+
     items.map(i=>{const b=navBadge(i.id);return `<div class="navitem ${page===i.id?'active':''}" onclick="go('${i.id}')">
-      <span class="ic">${i.ic}</span><span class="txt">${i.label}</span>
+      <span class="ic">${svgIcon(i.ic)}</span><span class="txt">${i.label}</span>
       ${b?`<span class="badge">${b}</span>`:''}</div>`;}).join('');
 }
 function renderPage(){ document.getElementById('main').innerHTML = (PAGES[page]||(()=>'<h1>Coming soon</h1>'))();
   if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT();
+  if(page==='ct' && typeof recalcCT==='function') recalcCT();
   saveAccountData(); }
 
 /* ---------- PAGES ---------- */
@@ -840,11 +990,11 @@ dash:()=>{
   const totalDone = bizTaxDocs.filter(d=>d.state==='done').length + bizAuditDocs.filter(d=>d.state==='done').length;
   const pct = totalReq ? Math.round(totalDone/totalReq*100) : null;
   return `
-  <h1>Good day, ${firstName} 👋</h1>
+  <h1>Good day, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
   ${urgent.length ? `
   <div class="banner">
-    <div style="font-size:30px">⚠️</div>
+    <div style="color:var(--amber)">${svgIcon('warn',30)}</div>
     <div style="flex:1">
       <div class="big">${urgent.length} document${urgent.length>1?'s':''} need${urgent.length>1?'':'s'} your attention</div>
       <div style="opacity:.7;font-size:13px">${totalDone} of ${totalReq} requested documents submitted</div>
@@ -852,34 +1002,34 @@ dash:()=>{
     <button class="btn" onclick="go('btax')">Review documents</button>
   </div>` : linkedFirm ? `
   <div class="banner">
-    <div style="font-size:30px">✅</div>
+    <div style="color:var(--green)">${svgIcon('success',30)}</div>
     <div style="flex:1"><div class="big">You're all caught up</div>
       <div style="opacity:.7;font-size:13px">No urgent documents outstanding right now.</div></div>
   </div>` : `
   <div class="banner">
-    <div style="font-size:30px">🔗</div>
+    <div style="color:var(--accent)">${svgIcon('link',30)}</div>
     <div style="flex:1"><div class="big">Link your accountant to get started</div>
       <div style="opacity:.7;font-size:13px">Once linked, they can request documents and track your filings here.</div></div>
     <button class="btn" onclick="go('links')">Link a firm</button>
   </div>`}
   <div class="grid g4 mb14">
-    <div class="card stat"><div class="ic ic-green">✓</div><div class="num">${pct==null?'—':pct+'%'}</div><div class="lbl">Documents submitted</div></div>
-    <div class="card stat"><div class="ic ic-amber">⏳</div><div class="num">${open.length}</div><div class="lbl">Outstanding requests</div></div>
-    <div class="card stat"><div class="ic ic-red">📂</div><div class="num">${vaultDocs.length}</div><div class="lbl">Documents in vault</div></div>
-    <div class="card stat"><div class="ic ic-teal">🔗</div><div class="num">${linkedFirm?1:0}</div><div class="lbl">Linked firm</div></div>
+    <div class="card stat clk" onclick="go('btax')"><div class="ic ic-green">${svgIcon('check',20)}</div><div class="num">${pct==null?'—':pct+'%'}</div><div class="lbl">Documents submitted</div></div>
+    <div class="card stat clk" onclick="go('btax')"><div class="ic ic-amber">${svgIcon('clock',20)}</div><div class="num">${open.length}</div><div class="lbl">Outstanding requests</div></div>
+    <div class="card stat clk" onclick="go('docs')"><div class="ic ic-red">${svgIcon('folder',20)}</div><div class="num">${vaultDocs.length}</div><div class="lbl">Documents in vault</div></div>
+    <div class="card stat clk" onclick="go('links')"><div class="ic ic-teal">${svgIcon('link',20)}</div><div class="num">${linkedFirm?1:0}</div><div class="lbl">Linked firm</div></div>
   </div>
   <div class="grid g2">
     <div class="card">
       <div class="cardhead"><h3>Outstanding document requests</h3><span class="link" onclick="go('btax')">View all</span></div>
-      ${open.length ? open.slice(0,4).map(d=>deadlineRow(d.urg==='Urgent'?'red':(d.urg==='High'?'amber':'teal'), d.name, d.note, d.due)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No outstanding requests.</div>`}
+      ${open.length ? open.slice(0,4).map(d=>deadlineRow(d.urg==='Urgent'?'red':(d.urg==='High'?'amber':'teal'), d.name, d.note, d.due, `go('${d.kind==='tax'?'btax':'baudit'}')`)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No outstanding requests.</div>`}
     </div>
     <div class="card">
       <div class="cardhead"><h3>Recent documents</h3><span class="link" onclick="go('docs')">Manage</span></div>
-      ${vaultDocs.length ? vaultDocs.slice(0,4).map(d=>docRow('📄',d.name,'green','Added '+d.added)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No documents uploaded yet.</div>`}
+      ${vaultDocs.length ? vaultDocs.slice(0,4).map(d=>docRow('file',d.name,'green','Added '+d.added)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No documents uploaded yet.</div>`}
     </div>
   </div>
   <div class="ai mt18">
-    <div class="sparkle">✨</div>
+    <div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>HisabOne AI</h3>
       <p>${linkedFirm ? 'Upload the documents your accountant has requested and I’ll keep this dashboard up to date automatically.' : 'Link your accountant and upload your registration documents — I’ll track deadlines and flag anything urgent as soon as there’s data to work with.'}</p></div>
   </div>`;
@@ -891,7 +1041,7 @@ guides:()=>`
   <div class="card mb14" style="border-color:var(--accent)">
     <div style="display:flex;gap:10px">
       <input class="finput" style="flex:1" placeholder="e.g. Do I need to register for VAT? What goes on a tax invoice?">
-      <button class="btn">✨ Ask AI</button>
+      <button class="btn">${svgIcon('sparkles',15)} Ask AI</button>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
       <span class="pill p-gray" style="cursor:pointer">When must I register for VAT?</span>
@@ -900,12 +1050,12 @@ guides:()=>`
     </div>
   </div>
   <div class="grid g3 mb14">
-    ${guideCard('🆕','VAT Registration','When & how to register with the FTA','Guide')}
-    ${guideCard('🧾','Tax Invoice Format','The fields UAE law requires','Reference')}
-    ${guideCard('🧮','Filing a VAT Return','Quarterly returns on EmaraTax','Guide')}
-    ${guideCard('🏢','Corporate Tax (9%)','Registration & annual return','Guide')}
-    ${guideCard('📋','Audit Preparation','What auditors will ask for','Guide')}
-    ${guideCard('💸','Claiming VAT Refunds','Recovering input VAT','Guide')}
+    ${guideCard('doc-new','VAT Registration','When & how to register with the FTA','Guide')}
+    ${guideCard('file-text','Tax Invoice Format','The fields UAE law requires','Reference')}
+    ${guideCard('calc','Filing a VAT Return','Quarterly returns on EmaraTax','Guide')}
+    ${guideCard('building','Corporate Tax (9%)','Registration & annual return','Guide')}
+    ${guideCard('clipboard','Audit Preparation','What auditors will ask for','Guide')}
+    ${guideCard('refund','Claiming VAT Refunds','Recovering input VAT','Guide')}
   </div>
   <div class="card">
     <div class="cardhead"><h3>VAT Registration — step by step</h3><span class="pill p-gray">Guide</span></div>
@@ -922,7 +1072,7 @@ guides:()=>`
   </div>
 
   <div class="card mt18">
-    <div class="cardhead"><h3>🧾 Correct Tax Invoice format (UAE VAT Law — Article 59)</h3><span class="pill p-teal">Reference</span></div>
+    <div class="cardhead"><h3>${svgIcon('file-text',16)} Correct Tax Invoice format (UAE VAT Law — Article 59)</h3><span class="pill p-teal">Reference</span></div>
     <p class="muted" style="font-size:13px;margin-bottom:8px">A valid <b>Full Tax Invoice</b> is required for any taxable supply above <b>AED 10,000</b> (and whenever your customer is VAT-registered and wants to recover input VAT). It must contain every field below.</p>
     <div class="grid g2" style="margin-bottom:6px">
       <div>
@@ -985,10 +1135,47 @@ guides:()=>`
       <p class="muted" style="font-size:13px">Allowed for supplies up to <b>AED 10,000</b> (e.g. retail). Needs only: the words “Tax Invoice”, your name/address/TRN, the date, a description of goods/services, and the total with the tax amount. It does <b>not</b> need the customer's details — but it can't be used by a VAT-registered buyer to recover input VAT.</p>
     </div>
     <div class="ai">
-      <div class="sparkle">⚠️</div>
+      <div class="sparkle" style="color:var(--amber)">${svgIcon('warn',22)}</div>
       <div><h3>Coming with UAE e-invoicing</h3>
         <p>Under the upcoming e-invoicing framework, simplified invoices are being phased out — every invoice will need the full Article 59 field set regardless of value. HisabOne's invoice templates already follow the full format, so you're ready.</p></div>
     </div>
+  </div>`,
+
+fguides:()=>`
+  <h1>AI Assist</h1>
+  <div class="sub">Your practice copilot — ask about UAE tax &amp; audit, draft client requests, and let AI chase missing documents across every client.</div>
+  <div class="card mb14" style="border-color:var(--accent)">
+    <div style="display:flex;gap:10px">
+      <input class="finput" style="flex:1" placeholder="e.g. Draft a Q2 VAT document request for a trading client">
+      <button class="btn">${svgIcon('sparkles',15)} Ask AI</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+      <span class="pill p-gray" style="cursor:pointer">Which clients have deadlines this month?</span>
+      <span class="pill p-gray" style="cursor:pointer" onclick="go('vat')">Calculate a client's VAT</span>
+      <span class="pill p-gray" style="cursor:pointer" onclick="go('reminders')">Set up auto-chase reminders</span>
+    </div>
+  </div>
+  <div class="grid g3 mb14">
+    ${guideCard('users','Client Onboarding','Documents to collect from a new client','Guide')}
+    ${guideCard('file-text','VAT Return Review','What to check before filing on EmaraTax','Guide')}
+    ${guideCard('building','Corporate Tax (9%)','Registration & annual return per client','Guide')}
+    ${guideCard('clipboard','Audit Preparation','Build the audit file auditors will ask for','Guide')}
+    ${guideCard('bot','AI Auto-Chase','Automatically remind clients for missing docs','Reference')}
+    ${guideCard('chart','Excel Export','Export VAT & CT calculations for your working papers','Reference')}
+  </div>
+  <div class="card">
+    <div class="cardhead"><h3>How AI Assist works for your practice</h3><span class="pill p-gray">Guide</span></div>
+    <div class="step"><div class="stepnum">1</div><div><h4>1. Ask in plain English</h4>
+      <p>Ask any UAE VAT, corporate tax or audit question, or ask HisabOne to draft a document request for a specific client and process.</p></div></div>
+    <div class="step"><div class="stepnum">2</div><div><h4>2. Turn answers into actions</h4>
+      <p>Send the drafted request straight to a client from the <span class="link" onclick="go('clients')">Clients</span> workspace, or open the <span class="link" onclick="go('vat')">VAT &amp; CT calculator</span>.</p></div></div>
+    <div class="step"><div class="stepnum">3</div><div><h4>3. Let auto-chase do the follow-up</h4>
+      <p>AI reminds each client until the missing document arrives, so nothing slips before a filing deadline. Manage cadence under <span class="link" onclick="go('reminders')">Email Reminders</span>.</p></div></div>
+  </div>
+  <div class="ai mt18">
+    <div class="sparkle">${svgIcon('sparkles',22)}</div>
+    <div><h3>HisabOne AI for accountants</h3>
+      <p>Add clients to your practice and I'll surface upcoming deadlines, draft the right document requests, and chase them automatically — so your team reviews and files instead of writing follow-up emails.</p></div>
   </div>`,
 
 btax:()=>bizDocPage('tax'),
@@ -998,7 +1185,7 @@ bvat:()=>`
   <h1>VAT Calculator</h1>
   <div class="sub">Work out the VAT on any amount at the UAE standard 5% rate.</div>
   <div class="card mb14">
-    <div class="cardhead"><h3>🧮 VAT calculator</h3></div>
+    <div class="cardhead"><h3>${svgIcon('calc',16)} VAT calculator</h3></div>
     <div class="grid g3" style="align-items:end">
       <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>
       <div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>
@@ -1012,7 +1199,7 @@ bvat:()=>`
       <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Gross (incl. VAT)</div><div id="qcGross" style="font-size:24px;font-weight:700">AED 0.00</div></div>
     </div>
   </div>
-  <div class="ai"><div class="sparkle">✨</div>
+  <div class="ai"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>How it works</h3><p>Choose <b>Add VAT</b> when your figure is before VAT (HisabOne adds 5% on top), or <b>Extract VAT</b> when VAT is already included (HisabOne works out the VAT portion). Results update as you type.</p></div></div>`,
 
 docs:()=>{
@@ -1053,27 +1240,27 @@ links:()=>`
     </div>
   </div>` : `
   <div class="card mb14">
-    <div class="cardhead"><h3>🔗 Link your accounting / audit firm <span class="muted" style="font-weight:400;font-size:12px">(one only)</span></h3></div>
+    <div class="cardhead"><h3>${svgIcon('link',16)} Link your accounting / audit firm <span class="muted" style="font-weight:400;font-size:12px">(one only)</span></h3></div>
     <p class="muted" style="font-size:12.5px;margin-bottom:10px">Ask your accountant for their invite code from their Clients page, and enter it below.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <input id="firmCode" class="finput" style="flex:1;min-width:180px" placeholder="e.g. HSB-XXXX-XXXX">
       <button class="btn" onclick="linkFirmByCode()">Link firm</button>
     </div>
     <div id="linkErr" style="color:var(--red);font-size:12.5px;margin-top:8px;display:none"></div>
-    <div class="muted" style="font-size:12px;margin-top:9px">📨 Once linked, they send document requests inside each filing process below.</div>
+    <div class="muted" style="font-size:12px;margin-top:9px">${svgIcon('inbox',13)} Once linked, they send document requests inside each filing process below.</div>
   </div>`}
   <h3 style="font-size:14px;margin-bottom:10px">Document requests from your firm, by process</h3>
   ${(bizTaxDocs.length||bizAuditDocs.length) ? `<div class="grid g2">
-    ${bizTaxDocs.length?linkProcFromDocs('🧾 Tax documents',bizTaxDocs):''}
-    ${bizAuditDocs.length?linkProcFromDocs('📋 Audit documents',bizAuditDocs):''}
+    ${bizTaxDocs.length?linkProcFromDocs('Tax documents',bizTaxDocs):''}
+    ${bizAuditDocs.length?linkProcFromDocs('Audit documents',bizAuditDocs):''}
   </div>` : `<div class="card muted" style="text-align:center;padding:22px;font-size:13px">No document requests yet${linkedFirm?' — your firm will send requests here.':' — link a firm to start receiving requests.'}</div>`}
   <h3 style="font-size:14px;margin:22px 0 10px">Other connections</h3>
   <div class="grid g3">
-    ${connCard('fta','🏛️','FTA (EmaraTax)','File VAT &amp; CT, auto-pull TRN &amp; history.')}
-    ${connCard('accounting','📊','Accounting software','Pulls data to pre-fill returns.')}
-    ${connCard('bank','🏦','Business bank','Reconciles &amp; flags VAT.')}
+    ${connCard('fta','fta','FTA (EmaraTax)','File VAT &amp; CT, auto-pull TRN &amp; history.')}
+    ${connCard('accounting','chart','Accounting software','Pulls data to pre-fill returns.')}
+    ${connCard('bank','bank','Business bank','Reconciles &amp; flags VAT.')}
   </div>
-  <div class="note">🔒 You control access and can revoke any connection at any time.</div>`,
+  <div class="note">${svgIcon('shield',13)} You control access and can revoke any connection at any time.</div>`,
 
 fdash:()=>{
   const firmName = currentAccount ? currentAccount.name : 'Your Firm';
@@ -1086,20 +1273,20 @@ fdash:()=>{
   <h1>Accountant Dashboard</h1>
   <div class="sub">${firmName} · ${clients.length} linked client${clients.length===1?'':'s'}</div>
   <div class="grid g4 mb14">
-    <div class="card stat"><div class="ic ic-teal">👥</div><div class="num">${clients.length}</div><div class="lbl">Active clients</div></div>
-    <div class="card stat"><div class="ic ic-red">⏰</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
-    <div class="card stat"><div class="ic ic-amber">📨</div><div class="num">${awaited}</div><div class="lbl">Documents awaited</div></div>
-    <div class="card stat"><div class="ic ic-green">✓</div><div class="num">${received}</div><div class="lbl">Documents received</div></div>
+    <div class="card stat clk" onclick="go('clients')"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Active clients</div></div>
+    <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-red">${svgIcon('clock',20)}</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
+    <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-amber">${svgIcon('inbox',20)}</div><div class="num">${awaited}</div><div class="lbl">Documents awaited</div></div>
+    <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-green">${svgIcon('check',20)}</div><div class="num">${received}</div><div class="lbl">Documents received</div></div>
   </div>
   ${clients.length ? `
   <div class="banner">
-    <div style="font-size:30px">${overdue?'⏰':'✅'}</div>
+    <div style="color:var(--accent)">${overdue?svgIcon('clock',30):svgIcon('success',30)}</div>
     <div style="flex:1"><div class="big">${overdue? overdue+' document'+(overdue>1?'s are':' is')+' overdue' : 'No overdue requests'}</div>
       <div style="opacity:.7;font-size:13px">${awaited} document${awaited===1?'':'s'} still awaited across all clients</div></div>
     <button class="btn" onclick="go('taxdocs')">Review requests</button>
   </div>` : `
   <div class="banner">
-    <div style="font-size:30px">👥</div>
+    <div style="color:var(--accent)">${svgIcon('users',30)}</div>
     <div style="flex:1"><div class="big">Link your first client to get started</div>
       <div style="opacity:.7;font-size:13px">Share your invite code from the Clients page, or add a client directly.</div></div>
     <button class="btn" onclick="go('clients')">Go to Clients</button>
@@ -1111,10 +1298,10 @@ fdash:()=>{
     </div>
     <div class="card">
       <div class="cardhead"><h3>Recent requests</h3></div>
-      ${allReqs.length ? allReqs.slice(0,4).map(r=>deadlineRow(r.cls==='p-red'?'red':(r.cls==='p-amber'?'amber':(r.cls==='p-green'?'green':'teal')), r.doc, r.client, r.st)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No document requests sent yet.</div>`}
+      ${allReqs.length ? allReqs.slice(0,4).map(r=>deadlineRow(r.cls==='p-red'?'red':(r.cls==='p-amber'?'amber':(r.cls==='p-green'?'green':'teal')), r.doc, r.client, r.st, "go('taxdocs')")).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No document requests sent yet.</div>`}
     </div>
   </div>
-  <div class="ai mt18"><div class="sparkle">✨</div>
+  <div class="ai mt18"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>HisabOne AI</h3>
       <p>${clients.length ? "I'm tracking deadlines and helping you chase outstanding documents across your linked clients." : "Once you link clients, I'll track their deadlines, chase outstanding documents, and flag anything at risk."}</p></div></div>`;
 },
@@ -1128,7 +1315,7 @@ clients:()=>{
   <h1>Client Database</h1>
   <div class="sub">Organised by risk — highest first. Filter by risk or urgency to focus where it matters.</div>
   <div class="card mb14">
-    <div class="cardhead"><h3>🔗 Link a new client</h3></div>
+    <div class="cardhead"><h3>${svgIcon('link',16)} Link a new client</h3></div>
     <p class="muted" style="font-size:12.5px;margin-bottom:13px">Share your firm's invite code — when a business enters it on their Linked Firm page, they're linked to you automatically.</p>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
       <div style="font-family:ui-monospace,Menlo,monospace;font-size:18px;font-weight:700;letter-spacing:2px;background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:11px 18px;color:var(--accent)">${inviteCode}</div>
@@ -1174,13 +1361,13 @@ auditdocs:()=>reqDocPage('audit'),
 reminders:()=>`
   <h1>Email Reminders</h1>
   <div class="sub">Automated reminder emails sent to clients for outstanding documents. Set the cadence, preview, or send one now.</div>
-  <div class="ai mb14"><div class="sparkle">✨</div>
+  <div class="ai mb14"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>Auto-chase cadence</h3><p>HisabOne emails each client on day 3, 6 and 9 after a request until they upload. Toggle it off for any client to chase manually.</p></div></div>
   <div class="grid g4 mb14">
-    <div class="card stat"><div class="ic ic-teal">📧</div><div class="num">${firmReminders.length}</div><div class="lbl">Reminders scheduled</div></div>
-    <div class="card stat"><div class="ic ic-amber">⏳</div><div class="num">${firmReminders.filter(r=>r.next&&r.next!=='—').length}</div><div class="lbl">Upcoming reminders</div></div>
-    <div class="card stat"><div class="ic ic-green">🔁</div><div class="num">${firmReminders.filter(r=>r.auto==='green').length}</div><div class="lbl">Auto-chase active</div></div>
-    <div class="card stat"><div class="ic ic-red">👥</div><div class="num">${clients.length}</div><div class="lbl">Linked clients</div></div>
+    <div class="card stat"><div class="ic ic-teal">${svgIcon('mail',20)}</div><div class="num">${firmReminders.length}</div><div class="lbl">Reminders scheduled</div></div>
+    <div class="card stat"><div class="ic ic-amber">${svgIcon('clock',20)}</div><div class="num">${firmReminders.filter(r=>r.next&&r.next!=='—').length}</div><div class="lbl">Upcoming reminders</div></div>
+    <div class="card stat"><div class="ic ic-green">${svgIcon('refresh',20)}</div><div class="num">${firmReminders.filter(r=>r.auto==='green').length}</div><div class="lbl">Auto-chase active</div></div>
+    <div class="card stat"><div class="ic ic-red">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Linked clients</div></div>
   </div>
   ${reminderFormOpen?`
   <div class="card mb14" style="border-color:var(--accent)">
@@ -1200,11 +1387,11 @@ reminders:()=>`
       <button class="btn sm" onclick="toggleReminderForm()">${reminderFormOpen?'Close':'+ New reminder'}</button></div>
     <table>
       <tr><th>Client</th><th>Document</th><th>Last sent</th><th>Next reminder</th><th>Auto-chase</th><th></th></tr>
-      ${firmReminders.length ? firmReminders.map(r=>remRow(r.client,r.doc,r.last,r.next,r.auto,'Send now')).join('') : `<tr><td colspan="6" class="muted" style="text-align:center;padding:22px">No reminders scheduled yet.</td></tr>`}
+      ${firmReminders.length ? firmReminders.map((r,i)=>remRow(r,i)).join('') : `<tr><td colspan="6" class="muted" style="text-align:center;padding:22px">No reminders scheduled yet.</td></tr>`}
     </table>
   </div>
   <div class="card mt18">
-    <div class="cardhead"><h3>📧 Email preview</h3><span class="pill p-gray">Auto-generated</span></div>
+    <div class="cardhead"><h3>${svgIcon('mail',16)} Email preview</h3><span class="pill p-gray">Auto-generated</span></div>
     ${firmReminders.length ? (()=>{ const r=firmReminders[0]; const firm=currentAccount?currentAccount.name:'Your firm'; return `
     <div style="background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px;line-height:1.7">
       <div class="muted" style="font-size:11.5px;margin-bottom:8px">To: ${r.client} · From: ${firm} via HisabOne</div>
@@ -1235,7 +1422,7 @@ vat:()=>{
   <div class="sub">Calculate VAT at the UAE standard 5% rate, and estimate a client's net VAT payable for the period.</div>
 
   <div class="card mb14">
-    <div class="cardhead"><h3>🧮 Quick VAT calculator</h3></div>
+    <div class="cardhead"><h3>${svgIcon('calc',16)} Quick VAT calculator</h3></div>
     <div class="grid g4" style="align-items:end">
       <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>
       <div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>
@@ -1276,15 +1463,15 @@ vat:()=>{
       <div><div class="muted" style="font-size:12px">Input VAT (purchases)</div><div id="sumInput" style="font-size:18px;font-weight:700">AED 0.00</div></div>
       <div><div class="muted" style="font-size:12px" id="netLbl">Net VAT payable</div><div id="sumNet" style="font-size:18px;font-weight:700;color:var(--accent)">AED 0.00</div></div>
     </div>
-    <div class="ai mt18"><div class="sparkle">✨</div>
+    <div class="ai mt18"><div class="sparkle">${svgIcon('sparkles',22)}</div>
       <div><h3 id="vatVerdict">Net position</h3><p id="vatNote">Enter sales and purchases above — HisabOne computes output VAT, recoverable input VAT, and the net amount due to (or from) the FTA. VAT returns are filed within 28 days of the period end.</p></div></div>
   </div>
 
   <div class="card mt18">
     <div class="cardhead"><h3>Export &amp; share</h3><span class="muted" style="font-size:12px">Your typed figures are kept</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn" onclick="exportVAT()">⬇️ Export to Excel</button>
-      <button class="btn ghost" onclick="toggleShareVAT()">📤 Share report to Business</button>
+      <button class="btn" onclick="exportVAT()">${svgIcon('download',15)} Export to Excel</button>
+      <button class="btn ghost" onclick="toggleShareVAT()">${svgIcon('share',15)} Share report to Business</button>
     </div>
     <div id="shareVATPanel" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
       <div class="grid g2" style="margin-bottom:12px">
@@ -1298,6 +1485,43 @@ vat:()=>{
     <div id="shareVATMsg" style="display:none;margin-top:14px"></div>
   </div>`;
 },
+ct:()=>`
+  <h1>Corporate Tax Calculator</h1>
+  <div class="sub">Estimate a client's UAE Corporate Tax — 0% on the first AED 375,000 of taxable income, 9% above, with optional Small Business Relief.</div>
+
+  <div class="card mb14">
+    <div class="cardhead"><h3>${svgIcon('building',16)} Taxable income</h3><span class="pill p-teal">Standard 9% regime</span></div>
+    <div class="grid g2" style="align-items:end">
+      <div><label class="flabel">Accounting net profit (AED)</label><input id="ctProfit" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
+      <div><label class="flabel">Revenue for the period (AED)</label><input id="ctRev" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
+      <div><label class="flabel">Add: non-deductible expenses (AED)</label><input id="ctAdd" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
+      <div><label class="flabel">Less: exempt / already-taxed income (AED)</label><input id="ctExempt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
+    </div>
+    <label class="check" style="border:0;cursor:pointer;margin-top:4px"><input type="checkbox" id="ctSBR" onchange="recalcCT()" style="width:18px;height:18px;border:0"> <span>Elect <b>Small Business Relief</b> (revenue &le; AED 3,000,000)</span></label>
+    <div class="muted" id="ctSBRhint" style="font-size:12px;margin-top:2px">Enter revenue to check Small Business Relief eligibility.</div>
+  </div>
+
+  <div class="grid g4 mb14">
+    <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxable income</div><div id="ctTaxable" style="font-size:20px;font-weight:700">AED 0.00</div></div>
+    <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxed at 0% (first 375k)</div><div id="ctBand0" style="font-size:20px;font-weight:700">AED 0.00</div></div>
+    <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxed at 9%</div><div id="ctBand9" style="font-size:20px;font-weight:700">AED 0.00</div></div>
+    <div class="card" style="text-align:center;border-color:var(--accent)"><div class="muted" style="font-size:12px">Corporate tax payable</div><div id="ctPayable" style="font-size:20px;font-weight:700;color:var(--accent)">AED 0.00</div></div>
+  </div>
+
+  <div class="card">
+    <div class="cardhead"><h3>Result</h3><span class="pill p-gray">Effective rate <span id="ctEff">0.00%</span></span></div>
+    <div class="ai"><div class="sparkle">${svgIcon('sparkles',22)}</div>
+      <div><h3 id="ctVerdict">Enter figures to calculate</h3><p id="ctNote">UAE corporate tax is 0% on the first AED 375,000 of taxable income and 9% on the excess. Returns are filed within 9 months of the financial year-end.</p></div></div>
+  </div>
+
+  <div class="card mt18">
+    <div class="cardhead"><h3>How this is calculated</h3><span class="pill p-gray">Reference</span></div>
+    <div class="step"><div class="stepnum">1</div><div><h4>Taxable income</h4><p>Accounting net profit, plus non-deductible expenses, less exempt or already-taxed income.</p></div></div>
+    <div class="step"><div class="stepnum">2</div><div><h4>0% band</h4><p>The first AED 375,000 of taxable income is taxed at 0%.</p></div></div>
+    <div class="step"><div class="stepnum">3</div><div><h4>9% band</h4><p>Taxable income above AED 375,000 is taxed at the standard 9% rate.</p></div></div>
+    <div class="step"><div class="stepnum">4</div><div><h4>Small Business Relief</h4><p>Businesses with revenue up to AED 3,000,000 may elect relief and be treated as having no taxable income (for tax periods ending on or before 31 Dec 2026). Registration and filing are still required.</p></div></div>
+    <div class="note">Estimate only. Excludes Qualifying Free Zone (0%/9%) treatment and the 15% Domestic Minimum Top-up Tax for large multinationals (revenue &ge; EUR 750M). Confirm with the client's tax adviser.</div>
+  </div>`,
 };
 
 /* ---------- VAT CALCULATOR: EXPORT & SHARE ---------- */
@@ -1339,7 +1563,7 @@ function sendVATReport(){
   document.getElementById('shareVATPanel').style.display='none';
   const msg=document.getElementById('shareVATMsg');
   if(msg){msg.style.display='block';
-    msg.innerHTML='<div class="ai"><div class="sparkle">✅</div><div><h3>Report shared with '+c+'</h3>'+
+    msg.innerHTML='<div class="ai"><div class="sparkle" style="color:var(--green)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></div><div><h3>Report shared with '+c+'</h3>'+
       '<p>The VAT calculation for '+per+' is now in the HisabOne portal of '+c+' under Documents, and they have been notified by email — no attachments needed.</p></div></div>';}
 }
 
@@ -1380,14 +1604,69 @@ function recalcVAT(){
   }
 }
 
+/* ---------- CORPORATE TAX CALCULATOR LOGIC ---------- */
+function recalcCT(){
+  const $=id=>document.getElementById(id);
+  if(!$('ctProfit')) return;
+  const num=id=>{const e=$(id);return e?(parseFloat(e.value)||0):0;};
+  const fmt=n=>'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const profit=num('ctProfit'),add=num('ctAdd'),exempt=num('ctExempt'),rev=num('ctRev');
+  const taxable=Math.max(0,profit+add-exempt);
+  const threshold=375000;
+  const band0=Math.min(taxable,threshold), band9=Math.max(0,taxable-threshold);
+  const sbrEligible = rev>0 && rev<=3000000;
+  const relief = $('ctSBR') && $('ctSBR').checked && sbrEligible;
+  const ct = relief ? 0 : band9*0.09;
+  const eff = taxable>0 ? ct/taxable*100 : 0;
+  $('ctTaxable').textContent=fmt(taxable);
+  $('ctBand0').textContent=fmt(relief?0:band0);
+  $('ctBand9').textContent=fmt(relief?0:band9);
+  $('ctPayable').textContent=fmt(ct);
+  $('ctEff').textContent=eff.toFixed(2)+'%';
+  const hint=$('ctSBRhint');
+  if(hint){ hint.textContent = sbrEligible ? 'Eligible: revenue is at or below AED 3,000,000 — you can elect Small Business Relief.' : (rev>0?'Not eligible: revenue exceeds AED 3,000,000.':'Enter revenue to check Small Business Relief eligibility.'); }
+  const v=$('ctVerdict'),note=$('ctNote');
+  if(v){
+    if(relief){ v.textContent='AED 0 payable — Small Business Relief'; note.textContent='With Small Business Relief elected, the client is treated as having no taxable income for this period. Corporate-tax registration and an annual return are still required.'; }
+    else if(taxable<=threshold){ v.textContent=fmt(ct)+' — within the 0% band'; note.textContent='Taxable income is at or below AED 375,000, so corporate tax is nil. Registration and filing are still required.'; }
+    else { v.textContent=fmt(ct)+' corporate tax'; note.textContent='9% applies to '+fmt(band9)+' above the AED 375,000 threshold. File and pay within 9 months of the financial year-end.'; }
+  }
+}
+
+/* ---------- TRANSACTIONAL EMAIL (Vercel /api/send-email + Resend) ---------- */
+function toast(msg){
+  let t=document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(window._toastT); window._toastT=setTimeout(()=>t.classList.remove('show'),3900);
+}
+function bizEmailByName(name){ try{ const a=loadAccounts().find(x=>x.role==='business'&&x.name===name); return a?a.email:null; }catch(e){ return null; } }
+async function sendAppEmail(to,subject,text){
+  try{
+    const r=await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:to,subject:subject,text:text})});
+    const d=await r.json().catch(()=>({}));
+    return !!(r.ok && d && d.ok);
+  }catch(e){ return false; }
+}
+function sendReminderNow(i){
+  const r=firmReminders[i]; if(!r) return;
+  const email=bizEmailByName(r.client);
+  r.last='Just now';
+  if(!email){ toast('No registered HisabOne email found for '+r.client); renderPage(); return; }
+  const subject='Reminder: '+r.doc+' still needed';
+  const text='Hello '+r.client+',\n\nThis is a reminder that we still need "'+r.doc+'" for your filing. Please sign in to your HisabOne portal and upload it securely.\n\nThank you,\n'+(currentAccount?currentAccount.name:'Your accountant');
+  toast('Sending reminder to '+email+'…');
+  sendAppEmail(email,subject,text).then(ok=>{ toast(ok?('Reminder emailed to '+email):('Reminder logged — add RESEND_API_KEY in Vercel to email '+email)); renderPage(); });
+}
+
 /* ---------- TEMPLATES ---------- */
-function deadlineRow(c,t,m,r){const col={red:'var(--red)',amber:'var(--amber)',teal:'var(--accent)',green:'var(--green)'}[c];
-  return `<div class="drow"><div class="dbar" style="background:${col}"></div>
+function deadlineRow(c,t,m,r,click){const col={red:'var(--red)',amber:'var(--amber)',teal:'var(--accent)',green:'var(--green)'}[c];
+  return `<div class="drow${click?' clk':''}"${click?` onclick="${click}"`:''}><div class="dbar" style="background:${col}"></div>
     <div style="flex:1"><div class="dtitle">${t}</div><div class="dmeta">${m}</div></div>
     <div class="dmeta" style="text-align:right">${r}</div></div>`;}
 function guideCard(ic,t,d,s){
   return `<div class="card" style="cursor:pointer" onclick="go('guides')">
-    <div style="font-size:26px;margin-bottom:8px">${ic}</div><h3 style="font-size:15px">${t}</h3>
+    <div style="margin-bottom:8px;color:var(--accent)">${svgIcon(ic,26)}</div><h3 style="font-size:15px">${t}</h3>
     <p class="muted" style="font-size:12.5px;margin:4px 0 10px">${d}</p>
     <span class="pill p-gray">${s}</span></div>`;}
 /* business: one document table row with deadline, urgency, risk, status + Upload */
@@ -1397,14 +1676,14 @@ function bizDocRow(kind,i){
   const [cls,label,done]=map[d.state];
   return `<tr>
     <td><div style="display:flex;align-items:center;gap:11px"><div class="box ${done?'on':''}" style="margin:0">${done?'✓':''}</div>
-      <div><div class="dtitle">${d.name}</div><div class="dmeta">${d.note}</div></div></div></td>
+      <div><div class="dtitle"${done?'':` style="cursor:pointer;color:var(--accent)" title="Click to upload" onclick="uploadDoc('${kind}',${i})"`}>${d.name}</div><div class="dmeta">${d.note}</div></div></div></td>
     <td>${d.due}</td>
     <td>${lvlPill(d.urg)}</td>
     <td>${lvlPill(d.risk)}</td>
     <td><span class="pill ${cls}">${label}</span></td>
     <td><div style="display:flex;gap:6px;justify-content:flex-end">
       ${done?'':`<button class="btn sm" onclick="uploadDoc('${kind}',${i})">Upload</button>`}
-      <button class="iconbtn" title="Delete document" onclick="deleteBizDoc('${kind}',${i})">🗑</button>
+      <button class="iconbtn" title="Delete document" onclick="deleteBizDoc('${kind}',${i})">${svgIcon('trash',15)}</button>
     </div></td>
   </tr>`;}
 /* business: the Tax / Audit documents page (shared layout) */
@@ -1419,7 +1698,7 @@ function bizDocPage(kind){
     ?'Documents your accountant needs for your VAT &amp; corporate tax filings. Upload each one here.'
     :'Documents your auditor needs for the FY2025 audit report. Upload each one here.'}</div>
   <div class="banner">
-    <div style="font-size:30px">${tax?'🧾':'📋'}</div>
+    <div style="color:var(--accent)">${tax?svgIcon('file-text',30):svgIcon('clipboard',30)}</div>
     <div style="flex:1">
       <div class="big">${linkedFirm||(tax?'Your accountant':'Your auditor')} requested ${total} ${tax?'tax':'audit'} documents</div>
       <div style="opacity:.7;font-size:13px">${done} submitted · ${total-done} still needed${tax?'':' · engagement due 30 Sep 2026'}</div>
@@ -1437,7 +1716,7 @@ function bizDocPage(kind){
       ${arr.map((d,i)=>bizDocRow(kind,i)).join('')}
     </table>
   </div>
-  <div class="ai mt18"><div class="sparkle">✨</div>
+  <div class="ai mt18"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>HisabOne AI is collecting these for you</h3>
       <p>Documents marked submitted were pulled automatically from your linked software and bank. The rest need your upload — your ${tax?'accountant':'auditor'} sees them the moment you do.</p></div></div>`;}
 /* firm: risk/urgency pill + client database row + tax request form */
@@ -1456,7 +1735,7 @@ function reqDocPage(kind){
   return `
   <h1>${tax?'Tax Documents Requested':'Audit Report Documents Requested'}</h1>
   <div class="sub">Documents you've requested from clients for their ${tax?'VAT &amp; corporate tax filings':'audit engagements'}, with ${tax?'application':'engagement'}, urgency, risk and attachments.</div>
-  <div class="ai mb14"><div class="sparkle">✨</div>
+  <div class="ai mb14"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>Auto-chase is on</h3><p>HisabOne reminds clients until every document is uploaded — prioritised by urgency and risk. Received files attach here automatically.</p></div></div>
   ${formOpen[kind]?reqForm(kind):''}
   <div class="card" style="padding:0;overflow-x:auto">
@@ -1469,10 +1748,10 @@ function reqDocPage(kind){
 /* a single request row, with attachment access + delete */
 function reqRow(r,i,kind){
   const has=/Received/.test(r.st);
-  const att=has?'<button class="btn ghost sm">📎 View</button>':'<span class="muted">—</span>';
+  const att=has?'<button class="btn ghost sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11l-7.5 7.5a4.5 4.5 0 0 1-6.4-6.4l7.7-7.7a3 3 0 0 1 4.3 4.3l-7.6 7.6a1.5 1.5 0 0 1-2.2-2.1l6.8-6.8"/></svg> View</button>':'<span class="muted">—</span>';
   return `<tr><td><b>${r.client}</b></td><td>${r.doc}</td><td class="muted">${r.app}</td><td>${r.due||'—'}</td>
     <td>${lvlPill(r.urg)}</td><td>${lvlPill(r.risk)}</td><td><span class="pill ${r.cls}">${r.st}</span></td><td>${att}</td>
-    <td><button class="iconbtn" title="Delete request" onclick="deleteReqDoc('${kind}',${i})">🗑</button></td></tr>`;}
+    <td><button class="iconbtn" title="Delete request" onclick="deleteReqDoc('${kind}',${i})">${svgIcon('trash',15)}</button></td></tr>`;}
 /* the request form (tax + audit) */
 function reqForm(kind){
   const tax=kind==='tax', pfx=tax?'tq':'aq';
@@ -1495,26 +1774,26 @@ function reqForm(kind){
     <button class="btn ghost" style="margin-left:8px" onclick="toggleReqForm('${kind}')">Cancel</button>
   </div>`;}
 /* email reminder row */
-function remRow(client,doc,last,next,auto,action){
-  const on=auto==='green';
-  return `<tr><td><b>${client}</b></td><td>${doc}</td><td class="muted">${last}</td><td>${next}</td>
+function remRow(r,i){
+  const on=r.auto==='green';
+  return `<tr><td><b>${r.client}</b></td><td>${r.doc}</td><td class="muted">${r.last}</td><td>${r.next}</td>
     <td><span class="pill ${on?'p-green':'p-gray'}">${on?'On':'Off'}</span></td>
-    <td><button class="btn ghost sm">${action}</button></td></tr>`;}
+    <td><button class="btn ghost sm" onclick="sendReminderNow(${i})">Send now</button></td></tr>`;}
 function docRow(ic,n,c,m){const col={red:'var(--red)',amber:'var(--amber)',green:'var(--green)'}[c];
-  return `<div class="drow"><div style="font-size:18px">${ic}</div>
+  return `<div class="drow"><div style="color:var(--accent)">${svgIcon(ic,18)}</div>
     <div style="flex:1"><div class="dtitle">${n}</div><div class="dmeta">${m}</div></div>
     <span class="dot" style="background:${col};width:9px;height:9px"></span></div>`;}
-function reqFromFirm(n,f,cls,s){return `<div class="drow"><div style="font-size:18px">📨</div>
+function reqFromFirm(n,f,cls,s){return `<div class="drow"><div style="color:var(--accent)">${svgIcon('inbox',18)}</div>
   <div style="flex:1"><div class="dtitle">${n}</div><div class="dmeta">${f}</div></div>
   <span class="pill ${cls}">${s}</span></div>`;}
-function vaultDocRow(d,i){return `<div class="drow"><div style="font-size:18px">📄</div>
+function vaultDocRow(d,i){return `<div class="drow"><div style="color:var(--accent)">${svgIcon('file',18)}</div>
   <div style="flex:1"><div class="dtitle">${d.name}</div><div class="dmeta">Added ${d.added}</div></div>
-  <button class="iconbtn" title="Delete document" onclick="deleteVaultDoc(${i})">🗑</button></div>`;}
+  <button class="iconbtn" title="Delete document" onclick="deleteVaultDoc(${i})">${svgIcon('trash',15)}</button></div>`;}
 function linkProcFromDocs(title,arr){
   const doneCount=arr.filter(d=>d.state==='done').length;
   return `<div class="card">
   <div class="cardhead"><h3>${title}</h3><span class="pill p-gray">${doneCount} of ${arr.length} received</span></div>
-  ${arr.map(d=>`<div class="drow"><div style="font-size:16px">📨</div>
+  ${arr.map(d=>`<div class="drow"><div style="color:var(--accent)">${svgIcon('inbox',16)}</div>
     <div style="flex:1"><div class="dtitle">${d.name}</div></div>
     <span class="pill ${d.state==='done'?'p-green':(d.urg==='Urgent'?'p-red':'p-amber')}">${d.state==='done'?'Uploaded ✓':d.due}</span></div>`).join('')}</div>`;
 }
@@ -1526,7 +1805,7 @@ function connCard(key,ic,n,d){
   const on=connections[key];
   return `<div class="card">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-    <div style="font-size:24px">${ic}</div><div style="flex:1"><h3 style="font-size:14.5px">${n}</h3></div>
+    <div style="color:var(--accent)">${svgIcon(ic,22)}</div><div style="flex:1"><h3 style="font-size:14.5px">${n}</h3></div>
     <span class="pill ${on?'p-green':'p-gray'}">${on?'Connected':'Not connected'}</span></div>
   <p class="muted" style="font-size:12.5px;margin-bottom:12px">${d}</p>
   <button class="btn ghost sm" onclick="toggleConnection('${key}')">${on?'Disconnect':'Connect'}</button></div>`;}

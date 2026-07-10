@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "static",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8743"],
+      "runtimeExecutable": "ruby",
+      "runtimeArgs": ["-run", "-e", "httpd", "/private/tmp/claude-501/-Users-asra-Documents-Hisaab360/d9b33a1a-ab8c-4731-94f9-c872aab799f7/scratchpad/hisabone_preview", "-p", "8743"],
       "port": 8743
     }
   ]

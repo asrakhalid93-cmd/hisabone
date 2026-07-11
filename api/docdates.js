@@ -1,29 +1,29 @@
-// HisabOne — invoice OCR endpoint (Vercel Serverless Function)
+// HisabOne — company-document date reader (Vercel Serverless Function)
 //
-// Reads a tax invoice (image or PDF) with Claude's vision model and returns
-// structured fields for the VAT calculator. Configure in Vercel:
+// Reads a company document (trade licence, VAT/CT certificate, Emirates ID,
+// passport, etc.) with Claude's vision model and returns its issue and expiry
+// dates in ISO form for the document vault. Configure in Vercel:
 //   Project → Settings → Environment Variables
 //     ANTHROPIC_API_KEY = sk-ant-...        (required)
 //     OCR_MODEL         = claude-sonnet-4-5 (optional override)
 
-const PROMPT = `You are a precise OCR engine for UAE tax invoices. Read the attached invoice carefully and extract its details.
+const PROMPT = `You are a precise reader of UAE business and identity documents (trade licences, certificates of incorporation, VAT/corporate-tax registration certificates, establishment cards, Emirates IDs, passports, chamber-of-commerce certificates, memoranda of association, etc.).
+
+Read the attached document and extract only its dates.
 
 Return ONLY a minified JSON object (no markdown, no code fences, no commentary) with exactly these keys:
-{"vendor":string|null,"customer":string|null,"invoiceNumber":string|null,"date":string|null,"trn":string|null,"currency":string|null,"netAmount":number|null,"vatAmount":number|null,"grossAmount":number|null,"vatRatePercent":number|null,"description":string|null}
+{"issueDate":string|null,"expiryDate":string|null,"docType":string|null}
 
 Rules:
-- vendor = the supplier/seller issuing the invoice; customer = the buyer.
-- trn = the supplier's UAE Tax Registration Number (15 digits) if shown.
-- netAmount = total excluding VAT; vatAmount = total VAT; grossAmount = total including VAT. Use the invoice's grand totals, not a single line item.
-- Numbers must be plain JSON numbers with no thousands separators or currency symbols.
-- If VAT is shown as 5% or amounts imply ~5%, vatRatePercent = 5. If the invoice is zero-rated or shows no VAT, vatRatePercent = 0.
-- If the totals are inconsistent, trust gross and VAT, and compute net = gross - VAT.
-- Use null for anything genuinely not present. Do not guess values that are not on the invoice.`;
+- issueDate = the date the document was issued / from which it is valid.
+- expiryDate = the date the document expires / is valid until. If the document has no expiry (e.g. a certificate of incorporation or an MOA), use null.
+- Format both dates strictly as ISO "YYYY-MM-DD". Convert any format you see (e.g. "15/03/2024", "15 Mar 2024") to ISO.
+- docType = a short label for what the document is (e.g. "Trade License", "VAT Certificate", "Emirates ID"), or null if unclear.
+- Use null for anything genuinely not present. Do not guess dates that are not on the document.`;
 
-// --- lightweight abuse protection so the API key can't be freely reused off-site ---
 function allowedOrigin(req) {
   const o = req.headers.origin || req.headers.referer || '';
-  if (!o) return false; // browser POSTs always send Origin; missing == not from our app
+  if (!o) return false;
   try {
     const h = new URL(o).hostname;
     return h === 'hisabone.ae' || h === 'www.hisabone.ae' ||
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: process.env.OCR_MODEL || 'claude-sonnet-4-5',
-        max_tokens: 1024,
+        max_tokens: 512,
         messages: [{ role: 'user', content: [fileBlock, { type: 'text', text: PROMPT }] }],
       }),
     });
@@ -99,20 +99,24 @@ export default async function handler(req, res) {
     }
 
     const text = ((data.content || []).find(b => b.type === 'text') || {}).text || '';
-    // Robustly pull the JSON object out of the response
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) {
-      res.status(502).json({ ok: false, error: 'Could not parse invoice data from the OCR response' });
+      res.status(502).json({ ok: false, error: 'Could not read dates from the document' });
       return;
     }
-    let invoice;
-    try { invoice = JSON.parse(match[0]); }
+    let parsed;
+    try { parsed = JSON.parse(match[0]); }
     catch (e) {
-      res.status(502).json({ ok: false, error: 'OCR returned invalid JSON' });
+      res.status(502).json({ ok: false, error: 'Document reader returned invalid JSON' });
       return;
     }
 
-    res.status(200).json({ ok: true, invoice });
+    res.status(200).json({
+      ok: true,
+      issueDate: parsed.issueDate || null,
+      expiryDate: parsed.expiryDate || null,
+      docType: parsed.docType || null,
+    });
   } catch (e) {
     res.status(500).json({ ok: false, error: String(e && e.message ? e.message : e) });
   }

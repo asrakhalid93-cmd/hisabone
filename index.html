@@ -404,7 +404,7 @@
   <div class="ltopbar">
     <div class="ltopbar-logo">
       <span class="mk" role="img" aria-label="HisabOne logo"></span>
-      Hisab<span class="one">One</span>
+      <span class="word">Hisab<span class="one">One</span></span>
     </div>
     <div class="ltabs">
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
@@ -511,7 +511,7 @@
       </div>
     </div>
 
-    <div class="homefoot">&copy; 2026 HisabOne &middot; Tax &amp; Compliance, Simplified &middot; <a href="mailto:hello@hisabone.ae">hello@hisabone.ae</a></div>
+    <div class="homefoot">&copy; 2026 HisabOne &middot; Tax &amp; Compliance, Simplified &middot; <a href="mailto:hisab.oneinfo@gmail.com">hisab.oneinfo@gmail.com</a></div>
   </div>
   </div><!-- /viewHome -->
 
@@ -598,18 +598,10 @@
         <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10" width="13" height="9.5" rx="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3"/></svg></div><h3>Secure</h3><p>Bank-grade encryption, UAE Pass support, and verified unlinking.</p></div>
       </div>
 
-      <div class="lportal-card about-card">
-        <h2>The team</h2>
-        <div class="teamgrid">
-          <div class="teammate"><div class="tm-av">AK</div><div><div class="tm-name">Asra Khalid</div><div class="tm-role">Founder &amp; CEO</div><p>Built and shipped the HisabOne platform — product, design and the AI that runs underneath it.</p></div></div>
-          <div class="teammate"><div class="tm-av firm">JT</div><div><div class="tm-name">Jaideep Thakur</div><div class="tm-role">Co-founder &amp; COO</div><p>Operations and partnerships — bringing accounting firms and their clients onto one platform.</p></div></div>
-        </div>
-      </div>
-
       <div class="lportal-card about-card" style="text-align:center">
         <h2 style="margin-bottom:6px">Get in touch</h2>
         <p style="margin-bottom:14px">We're onboarding UAE businesses and accounting firms now.</p>
-        <a class="btn" href="mailto:hello@hisabone.ae" style="display:inline-block;text-decoration:none">Contact us — hello@hisabone.ae</a>
+        <a class="btn" href="mailto:hisab.oneinfo@gmail.com" style="display:inline-block;text-decoration:none">Contact us — hisab.oneinfo@gmail.com</a>
       </div>
     </div>
   </div>
@@ -633,7 +625,7 @@
           <button class="btn ghost" style="width:100%;margin-top:14px">Choose Starter</button>
         </div>
         <div class="card" style="cursor:default;border:2px solid var(--accent);position:relative">
-          <span class="pill p-teal" style="position:absolute;top:-11px;left:18px">Most popular</span>
+          <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
           <h3 style="font-size:16px">Growth</h3>
           <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a growing business</p>
           <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 299</span><span class="muted">/mo</span></div>
@@ -664,7 +656,7 @@
             <div style="font-size:13px;color:var(--muted);line-height:1.6">Manage all your clients' tax and compliance work from one purpose-built portal — document requests, AI auto-chase, calculators and reporting included. Get in touch and we'll set your firm up.</div>
           </div>
           <div style="flex:0 0 auto;min-width:200px;text-align:center">
-            <a class="btn" href="mailto:hello@hisabone.ae?subject=Partner%20Programme" style="display:inline-block;text-decoration:none">Contact us to become a partner</a>
+            <a class="btn" href="mailto:hisab.oneinfo@gmail.com?subject=Partner%20Programme" style="display:inline-block;text-decoration:none">Contact us to become a partner</a>
           </div>
         </div>
       </div>
@@ -751,11 +743,6 @@ function copyInvite(){try{navigator.clipboard&&navigator.clipboard.writeText(inv
   const b=document.getElementById('copyBtn');if(b)b.textContent='Copied ✓';}
 
 /* firm: link MULTIPLE clients (chip add keeps database in sync) */
-function addClientInApp(){
-  const el=document.getElementById('newClient');
-  if(el && el.value.trim()){const n=el.value.trim();clients.push(n);
-    firmClients.push({name:n,trn:'—',deadline:'Onboarding',docs:'0/5',risk:'medium',urgency:'soon'});renderPage();}
-}
 function rmClientInApp(i){const n=clients[i];clients.splice(i,1);firmClients=firmClients.filter(c=>c.name!==n);renderPage();}
 
 /* business: link a firm using their invite code (looked up across registered firm accounts) */
@@ -813,12 +800,13 @@ function submitReq(kind){
 }
 
 /* firm: email reminders */
+const REMINDER_APPS = ['VAT Return Q2 2026','VAT Return Q3 2026','VAT Registration','Corporate Tax Return FY2025','Corporate Tax Registration','FTA Profile Amendment','Audit FY2025','Excise Tax Registration'];
 let firmReminders = [];
 let reminderFormOpen=false;
 function toggleReminderForm(){reminderFormOpen=!reminderFormOpen;renderPage();}
 function submitReminder(){
   const g=id=>document.getElementById(id).value;
-  const rec={client:g('remClient'),doc:g('remDoc')||'Document',last:'Just scheduled',next:g('remWhen'),auto:g('remAuto')==='On'?'green':'gray'};
+  const rec={client:g('remClient'),app:g('remApp'),doc:g('remDoc')||'Document',last:'Just scheduled',next:g('remWhen'),auto:g('remAuto')==='On'?'green':'gray'};
   firmReminders.unshift(rec);
   const sendNow = g('remWhen')==='Immediately' || rec.auto==='green';
   reminderFormOpen=false;renderPage();
@@ -830,6 +818,62 @@ let bizTaxDocs = [];
 let bizAuditDocs = [];
 /* business: personal document vault (not tied to any request) */
 let vaultDocs = [];
+/* basic UAE company documents every business should keep on file */
+const COMPANY_DOC_TYPES = [
+  {id:'trade_license', name:'Trade Licence', hint:'DED or free-zone licence'},
+  {id:'coi', name:'Certificate of Incorporation', hint:'Formation / registration'},
+  {id:'moa', name:'Memorandum of Association (MOA)', hint:'Company constitution'},
+  {id:'vat_cert', name:'VAT Registration Certificate', hint:'FTA TRN certificate'},
+  {id:'ct_cert', name:'Corporate Tax Registration', hint:'FTA CT certificate'},
+  {id:'establishment', name:'Establishment / Immigration Card', hint:'Labour / immigration'},
+  {id:'chamber', name:'Chamber of Commerce Certificate', hint:'Membership certificate'},
+  {id:'emirates_id', name:'Owner / Manager Emirates ID', hint:'Authorised signatory'},
+  {id:'passport', name:'Owner / Manager Passport', hint:'Authorised signatory'},
+];
+let companyDocReading = {}; /* typeId -> true while OCR runs */
+function fmtDocDate(iso){
+  if(!iso) return null;
+  const d=new Date(iso+'T00:00:00');
+  if(isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+}
+function expiryInfo(iso){
+  if(!iso) return {txt:'—',col:'var(--muted)'};
+  const d=new Date(iso+'T00:00:00');
+  if(isNaN(d.getTime())) return {txt:iso,col:'var(--text)'};
+  const days=(d.getTime()-Date.now())/86400000;
+  const txt=fmtDocDate(iso);
+  if(days<0) return {txt:txt+' · expired',col:'var(--red)'};
+  if(days<60) return {txt:txt+' · renew soon',col:'var(--amber)'};
+  return {txt:txt,col:'var(--green)'};
+}
+function uploadCompanyDoc(typeId){
+  const inp=document.getElementById('fileInput');
+  inp.value='';
+  inp.onchange=async ()=>{
+    const f=inp.files&&inp.files[0]; inp.onchange=null;
+    if(!f) return;
+    const added=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    vaultDocs=vaultDocs.filter(d=>d.typeId!==typeId); /* replace any existing of this type */
+    companyDocReading[typeId]=true; renderPage();
+    let issueDate=null, expiryDate=null;
+    try{
+      const payload=await fileToOCRPayload(f);
+      const r=await fetch('/api/docdates',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      const d=await r.json().catch(()=>({}));
+      if(r.ok && d && d.ok){ issueDate=d.issueDate||null; expiryDate=d.expiryDate||null; }
+    }catch(e){}
+    delete companyDocReading[typeId];
+    vaultDocs.unshift({name:f.name, added:added, typeId:typeId, issueDate:issueDate, expiryDate:expiryDate});
+    renderPage();
+    toast((issueDate||expiryDate) ? 'Document read — dates detected automatically' : 'Uploaded — no dates detected on this document');
+  };
+  inp.click();
+}
+function removeCompanyDoc(typeId){
+  const d=vaultDocs.find(x=>x.typeId===typeId); if(!d) return;
+  if(confirm('Remove "'+d.name+'" from your document vault?')){ vaultDocs=vaultDocs.filter(x=>x.typeId!==typeId); renderPage(); }
+}
 function uploadVaultDoc(){
   const inp=document.getElementById('fileInput');
   inp.value='';
@@ -1126,6 +1170,14 @@ dash:()=>{
       <div style="opacity:.7;font-size:13px">Once linked, they can request documents and track your filings here.</div></div>
     <button class="btn" onclick="go('links')">Link a firm</button>
   </div>`}
+  ${linkedFirm ? `
+  <div class="card mb14" style="display:flex;align-items:center;gap:14px;border-color:var(--accent)">
+    <div class="avatar" style="width:42px;height:42px;font-size:17px">${linkedFirm[0]}</div>
+    <div style="flex:1"><div style="font-weight:700">${linkedFirm}</div>
+      <div class="muted" style="font-size:12.5px">Your linked accounting / audit firm</div></div>
+    <span class="pill p-green"><span class="dot" style="background:var(--green)"></span>Connected</span>
+    <button class="btn ghost sm" onclick="go('links')">Manage</button>
+  </div>` : ''}
   <div class="grid g3 mb14">
     <div class="card stat clk" onclick="go('btax')"><div class="ic">${svgIcon('shield',20)}</div><div class="num">${compliance==null?'—':compliance+'%'}</div><div class="lbl">Compliance rating</div></div>
     <div class="card stat clk" onclick="go('btax')"><div class="ic">${svgIcon('clock',20)}</div><div class="num">${open.length}</div><div class="lbl">Outstanding requests</div></div>
@@ -1318,13 +1370,20 @@ bvat:()=>`
 docs:()=>{
   const openTax=bizTaxDocs.filter(d=>d.state!=='done');
   const auditDone=bizAuditDocs.filter(d=>d.state==='done').length;
+  const onFile=COMPANY_DOC_TYPES.filter(t=>vaultDocs.some(d=>d.typeId===t.id)).length;
+  const otherDocs=vaultDocs.filter(d=>!d.typeId);
   return `
   <h1>Documents</h1>
-  <div class="sub">Your secure vault. Upload documents here, and track what your accountant has requested.</div>
+  <div class="sub">Your secure vault. Keep your core company documents on file — HisabOne reads their issue and expiry dates for you.</div>
+  <div class="card mb14">
+    <div class="cardhead"><h3>${svgIcon('folder',16)} Company documents</h3><span class="pill p-teal">${onFile}/${COMPANY_DOC_TYPES.length} on file</span></div>
+    <p class="muted" style="font-size:12.5px;margin-bottom:6px">Upload each document once. HisabOne reads the issue and expiry dates automatically and flags anything expiring soon.</p>
+    <div style="margin-top:6px">${COMPANY_DOC_TYPES.map(t=>companyDocRow(t)).join('')}</div>
+  </div>
   <div class="grid g2 mb14">
     <div class="card">
-      <div class="cardhead"><h3>Document vault</h3><button class="btn sm" onclick="uploadVaultDoc()">+ Upload</button></div>
-      ${vaultDocs.length ? vaultDocs.map((d,i)=>vaultDocRow(d,i)).join('') : `<div class="muted" style="text-align:center;padding:22px;font-size:13px">No documents yet. Click + Upload to add your first document.</div>`}
+      <div class="cardhead"><h3>Other documents</h3><button class="btn sm" onclick="uploadVaultDoc()">+ Upload</button></div>
+      ${otherDocs.length ? otherDocs.map(d=>vaultDocRow(d,vaultDocs.indexOf(d))).join('') : `<div class="muted" style="text-align:center;padding:22px;font-size:13px">No other documents yet. Click + Upload to add anything else.</div>`}
     </div>
     <div>
       <div class="card mb14">
@@ -1426,7 +1485,7 @@ fdash:()=>{
   <div class="banner">
     <div style="color:var(--accent)">${svgIcon('users',30)}</div>
     <div style="flex:1"><div class="big">Link your first client to get started</div>
-      <div style="opacity:.7;font-size:13px">Share your invite code from the Clients page, or add a client directly.</div></div>
+      <div style="opacity:.7;font-size:13px">Share your invite code from the Clients page — clients link to you automatically when they enter it.</div></div>
     <button class="btn" onclick="go('clients')">Go to Clients</button>
   </div>`}
   <div class="grid g2">
@@ -1460,11 +1519,7 @@ clients:()=>{
       <button class="btn sm" id="copyBtn" onclick="copyInvite()">Copy invite</button>
       <button class="btn ghost sm" onclick="genInvite()">New code</button>
     </div>
-    <div style="display:flex;gap:8px">
-      <input id="newClient" placeholder="…or add a client by name" class="finput" style="flex:1">
-      <button class="btn" onclick="addClientInApp()">+ Link client</button>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:13px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:2px">
       ${clients.map((c,i)=>`<span style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px">${c}<span style="cursor:pointer;opacity:.6" title="Unlink (needs verification)" onclick="requestUnlinkClient(${i})">✕</span></span>`).join('')}
     </div>
   </div>
@@ -1512,7 +1567,8 @@ reminders:()=>`
     <div class="cardhead"><h3>New email reminder</h3></div>
     <div class="grid g4" style="margin-bottom:14px">
       <div><label class="flabel">Client</label><select id="remClient" class="finput">${clients.map(c=>`<option>${c}</option>`).join('')}</select></div>
-      <div><label class="flabel">Document</label><input id="remDoc" class="finput" placeholder="e.g. June sales invoices"></div>
+      <div><label class="flabel">Ongoing application</label><select id="remApp" class="finput">${REMINDER_APPS.map(o=>`<option>${o}</option>`).join('')}</select></div>
+      <div><label class="flabel">Document needed</label><input id="remDoc" class="finput" placeholder="e.g. June sales invoices"></div>
       <div><label class="flabel">Send</label><select id="remWhen" class="finput"><option>Immediately</option><option>Tomorrow · 09:00</option><option>In 3 days</option><option>In 7 days</option></select></div>
       <div><label class="flabel">Auto-chase</label><select id="remAuto" class="finput"><option>On</option><option>Off</option></select></div>
     </div>
@@ -1524,8 +1580,8 @@ reminders:()=>`
       <h3 style="font-size:15px">Reminder schedule</h3>
       <button class="btn sm" onclick="toggleReminderForm()">${reminderFormOpen?'Close':'+ New reminder'}</button></div>
     <table>
-      <tr><th>Client</th><th>Document</th><th>Last sent</th><th>Next reminder</th><th>Auto-chase</th><th></th></tr>
-      ${firmReminders.length ? firmReminders.map((r,i)=>remRow(r,i)).join('') : `<tr><td colspan="6" class="muted" style="text-align:center;padding:22px">No reminders scheduled yet.</td></tr>`}
+      <tr><th>Client</th><th>Ongoing application</th><th>Document</th><th>Last sent</th><th>Next reminder</th><th>Auto-chase</th><th></th></tr>
+      ${firmReminders.length ? firmReminders.map((r,i)=>remRow(r,i)).join('') : `<tr><td colspan="7" class="muted" style="text-align:center;padding:22px">No reminders scheduled yet.</td></tr>`}
     </table>
   </div>
   <div class="card mt18">
@@ -1533,10 +1589,10 @@ reminders:()=>`
     ${firmReminders.length ? (()=>{ const r=firmReminders[0]; const firm=currentAccount?currentAccount.name:'Your firm'; return `
     <div style="background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px;line-height:1.7">
       <div class="muted" style="font-size:11.5px;margin-bottom:8px">To: ${r.client} · From: ${firm} via HisabOne</div>
-      <div style="font-weight:700;margin-bottom:8px">Reminder: ${r.doc} needed</div>
+      <div style="font-weight:700;margin-bottom:8px">Reminder: ${r.doc} needed${r.app?' for '+r.app:''}</div>
       Dear ${r.client},<br><br>
-      We still need <b>${r.doc}</b> from you. Please upload it securely via your HisabOne portal — no email attachments needed.<br><br>
-      <span class="link">Upload documents →</span><br><br>
+      We still need <b>${r.doc}</b> from you${r.app?` for your <b>${r.app}</b>`:''}. Please sign in to your HisabOne portal and upload it securely — no email attachments needed.<br><br>
+      <a href="https://hisabone.ae" target="_blank" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:9px">Sign in &amp; upload →</a><br><br>
       Thank you,<br>${firm}
     </div>`; })() : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">Schedule a reminder above to see a live preview here.</div>`}
   </div>`,
@@ -1819,9 +1875,20 @@ function toast(msg){
   clearTimeout(window._toastT); window._toastT=setTimeout(()=>t.classList.remove('show'),3900);
 }
 function bizEmailByName(name){ try{ const a=loadAccounts().find(x=>x.role==='business'&&x.name===name); return a?a.email:null; }catch(e){ return null; } }
+function buildEmailHTML(text){
+  const body = String(text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  return '<div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f1f33">'
+    +'<div style="font-weight:800;font-size:20px;color:#0e1733;margin-bottom:2px">Hisab<span style="color:#0f8fb0">One</span></div>'
+    +'<div style="font-size:12px;color:#64748b;margin-bottom:20px">Tax &amp; Compliance, Simplified</div>'
+    +'<div style="font-size:14px;line-height:1.7">'+body+'</div>'
+    +'<div style="margin:26px 0 8px"><a href="https://hisabone.ae" style="display:inline-block;background:#0f8fb0;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 26px;border-radius:10px">Sign in &amp; upload &rarr;</a></div>'
+    +'<div style="font-size:12px;color:#94a3b8;margin-top:20px;border-top:1px solid #e2e8f0;padding-top:14px">You received this because your business is linked on HisabOne. Visit <a href="https://hisabone.ae" style="color:#0f8fb0">hisabone.ae</a> to sign in and upload your documents securely.</div>'
+    +'</div>';
+}
 async function sendAppEmail(to,subject,text){
   try{
-    const r=await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:to,subject:subject,text:text})});
+    const fullText = text + '\n\nSign in and upload securely: https://hisabone.ae';
+    const r=await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({to:to,subject:subject,text:fullText,html:buildEmailHTML(text)})});
     const d=await r.json().catch(()=>({}));
     return !!(r.ok && d && d.ok);
   }catch(e){ return false; }
@@ -1831,8 +1898,8 @@ function sendReminderNow(i){
   const email=bizEmailByName(r.client);
   r.last='Just now';
   if(!email){ toast('No registered HisabOne email found for '+r.client); renderPage(); return; }
-  const subject='Reminder: '+r.doc+' still needed';
-  const text='Hello '+r.client+',\n\nThis is a reminder that we still need "'+r.doc+'" for your filing. Please sign in to your HisabOne portal and upload it securely.\n\nThank you,\n'+(currentAccount?currentAccount.name:'Your accountant');
+  const subject='Reminder: '+r.doc+' still needed'+(r.app?' for '+r.app:'');
+  const text='Hello '+r.client+',\n\nThis is a reminder that we still need "'+r.doc+'"'+(r.app?' for your '+r.app:'')+'. Please sign in to your HisabOne portal and upload it securely.\n\nThank you,\n'+(currentAccount?currentAccount.name:'Your accountant');
   toast('Sending reminder to '+email+'…');
   sendAppEmail(email,subject,text).then(ok=>{ toast(ok?('Reminder emailed to '+email):('Reminder logged — add RESEND_API_KEY in Vercel to email '+email)); renderPage(); });
 }
@@ -2269,7 +2336,7 @@ function reqForm(kind){
 /* email reminder row */
 function remRow(r,i){
   const on=r.auto==='green';
-  return `<tr><td><b>${r.client}</b></td><td>${r.doc}</td><td class="muted">${r.last}</td><td>${r.next}</td>
+  return `<tr><td><b>${r.client}</b></td><td>${r.app||'—'}</td><td>${r.doc}</td><td class="muted">${r.last}</td><td>${r.next}</td>
     <td><span class="pill ${on?'p-green':'p-gray'}">${on?'On':'Off'}</span></td>
     <td><button class="btn ghost sm" onclick="sendReminderNow(${i})">Send now</button></td></tr>`;}
 function docRow(ic,n,c,m){const col={red:'var(--red)',amber:'var(--amber)',green:'var(--green)'}[c];
@@ -2282,6 +2349,28 @@ function reqFromFirm(n,f,cls,s){return `<div class="drow"><div style="color:var(
 function vaultDocRow(d,i){return `<div class="drow"><div style="color:var(--accent)">${svgIcon('file',18)}</div>
   <div style="flex:1"><div class="dtitle">${d.name}</div><div class="dmeta">Added ${d.added}</div></div>
   <button class="iconbtn" title="Delete document" onclick="deleteVaultDoc(${i})">${svgIcon('trash',15)}</button></div>`;}
+function companyDocRow(t){
+  const d=vaultDocs.find(x=>x.typeId===t.id);
+  const reading=companyDocReading[t.id];
+  const dcell=(label,val,col)=>`<div style="min-width:110px">
+    <div class="muted" style="font-size:10px;text-transform:uppercase;letter-spacing:.5px">${label}</div>
+    <div style="font-size:12.5px;font-weight:600;color:${col||'var(--text)'}">${val}</div></div>`;
+  let right;
+  if(reading){
+    right=`<div class="muted" style="font-size:12.5px;display:flex;align-items:center;gap:7px"><span style="color:var(--accent)">${svgIcon('sparkles',15)}</span> Reading dates…</div>`;
+  } else if(d){
+    const exp=expiryInfo(d.expiryDate);
+    right=`${dcell('Issued', fmtDocDate(d.issueDate)||'—')}${dcell('Expires', exp.txt, exp.col)}`
+      +`<button class="btn ghost sm" onclick="uploadCompanyDoc('${t.id}')">Replace</button>`
+      +`<button class="iconbtn" title="Remove" onclick="removeCompanyDoc('${t.id}')">${svgIcon('trash',15)}</button>`;
+  } else {
+    right=`<button class="btn sm" onclick="uploadCompanyDoc('${t.id}')">${svgIcon('paperclip',14)} Upload</button>`;
+  }
+  return `<div class="drow" style="align-items:center;gap:14px;flex-wrap:wrap">
+    <div style="color:var(--accent)">${svgIcon(d?'file-text':'file',18)}</div>
+    <div style="flex:1;min-width:170px"><div class="dtitle">${t.name}</div><div class="dmeta">${d?d.name:t.hint}</div></div>
+    ${right}
+  </div>`;}
 function linkProcFromDocs(title,arr){
   const doneCount=arr.filter(d=>d.state==='done').length;
   return `<div class="card">

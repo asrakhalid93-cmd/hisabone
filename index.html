@@ -430,7 +430,7 @@
 
   /* ===== home / about (light) ===== */
   .homewrap{max-width:1120px;width:100%;margin:0 auto}
-  .hero{display:flex;gap:44px;align-items:center;padding:34px 0 10px;flex-wrap:wrap;min-height:84vh}
+  .hero{display:flex;gap:44px;align-items:center;padding:30px 0 6px;flex-wrap:wrap;min-height:64vh}
   .hero-copy{flex:1.05;min-width:320px}
   .hero-badge{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
     color:var(--accent-d);background:var(--accent-bg);border-radius:999px;padding:6px 14px;margin-bottom:18px}
@@ -465,7 +465,13 @@
     box-shadow:0 1px 2px rgba(16,32,60,.04)}
   .statstrip b{display:block;font-size:22px;letter-spacing:-.5px;color:var(--text)}
   .statstrip span{font-size:12.5px;color:var(--muted)}
-  .homesect{margin-top:118px;text-align:center;scroll-margin-top:80px}
+  .homesect{margin-top:28px;text-align:center;scroll-margin-top:80px}
+  /* section-to-section flow connector */
+  .sectflow{display:flex;flex-direction:column;align-items:center;justify-content:center;height:74px;margin:6px 0 0}
+  .sectflow .l{width:2px;height:40px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(13,148,136,.65))}
+  .sectflow .c{margin-top:2px;color:var(--accent);display:flex;animation:flowbob 1.9s ease-in-out infinite}
+  @keyframes flowbob{0%,100%{transform:translateY(-1px);opacity:.5}50%{transform:translateY(3px);opacity:1}}
+  @media(prefers-reduced-motion:reduce){.sectflow .c{animation:none}}
   .homeh2{font-size:34px;letter-spacing:-1px;color:var(--text);margin:6px 0 26px;font-weight:800}
   .homesect .lcards{text-align:left}
   .featgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;text-align:left}
@@ -482,7 +488,7 @@
     color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
   .step3 h3{font-size:15px;color:var(--text);margin-bottom:6px}
   .step3 p{font-size:13px;color:var(--muted);line-height:1.6}
-  .ctaband{margin:118px 0 8px;background:radial-gradient(900px 420px at 85% -30%,rgba(122,90,248,.35),transparent 60%),linear-gradient(135deg,#101c38,#1c1440);border-radius:22px;padding:44px 30px;text-align:center;
+  .ctaband{margin:34px 0 8px;background:radial-gradient(900px 420px at 85% -30%,rgba(122,90,248,.35),transparent 60%),linear-gradient(135deg,#101c38,#1c1440);border-radius:22px;padding:44px 30px;text-align:center;
     box-shadow:0 20px 50px rgba(16,32,60,.18)}
   .ctaband h2{color:#fff;font-size:26px;letter-spacing:-.5px;margin-bottom:8px}
   .ctaband p{color:rgba(255,255,255,.72);font-size:14.5px;margin-bottom:20px}
@@ -490,7 +496,26 @@
   .ctaband .hero-ghost:hover{background:rgba(255,255,255,.18);color:#fff}
   .homefoot{text-align:center;color:var(--muted);font-size:12.5px;padding:26px 0 8px}
   .homefoot a{color:var(--accent-d);text-decoration:none;font-weight:600}
-  @media(max-width:900px){.hero-h1{font-size:40px;letter-spacing:-1.2px}.homeh2{font-size:28px}.hero{padding-top:12px;min-height:auto}.homesect{margin-top:72px}.ctaband{margin-top:72px}}
+  .footcontact{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:11px 22px;border-radius:12px;font-weight:700;font-size:13.5px;color:#fff;text-decoration:none;background:linear-gradient(120deg,#0d9488,#4f7ef0 60%,#8a5cf6);box-shadow:0 10px 26px rgba(79,126,240,.26);transition:transform .16s ease,box-shadow .16s ease}
+  .footcontact:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(79,126,240,.34);color:#fff}
+  /* pricing */
+  .annualpromo{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 22px;max-width:600px;padding:13px 22px;border-radius:14px;color:#fff;font-weight:700;font-size:13.5px;letter-spacing:.2px;text-align:center;background:linear-gradient(120deg,#0d9488,#4f7ef0 55%,#8a5cf6);box-shadow:0 12px 30px rgba(79,126,240,.28)}
+  .annualpromo::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);transform:translateX(-130%);animation:promoshine 3.3s ease-in-out infinite}
+  @keyframes promoshine{0%{transform:translateX(-130%)}62%,100%{transform:translateX(130%)}}
+  .annualpromo .g{display:flex;flex-shrink:0}
+  .billtoggle{display:flex;justify-content:center;margin-bottom:18px}
+  .billsave{display:inline-block;margin-left:7px;font-size:10px;font-weight:800;color:#0d9488;background:rgba(13,148,136,.14);border-radius:999px;padding:2px 8px;vertical-align:middle;letter-spacing:.3px}
+  .pcard{display:flex;flex-direction:column;text-align:left;transition:transform .16s ease,box-shadow .16s ease}
+  .pcard:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(16,32,60,.12)}
+  .pcard .ptitle{font-size:16.5px;font-weight:800;color:var(--text)}
+  .pcard .psub{font-size:12.5px;color:var(--muted);margin:2px 0 14px}
+  .pcard .price-amt{font-size:32px;font-weight:800;letter-spacing:-.6px;color:var(--text);line-height:1}
+  .pcard .price-per{font-size:13.5px;color:var(--muted);font-weight:600}
+  .pcard .price-note{font-size:11.5px;color:var(--accent-d);font-weight:700;margin-top:5px;min-height:15px}
+  .pcard .prow{display:flex;gap:9px;align-items:flex-start;padding:6px 0;font-size:13px;line-height:1.45;color:var(--text)}
+  .pcard .prow svg{flex-shrink:0;margin-top:2px;color:var(--green)}
+  @media(prefers-reduced-motion:reduce){.annualpromo::after{animation:none}}
+  @media(max-width:900px){.hero-h1{font-size:40px;letter-spacing:-1.2px}.homeh2{font-size:28px}.hero{padding-top:12px;min-height:auto}.homesect{margin-top:22px}.ctaband{margin-top:30px}.sectflow{height:60px}}
   /* about (light) */
   .about-card{cursor:default;margin-bottom:16px}
   .about-card h2{font-size:19px;color:var(--text);margin-bottom:10px}
@@ -618,7 +643,6 @@
     <div class="ltabs">
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
       <button id="tabSignin" class="ltab" onclick="switchView('signin')">Sign In</button>
-      <button id="tabAbout" class="ltab" onclick="switchView('about')">About Us</button>
       <button id="tabPricing" class="ltab" onclick="switchView('pricing')">Pricing</button>
     </div>
   </div>
@@ -655,6 +679,8 @@
       </div>
     </div>
 
+    <div class="sectflow" aria-hidden="true"><span class="l"></span><span class="c"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
+
     <!-- two portals -->
     <div class="homesect">
       <div class="lsectlabel reveal">One workspace &middot; two portals</div>
@@ -676,6 +702,8 @@
         </div>
       </div>
     </div>
+
+    <div class="sectflow" aria-hidden="true"><span class="l"></span><span class="c"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
 
     <!-- how it works — visual storyboard -->
     <div class="homesect">
@@ -730,6 +758,8 @@
       </div>
     </div>
 
+    <div class="sectflow" aria-hidden="true"><span class="l"></span><span class="c"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
+
     <!-- features -->
     <div class="homesect">
       <div class="lsectlabel reveal">Everything compliance needs</div>
@@ -743,6 +773,8 @@
         <div class="feat"><div class="feat-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5M12 16V8M16 16v-8"/></svg></div><h3>Reports &amp; reminders</h3><p>Exportable reports, shareable in-app, emailed on schedule.</p></div>
       </div>
     </div>
+
+    <div class="sectflow" aria-hidden="true"><span class="l"></span><span class="c"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
 
     <!-- trust: how data is handled (honest — no invented badges) -->
     <div class="homesect">
@@ -761,12 +793,14 @@
       <p>One avoided AED 1,000 late-filing penalty covers five months of HisabOne.</p>
       <div class="hero-cta" style="justify-content:center">
         <button class="lf-btn" style="width:auto;padding:13px 30px" onclick="startTrial()">Sign in &rarr;</button>
-        <button class="hero-ghost" onclick="switchView('about')">About us</button>
+        <a class="hero-ghost" href="mailto:info@hisabone.ae" style="text-decoration:none;display:inline-flex;align-items:center">Contact us</a>
       </div>
       <div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:14px">Private preview &middot; access by invitation</div>
     </div>
 
-    <div class="homefoot">&copy; 2026 HisabOne &middot; Tax &amp; Compliance, Simplified &middot; <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>
+    <div class="homefoot">
+      <a class="footcontact" href="mailto:info@hisabone.ae"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg> Contact us</a>
+      <div>HisabOne &middot; Tax &amp; Compliance, Simplified &middot; <a href="mailto:info@hisabone.ae">info@hisabone.ae</a></div>
       <div style="margin-top:7px"><a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> &middot; <a href="#" onclick="switchView('terms');return false">Terms of Service</a></div></div>
   </div>
   </div><!-- /viewHome -->
@@ -836,95 +870,70 @@
 
 
   <!-- ===== ABOUT US VIEW ===== -->
-  <div id="viewAbout" class="lview">
-    <div style="max-width:860px;width:100%">
-      <div class="lviewhead"><h1>About HisabOne</h1>
-        <p>UAE tax &amp; compliance for businesses and accountants — in one place, without the chaos of email and WhatsApp.</p></div>
-
-      <div class="lportal-card about-card">
-        <h2>What we do</h2>
-        <p>HisabOne brings UAE businesses and their accountants together on a single secure platform to handle FTA registrations, VAT and corporate tax filings, audit preparation, and document deadlines. Businesses keep every registration document, expiry date and request in one portal. Accountants manage all of their clients, request documents per process, and chase them automatically — so nothing is lost in an inbox and no deadline slips.</p>
-      </div>
-
-      <div class="lportal-card about-card">
-        <h2>Why it matters</h2>
-        <p>Compliance in the UAE runs on chaos — scattered email and WhatsApp threads, manual spreadsheets, and follow-ups that depend on someone remembering. And non-compliance is expensive: a late VAT return costs AED 1,000&ndash;2,000, late-paid tax accrues 14% interest a year, and late corporate-tax registration carries a flat AED 10,000 penalty. With VAT since 2018, corporate tax since 2023 and mandatory e-invoicing arriving in 2026&ndash;27, every one of the UAE's 1.4 million registered businesses has to get compliance right — continuously.</p>
-      </div>
-
-      <div class="lportal-card about-card">
-        <h2>Our vision</h2>
-        <p>Make tax compliance automated, transparent and cost-effective for every UAE business and the accountants who manage them — contributing to the UAE's vision of AI integration across government and enterprise. Our mission is simple: remove manual follow-up and human error from tax and audit paperwork, so a penalty is never a surprise.</p>
-      </div>
-
-      <div class="grid g3" style="margin-bottom:16px">
-        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M10.5 6.5l1-1a3.5 3.5 0 0 1 5 5l-1 1"/><path d="M13.5 17.5l-1 1a3.5 3.5 0 0 1-5-5l1-1"/></svg></div><h3>Connected</h3><p>Businesses and accountants linked securely — no more email or WhatsApp.</p></div>
-        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.7 4.6L18 9.3l-4.3 1.7L12 15.6 10.3 11 6 9.3l4.3-1.7z"/><path d="M18 14l.8 2 2 .8-2 .8L18 20l-.8-2-2-.8 2-.8z"/></svg></div><h3>AI-automated</h3><p>Filings pre-filled, documents auto-chased, deadlines tracked for you.</p></div>
-        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10" width="13" height="9.5" rx="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3"/></svg></div><h3>Secure</h3><p>Bank-grade encryption, UAE Pass support, and verified unlinking.</p></div>
-      </div>
-
-      <div class="lportal-card about-card" style="text-align:center">
-        <h2 style="margin-bottom:6px">Get in touch</h2>
-        <p style="margin-bottom:14px">We're onboarding UAE businesses and accounting firms now.</p>
-        <a class="btn" href="mailto:info@hisabone.ae" style="display:inline-block;text-decoration:none">Contact us — info@hisabone.ae</a>
-      </div>
-    </div>
-  </div>
-
   <!-- ===== PRICING VIEW ===== -->
   <div id="viewPricing" class="lview">
     <div style="max-width:1040px;width:100%">
-      <div class="lviewhead"><h1>Simple, transparent pricing</h1>
+      <div class="lviewhead" style="text-align:center"><h1>Simple, transparent pricing</h1>
         <p>Plans for businesses and for accounting / audit firms. No setup fees — cancel anytime.</p></div>
 
-      <div class="lsectlabel">For Businesses</div>
-      <div class="grid g3" style="margin-bottom:30px">
-        <div class="card" style="cursor:default">
-          <h3 style="font-size:16px">Starter</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a small business</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 199</span><span class="muted">/mo</span></div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Corporate Tax registration &amp; application</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>AI Assist &amp; tax guides</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Document vault &amp; expiry alerts</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Link your accountant</div>
-          <button class="btn ghost" style="width:100%;margin-top:14px" onclick="startTrial()">Sign in</button>
+      <div class="annualpromo"><span class="g"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M12 8S10.5 3 8 4.2 9.5 8 12 8zM12 8s1.5-5 4-3.8S14.5 8 12 8z"/></svg></span> Save 25% — get <b style="text-decoration:underline;text-underline-offset:2px">3 months free</b> on every annual plan</div>
+
+      <div class="billtoggle">
+        <span class="seg">
+          <button id="billMonthly" class="on" onclick="setBilling('monthly')">Monthly</button>
+          <button id="billAnnual" onclick="setBilling('annual')">Annual <span class="billsave">3 MONTHS FREE</span></button>
+        </span>
+      </div>
+
+      <div class="lsectlabel" style="text-align:center">For Businesses</div>
+      <div class="grid g3" style="margin-bottom:30px;align-items:stretch">
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Starter</div>
+          <div class="psub">For a small business</div>
+          <div class="priceblk" data-monthly="199" style="margin-bottom:14px"><span class="price-amt">AED 199</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Corporate Tax registration &amp; application</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI Assist &amp; tax guides</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Document vault &amp; expiry alerts</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link your accountant</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Sign in</button>
         </div>
-        <div class="card" style="cursor:default;border:2px solid var(--accent);position:relative">
+        <div class="card pcard" style="cursor:default;border:2px solid var(--accent);position:relative">
           <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
-          <h3 style="font-size:16px">Growth</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a growing business</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 299</span><span class="muted">/mo</span></div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Everything in Starter</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>All VAT &amp; Corporate Tax filings</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>VAT &amp; CT calculator</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Automated compliance check</div>
-          <button class="btn" style="width:100%;margin-top:14px" onclick="startTrial()">Sign in</button>
+          <div class="ptitle">Growth</div>
+          <div class="psub">For a growing business</div>
+          <div class="priceblk" data-monthly="299" style="margin-bottom:14px"><span class="price-amt">AED 299</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Starter</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>All VAT &amp; Corporate Tax filings</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT &amp; CT calculator</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Automated compliance check</span></div>
+          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Sign in</button>
         </div>
-        <div class="card" style="cursor:default">
-          <h3 style="font-size:16px">Business Pro</h3>
-          <p class="muted" style="font-size:12.5px;margin-bottom:12px">For a larger business</p>
-          <div style="margin-bottom:14px"><span style="font-size:26px;font-weight:700">AED 499</span><span class="muted">/mo</span></div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Everything in Growth</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Full audit processes &amp; tracking</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Link an external auditor</div>
-          <div style="display:flex;gap:8px;padding:5px 0;font-size:13px"><span style="color:var(--green)">✓</span>Priority support</div>
-          <button class="btn ghost" style="width:100%;margin-top:14px" onclick="startTrial()">Sign in</button>
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Business Pro</div>
+          <div class="psub">For a larger business</div>
+          <div class="priceblk" data-monthly="499" style="margin-bottom:14px"><span class="price-amt">AED 499</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Growth</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; tracking</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link an external auditor</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority support</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Sign in</button>
         </div>
       </div>
 
-      <div class="lsectlabel">For Accountants &amp; Audit Firms</div>
+      <div class="lsectlabel" style="text-align:center">For Accountants &amp; Audit Firms</div>
       <div class="card" style="cursor:default;margin-bottom:10px">
         <div style="display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:space-between">
           <div style="flex:1;min-width:240px">
-            <h3 style="font-size:16px">Partner Programme</h3>
+            <h3 style="font-size:16px;margin-bottom:2px">Partner Programme</h3>
             <p class="muted" style="font-size:12.5px;margin-bottom:12px">For accounting &amp; audit firms</p>
-            <div style="font-size:13px;color:var(--muted);line-height:1.6">Manage all your clients' tax and compliance work from one purpose-built portal — document requests, AI auto-chase, calculators and reporting included. Get in touch and we'll set your firm up.</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.65">Manage all your clients' tax and compliance work from one purpose-built portal — team logins &amp; roles, document requests, AI auto-chase, calculators and reporting included. Get in touch and we'll set your firm up.</div>
           </div>
           <div style="flex:0 0 auto;min-width:200px;text-align:center">
             <a class="btn" href="mailto:info@hisabone.ae?subject=Partner%20Programme" style="display:inline-block;text-decoration:none">Contact us to become a partner</a>
           </div>
         </div>
       </div>
-      <div class="muted" style="text-align:center;font-size:12px;padding:6px 0 10px">Prices exclude 5% VAT. A single avoided AED 1,000 late-filing penalty covers five months of the Starter plan.</div>
+      <div class="muted" style="text-align:center;font-size:12px;padding:6px 0 10px">Prices exclude 5% VAT. Annual plans are billed yearly at the equivalent of nine months — three months free. A single avoided AED 1,000 late-filing penalty covers five months of the Starter plan.</div>
     </div>
   </div>
 
@@ -1084,7 +1093,7 @@ async function loadWorkspace(){
       }
       bizTaxDocs=[]; bizAuditDocs=[];
       (reqs||[]).forEach(r=>{
-        const row={id:r.id,name:r.doc,note:r.app?('For: '+r.app):'',due:r.due||'—',urg:r.urgency,risk:r.risk,state:r.state==='done'?'done':'req'};
+        const row={id:r.id,name:r.doc,note:r.app?('For: '+r.app):'',due:r.due||'—',urg:r.urgency,risk:r.risk,state:r.state==='done'?'done':'req',file:r.file_url||null,fileName:r.file_name||null};
         (r.kind==='tax'?bizTaxDocs:bizAuditDocs).push(row);
       });
     } else {
@@ -1099,7 +1108,8 @@ async function loadWorkspace(){
       firmTaxReqs=[]; firmAuditReqs=[];
       (reqs||[]).forEach(r=>{
         const row={id:r.id,client:r.client_name,doc:r.doc,app:r.app,due:r.due||'—',urg:r.urgency,risk:r.risk,
-                   st:r.state==='done'?'Received ✓':'Just sent', cls:r.state==='done'?'p-green':'p-teal'};
+                   st:r.state==='done'?'Received ✓':'Just sent', cls:r.state==='done'?'p-green':'p-teal',
+                   file:r.file_url||null, fileName:r.file_name||null};
         (r.kind==='tax'?firmTaxReqs:firmAuditReqs).push(row);
       });
       rebuildFirmClients();
@@ -1302,12 +1312,12 @@ function runUploadCompanyDoc(typeId){
 }
 function removeCompanyDoc(typeId){
   const d=vaultDocs.find(x=>x.typeId===typeId); if(!d) return;
-  if(confirm('Remove "'+d.name+'" from your document vault?')){
+  openConfirm({title:'Remove document', confirmLabel:'Remove', message:'Remove "'+d.name+'" from your document vault? This cannot be undone.', onYes:function(){
     vaultDocs=vaultDocs.filter(x=>x.typeId!==typeId);
     if(typeId==='vat_cert'){ calendarEvents=calendarEvents.filter(e=>e.type!=='vat'); vatCertMeta=null; }
     if(typeId==='ct_cert'){ calendarEvents=calendarEvents.filter(e=>e.type!=='ct'); ctCertMeta=null; }
     saveAccountData(); renderPage();
-  }
+  }});
 }
 function uploadVaultDoc(){ openDocTruth(function(){ runUploadVaultDoc(); }); }
 function runUploadVaultDoc(){
@@ -1327,7 +1337,8 @@ function runUploadVaultDoc(){
   inp.click();
 }
 function deleteVaultDoc(i){
-  if(confirm('Delete "'+vaultDocs[i].name+'"? This cannot be undone.')){vaultDocs.splice(i,1);renderPage();}
+  var name=(vaultDocs[i]&&vaultDocs[i].name)||'this document';
+  openConfirm({title:'Delete document', message:'Delete "'+name+'"? This cannot be undone.', onYes:function(){ vaultDocs.splice(i,1); renderPage(); }});
 }
 function uploadDoc(kind,i){ openDocTruth(function(){ runUploadDoc(kind,i); }); }
 function runUploadDoc(kind,i){
@@ -1335,23 +1346,37 @@ function runUploadDoc(kind,i){
   if(i==null||i<0) return;
   const inp=document.getElementById('fileInput');
   inp.value='';
-  inp.onchange=()=>{
-    arr[i].state='done';
-    /* let the linked firm know this request was fulfilled */
-    if(sb && arr[i].id){ try{ sb.from('doc_requests').update({state:'done'}).eq('id',arr[i].id).then(()=>{}); }catch(e){} }
-    inp.onchange=null; renderPage();
+  inp.onchange=async ()=>{
+    const f=inp.files&&inp.files[0]; inp.onchange=null;
+    if(!f) return;
+    arr[i].state='done'; arr[i].fileName=f.name;
+    renderPage();
+    /* upload the ACTUAL file and give the accountant a link to the exact document */
+    if(sb && currentAccount){
+      let fileUrl=null;
+      try{
+        const up=await sb.storage.from('vault').upload(currentAccount.id+'/req_'+Date.now()+'_'+f.name, f);
+        if(up && !up.error){ const su=await sb.storage.from('vault').createSignedUrl(up.data.path, 60*60*24*365); if(su&&su.data) fileUrl=su.data.signedUrl; }
+      }catch(e){}
+      arr[i].file=fileUrl;
+      if(arr[i].id){ try{ await sb.from('doc_requests').update({state:'done', file_url:fileUrl, file_name:f.name}).eq('id',arr[i].id); }catch(e){} }
+      renderPage();
+    }
+    if(typeof toast==='function') toast(f.name+' uploaded and shared with your accountant');
   };
   inp.click();
 }
 /* business: delete a requested document (with confirmation) */
 function deleteBizDoc(kind,i){
   const arr = kind==='tax'?bizTaxDocs:bizAuditDocs;
-  if(confirm('Are you sure you want to delete "'+arr[i].name+'"? This cannot be undone.')){arr.splice(i,1);renderPage();}
+  var name=(arr[i]&&arr[i].name)||'this document';
+  openConfirm({title:'Delete document', message:'Delete "'+name+'"? This cannot be undone.', onYes:function(){ arr.splice(i,1); renderPage(); }});
 }
 /* accountant: delete a document request (with confirmation) */
 function deleteReqDoc(kind,i){
   const arr = kind==='tax'?firmTaxReqs:firmAuditReqs;
-  if(confirm('Delete the request for "'+arr[i].doc+'" from '+arr[i].client+'? This cannot be undone.')){arr.splice(i,1);renderPage();}
+  var r=arr[i]||{};
+  openConfirm({title:'Delete request', message:'Delete the request for "'+(r.doc||'document')+'" from '+(r.client||'this client')+'? This cannot be undone.', onYes:function(){ arr.splice(i,1); renderPage(); }});
 }
 
 /* ---------- UNLINK CONFIRMATION ---------- */
@@ -1378,12 +1403,35 @@ function requestUnlinkClient(i){
   if(confirm('Unlink '+n+'? They will no longer appear in your client list.')) performUnlink({type:'client',name:n});
 }
 
-/* ---------- LOGIN top tabs (Sign In / Sign Up / About Us / Pricing) ---------- */
+/* ---------- LOGIN top tabs (Sign In / Sign Up / Pricing) ---------- */
 function switchView(v){
-  ['Home','Signin','About','Pricing','Privacy','Terms'].forEach(n=>{
+  ['Home','Signin','Pricing','Privacy','Terms'].forEach(n=>{
     const view=document.getElementById('view'+n); if(view) view.style.display=(n.toLowerCase()===v)?'flex':'none';
     const tab=document.getElementById('tab'+n); if(tab) tab.classList.toggle('on', n.toLowerCase()===v);
   });
+  if(v==='pricing' && typeof setBilling==='function') setBilling(window._billing||'monthly');
+}
+function setBilling(mode){
+  window._billing=mode;
+  var blks=document.querySelectorAll('.priceblk');
+  for(var i=0;i<blks.length;i++){
+    var el=blks[i], m=parseFloat(el.getAttribute('data-monthly'))||0;
+    var amt=el.querySelector('.price-amt'), per=el.querySelector('.price-per'), note=el.querySelector('.price-note');
+    if(!amt) continue;
+    if(mode==='annual'){
+      var perMo=Math.round(m*0.75), annual=m*9;
+      amt.textContent='AED '+perMo.toLocaleString('en-US');
+      per.textContent='/mo';
+      if(note) note.textContent='AED '+annual.toLocaleString('en-US')+' billed yearly · 3 months free';
+    } else {
+      amt.textContent='AED '+m.toLocaleString('en-US');
+      per.textContent='/mo';
+      if(note) note.textContent='billed monthly';
+    }
+  }
+  var mb=document.getElementById('billMonthly'), ab=document.getElementById('billAnnual');
+  if(mb) mb.classList.toggle('on', mode==='monthly');
+  if(ab) ab.classList.toggle('on', mode==='annual');
 }
 
 /* ---------- SHOW / HIDE PASSWORD ---------- */
@@ -1658,17 +1706,24 @@ async function shareCompanyDoc(typeId){
   if(!linkedFirm||!linkedFirmId){ toast('Link your accountant first, then you can share documents with them.'); return; }
   if(!sb||!currentAccount){ toast('Not signed in.'); return; }
   const t=COMPANY_DOC_TYPES.find(x=>x.id===typeId); const name=t?t.name:'Company document';
+  let fileUrl=null;
+  if(d.storagePath){
+    try{ const su=await sb.storage.from('vault').createSignedUrl(d.storagePath, 60*60*24*365); if(su&&su.data&&su.data.signedUrl) fileUrl=su.data.signedUrl; }catch(e){}
+  }
   const rep={ id:'DOC-'+Date.now().toString(36).toUpperCase(), type:'document', accent:'#0d9488',
     title:'Shared document: '+name, from:currentAccount.name, forName:linkedFirm,
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
     sharedAt:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
     summary:[['Document',name],['File name',d.name],['Issued',fmtDocDate(d.issueDate)||'—'],['Expires',fmtDocDate(d.expiryDate)||'—']],
-    tables:[], note:currentAccount.name+' shared this company document with you through HisabOne. Open the client\'s workspace for the original file, or ask them to re-share an updated copy.' };
+    tables:[], fileUrl:fileUrl, fileName:d.name,
+    note: fileUrl
+      ? (currentAccount.name+' shared the original document with you through HisabOne. Use the button above to open or download the exact file — this is the client’s uploaded document, not a copy.')
+      : (currentAccount.name+' shared this company document. The original file couldn’t be attached automatically — ask the client to re-upload it on their Company Information tab, then share again.') };
   try{
     const {error}=await sb.from('shared_reports').insert({from_id:currentAccount.id, to_id:linkedFirmId, report:rep});
     if(error){ toast('Could not share — please try again.'); return; }
     d.sharedWithFirm=true; saveAccountData(); renderPage();
-    toast(name+' shared with '+linkedFirm);
+    toast(fileUrl ? (name+' (original file) shared with '+linkedFirm) : (name+' shared with '+linkedFirm));
   }catch(e){ toast('Could not share — please try again.'); }
 }
 
@@ -2984,6 +3039,7 @@ function reportDocHTML(rep){
         +'<div><div style="font-size:10.5px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Report ID</div><div style="font-weight:700;font-size:13.5px;margin-top:2px">'+rep.id+'</div></div>'
       +'</div>'
       +'<div style="display:flex;gap:10px;flex-wrap:wrap">'+sum+'</div>'
+      +(rep.fileUrl?'<div style="margin-top:18px"><a href="'+rep.fileUrl+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:'+A+';color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:11px 20px;border-radius:10px"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 20h14"/></svg> Open the original document'+(rep.fileName?' — '+rep.fileName:'')+'</a></div>':'')
       +tables
       +(rep.note?'<div style="margin-top:20px;background:#f6fafc;border-left:3px solid '+A+';border-radius:0 8px 8px 0;padding:11px 14px;font-size:11.5px;color:#4b6272">'+rep.note+'</div>':'')
       +'<div style="margin-top:24px;padding-top:13px;border-top:1px solid #e8eef3;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:10.5px;color:#8aa0ae"><span>Generated by HisabOne — automated compliance reporting</span><span>Confidential</span></div>'
@@ -3305,7 +3361,11 @@ function reqDocPage(kind){
 /* a single request row, with attachment access + delete */
 function reqRow(r,i,kind){
   const has=/Received/.test(r.st);
-  const att=has?'<button class="btn ghost sm"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11l-7.5 7.5a4.5 4.5 0 0 1-6.4-6.4l7.7-7.7a3 3 0 0 1 4.3 4.3l-7.6 7.6a1.5 1.5 0 0 1-2.2-2.1l6.8-6.8"/></svg> View</button>':'<span class="muted">—</span>';
+  const att=has
+    ? (r.file
+        ? '<a class="btn ghost sm" href="'+r.file+'" target="_blank" rel="noopener" title="Open the document '+(r.fileName?ctEsc(r.fileName):'')+'"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11l-7.5 7.5a4.5 4.5 0 0 1-6.4-6.4l7.7-7.7a3 3 0 0 1 4.3 4.3l-7.6 7.6a1.5 1.5 0 0 1-2.2-2.1l6.8-6.8"/></svg> Open</a>'
+        : '<span class="muted" title="Received before file attachments were enabled">Received</span>')
+    : '<span class="muted">—</span>';
   return `<tr><td><b>${r.client}</b></td><td>${r.doc}</td><td class="muted">${r.app}</td><td>${r.due||'—'}</td>
     <td>${lvlPill(r.urg)}</td><td>${lvlPill(r.risk)}</td><td><span class="pill ${r.cls}">${r.st}</span></td><td>${att}</td>
     <td><button class="iconbtn" title="Delete request" onclick="deleteReqDoc('${kind}',${i})">${svgIcon('trash',15)}</button></td></tr>`;}
@@ -3431,6 +3491,25 @@ function openDocTruth(onProceed){
 }
 function closeDocTruth(){ var h=document.getElementById('docTruth'); if(h) h.style.display='none'; _docTruthCb=null; }
 function docTruthProceed(){ var cb=_docTruthCb; var h=document.getElementById('docTruth'); if(h) h.style.display='none'; _docTruthCb=null; if(typeof cb==='function') cb(); }
+
+/* ---- reusable styled confirmation (used for document deletions) ---- */
+var _confirmCb=null;
+function openConfirm(opts){
+  opts=opts||{};
+  var danger=opts.danger!==false;
+  var h=document.getElementById('confirmModal');
+  if(!h){ h=document.createElement('div'); h.id='confirmModal'; h.className='modal-overlay'; document.body.appendChild(h); h.addEventListener('click',function(e){ if(e.target===h) closeConfirm(); }); }
+  _confirmCb=opts.onYes||null;
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3)">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><span style="color:'+(danger?'var(--red)':'var(--accent)')+'">'+svgIcon(danger?'trash':'warn',20)+'</span><h3 style="font-size:16px;margin:0">'+ctEsc(opts.title||'Please confirm')+'</h3></div>'
+    +'<p style="font-size:13.3px;color:var(--muted);line-height:1.6;margin:8px 0 16px">'+ctEsc(opts.message||'Are you sure?')+'</p>'
+    +'<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn ghost" onclick="closeConfirm()">Cancel</button>'
+    +'<button class="btn" style="'+(danger?'background:var(--red);border-color:var(--red)':'')+'" onclick="confirmProceed()">'+ctEsc(opts.confirmLabel||'Delete')+'</button></div>'
+    +'</div>';
+}
+function closeConfirm(){ var h=document.getElementById('confirmModal'); if(h) h.style.display='none'; _confirmCb=null; }
+function confirmProceed(){ var cb=_confirmCb; closeConfirm(); if(typeof cb==='function') cb(); }
 
 /* ---- load returns + their audit events for the signed-in user ---- */
 async function loadReturns(){

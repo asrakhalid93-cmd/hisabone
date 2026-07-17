@@ -644,6 +644,7 @@
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
       <button id="tabSignin" class="ltab" onclick="switchView('signin')">Sign In</button>
       <button id="tabPricing" class="ltab" onclick="switchView('pricing')">Pricing</button>
+      <button id="tabSecurity" class="ltab" onclick="switchView('security')">Security</button>
     </div>
   </div>
 
@@ -801,7 +802,7 @@
     <div class="homefoot">
       <a class="footcontact" href="mailto:info@hisabone.ae"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg> Contact us</a>
       <div>HisabOne &middot; Tax &amp; Compliance, Simplified &middot; <a href="mailto:info@hisabone.ae">info@hisabone.ae</a></div>
-      <div style="margin-top:7px"><a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> &middot; <a href="#" onclick="switchView('terms');return false">Terms of Service</a></div></div>
+      <div style="margin-top:7px"><a href="#" onclick="switchView('security');return false">Security</a> &middot; <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> &middot; <a href="#" onclick="switchView('terms');return false">Terms of Service</a></div></div>
   </div>
   </div><!-- /viewHome -->
 
@@ -937,6 +938,47 @@
     </div>
   </div>
 
+  <!-- ===== SECURITY & TRUST VIEW ===== -->
+  <div id="viewSecurity" class="lview">
+    <div style="max-width:900px;width:100%">
+      <div class="lviewhead" style="text-align:center"><h1>Security &amp; trust</h1>
+        <p>You're trusting HisabOne with tax documents and filings. Here's exactly how we protect them — described honestly, with no invented badges.</p></div>
+
+      <div class="grid g3" style="margin-bottom:16px">
+        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10" width="13" height="9.5" rx="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3"/></svg></div><h3>Encrypted in transit &amp; at rest</h3><p>Every request is served over TLS, and your files and records are encrypted at rest in managed cloud storage.</p></div>
+        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Row-level security</h3><p>Every record is scoped to your account in the database itself. Businesses, accountants and team members see only what their role permits — not just hidden in the UI.</p></div>
+        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><h3>Private document vault</h3><p>Uploads live in a private bucket, never public. When you share a document we generate a time-limited signed link — so access is deliberate and revocable.</p></div>
+        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.7 4.6L18 9.3l-4.3 1.7L12 15.6 10.3 11 6 9.3l4.3-1.7z"/></svg></div><h3>AI that respects your data</h3><p>Document reading runs on Anthropic's Claude, used only to extract the dates you asked for from your file — never to train models.</p></div>
+        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div><h3>Full audit trail</h3><p>Every document access, every signature and every change is logged and timestamped, so there's always a clear record of who did what, and when.</p></div>
+        <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg></div><h3>Your data stays yours</h3><p>Export your records anytime, and delete your account and its data whenever you choose.</p></div>
+      </div>
+
+      <div class="lportal-card about-card">
+        <h2>Where your data lives</h2>
+        <p style="margin-bottom:10px">HisabOne runs on a small set of trusted infrastructure providers. We keep this list current so you always know who processes your data:</p>
+        <ul style="margin:0;padding-left:20px;color:var(--muted);font-size:14px;line-height:1.9">
+          <li><b style="color:var(--text)">Supabase</b> — authentication, database and encrypted file storage (hosted in the EU / Frankfurt region).</li>
+          <li><b style="color:var(--text)">Vercel</b> — application hosting and global content delivery.</li>
+          <li><b style="color:var(--text)">Anthropic</b> — the Claude AI model that reads dates from uploaded documents.</li>
+          <li><b style="color:var(--text)">Resend</b> — delivery of transactional and reminder emails.</li>
+        </ul>
+      </div>
+
+      <div class="lportal-card about-card">
+        <h2>Honest about our stage</h2>
+        <p>HisabOne is in private preview. We follow security best practices — encryption, least-privilege access and full audit logging — but we don't yet hold formal certifications such as ISO 27001 or SOC 2. Those are on our roadmap, and we'd rather tell you plainly than display a badge we haven't earned.</p>
+      </div>
+
+      <div class="lportal-card about-card" style="text-align:center">
+        <h2 style="margin-bottom:6px">Security questions?</h2>
+        <p style="margin-bottom:14px">A due-diligence request, a data-processing question, or a vulnerability to report — we'll respond.</p>
+        <a class="btn" href="mailto:info@hisabone.ae?subject=Security%20enquiry" style="display:inline-block;text-decoration:none">Email our team</a>
+      </div>
+
+      <div style="text-align:center;margin:18px 0"><span class="link" onclick="switchView('home')">&larr; Back to home</span></div>
+    </div>
+  </div>
+
   <!-- ===== PRIVACY POLICY VIEW ===== -->
   <div id="viewPrivacy" class="lview">
     <div style="max-width:760px;width:100%">
@@ -1043,12 +1085,13 @@ let _saveT=null, _blobDirty=false;
 function blobId(){ return (currentAccount && currentAccount.role==='firm') ? (currentAccount.firmId||currentAccount.id) : (currentAccount?currentAccount.id:null); }
 function canManage(){ return currentAccount && currentAccount.role==='firm' && (currentAccount.teamRole==='owner' || currentAccount.teamRole==='manager'); }
 function isOwnerRole(){ return currentAccount && currentAccount.role==='firm' && currentAccount.teamRole==='owner'; }
-function saveAccountData(){ if(!currentAccount) return; _blobDirty=true; clearTimeout(_saveT); _saveT=setTimeout(flushAccountData, 900); }
+var onboardDismissed=false, _sampleMode=false;
+function saveAccountData(){ if(!currentAccount||_sampleMode) return; _blobDirty=true; clearTimeout(_saveT); _saveT=setTimeout(flushAccountData, 900); }
 async function flushAccountData(){
-  if(!currentAccount||!sb||!_blobDirty) return; _blobDirty=false;
+  if(!currentAccount||!sb||!_blobDirty||_sampleMode) return; _blobDirty=false;
   const data = currentAccount.role==='business'
-    ? {connections, vaultDocs, notifSeen, calendarEvents, vatCertMeta, ctCertMeta}
-    : {firmReminders, clientMeta, ctScenarios, notifSeen, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
+    ? {connections, vaultDocs, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed}
+    : {firmReminders, clientMeta, ctScenarios, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   try{ await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()}); }catch(e){}
 }
 
@@ -1076,6 +1119,7 @@ async function loadWorkspace(){
       sb.from('shared_reports').select('report').eq('to_id',fid).order('created_at',{ascending:false})
     ]);
     const d=(blob&&blob.data)||{};
+    onboardDismissed=!!d.onboardDismissed;
     sharedReports=(reps||[]).map(r=>r.report);
     if(currentAccount.role==='business'){
       connections=d.connections||{fta:false,accounting:false,bank:false};
@@ -1405,7 +1449,7 @@ function requestUnlinkClient(i){
 
 /* ---------- LOGIN top tabs (Sign In / Sign Up / Pricing) ---------- */
 function switchView(v){
-  ['Home','Signin','Pricing','Privacy','Terms'].forEach(n=>{
+  ['Home','Signin','Pricing','Security','Privacy','Terms'].forEach(n=>{
     const view=document.getElementById('view'+n); if(view) view.style.display=(n.toLowerCase()===v)?'flex':'none';
     const tab=document.getElementById('tab'+n); if(tab) tab.classList.toggle('on', n.toLowerCase()===v);
   });
@@ -1608,6 +1652,7 @@ function logout(){
   clients=[]; firmClients=[]; firmTaxReqs=[]; firmAuditReqs=[]; firmReminders=[]; ctScenarios=[]; ctEntity='mainland'; teamMembers=[]; activityLog=[]; notifSeen=[]; lastInvite=null;
   bizTaxDocs=[]; bizAuditDocs=[]; vaultDocs=[]; sharedReports=[];
   returnsList=[]; returnEvents={}; viewingReturn=null; _accessLogged={}; _pendingChangeDoc=null;
+  onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null;
   linkedFirm=''; linkedFirmId=''; inviteCode='';
   connections={fta:false,accounting:false,bank:false};
@@ -1850,6 +1895,7 @@ dash:()=>{
   return `
   <h1>Welcome back, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
+  ${onboardingHTML()}
   ${urgent.length ? `
   <div class="banner">
     <div style="color:var(--amber)">${svgIcon('warn',30)}</div>
@@ -2184,6 +2230,7 @@ fdash:()=>{
   return `
   <h1>Accountant Dashboard</h1>
   <div class="sub">${firmName} · ${clients.length} linked client${clients.length===1?'':'s'}</div>
+  ${onboardingHTML()}
   <div class="grid g4 mb14">
     <div class="card stat clk" onclick="go('clients')"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Active clients</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-red">${svgIcon('clock',20)}</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
@@ -3816,6 +3863,127 @@ async function handleJoinParam(){
     var note=document.getElementById('lfNotice'); if(note){ note.textContent='You’ve been invited to '+row.firm_name+' as '+roleLbl+'. Set a password to create your own login.'; note.style.display='block'; }
     return true;
   }catch(e){ return false; }
+}
+
+/* ================= ONBOARDING CHECKLIST + SAMPLE (DEMO) MODE ================= */
+function onboardingSteps(){
+  if(currentAccount && currentAccount.role==='business'){
+    var has=function(t){return (vaultDocs||[]).some(function(d){return d.typeId===t;});};
+    var vault=COMPANY_DOC_TYPES.filter(function(t){return (vaultDocs||[]).some(function(d){return d.typeId===t.id;});}).length;
+    return [
+      {t:'Upload your trade licence', done:has('trade_license'), pg:'docs', cta:'Company Information'},
+      {t:'Add a VAT or Corporate Tax certificate — it auto-fills your Compliance Calendar', done:has('vat_cert')||has('ct_cert'), pg:'docs', cta:'Company Information'},
+      {t:'Link your accountant', done:!!linkedFirm, pg:'links', cta:'Linked Firm'},
+      {t:'Build out your document vault (4+ documents on file)', done:vault>=4, pg:'docs', cta:'Company Information'}
+    ];
+  }
+  return [
+    {t:'Add your first client — share your invite code', done:(clients&&clients.length>0), pg:'clients', cta:'Clients'},
+    {t:'Send your first document request', done:(((firmTaxReqs||[]).length+(firmAuditReqs||[]).length)>0), pg:'taxdocs', cta:'Tax Documents'},
+    {t:'Invite a team member', done:((teamMembers||[]).length>1), pg:'team', cta:'Team'},
+    {t:'Share a draft VAT or CT return for sign-off', done:((returnsList||[]).length>0), pg:'vat', cta:'VAT Calculator'}
+  ];
+}
+function onboardingHTML(){
+  if(!currentAccount || onboardDismissed || _sampleMode) return '';
+  var steps=onboardingSteps();
+  var done=steps.filter(function(s){return s.done;}).length, total=steps.length;
+  var allDone=(done===total), pct=Math.round(done/total*100);
+  var rows=steps.map(function(s){
+    return '<div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line)">'
+      +'<span style="width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;'+(s.done?'background:var(--green);color:#fff':'background:var(--panel2);border:1.5px solid var(--line);color:var(--muted)')+'">'+(s.done?svgIcon('check',13):'')+'</span>'
+      +'<span style="flex:1;font-size:13.3px;'+(s.done?'color:var(--muted);text-decoration:line-through':'color:var(--text)')+'">'+s.t+'</span>'
+      +(s.done?'':'<button class="btn ghost sm" onclick="go(\''+s.pg+'\')">'+s.cta+' →</button>')
+      +'</div>';
+  }).join('');
+  return '<div class="card mb14" style="border-color:var(--accent);background:linear-gradient(180deg,var(--accent-bg),#fff 62%)">'
+    +'<div class="cardhead"><h3>'+svgIcon(allDone?'success':'sparkles',16)+' '+(allDone?'You’re all set up':'Get started with HisabOne')+'</h3>'
+    +'<div style="display:flex;align-items:center;gap:10px"><span class="muted" style="font-size:12px">'+done+' of '+total+'</span><button class="btn ghost sm" onclick="dismissOnboarding()">Dismiss</button></div></div>'
+    +'<div style="height:7px;background:var(--panel2);border-radius:999px;overflow:hidden;margin:2px 0 12px"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--accent),var(--accent-d));border-radius:999px;transition:width .4s"></div></div>'
+    +rows
+    +(allDone?'<div class="muted" style="font-size:12.5px;margin-top:12px">Nice work — your workspace is ready. You can dismiss this any time.</div>'
+             :'<div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="muted" style="font-size:12px">Want to see a finished workspace first?</span><button class="btn ghost sm" onclick="loadSampleData()">'+svgIcon('sparkles',13)+' Preview with sample data</button></div>')
+    +'</div>';
+}
+function dismissOnboarding(){ onboardDismissed=true; if(!_sampleMode) saveAccountData(); renderPage(); }
+
+function showSampleBanner(show){
+  var el=document.getElementById('sampleBanner');
+  if(show){
+    if(!el){ el=document.createElement('div'); el.id='sampleBanner'; document.body.appendChild(el);
+      el.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:350;background:#132033;color:#fff;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:13px;box-shadow:0 -6px 22px rgba(0,0,0,.22);flex-wrap:wrap'; }
+    el.innerHTML='<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#5eead4">'+svgIcon('sparkles',15)+'</span> <b>Sample data</b> — this is a preview. Nothing here is saved to your account.</span><button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="clearSampleData()">Exit preview</button>';
+    el.style.display='flex';
+  } else if(el){ el.style.display='none'; }
+}
+function loadSampleData(){
+  if(!currentAccount) return;
+  _sampleMode=true; onboardDismissed=true;
+  if(currentAccount.role==='business'){
+    linkedFirm='Summit Auditors'; linkedFirmId='';
+    connections={fta:true,accounting:true,bank:false};
+    vaultDocs=[
+      {name:'Trade Licence 2026.pdf',added:'10 Jun 2026',typeId:'trade_license',issueDate:'2026-01-15',expiryDate:'2027-01-14'},
+      {name:'VAT Certificate.pdf',added:'10 Jun 2026',typeId:'vat_cert',issueDate:'2018-01-01',expiryDate:null},
+      {name:'CT Registration.pdf',added:'10 Jun 2026',typeId:'ct_cert',issueDate:'2024-06-01',expiryDate:null},
+      {name:'Certificate of Incorporation.pdf',added:'10 Jun 2026',typeId:'coi',issueDate:'2017-11-20',expiryDate:null},
+      {name:'Establishment Card.pdf',added:'10 Jun 2026',typeId:'establishment',issueDate:'2025-03-01',expiryDate:'2027-03-01'}
+    ];
+    calendarEvents=computeVatEvents(null,3,todayISO()).concat(computeCtEvents(calRecentFYEnd(12,31)));
+    vatCertMeta={name:'VAT Certificate.pdf',readAt:'10 Jun 2026',periodEnd:(calendarEvents[0]?calendarEvents[0].periodEnd:''),taxPeriod:'Quarterly',next:(calendarEvents[0]?calendarEvents[0].date:''),detected:true};
+    ctCertMeta={name:'CT Registration.pdf',readAt:'10 Jun 2026',fyEnd:calRecentFYEnd(12,31),next:'',detected:true};
+    bizTaxDocs=[
+      {id:'s1',name:'June sales invoices',note:'For: VAT Return Q2 2026',due:'28 Jul 2026',urg:'High',risk:'Medium',state:'req'},
+      {id:'s2',name:'Bank statement — June',note:'For: VAT Return Q2 2026',due:'28 Jul 2026',urg:'Medium',risk:'Low',state:'done',fileName:'June-statement.pdf'}
+    ];
+    bizAuditDocs=[];
+    returnsList=[{id:'sr1',firm_id:'',business_id:currentAccount.id,kind:'vat',title:'VAT Return — Q2 2026',period:'Q2 2026',status:'pending_review',created_by:'Summit Auditors',created_at:new Date().toISOString(),figures:{sales:[{d:'Invoice #1041',a:52000,r:5,v:2600}],purch:[{d:'Supplier bill',a:18000,r:5,v:900}],salesNet:52000,purchNet:18000,output:2600,input:900,net:1700}}];
+    returnEvents={sr1:[{return_id:'sr1',type:'created',actor_name:'Summit Auditors',actor_role:'Owner',detail:'Shared draft VAT return',created_at:new Date().toISOString()}]};
+  } else {
+    clients=['Al Noor Trading LLC','Falcon Logistics','Zenith Consulting'];
+    myClients=clients.map(function(n,i){return {business_id:'sb'+i,business_name:n,business_email:''};});
+    clientMeta={};
+    firmClients=[
+      {name:'Al Noor Trading LLC',trn:'100 3456 78900003',deadline:'28 Jul 2026',docs:'2/3',risk:'high',urgency:'overdue'},
+      {name:'Falcon Logistics',trn:'100 9921 45500003',deadline:'30 Sep 2026',docs:'3/3',risk:'medium',urgency:'soon'},
+      {name:'Zenith Consulting',trn:'100 7788 11200003',deadline:'—',docs:'1/2',risk:'low',urgency:'ok'}
+    ];
+    firmTaxReqs=[
+      {id:'t1',client:'Al Noor Trading LLC',doc:'June sales invoices',app:'VAT Return Q2 2026',due:'28 Jul 2026',urg:'High',risk:'Medium',st:'Just sent',cls:'p-teal'},
+      {id:'t2',client:'Falcon Logistics',doc:'Bank statements',app:'VAT Return Q2 2026',due:'28 Jul 2026',urg:'Medium',risk:'Low',st:'Received ✓',cls:'p-green',file:null,fileName:'falcon-bank-jun.pdf'}
+    ];
+    firmAuditReqs=[];
+    teamMembers=[
+      {id:'o',name:(currentAccount.name||'You'),position:'Managing Partner',team_role:'owner',is_owner:true,status:'active'},
+      {id:'m1',name:'Layla Hassan',position:'Manager / Reviewer',team_role:'manager',is_owner:false,status:'active',email:'layla@firm.ae'},
+      {id:'c1',name:'Omar Aziz',position:'Tax Consultant',team_role:'consultant',is_owner:false,status:'active',email:'omar@firm.ae'}
+    ];
+    activityLog=[
+      {type:'return_approved',detail:'Al Noor Trading approved VAT Return Q2 2026',actor_name:'Al Noor Trading LLC',created_at:new Date(Date.now()-3600000).toISOString()},
+      {type:'request_sent',detail:'Requested "June sales invoices" from Al Noor Trading LLC',actor_name:'Omar Aziz',created_at:new Date(Date.now()-7200000).toISOString()},
+      {type:'member_joined',detail:'Layla Hassan joined the team as Manager / Reviewer',actor_name:'Layla Hassan',created_at:new Date(Date.now()-86400000).toISOString()}
+    ];
+    returnsList=[
+      {id:'fr1',firm_id:effFirmId(),business_id:'sb0',kind:'vat',title:'VAT Return — Q2 2026',period:'Q2 2026',status:'approved',created_by:(currentAccount.name||'Your firm'),created_at:new Date(Date.now()-3600000).toISOString(),figures:{sales:[{d:'Standard-rated sales',a:52000,r:5,v:2600}],purch:[{d:'Recoverable purchases',a:18000,r:5,v:900}],salesNet:52000,purchNet:18000,output:2600,input:900,net:1700}},
+      {id:'fr2',firm_id:effFirmId(),business_id:'sb1',kind:'ct',title:'Corporate Tax — FY2025',period:'FY2025',status:'pending_review',created_by:(currentAccount.name||'Your firm'),created_at:new Date().toISOString(),figures:{entity:'mainland',revenue:2400000,taxable:'AED 480,000.00',band0:'AED 375,000.00',band9:'AED 105,000.00',payable:'AED 9,450.00',eff:'1.97%'}}
+    ];
+    returnEvents={
+      fr1:[{return_id:'fr1',type:'created',actor_name:(currentAccount.name||'Your firm'),actor_role:'Owner',detail:'Shared draft VAT return',created_at:new Date(Date.now()-3600000).toISOString()},{return_id:'fr1',type:'approved',actor_name:'Al Noor Trading LLC',actor_role:'Business',signature:'Ahmed Al Noor',signed_at:new Date().toISOString(),created_at:new Date().toISOString()}],
+      fr2:[{return_id:'fr2',type:'created',actor_name:(currentAccount.name||'Your firm'),actor_role:'Owner',detail:'Shared draft CT return',created_at:new Date().toISOString()}]
+    };
+  }
+  showSampleBanner(true);
+  page = (currentAccount.role==='business'?'dash':'fdash');
+  renderNav(); renderPage(); window.scrollTo(0,0);
+  toast('Sample data loaded — nothing is saved to your account');
+}
+async function clearSampleData(){
+  _sampleMode=false; onboardDismissed=false;
+  showSampleBanner(false);
+  if(sb && currentAccount){ try{ await loadWorkspace(); }catch(e){} }
+  page = (currentAccount?(currentAccount.role==='business'?'dash':'fdash'):'dash');
+  renderNav(); renderPage(); window.scrollTo(0,0);
+  toast('Exited preview');
 }
 
 /* ---------- SESSION RESUME (server-backed) ---------- */

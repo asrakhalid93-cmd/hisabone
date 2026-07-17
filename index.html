@@ -793,7 +793,7 @@
       <p>One avoided AED 1,000 late-filing penalty covers five months of HisabOne.</p>
       <div class="hero-cta" style="justify-content:center">
         <button class="lf-btn" style="width:auto;padding:13px 30px" onclick="startTrial()">Sign in &rarr;</button>
-        <a class="hero-ghost" href="mailto:info@hisabone.ae" style="text-decoration:none;display:inline-flex;align-items:center">Contact us</a>
+        <button class="hero-ghost" onclick="switchView('pricing')">See pricing</button>
       </div>
       <div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:14px">Private preview &middot; access by invitation</div>
     </div>
@@ -3860,7 +3860,7 @@ async function handleJoinParam(){
     var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');countUp(en.target);io.unobserve(en.target);}});},{threshold:0.15,rootMargin:'0px 0px -11% 0px'});
     function bind(){var n=document.querySelectorAll('.reveal:not(.in)');for(var i=0;i<n.length;i++)io.observe(n[i]);}
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
-    setTimeout(showAll,4200);
+    /* sections animate only as they are scrolled into view — no timed reveal fallback */
   })();
 </script>
 </body>

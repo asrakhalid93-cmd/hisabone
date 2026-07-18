@@ -630,6 +630,91 @@
   .certtop{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text)}
   .lfremember{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:-2px 0 12px;cursor:pointer;user-select:none}
   .lfremember input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;margin:0}
+
+  /* ================= UI POLISH v3 — motion, depth & flow (landing + portals) ================= */
+  :root{ --ease:cubic-bezier(.22,.72,.2,1); }
+  html{scroll-behavior:smooth}
+
+  /* -- page-enter: content fades & rises with a gentle stagger when switching tabs -- */
+  @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  #main.pagein > *{animation:pgIn .42s var(--ease) both}
+  #main.pagein > *:nth-child(2){animation-delay:.04s}
+  #main.pagein > *:nth-child(3){animation-delay:.08s}
+  #main.pagein > *:nth-child(4){animation-delay:.12s}
+  #main.pagein > *:nth-child(5){animation-delay:.16s}
+  #main.pagein > *:nth-child(n+6){animation-delay:.2s}
+
+  /* -- cards: consistent depth + lift on interactive ones -- */
+  .card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)}
+  .card.clk,.card.stat.clk,tr.clickable{cursor:pointer}
+  .card.clk:hover,.card.stat.clk:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(16,32,60,.06),0 16px 34px rgba(16,32,60,.12);border-color:rgba(13,148,136,.35)}
+  .card.stat .ic{transition:transform .22s var(--ease)}
+  .card.stat.clk:hover .ic{transform:scale(1.1)}
+
+  /* -- buttons: hover lift + press feedback everywhere -- */
+  .btn,.iconbtn,.logout,.seg button,.hero-ghost,.lf-btn{transition:transform .16s var(--ease),box-shadow .16s var(--ease),background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),filter .16s var(--ease)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(13,148,136,.28)}
+  .btn:active,.lf-btn:active,.seg button:active{transform:translateY(0) scale(.97)}
+  .btn.ghost:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,32,60,.10)}
+  .iconbtn:hover{transform:translateY(-1px)}
+
+  /* -- sidebar: active rail + smooth hover -- */
+  .navitem{position:relative;transition:background .18s var(--ease),color .18s var(--ease),padding-left .18s var(--ease)}
+  .navitem::before{content:"";position:absolute;left:0;top:22%;bottom:22%;width:3px;border-radius:3px;background:var(--accent);opacity:0;transform:scaleY(.4);transition:opacity .2s var(--ease),transform .2s var(--ease)}
+  .navitem.active::before{opacity:1;transform:scaleY(1)}
+  .navitem:hover{padding-left:15px}
+  .navitem.active{padding-left:15px}
+  .navitem .ic svg{transition:transform .2s var(--ease)}
+  .navitem:hover .ic svg{transform:scale(1.12)}
+
+  /* -- tables: calmer headers, warm row hover -- */
+  th{background:var(--panel2)}
+  th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:8px}
+  tr.clickable td{transition:background .15s var(--ease)}
+  tr.clickable:hover td{background:var(--accent-bg)}
+
+  /* -- inputs: focus glow -- */
+  .finput{transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+  .finput:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(13,148,136,.14)}
+
+  /* -- modals & popovers: pop-in entrance -- */
+  @keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+  .modal-overlay > div{animation:modalIn .3s var(--ease) both}
+  @keyframes fadeOv{from{opacity:0}to{opacity:1}}
+  .modal-overlay{animation:fadeOv .22s ease both}
+  .notifpanel{animation:modalIn .24s var(--ease) both;transform-origin:top right}
+
+  /* -- pills, links, rows: micro-transitions -- */
+  .pill{transition:transform .15s var(--ease)}
+  .link{transition:opacity .15s var(--ease)} .link:hover{opacity:.75}
+  .drow{transition:background .15s var(--ease);border-radius:8px}
+  .drow:hover{background:var(--panel2)}
+
+  /* -- landing hero: slow-drifting aurora blobs -- */
+  @keyframes blobA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(34px,22px) scale(1.08)}}
+  @keyframes blobB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,-18px) scale(1.06)}}
+  #login::before{animation:blobA 16s ease-in-out infinite}
+  #login::after{animation:blobB 19s ease-in-out infinite}
+  .hero-badge{animation:pgIn .6s var(--ease) both}
+  .mock{transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+  .mock:hover{transform:translateY(-5px) rotate(-.4deg);box-shadow:0 26px 60px rgba(16,32,60,.16)}
+
+  /* -- landing cards & features: consistent lift -- */
+  .lportal-card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)}
+  .flowstep{transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
+  .flowstep:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(16,32,60,.12)}
+  .ltab{transition:background .18s var(--ease),color .18s var(--ease)}
+
+  /* -- accessibility: visible keyboard focus -- */
+  .btn:focus-visible,.iconbtn:focus-visible,.navitem:focus-visible,.seg button:focus-visible,.ltab:focus-visible,.lf-btn:focus-visible,.link:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:9px}
+
+  /* -- respect reduced motion -- */
+  @media(prefers-reduced-motion:reduce){
+    #main.pagein > *,.modal-overlay,.modal-overlay > div,.notifpanel,.hero-badge{animation:none !important}
+    #login::before,#login::after{animation:none !important}
+    .card,.btn,.navitem,.mock,.lportal-card,.flowstep{transition:none !important}
+    html{scroll-behavior:auto}
+  }
 </style>
 </head>
 <body data-role="business">
@@ -1910,7 +1995,26 @@ function renderNav(){
       <span class="ic">${svgIcon(i.ic)}</span><span class="txt">${i.label}</span>
       ${b?`<span class="badge">${b}</span>`:''}</div>`;}).join('');
 }
-function renderPage(){ document.getElementById('main').innerHTML = (PAGES[page]||(()=>'<h1>Coming soon</h1>'))();
+var _reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+function countUpStats(scope){
+  if(_reduceMotion) return;
+  var els=scope.querySelectorAll('.stat .num');
+  els.forEach(function(el){
+    var raw=(el.textContent||'').trim();
+    var m=raw.match(/^(\d{1,6})(%?)$/); if(!m) return;
+    var target=parseInt(m[1],10), suffix=m[2]||'';
+    if(!isFinite(target)||target<=0) return;
+    var t0=null, dur=650;
+    function step(ts){ if(t0===null)t0=ts; var p=Math.min((ts-t0)/dur,1); p=1-Math.pow(1-p,3);
+      el.textContent=Math.round(p*target)+suffix; if(p<1) requestAnimationFrame(step); }
+    el.textContent='0'+suffix; requestAnimationFrame(step);
+  });
+}
+function renderPage(){ var m=document.getElementById('main');
+  m.classList.remove('pagein'); void m.offsetWidth;
+  m.innerHTML = (PAGES[page]||(()=>'<h1>Coming soon</h1>'))();
+  m.classList.add('pagein');
+  countUpStats(m);
   if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT();
   if(page==='ct' && typeof recalcCT==='function') recalcCT();
   if(typeof updateBell==='function') updateBell();

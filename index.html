@@ -738,13 +738,12 @@
 </div>
 <script>
   (function(){
-    var CODE='180025', KEY='hisab_access_ok';
-    try{ if(localStorage.getItem(KEY)==='1'){ var g=document.getElementById('accessGate'); if(g) g.parentNode.removeChild(g); return; } }catch(e){}
+    var CODE='180025';
+    /* No persistence — the access code is required on every load and every refresh. */
     window.gateCheck=function(){
       var inp=document.getElementById('gateInput'), err=document.getElementById('gateErr');
       var v=(inp&&inp.value||'').trim();
       if(v===CODE){
-        try{ localStorage.setItem(KEY,'1'); }catch(e){}
         var g=document.getElementById('accessGate'); if(g){ g.style.transition='opacity .3s ease'; g.style.opacity='0'; setTimeout(function(){ if(g.parentNode) g.parentNode.removeChild(g); },300); }
       } else {
         if(err) err.textContent='Incorrect code — try again.';

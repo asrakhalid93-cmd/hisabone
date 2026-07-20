@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>HisabOne — Tax & Compliance, Simplified</title>
 <meta name="description" content="HisabOne is the UAE compliance layer — one AI-assisted workspace connecting businesses and their accountants for FTA registrations, VAT & corporate tax, audits and deadlines.">
 <link rel="canonical" href="https://hisabone.ae/">
@@ -718,6 +719,41 @@
 </style>
 </head>
 <body data-role="business">
+
+<!-- ================= PRIVATE PREVIEW ACCESS GATE ================= -->
+<div id="accessGate" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(150deg,#0b1530,#101c38 45%,#1a1240);display:flex;align-items:center;justify-content:center;padding:22px;font-family:Inter,system-ui,-apple-system,sans-serif">
+  <div style="max-width:380px;width:100%;text-align:center;color:#fff">
+    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 18px;background:linear-gradient(135deg,#20d3bf,#4f7ef0 52%,#8a5cf6);display:flex;align-items:center;justify-content:center">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+    </div>
+    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px">Hisab<span style="background:linear-gradient(120deg,#20d3bf,#8a5cf6);-webkit-background-clip:text;background-clip:text;color:transparent">One</span></div>
+    <div style="font-size:14px;color:rgba(255,255,255,.62);margin-bottom:22px">Private preview — enter your access code to continue.</div>
+    <input id="gateInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Access code"
+      style="width:100%;padding:13px 15px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:15px;text-align:center;letter-spacing:3px;outline:none"
+      onkeydown="if(event.key==='Enter')gateCheck()">
+    <div id="gateErr" style="color:#ff8b8b;font-size:12.5px;height:16px;margin:9px 0 4px"></div>
+    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#06122a;background:linear-gradient(135deg,#5fe0d0,#56a8f5,#a472f0)">Enter &rarr;</button>
+    <div style="font-size:11.5px;color:rgba(255,255,255,.4);margin-top:16px">Access by invitation only</div>
+  </div>
+</div>
+<script>
+  (function(){
+    var CODE='180025', KEY='hisab_access_ok';
+    try{ if(localStorage.getItem(KEY)==='1'){ var g=document.getElementById('accessGate'); if(g) g.parentNode.removeChild(g); return; } }catch(e){}
+    window.gateCheck=function(){
+      var inp=document.getElementById('gateInput'), err=document.getElementById('gateErr');
+      var v=(inp&&inp.value||'').trim();
+      if(v===CODE){
+        try{ localStorage.setItem(KEY,'1'); }catch(e){}
+        var g=document.getElementById('accessGate'); if(g){ g.style.transition='opacity .3s ease'; g.style.opacity='0'; setTimeout(function(){ if(g.parentNode) g.parentNode.removeChild(g); },300); }
+      } else {
+        if(err) err.textContent='Incorrect code — try again.';
+        if(inp){ inp.value=''; inp.focus(); }
+      }
+    };
+    var t=setInterval(function(){ var i=document.getElementById('gateInput'); if(i){ i.focus(); clearInterval(t); } },60);
+  })();
+</script>
 
 <!-- ================= LOGIN (full-page gradient portal selector) ================= -->
 <div id="login">

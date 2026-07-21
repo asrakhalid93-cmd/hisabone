@@ -1089,6 +1089,16 @@
         <button class="lf-btn" style="margin-top:16px;width:100%;padding:13px" onclick="penaltyCheck()">See my penalty exposure &rarr;</button>
         <div id="pcResult" style="display:none;margin-top:18px;border-top:1px solid var(--line);padding-top:16px"></div>
       </div>
+
+      <div class="lviewhead" style="text-align:center;margin-top:34px"><h2 style="font-size:23px">Is your TRN valid?</h2>
+        <p>Structured e-invoicing is unforgiving of a wrong Tax Registration Number. Check any TRN’s format instantly — free, no sign-up.</p></div>
+      <div class="lportal-card about-card">
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><input id="pubTrn" class="finput" style="flex:1;min-width:220px" placeholder="e.g. 100 1234 5678 0003" onkeydown="if(event.key==='Enter'){event.preventDefault();trnCheck('pub')}">
+          <button class="lf-btn" style="width:auto;padding:12px 26px" onclick="trnCheck('pub')">Validate TRN</button></div>
+        <div id="pubTrnResult" style="display:none;margin-top:14px"></div>
+        <div class="muted" style="font-size:11.5px;margin-top:12px">Checks format only (15 digits, UAE structure). Confirm a TRN is active on the FTA’s official verification tool. Not tax advice.</div>
+      </div>
+
       <div style="text-align:center;margin:18px 0"><span class="link" onclick="switchView('home')">&larr; Back to home</span></div>
     </div>
   </div>
@@ -1245,7 +1255,7 @@ function saveAccountData(){ if(!currentAccount||_sampleMode) return; _blobDirty=
 async function flushAccountData(){
   if(!currentAccount||!sb||!_blobDirty||_sampleMode) return; _blobDirty=false;
   const data = currentAccount.role==='business'
-    ? {connections, vaultDocs, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand}
+    ? {vaultDocs, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand}
     : {firmReminders, clientMeta, ctScenarios, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   try{ await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()}); }catch(e){}
 }
@@ -1277,7 +1287,6 @@ async function loadWorkspace(){
     onboardDismissed=!!d.onboardDismissed;
     sharedReports=(reps||[]).map(r=>r.report);
     if(currentAccount.role==='business'){
-      connections=d.connections||{fta:false,accounting:false,bank:false};
       vaultDocs=d.vaultDocs||[]; notifSeen=d.notifSeen||[];
       calendarEvents=d.calendarEvents||[]; vatCertMeta=d.vatCertMeta||null; ctCertMeta=d.ctCertMeta||null; calYear=null; calMonth=null;
       bizRevenueBand=d.bizRevenueBand||null;
@@ -1327,7 +1336,6 @@ async function loadWorkspace(){
 let clients = [];
 let linkedFirm = '';   // business links ONE firm
 let linkedFirmId = '';
-let connections = {fta:false, accounting:false, bank:false};
 let sharedReports = [];   // reports received in-app (both roles)
 let viewingReport = null; // report currently open in the Reports tab viewer
 
@@ -1373,9 +1381,6 @@ async function linkFirmByCode(){
     renderPage();
   }catch(e){ if(err){err.textContent='Could not link — please try again.';err.style.display='block';} }
 }
-/* business: toggle other-connection cards (front-end only, no real integration yet) */
-function toggleConnection(key){ connections[key]=!connections[key]; renderPage(); }
-
 /* firm: tax document requests (with application / urgency / risk) */
 let firmTaxReqs = [];
 /* firm: audit document requests (with engagement / urgency / risk) */
@@ -1811,7 +1816,6 @@ function logout(){
   onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null; bizRevenueBand=null;
   linkedFirm=''; linkedFirmId=''; inviteCode='';
-  connections={fta:false,accounting:false,bank:false};
   document.getElementById('app').classList.add('hidden');
   document.getElementById('login').classList.remove('hidden');
   backToPortals();
@@ -2052,6 +2056,8 @@ function renderPage(){ var m=document.getElementById('main');
   countUpStats(m);
   if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT();
   if(page==='ct' && typeof recalcCT==='function') recalcCT();
+  if(page==='guides' && typeof aiRenderLog==='function') aiRenderLog('business');
+  if(page==='fguides' && typeof aiRenderLog==='function') aiRenderLog('firm');
   if(typeof updateBell==='function') updateBell();
   saveAccountData(); }
 
@@ -2064,14 +2070,14 @@ dash:()=>{
   const totalReq = bizTaxDocs.length + bizAuditDocs.length;
   const totalDone = bizTaxDocs.filter(d=>d.state==='done').length + bizAuditDocs.filter(d=>d.state==='done').length;
   const pct = totalReq ? Math.round(totalDone/totalReq*100) : null;
-  const connActive = connections?Object.values(connections).filter(Boolean).length:0;
   const setup = linkedFirm || totalReq>0 || vaultDocs.length>0;
-  const compliance = setup ? Math.round((linkedFirm?100:50)*0.4 + (totalReq?(totalDone/totalReq*100):100)*0.4 + (connActive/3*100)*0.2) : null;
+  const compliance = setup ? Math.round((linkedFirm?100:50)*0.5 + (totalReq?(totalDone/totalReq*100):100)*0.5) : null;
   return `
   <h1>Welcome back, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
   ${onboardingHTML()}
   ${einvoiceCountdownHTML()}
+  ${einvReadinessHTML()}
   ${businessHealthCard()}
   ${urgent.length ? `
   <div class="banner">
@@ -2126,17 +2132,7 @@ dash:()=>{
 guides:()=>`
   <h1>AI Assist</h1>
   <div class="sub">Ask anything about UAE tax, or open a guided walkthrough below — explained in plain English.</div>
-  <div class="card mb14" style="border-color:var(--accent)">
-    <div style="display:flex;gap:10px">
-      <input class="finput" style="flex:1" placeholder="e.g. Do I need to register for VAT? What goes on a tax invoice?">
-      <button class="btn">${svgIcon('sparkles',15)} Ask AI</button>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
-      <span class="pill p-gray" style="cursor:pointer">When must I register for VAT?</span>
-      <span class="pill p-gray" style="cursor:pointer">What's the corporate tax rate?</span>
-      <span class="pill p-gray" style="cursor:pointer" onclick="go('bvat')">Calculate my VAT</span>
-    </div>
-  </div>
+  ${aiAssistPanel('business')}
   <div class="grid g3 mb14">
     ${guideCard('doc-new','VAT Registration','When & how to register with the FTA','Guide')}
     ${guideCard('file-text','Tax Invoice Format','The fields UAE law requires','Reference')}
@@ -2231,18 +2227,8 @@ guides:()=>`
 
 fguides:()=>`
   <h1>AI Assist</h1>
-  <div class="sub">Your practice copilot — ask about UAE tax &amp; audit, draft client requests, and let AI chase missing documents across every client.</div>
-  <div class="card mb14" style="border-color:var(--accent)">
-    <div style="display:flex;gap:10px">
-      <input class="finput" style="flex:1" placeholder="e.g. Draft a Q2 VAT document request for a trading client">
-      <button class="btn">${svgIcon('sparkles',15)} Ask AI</button>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
-      <span class="pill p-gray" style="cursor:pointer">Which clients have deadlines this month?</span>
-      <span class="pill p-gray" style="cursor:pointer" onclick="go('vat')">Calculate a client's VAT</span>
-      <span class="pill p-gray" style="cursor:pointer" onclick="go('reminders')">Set up auto-chase reminders</span>
-    </div>
-  </div>
+  <div class="sub">Your practice copilot — ask about UAE tax &amp; audit, draft client requests, and get answers grounded in your live client list.</div>
+  ${aiAssistPanel('firm')}
   <div class="grid g3 mb14">
     ${guideCard('users','Client Onboarding','Documents to collect from a new client','Guide')}
     ${guideCard('file-text','VAT Return Review','What to check before filing on EmaraTax','Guide')}
@@ -2388,14 +2374,7 @@ links:()=>`
   ${(bizTaxDocs.length||bizAuditDocs.length) ? `<div class="grid g2">
     ${bizTaxDocs.length?linkProcFromDocs('Tax documents',bizTaxDocs):''}
     ${bizAuditDocs.length?linkProcFromDocs('Audit documents',bizAuditDocs):''}
-  </div>` : `<div class="card muted" style="text-align:center;padding:22px;font-size:13px">No document requests yet${linkedFirm?' — your firm will send requests here.':' — link a firm to start receiving requests.'}</div>`}
-  <h3 style="font-size:14px;margin:22px 0 10px">Other connections</h3>
-  <div class="grid g3">
-    ${connCard('fta','fta','FTA (EmaraTax)','File VAT &amp; CT, auto-pull TRN &amp; history.')}
-    ${connCard('accounting','chart','Accounting software','Pulls data to pre-fill returns.')}
-    ${connCard('bank','bank','Business bank','Reconciles &amp; flags VAT.')}
-  </div>
-  <div class="note">${svgIcon('shield',13)} You control access and can revoke any connection at any time.</div>`,
+  </div>` : `<div class="card muted" style="text-align:center;padding:22px;font-size:13px">No document requests yet${linkedFirm?' — your firm will send requests here.':' — link a firm to start receiving requests.'}</div>`}`,
 
 fdash:()=>{
   const firmName = currentAccount ? currentAccount.name : 'Your Firm';
@@ -2756,15 +2735,6 @@ function exportVAT(){
   document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
 function toggleShareVAT(){const p=document.getElementById('shareVATPanel');if(p)p.style.display=(p.style.display==='none'||!p.style.display)?'block':'none';}
-function sendVATReport(){
-  const c=document.getElementById('shareClient').value, per=document.getElementById('sharePeriod').value;
-  document.getElementById('shareVATPanel').style.display='none';
-  const msg=document.getElementById('shareVATMsg');
-  if(msg){msg.style.display='block';
-    msg.innerHTML='<div class="ai"><div class="sparkle" style="color:var(--green)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></div><div><h3>Report shared with '+c+'</h3>'+
-      '<p>The VAT calculation for '+per+' is now in the HisabOne portal of '+c+' under Documents, and they have been notified by email — no attachments needed.</p></div></div>';}
-}
-
 /* ---------- VAT CALCULATOR LOGIC ---------- */
 function vatRowHTML(pfx,i){
   var kind=pfx==='s'?'Sales':'Purchase';
@@ -3153,9 +3123,8 @@ function exportComplianceReport(){
   const name=currentAccount?currentAccount.name:'Business';
   const totalReq=bizTaxDocs.length+bizAuditDocs.length;
   const totalDone=bizTaxDocs.filter(d=>d.state==='done').length+bizAuditDocs.filter(d=>d.state==='done').length;
-  const connActive=connections?Object.values(connections).filter(Boolean).length:0;
   const setup=linkedFirm||totalReq>0||vaultDocs.length>0;
-  const rating=setup?(Math.round((linkedFirm?100:50)*0.4+(totalReq?(totalDone/totalReq*100):100)*0.4+(connActive/3*100)*0.2)+'%'):'Not yet rated';
+  const rating=setup?(Math.round((linkedFirm?100:50)*0.5+(totalReq?(totalDone/totalReq*100):100)*0.5)+'%'):'Not yet rated';
   const rows=[['HisabOne — Compliance Report'],['Business',name],['Generated',new Date().toLocaleString()],[],
     ['Summary'],
     ['Compliance rating', rating],
@@ -3176,10 +3145,9 @@ function buildComplianceReport(){
   const totalDone=bizTaxDocs.filter(d=>d.state==='done').length+bizAuditDocs.filter(d=>d.state==='done').length;
   const taxDone=bizTaxDocs.filter(d=>d.state==='done').length;
   const auditDone=bizAuditDocs.filter(d=>d.state==='done').length;
-  const connActive=connections?Object.values(connections).filter(Boolean).length:0;
   const companyOnFile=COMPANY_DOC_TYPES.filter(t=>vaultDocs.some(d=>d.typeId===t.id)).length;
   const setup=linkedFirm||totalReq>0||vaultDocs.length>0;
-  const ratingNum=setup?Math.round((linkedFirm?100:50)*0.4+(totalReq?(totalDone/totalReq*100):100)*0.4+(connActive/3*100)*0.2):null;
+  const ratingNum=setup?Math.round((linkedFirm?100:50)*0.5+(totalReq?(totalDone/totalReq*100):100)*0.5):null;
   const rating=ratingNum==null?'Not yet rated':ratingNum+'%';
   const upcoming=(calendarEvents||[]).slice().filter(e=>e.date>=todayISO()).sort((a,b)=>a.date<b.date?-1:1);
   const nextDl=upcoming[0];
@@ -3190,11 +3158,6 @@ function buildComplianceReport(){
   ];
   const companyRows=COMPANY_DOC_TYPES.map(t=>{ const d=vaultDocs.find(x=>x.typeId===t.id); return [t.name, d?'On file':'Missing', d?(fmtDocDate(d.issueDate)||'—'):'—', d?(fmtDocDate(d.expiryDate)||'—'):'—']; });
   const deadlineRows=upcoming.slice(0,8).map(e=>{ const dl=calDaysUntil(e.date); return [e.title, e.detail, calFmt(e.date), dl<0?'Overdue':('in '+dl+' days')]; });
-  const connRows=[
-    ['FTA / EmaraTax', (connections&&connections.fta)?'Connected':'Not connected'],
-    ['Accounting software', (connections&&connections.accounting)?'Connected':'Not connected'],
-    ['Bank feed', (connections&&connections.bank)?'Connected':'Not connected']
-  ];
   return {
     id:'CR-'+Date.now().toString(36).toUpperCase(),
     type:'compliance', accent:'#0d9488',
@@ -3206,7 +3169,6 @@ function buildComplianceReport(){
       ['Documents submitted',totalDone+' of '+totalReq],
       ['Outstanding',String(Math.max(0,totalReq-totalDone))],
       ['Company docs on file',companyOnFile+' of '+COMPANY_DOC_TYPES.length],
-      ['Data connections',connActive+' of 3'],
       ['Upcoming deadlines',String(upcoming.length)],
       ['Next deadline',nextDl?calFmt(nextDl.date):'—'],
       ['Linked accountant',linkedFirm||'None']
@@ -3215,15 +3177,13 @@ function buildComplianceReport(){
       {title:'Filing readiness',headers:['Area','Complete','Outstanding','Status'],rows:[
         ['Tax documents', taxDone+' of '+bizTaxDocs.length, String(bizTaxDocs.length-taxDone), (bizTaxDocs.length&&taxDone<bizTaxDocs.length)?'Action needed':'On track'],
         ['Audit documents', auditDone+' of '+bizAuditDocs.length, String(bizAuditDocs.length-auditDone), (bizAuditDocs.length&&auditDone<bizAuditDocs.length)?'Action needed':'On track'],
-        ['Company documents', companyOnFile+' of '+COMPANY_DOC_TYPES.length, String(COMPANY_DOC_TYPES.length-companyOnFile), companyOnFile<COMPANY_DOC_TYPES.length?'Incomplete':'Complete'],
-        ['Data connections', connActive+' of 3', String(3-connActive), connActive<3?'Partial':'Connected']
+        ['Company documents', companyOnFile+' of '+COMPANY_DOC_TYPES.length, String(COMPANY_DOC_TYPES.length-companyOnFile), companyOnFile<COMPANY_DOC_TYPES.length?'Incomplete':'Complete']
       ]},
       {title:'Upcoming compliance deadlines',headers:['Filing','Detail','Due','Countdown'],rows:deadlineRows},
       {title:'Requested documents',headers:['Document','Type','Deadline','Status'],rows:docRows},
-      {title:'Company documents on file',headers:['Document','Status','Issued','Expires'],rows:companyRows},
-      {title:'Data connections',headers:['Connection','Status'],rows:connRows}
+      {title:'Company documents on file',headers:['Document','Status','Issued','Expires'],rows:companyRows}
     ],
-    note:'Compliance rating combines linked-accountant status (40%), document completion (40%) and active data connections (20%). '+(expiringSoon.length?(expiringSoon.length+' company document'+(expiringSoon.length===1?'':'s')+' expiring within 60 days — renew soon.'):'No company documents expiring within 60 days.')
+    note:'Compliance rating combines linked-accountant status (50%) and document completion (50%). '+(expiringSoon.length?(expiringSoon.length+' company document'+(expiringSoon.length===1?'':'s')+' expiring within 60 days — renew soon.'):'No company documents expiring within 60 days.')
   };
 }
 /* build a structured audit-trail report snapshot from live firm data */
@@ -3507,6 +3467,130 @@ function guideCard(ic,t,d,s){
     <div style="margin-bottom:8px;color:var(--accent)">${svgIcon(ic,26)}</div><h3 style="font-size:15px">${t}</h3>
     <p class="muted" style="font-size:12.5px;margin:4px 0 10px">${d}</p>
     <span class="pill p-gray">${s}</span></div>`;}
+
+/* ================= AI ASSIST — real, Claude-backed chat ================= */
+var AI_CHAT={business:[], firm:[]};   /* conversation history per portal */
+var _aiBusy=false;
+var AI_QUICKS={
+  business:['When must I register for VAT?','What is the corporate tax rate?','Explain the AED 10,000 late-registration penalty','Am I ready for UAE e-invoicing?'],
+  firm:['Draft a Q2 VAT document request for a trading client','Which of my clients have deadlines coming up?','What should I check before a client files their VAT return?','Explain Small Business Relief for a client']
+};
+function aiEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+/* tiny, safe markdown → HTML for AI replies (bold, headings, bullets, line breaks) */
+function aiMd(t){
+  var lines=String(t||'').replace(/\r/g,'').split('\n'), out=[], inList=false;
+  function inline(s){ s=aiEsc(s);
+    s=s.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/`([^`]+)`/g,'<code>$1</code>');
+    return s; }
+  for(var i=0;i<lines.length;i++){
+    var ln=lines[i];
+    var m=ln.match(/^\s*(?:[-*•]|\d+\.)\s+(.*)$/);
+    if(m){ if(!inList){out.push('<ul style="margin:6px 0 6px 2px;padding-left:18px">');inList=true;} out.push('<li style="margin:3px 0">'+inline(m[1])+'</li>'); continue; }
+    if(inList){out.push('</ul>');inList=false;}
+    if(!ln.trim()){ out.push('<div style="height:6px"></div>'); continue; }
+    var h=ln.match(/^#{1,4}\s+(.*)$/);
+    if(h){ out.push('<div style="font-weight:700;margin:6px 0 2px">'+inline(h[1])+'</div>'); continue; }
+    out.push('<div style="margin:2px 0">'+inline(ln)+'</div>');
+  }
+  if(inList)out.push('</ul>');
+  return out.join('');
+}
+/* compact, non-sensitive snapshot of the signed-in user's workspace */
+function aiContext(scope){
+  var L=[];
+  try{
+    if(scope==='firm'){
+      var cs=(typeof firmClients!=='undefined'&&firmClients&&firmClients.length)?firmClients:null;
+      L.push('Portal: accountant/firm.');
+      L.push('Linked clients: '+((typeof clients!=='undefined'&&clients)?clients.length:0)+'.');
+      if(cs){ L.push('Clients: '+cs.slice(0,12).map(function(c){return c.name+' (deadline '+(c.deadline||'—')+', docs '+(c.docs||'—')+', risk '+(c.risk||'—')+')';}).join('; ')+'.'); }
+      var open=[]; try{ open=[].concat(firmTaxReqs||[],firmAuditReqs||[]).filter(function(r){return !/Received/.test(r.st);}); }catch(e){}
+      L.push('Open document requests: '+open.length+'.');
+      try{ if(typeof firmAggregateHealth==='function'){ var fh=firmAggregateHealth(); if(fh&&fh.avg!=null) L.push('Portfolio compliance health: '+fh.avg+'/100, penalty exposure AED '+(fh.exposure||0).toLocaleString()+', clients at risk '+(fh.atRiskClients||0)+'.'); } }catch(e){}
+    } else {
+      L.push('Portal: business.');
+      L.push('Linked accountant: '+((typeof linkedFirm!=='undefined'&&linkedFirm)?linkedFirm:'none')+'.');
+      var tot=0,done=0; try{ var all=[].concat(bizTaxDocs||[],bizAuditDocs||[]); tot=all.length; done=all.filter(function(d){return d.state==='done';}).length; }catch(e){}
+      L.push('Requested documents: '+done+' of '+tot+' submitted.');
+      try{ L.push('Company documents in vault: '+((vaultDocs||[]).length)+'.'); }catch(e){}
+      try{ if(bizRevenueBand) L.push('Revenue band: '+bizRevenueBand+'.'); }catch(e){}
+      try{ var up=(calendarEvents||[]).filter(function(e){return e.date>=todayISO();}).sort(function(a,b){return a.date<b.date?-1:1;}).slice(0,6);
+        if(up.length) L.push('Upcoming deadlines: '+up.map(function(e){return e.title+' on '+e.date;}).join('; ')+'.'); }catch(e){}
+      try{ if(typeof businessHealth==='function'){ var bh=businessHealth(); if(bh) L.push('Compliance health: '+bh.score+'/100, penalty exposure AED '+(bh.exposure||0).toLocaleString()+'.'); } }catch(e){}
+    }
+  }catch(e){}
+  return L.join('\n');
+}
+function aiAssistPanel(scope){
+  var qs=AI_QUICKS[scope]||[];
+  var ph = scope==='firm' ? 'Ask about UAE tax, or ask me to draft a client request…' : 'Ask anything about UAE VAT, corporate tax or e-invoicing…';
+  return `<div class="card mb14 aichat" style="border-color:var(--accent)">
+    <div class="cardhead" style="margin-bottom:8px"><h3>${svgIcon('sparkles',16)} HisabOne AI</h3><span class="pill p-teal">Live</span></div>
+    <div id="aiLog_${scope}" class="ailog" style="max-height:340px;overflow-y:auto;margin-bottom:10px"></div>
+    <div style="display:flex;gap:10px">
+      <input id="aiInput_${scope}" class="finput" style="flex:1" placeholder="${ph}" onkeydown="if(event.key==='Enter'){event.preventDefault();aiAsk('${scope}')}">
+      <button class="btn" id="aiSend_${scope}" onclick="aiAsk('${scope}')">${svgIcon('sparkles',15)} Ask AI</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px" id="aiQuicks_${scope}">
+      ${qs.map(function(q){return '<span class="pill p-gray" style="cursor:pointer" onclick="aiQuick(\''+scope+'\',this)" data-q="'+aiEsc(q)+'">'+aiEsc(q)+'</span>';}).join('')}
+    </div>
+    <div class="note" style="margin-top:12px">${svgIcon('shield',13)} General guidance on UAE tax &amp; compliance — not a substitute for formal advice from your accountant or the FTA. HisabOne prepares returns; it does not file them.</div>
+  </div>`;
+}
+function aiRenderLog(scope){
+  var log=document.getElementById('aiLog_'+scope); if(!log) return;
+  var msgs=AI_CHAT[scope]||[];
+  if(!msgs.length){
+    log.innerHTML='<div class="ai" style="margin:0"><div class="sparkle">'+svgIcon('sparkles',22)+'</div><div><h3>Ask me anything</h3><p>'+
+      (scope==='firm'?'I can answer UAE tax &amp; audit questions and draft client document requests — grounded in your live client list and deadlines.':'I can answer UAE VAT, corporate tax and e-invoicing questions — and I can see your deadlines and outstanding documents to make answers specific to you.')+'</p></div></div>';
+    return;
+  }
+  log.innerHTML=msgs.map(function(m){
+    if(m.role==='user') return '<div style="display:flex;justify-content:flex-end;margin:8px 0"><div style="background:var(--accent);color:#fff;padding:9px 13px;border-radius:14px 14px 4px 14px;max-width:82%;font-size:13.5px">'+aiEsc(m.content)+'</div></div>';
+    if(m.role==='pending') return '<div style="display:flex;gap:9px;margin:8px 0"><div class="sparkle" style="flex:none">'+svgIcon('sparkles',18)+'</div><div style="color:var(--muted);font-size:13.5px;padding-top:2px">'+aiEsc(m.content)+'</div></div>';
+    if(m.role==='error') return '<div style="display:flex;gap:9px;margin:8px 0"><div style="flex:none;color:var(--red)">'+svgIcon('warn',18)+'</div><div style="color:var(--red);font-size:13px;padding-top:2px">'+aiEsc(m.content)+'</div></div>';
+    return '<div style="display:flex;gap:9px;margin:8px 0"><div class="sparkle" style="flex:none">'+svgIcon('sparkles',18)+'</div><div style="flex:1;font-size:13.5px;line-height:1.5">'+aiMd(m.content)+'</div></div>';
+  }).join('');
+  log.scrollTop=log.scrollHeight;
+}
+function aiQuick(scope,el){
+  var q=el&&el.getAttribute?el.getAttribute('data-q'):null; if(!q) return;
+  var inp=document.getElementById('aiInput_'+scope); if(inp) inp.value=q;
+  aiAsk(scope);
+}
+async function aiAsk(scope){
+  if(_aiBusy) return;
+  var inp=document.getElementById('aiInput_'+scope); if(!inp) return;
+  var q=(inp.value||'').trim(); if(!q) return;
+  inp.value='';
+  AI_CHAT[scope].push({role:'user',content:q});
+  AI_CHAT[scope].push({role:'pending',content:'Thinking…'});
+  aiRenderLog(scope);
+  _aiBusy=true;
+  var btn=document.getElementById('aiSend_'+scope); if(btn){btn.disabled=true;btn.style.opacity='.6';}
+  var history=AI_CHAT[scope].filter(function(m){return m.role==='user'||m.role==='assistant';})
+                            .map(function(m){return {role:m.role,content:m.content};});
+  try{
+    var r=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history, role:(scope==='firm'?'firm':'business'), context:aiContext(scope)})});
+    var data=await r.json().catch(function(){return {};});
+    // drop the pending bubble
+    AI_CHAT[scope]=AI_CHAT[scope].filter(function(m){return m.role!=='pending';});
+    if(r.ok && data && data.ok && data.reply){
+      AI_CHAT[scope].push({role:'assistant',content:data.reply});
+    } else {
+      var em=(data&&data.error)? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : ('Request failed ('+r.status+')');
+      if(r.status===500 && /not configured/i.test(em)) em='AI Assist isn’t switched on yet — the workspace’s ANTHROPIC_API_KEY needs to be set in the deployment. Once it’s added, this will work instantly.';
+      AI_CHAT[scope].push({role:'error',content:em});
+    }
+  }catch(e){
+    AI_CHAT[scope]=AI_CHAT[scope].filter(function(m){return m.role!=='pending';});
+    AI_CHAT[scope].push({role:'error',content:'Could not reach the assistant. Check your connection and try again.'});
+  }
+  _aiBusy=false;
+  if(btn){btn.disabled=false;btn.style.opacity='1';}
+  aiRenderLog(scope);
+}
 /* business: one document table row with deadline, urgency, risk, status + Upload */
 function bizDocRow(kind,i){
   const d=(kind==='tax'?bizTaxDocs:bizAuditDocs)[i];
@@ -3671,14 +3755,6 @@ function checkRow(on,t){return `<div class="check"><div class="box ${on?'on':''}
   <div style="${on?'':'color:var(--muted)'}">${t}</div></div>`;}
 function invField(t){return `<div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px">
   <span style="color:var(--accent);font-weight:700">✓</span><span>${t}</span></div>`;}
-function connCard(key,ic,n,d){
-  const on=connections[key];
-  return `<div class="card">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-    <div style="color:var(--accent)">${svgIcon(ic,22)}</div><div style="flex:1"><h3 style="font-size:14.5px">${n}</h3></div>
-    <span class="pill ${on?'p-green':'p-gray'}">${on?'Connected':'Not connected'}</span></div>
-  <p class="muted" style="font-size:12.5px;margin-bottom:12px">${d}</p>
-  <button class="btn ghost sm" onclick="toggleConnection('${key}')">${on?'Disconnect':'Connect'}</button></div>`;}
 function clientRow(n,m,cls,s){return `<div class="drow"><div class="avatar" style="background:var(--panel2);color:var(--accent)">${n[0]}</div>
   <div style="flex:1"><div class="dtitle">${n}</div><div class="dmeta">${m}</div></div>
   <span class="pill ${cls}">${s}</span></div>`;}
@@ -4102,7 +4178,6 @@ function loadSampleData(){
   _sampleMode=true; onboardDismissed=true;
   if(currentAccount.role==='business'){
     linkedFirm='Summit Auditors'; linkedFirmId='';
-    connections={fta:true,accounting:true,bank:false};
     vaultDocs=[
       {name:'Trade Licence 2026.pdf',added:'10 Jun 2026',typeId:'trade_license',issueDate:'2026-01-15',expiryDate:'2027-01-14'},
       {name:'VAT Certificate.pdf',added:'10 Jun 2026',typeId:'vat_cert',issueDate:'2018-01-01',expiryDate:null},
@@ -4309,6 +4384,68 @@ function penaltyCheck(){
     +'<div style="margin-top:16px;background:var(--accent-bg);border-radius:12px;padding:16px;text-align:center"><div style="font-weight:700;margin-bottom:6px">Fix these before they cost you.</div><div class="muted" style="font-size:12.5px;margin-bottom:12px">Create a free HisabOne account — we’ll track every deadline and chase every document so these fines never land.</div><button class="lf-btn" style="width:auto;padding:12px 28px" onclick="switchView(\'signin\');openLogin(\'business\')">Create your free account &rarr;</button></div>'
     +'<div class="muted" style="font-size:11px;margin-top:10px;text-align:center">Estimate only, based on published FTA fixed penalties. Not tax advice.</div>';
   try{ out.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(e){}
+}
+
+/* ---------- TRN VALIDATOR (e-invoicing readiness) ---------- */
+function fmtTrn(s){ return s.replace(/(\d{3})(\d{4})(\d{4})(\d{4})/, '$1 $2 $3 $4'); }
+function trnValidate(raw){
+  var s=String(raw==null?'':raw).replace(/[\s\-]/g,'');
+  if(!s) return {ok:false, state:'empty', cls:'p-gray', label:'—', msg:'Enter a 15-digit Tax Registration Number to check it.'};
+  if(/[^0-9]/.test(s)) return {ok:false, state:'chars', cls:'p-red', label:'Invalid', msg:'A TRN contains digits only — remove any letters or symbols.'};
+  if(s.length!==15) return {ok:false, state:'length', cls:'p-red', label:'Invalid', msg:'A UAE TRN is exactly 15 digits — you entered '+s.length+'.'};
+  if(s.slice(0,3)!=='100') return {ok:true, warn:true, state:'prefix', cls:'p-amber', label:'Check', normalized:fmtTrn(s),
+    msg:'This is 15 digits, but UAE TRNs normally begin with “100”. Double-check the number, then confirm it’s active on the FTA’s TRN verification tool.'};
+  return {ok:true, state:'valid', cls:'p-green', label:'Valid format', normalized:fmtTrn(s),
+    msg:'Format is valid — 15 digits beginning with 100. Before you rely on it for e-invoicing, confirm it’s active on the FTA’s official TRN verification tool.'};
+}
+function trnCheck(prefix){
+  var inp=document.getElementById(prefix+'Trn'), out=document.getElementById(prefix+'TrnResult');
+  if(!inp||!out) return;
+  var v=trnValidate(inp.value);
+  var ic = (v.ok&&!v.warn)?svgIcon('check',15):svgIcon('warn',15);
+  out.style.display='block';
+  out.innerHTML='<div style="display:flex;gap:11px;align-items:flex-start;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px">'
+    +'<span class="pill '+v.cls+'" style="flex:none">'+ic+' '+v.label+'</span>'
+    +'<div style="font-size:13px;line-height:1.5">'+(v.normalized?'<b style="letter-spacing:.5px">'+v.normalized+'</b><br>':'')+v.msg+'</div></div>';
+}
+function trnValidatorCard(prefix, title, sub){
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('shield',16)+' '+title+'</h3><span class="pill p-teal">Free tool</span></div>'
+    +'<p class="muted" style="font-size:13px;margin:-2px 0 12px">'+sub+'</p>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap"><input id="'+prefix+'Trn" class="finput" style="flex:1;min-width:210px" placeholder="e.g. 100 1234 5678 0003" onkeydown="if(event.key===\'Enter\'){event.preventDefault();trnCheck(\''+prefix+'\')}">'
+    +'<button class="btn" onclick="trnCheck(\''+prefix+'\')">'+svgIcon('check',15)+' Validate TRN</button></div>'
+    +'<div id="'+prefix+'TrnResult" style="display:none;margin-top:12px"></div></div>';
+}
+/* business e-invoicing readiness checklist (advisory, plain-English) */
+function einvReadinessHTML(){
+  if(!currentAccount || currentAccount.role!=='business' || !bizRevenueBand) return '';
+  var ph = bizRevenueBand==='ge50m'?EINV.phase1:EINV.phase2;
+  var aspPassed = calDaysUntil(ph.asp)<0;
+  var items=[
+    ['Confirm your e-invoicing wave', true, 'Based on your revenue band — appoint your ASP by '+calFmt(ph.asp)+' and go live by '+calFmt(ph.live)+'.'],
+    ['Validate your own company TRN', false, 'Use the checker below — a wrong or malformed TRN blocks structured invoicing.'],
+    ['Clean your customer &amp; vendor master data', false, 'Every customer and supplier needs a valid TRN, exact legal name and address. This is where most businesses get caught out.'],
+    ['Appoint an accredited Service Provider (ASP)', aspPassed?false:null, 'You must route invoices through a Ministry-of-Finance-accredited ASP. Shortlist and choose before the deadline.'],
+    ['Run a test invoice before go-live', false, 'Issue a structured test invoice through your ASP so problems surface before it’s mandatory.']
+  ];
+  var rows=items.map(function(it){
+    var done=it[1]===true, na=it[1]===null;
+    var box = done
+      ? '<span style="flex:none;width:20px;height:20px;border-radius:6px;background:#12805c;color:#fff;display:inline-flex;align-items:center;justify-content:center">'+svgIcon('check',13)+'</span>'
+      : '<span style="flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid '+(na?'#c0392b':'var(--line)')+';display:inline-block"></span>';
+    return '<div style="display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)">'+box
+      +'<div><div style="font-weight:600;font-size:13.5px">'+it[0]+'</div><div class="muted" style="font-size:12.5px;margin-top:2px">'+it[2]+'</div></div></div>';
+  }).join('');
+  return '<div class="card mb14" style="border-color:#7a5af8">'
+    +'<div class="cardhead"><h3>'+svgIcon('check',16)+' E-invoicing readiness</h3><span class="pill" style="background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Get ahead</span></div>'
+    +'<p class="muted" style="font-size:13px;margin:-2px 0 10px">The software is the easy part — clean data is what makes structured e-invoicing work. Here’s your run-up to go-live:</p>'
+    +rows
+    +'<div style="margin-top:16px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px">'
+      +'<div style="font-weight:600;font-size:13.5px;margin-bottom:3px">'+svgIcon('shield',14)+' Validate a TRN</div>'
+      +'<div class="muted" style="font-size:12.5px;margin-bottom:10px">Check any Tax Registration Number is correctly formed before it goes on an invoice.</div>'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap"><input id="bizTrn" class="finput" style="flex:1;min-width:200px" placeholder="e.g. 100 1234 5678 0003" onkeydown="if(event.key===\'Enter\'){event.preventDefault();trnCheck(\'biz\')}">'
+        +'<button class="btn" onclick="trnCheck(\'biz\')">'+svgIcon('check',15)+' Validate</button></div>'
+      +'<div id="bizTrnResult" style="display:none;margin-top:12px"></div></div>'
+    +'</div>';
 }
 
 /* ---------- SESSION RESUME (server-backed) ---------- */

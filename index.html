@@ -24,7 +24,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <style>
   :root{
-    --h1logo:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='t' x1='6' y1='0' x2='94' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%2320d3bf'/><stop offset='0.52' stop-color='%234f7ef0'/><stop offset='1' stop-color='%238a5cf6'/></linearGradient></defs><rect width='100' height='100' fill='url(%23t)'/><g fill='%23ffffff'><rect x='14' y='27' width='12' height='46' rx='6'/><rect x='36' y='27' width='12' height='46' rx='6'/><rect x='19' y='44' width='24' height='12' rx='2'/><rect x='64' y='27' width='12' height='46' rx='6'/><path d='M64 27 L54 32 L54 41 L64 36 Z'/><rect x='58' y='67' width='24' height='6' rx='3'/></g></svg>");
+    --h1logo:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='t' x1='6' y1='0' x2='94' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%2320d3bf'/><stop offset='0.52' stop-color='%234f7ef0'/><stop offset='1' stop-color='%238a5cf6'/></linearGradient></defs><rect width='100' height='100' fill='url(%23t)'/><g fill='%23ffffff'><rect x='18' y='28' width='11' height='44' rx='3.5'/><rect x='37' y='28' width='11' height='44' rx='3.5'/><rect x='18' y='44' width='30' height='11' rx='3'/><rect x='66' y='28' width='11' height='44' rx='3.5'/><path d='M56 35 L66 28 L66 39 Z'/><rect x='61' y='67' width='21' height='5' rx='2.5'/></g></svg>");
     /* dark base */
     --text:#e8eef6; --muted:#8ea3bd; --line:rgba(255,255,255,.09);
     --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.07);
@@ -645,6 +645,11 @@
   #main.pagein > *:nth-child(5){animation-delay:.16s}
   #main.pagein > *:nth-child(n+6){animation-delay:.2s}
 
+  /* -- landing view switches (Home/Pricing/Security/Sign in): smooth cross-fade instead of a hard cut -- */
+  @keyframes viewIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .lview{animation:viewIn .5s var(--ease) both}
+  @media(prefers-reduced-motion:reduce){.lview{animation:none}}
+
   /* -- cards: consistent depth + lift on interactive ones -- */
   .card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)}
   .card.clk,.card.stat.clk,tr.clickable{cursor:pointer}
@@ -765,6 +770,7 @@
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
       <button id="tabPenalty" class="ltab" onclick="switchView('penalty')">Penalty Check</button>
       <button id="tabSignin" class="ltab" onclick="switchView('signin')">Sign In</button>
+      <button id="tabSignup" class="ltab" onclick="switchView('signup')">Sign Up</button>
       <button id="tabPricing" class="ltab" onclick="switchView('pricing')">Pricing</button>
       <button id="tabSecurity" class="ltab" onclick="switchView('security')">Security</button>
     </div>
@@ -781,8 +787,8 @@
         <h1 class="hero-h1">The compliance layer for the&nbsp;<span class="hgrad">UAE</span>.</h1>
         <p class="hero-p">One secure workspace for businesses and their accountants — every VAT, corporate-tax and audit deadline tracked and chased by AI.</p>
         <div class="hero-cta">
-          <button class="lf-btn" style="width:auto;padding:13px 30px" onclick="startTrial()">Sign in &rarr;</button>
-          <button class="hero-ghost" onclick="switchView('pricing')">See pricing</button>
+          <button class="lf-btn" style="width:auto;padding:13px 30px" onclick="switchView('signup')">Start free trial &rarr;</button>
+          <button class="hero-ghost" onclick="switchView('signin')">Sign in</button>
         </div>
         <div class="hero-note">Private preview &middot; access by invitation &middot; built for the era of VAT, Corporate Tax &amp; e-invoicing</div>
       </div>
@@ -1002,6 +1008,46 @@
     </div>
   </div>
   </div><!-- /viewSignin -->
+
+  <!-- ===== SIGN UP VIEW (dedicated page) ===== -->
+  <div id="viewSignup" class="lview">
+    <div class="llogo">
+      <div class="llogo-lockup">
+        <span class="llogo-mark" role="img" aria-label="HisabOne logo"></span>
+        <span class="llogo-word">Hisab<span class="llogo-one">One</span></span>
+      </div>
+      <div class="llogo-tag">Start free in under a minute</div>
+    </div>
+    <div style="width:100%;max-width:440px">
+      <div class="lportal-card" style="cursor:default">
+        <div class="lportal-label biz" id="suLabel">Business Portal</div>
+        <h2 style="margin-bottom:4px">Create your account</h2>
+        <p class="muted" style="font-size:13px;margin-bottom:15px">14-day free trial · no credit card · cancel anytime</p>
+        <div class="billtoggle" style="margin:0 0 16px">
+          <span class="seg" style="display:flex;width:100%">
+            <button type="button" id="suRoleBiz" class="on" style="flex:1" onclick="suSetRole('business')">I’m a business</button>
+            <button type="button" id="suRoleFirm" style="flex:1" onclick="suSetRole('firm')">I’m an accountant</button>
+          </span>
+        </div>
+        <form id="suFormEl" onsubmit="doSignupPage();return false" autocomplete="on">
+          <div class="lfield"><label class="flabel" for="suName" id="suNameLabel">Company name</label><input id="suName" class="finput" type="text" placeholder="e.g. Falcon Trading LLC" autocomplete="organization"></div>
+          <div class="lfield"><label class="flabel" for="suEmail">Email</label><input id="suEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
+          <div class="lfield"><label class="flabel" for="suPassword">Password</label>
+            <div class="pw-wrap">
+              <input id="suPassword" name="password" class="finput" type="password" placeholder="At least 8 characters" autocomplete="new-password">
+              <button type="button" class="pw-eye" onclick="togglePw(this,'suPassword')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            </div>
+          </div>
+          <div id="suErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
+          <div id="suNotice" style="color:var(--green);font-size:12.5px;margin-bottom:2px;display:none"></div>
+          <button type="submit" id="suSubmit" class="lf-btn">Start free 14-day trial →</button>
+          <div class="muted" style="text-align:center;font-size:11.5px;margin-top:9px">14-day free trial · No credit card needed · Cancel anytime</div>
+        </form>
+        <div style="text-align:center;margin-top:15px"><span class="muted" style="font-size:12.5px">Already have an account? </span><span class="link" onclick="switchView('signin')">Sign in →</span></div>
+        <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">By creating an account you agree to our <span class="link" onclick="switchView('terms')">Terms</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span>.</div>
+      </div>
+    </div>
+  </div><!-- /viewSignup -->
 
 
   <!-- ===== ABOUT US VIEW ===== -->
@@ -1254,8 +1300,9 @@ var onboardDismissed=false, _sampleMode=false;
 function saveAccountData(){ if(!currentAccount||_sampleMode) return; _blobDirty=true; clearTimeout(_saveT); _saveT=setTimeout(flushAccountData, 900); }
 async function flushAccountData(){
   if(!currentAccount||!sb||!_blobDirty||_sampleMode) return; _blobDirty=false;
+  const cleanVault=(vaultDocs||[]).map(function(d){ var o={}; for(var k in d){ if(k!=='_up'&&k!=='uploading'&&k!=='uploadError'&&Object.prototype.hasOwnProperty.call(d,k)) o[k]=d[k]; } return o; });
   const data = currentAccount.role==='business'
-    ? {vaultDocs, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand}
+    ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand}
     : {firmReminders, clientMeta, ctScenarios, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   try{ await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()}); }catch(e){}
 }
@@ -1505,9 +1552,7 @@ function runUploadCompanyDoc(typeId){
       calMsg=detected?' — Corporate Tax deadline added to your Compliance Calendar':' — Corporate Tax deadline added (31 Dec year-end assumed)';
     }
     /* keep the actual file safe in private cloud storage (row-level access: only this account) */
-    if(sb&&currentAccount){
-      try{ sb.storage.from('vault').upload(currentAccount.id+'/'+Date.now()+'_'+f.name, f).then(r=>{ if(r&&!r.error){ entry.storagePath=r.data.path; saveAccountData(); } }); }catch(e){}
-    }
+    vaultUpload(entry, f);
     saveAccountData();
     renderPage();
     if(calMsg) toast('Certificate read'+calMsg);
@@ -1533,9 +1578,8 @@ function runUploadVaultDoc(){
     if(f){
       const entry={name:f.name, added:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})};
       vaultDocs.unshift(entry);
-      if(sb&&currentAccount){
-        try{ sb.storage.from('vault').upload(currentAccount.id+'/'+Date.now()+'_'+f.name, f).then(r=>{ if(r&&!r.error){ entry.storagePath=r.data.path; saveAccountData(); } }); }catch(e){}
-      }
+      vaultUpload(entry, f);
+      saveAccountData();
     }
     inp.onchange=null; renderPage();
   };
@@ -1610,8 +1654,8 @@ function requestUnlinkClient(i){
 
 /* ---------- LOGIN top tabs (Sign In / Sign Up / Pricing) ---------- */
 function switchView(v){
-  ['Home','Penalty','Signin','Pricing','Security','Privacy','Terms'].forEach(n=>{
-    const view=document.getElementById('view'+n); if(view) view.style.display=(n.toLowerCase()===v)?'flex':'none';
+  ['Home','Penalty','Signin','Pricing','Security','Privacy','Terms','Signup'].forEach(n=>{
+    const view=document.getElementById('view'+n); if(view){ const on=(n.toLowerCase()===v); view.style.display=on?'flex':'none'; if(on) view.scrollTop=0; }
     const tab=document.getElementById('tab'+n); if(tab) tab.classList.toggle('on', n.toLowerCase()===v);
   });
   if(v==='pricing' && typeof setBilling==='function') setBilling(window._billing||'monthly');
@@ -1771,6 +1815,43 @@ async function doSignup(){
   finally{ setLfBusy(false); }
 }
 
+/* ---------- SIGN UP (dedicated page) ---------- */
+var _suRole='business';
+function suSetRole(r){
+  _suRole=r;
+  var b=document.getElementById('suRoleBiz'), f=document.getElementById('suRoleFirm');
+  if(b) b.classList.toggle('on', r==='business'); if(f) f.classList.toggle('on', r==='firm');
+  var lbl=document.getElementById('suLabel'); if(lbl){ lbl.textContent=(r==='business'?'Business Portal':'Accountant Portal'); lbl.className='lportal-label '+(r==='business'?'biz':'firm'); }
+  var nl=document.getElementById('suNameLabel'); if(nl) nl.textContent=(r==='business'?'Company name':'Firm name');
+  var ni=document.getElementById('suName'); if(ni) ni.placeholder=(r==='business'?'e.g. Falcon Trading LLC':'e.g. Summit Auditors');
+}
+function suShowErr(m){ var e=document.getElementById('suErr'); if(e){ e.textContent=m; e.style.display='block'; } }
+async function doSignupPage(){
+  var name=(document.getElementById('suName').value||'').trim();
+  var email=(document.getElementById('suEmail').value||'').trim();
+  var pass=document.getElementById('suPassword').value||'';
+  var errEl=document.getElementById('suErr'), noticeEl=document.getElementById('suNotice');
+  if(errEl) errEl.style.display='none'; if(noticeEl) noticeEl.style.display='none';
+  if(!name){ suShowErr(_suRole==='business'?'Enter your company name.':'Enter your firm name.'); return; }
+  if(!email){ suShowErr('Enter your email address.'); return; }
+  if(!pass||pass.length<8){ suShowErr('Choose a password of at least 8 characters.'); return; }
+  if(!sb){ suShowErr('Cannot reach the server — check your connection and reload.'); return; }
+  var btn=document.getElementById('suSubmit'); if(btn){ btn.disabled=true; btn.style.opacity='.6'; }
+  try{
+    var meta={name:name, role:_suRole};
+    if(window._joinToken){ meta.join_token=window._joinToken; }
+    var res=await sb.auth.signUp({ email:email, password:pass, options:{ data:meta, emailRedirectTo:'https://hisabone.ae' } });
+    if(res.error){ suShowErr(friendlyAuthError(res.error)); return; }
+    loginRole=_suRole;
+    if(res.data && res.data.session){ window._joinToken=null; await enterFromSession(res.data.session, _suRole); }
+    else if(noticeEl){
+      noticeEl.textContent='Almost there — we’ve emailed you a confirmation link. Click it, then sign in.';
+      noticeEl.style.display='block';
+    }
+  }catch(e){ suShowErr('Could not create the account — please try again.'); }
+  finally{ if(btn){ btn.disabled=false; btn.style.opacity='1'; } }
+}
+
 /* ---------- SESSION ---------- */
 async function enterFromSession(session, expectRole){
   if(!session||!session.user){ showLoginErr('Sign-in failed — please try again.'); return; }
@@ -1906,11 +1987,30 @@ function certStatusHTML(kind){
   return '<div class="certbox"><div class="certtop"><span style="color:'+accent+'">'+svgIcon('file-text',18)+'</span><b>'+label+'</b><span class="pill p-gray" style="margin-left:auto;font-size:10px">Not uploaded</span></div>'
     +'<div class="muted" style="font-size:11.5px;margin-top:7px">Upload it in Company Information and its filing dates appear here automatically.</div></div>';
 }
-async function shareCompanyDoc(typeId){
-  const d=vaultDocs.find(x=>x.typeId===typeId); if(!d) return;
-  if(!linkedFirm||!linkedFirmId){ toast('Link your accountant first, then you can share documents with them.'); return; }
-  if(!sb||!currentAccount){ toast('Not signed in.'); return; }
-  const t=COMPANY_DOC_TYPES.find(x=>x.id===typeId); const name=t?t.name:'Company document';
+/* upload a file to the private vault and track its state on the entry, so we can
+   always share the EXACT original file (never a metadata-only fallback) */
+function vaultUpload(entry, f){
+  if(!sb||!currentAccount||!entry||!f) return;
+  entry.uploading=true; entry.uploadError=false;
+  try{
+    entry._up = sb.storage.from('vault').upload(currentAccount.id+'/'+Date.now()+'_'+f.name, f)
+      .then(function(r){ entry.uploading=false; if(r&&!r.error&&r.data){ entry.storagePath=r.data.path; saveAccountData(); } else { entry.uploadError=true; } if((page==='docs')&&typeof renderPage==='function') renderPage(); return r; })
+      .catch(function(e){ entry.uploading=false; entry.uploadError=true; if((page==='docs')&&typeof renderPage==='function') renderPage(); return {error:e}; });
+  }catch(e){ entry.uploading=false; entry.uploadError=true; }
+}
+/* guarantee the file has finished uploading (await the in-flight upload) before sharing */
+async function ensureVaultStored(d){
+  if(!d) return false;
+  if(d.storagePath) return true;
+  if(d._up){ try{ var r=await d._up; if(r&&!r.error&&r.data){ d.storagePath=r.data.path; saveAccountData(); } }catch(e){} }
+  return !!d.storagePath;
+}
+/* build a shared-report snapshot that points at the client's ACTUAL uploaded file */
+async function shareStoredDoc(d, name){
+  if(!linkedFirm||!linkedFirmId){ toast('Link your accountant first, then you can share documents with them.'); return false; }
+  if(!sb||!currentAccount){ toast('Not signed in.'); return false; }
+  if(d.uploading){ toast('Still saving that file — try Share again in a moment.'); }
+  await ensureVaultStored(d);
   let fileUrl=null;
   if(d.storagePath){
     try{ const su=await sb.storage.from('vault').createSignedUrl(d.storagePath, 60*60*24*365); if(su&&su.data&&su.data.signedUrl) fileUrl=su.data.signedUrl; }catch(e){}
@@ -1923,15 +2023,25 @@ async function shareCompanyDoc(typeId){
     tables:[], fileUrl:fileUrl, fileName:d.name,
     note: fileUrl
       ? (currentAccount.name+' shared the original document with you through HisabOne. Use the button above to open or download the exact file — this is the client’s uploaded document, not a copy.')
-      : (currentAccount.name+' shared this company document. The original file couldn’t be attached automatically — ask the client to re-upload it on their Company Information tab, then share again.') };
+      : (currentAccount.name+' shared this document, but the original file isn’t attached yet — ask them to re-upload it on their Company Information tab, then share again.') };
   try{
     const {error}=await sb.from('shared_reports').insert({from_id:currentAccount.id, to_id:linkedFirmId, report:rep});
-    if(error){ toast('Could not share — please try again.'); return; }
+    if(error){ toast('Could not share — please try again.'); return false; }
     d.sharedWithFirm=true; saveAccountData(); renderPage();
     toast(fileUrl ? (name+' (original file) shared with '+linkedFirm) : (name+' shared with '+linkedFirm));
-  }catch(e){ toast('Could not share — please try again.'); }
+    return true;
+  }catch(e){ toast('Could not share — please try again.'); return false; }
 }
-
+/* share a generic "Other documents" vault file with the linked accountant */
+async function shareVaultDoc(i){
+  const d=vaultDocs[i]; if(!d) return;
+  await shareStoredDoc(d, d.name);
+}
+async function shareCompanyDoc(typeId){
+  const d=vaultDocs.find(x=>x.typeId===typeId); if(!d) return;
+  const t=COMPANY_DOC_TYPES.find(x=>x.id===typeId); const name=t?t.name:'Company document';
+  await shareStoredDoc(d, name);
+}
 const IC = {
   plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
   bar:'<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M4 20h16"/>',
@@ -3715,8 +3825,15 @@ function docRow(ic,n,c,m){const col={red:'var(--red)',amber:'var(--amber)',green
 function reqFromFirm(n,f,cls,s){return `<div class="drow"><div style="color:var(--accent)">${svgIcon('inbox',18)}</div>
   <div style="flex:1"><div class="dtitle">${n}</div><div class="dmeta">${f}</div></div>
   <span class="pill ${cls}">${s}</span></div>`;}
-function vaultDocRow(d,i){return `<div class="drow"><div style="color:var(--accent)">${svgIcon('file',18)}</div>
-  <div style="flex:1"><div class="dtitle">${d.name}</div><div class="dmeta">Added ${d.added}</div></div>
+function vaultDocRow(d,i){
+  const shareBtn = d.sharedWithFirm
+    ? `<span class="pill p-green" style="align-self:center">${svgIcon('check',12)} Shared</span>`
+    : (d.uploading
+        ? `<button class="btn ghost sm" disabled style="opacity:.6" title="Saving file…">${svgIcon('sparkles',13)} Saving…</button>`
+        : `<button class="btn ghost sm" onclick="shareVaultDoc(${i})" title="Share the original file with your accountant">${svgIcon('share',13)} Share</button>`);
+  return `<div class="drow" style="align-items:center;gap:10px;flex-wrap:wrap"><div style="color:var(--accent)">${svgIcon('file',18)}</div>
+  <div style="flex:1;min-width:150px"><div class="dtitle">${d.name}</div><div class="dmeta">Added ${d.added}</div></div>
+  ${shareBtn}
   <button class="iconbtn" title="Delete document" onclick="deleteVaultDoc(${i})">${svgIcon('trash',15)}</button></div>`;}
 function companyDocRow(t){
   const d=vaultDocs.find(x=>x.typeId===t.id);
@@ -3732,7 +3849,9 @@ function companyDocRow(t){
     right=`${dcell('Issued', fmtDocDate(d.issueDate)||'—')}${dcell('Expires', exp.txt, exp.col)}`
       +(d.sharedWithFirm
         ? `<span class="pill p-green" style="align-self:center">${svgIcon('check',12)} Shared</span>`
-        : `<button class="btn ghost sm" onclick="shareCompanyDoc('${t.id}')">${svgIcon('share',13)} Share with firm</button>`)
+        : (d.uploading
+            ? `<button class="btn ghost sm" disabled style="opacity:.6" title="Saving file…">${svgIcon('sparkles',13)} Saving…</button>`
+            : `<button class="btn ghost sm" onclick="shareCompanyDoc('${t.id}')">${svgIcon('share',13)} Share with firm</button>`))
       +`<button class="btn ghost sm" onclick="uploadCompanyDoc('${t.id}')">Replace</button>`
       +`<button class="iconbtn" title="Remove" onclick="removeCompanyDoc('${t.id}')">${svgIcon('trash',15)}</button>`;
   } else {
@@ -3958,7 +4077,7 @@ function attachChangeDoc(id){
       _pendingChangeDoc=f.name;
       var entry={name:f.name, added:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})};
       vaultDocs.unshift(entry);
-      if(sb&&currentAccount){ try{ sb.storage.from('vault').upload(currentAccount.id+'/'+Date.now()+'_'+f.name,f).then(function(r){ if(r&&!r.error){ entry.storagePath=r.data.path; saveAccountData(); } }); }catch(e){} }
+      vaultUpload(entry, f);
       saveAccountData();
       var lbl=document.getElementById('retDocLbl'); if(lbl) lbl.textContent=f.name;
     };

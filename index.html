@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="HisabOne — Tax & Compliance, Simplified">
 <meta name="twitter:description" content="The UAE compliance layer for businesses and accountants.">
 <meta name="twitter:image" content="https://hisabone.ae/og.png">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='t' x1='6' y1='0' x2='94' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%2320d3bf'/><stop offset='0.52' stop-color='%234f7ef0'/><stop offset='1' stop-color='%238a5cf6'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23t)'/><g fill='%23ffffff'><rect x='14' y='27' width='12' height='46' rx='6'/><rect x='36' y='27' width='12' height='46' rx='6'/><rect x='19' y='44' width='24' height='12' rx='2'/><rect x='64' y='27' width='12' height='46' rx='6'/><path d='M64 27 L54 32 L54 41 L64 36 Z'/><rect x='58' y='67' width='24' height='6' rx='3'/></g></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='t' x1='6' y1='0' x2='94' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%2320d3bf'/><stop offset='0.52' stop-color='%234f7ef0'/><stop offset='1' stop-color='%238a5cf6'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23t)'/><g fill='%23ffffff'><rect x='18' y='28' width='11' height='44' rx='3.5'/><rect x='37' y='28' width='11' height='44' rx='3.5'/><rect x='18' y='44' width='30' height='11' rx='3'/><rect x='66' y='28' width='11' height='44' rx='3.5'/><path d='M56 35 L66 28 L66 39 Z'/><rect x='61' y='67' width='21' height='5' rx='2.5'/></g></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2005,30 +2005,34 @@ async function ensureVaultStored(d){
   if(d._up){ try{ var r=await d._up; if(r&&!r.error&&r.data){ d.storagePath=r.data.path; saveAccountData(); } }catch(e){} }
   return !!d.storagePath;
 }
-/* build a shared-report snapshot that points at the client's ACTUAL uploaded file */
+/* build a shared-report snapshot that points at the client's ACTUAL uploaded file.
+   Hard rule: never send a document share without the confirmed original file. */
 async function shareStoredDoc(d, name){
   if(!linkedFirm||!linkedFirmId){ toast('Link your accountant first, then you can share documents with them.'); return false; }
   if(!sb||!currentAccount){ toast('Not signed in.'); return false; }
-  if(d.uploading){ toast('Still saving that file — try Share again in a moment.'); }
-  await ensureVaultStored(d);
-  let fileUrl=null;
-  if(d.storagePath){
-    try{ const su=await sb.storage.from('vault').createSignedUrl(d.storagePath, 60*60*24*365); if(su&&su.data&&su.data.signedUrl) fileUrl=su.data.signedUrl; }catch(e){}
+  // wait for any in-flight upload to finish, then REQUIRE the stored file path
+  if(d.uploading || !d.storagePath){ await ensureVaultStored(d); }
+  if(!d.storagePath){
+    toast(d.uploadError
+      ? 'That file didn’t finish uploading — please re-upload it, then Share.'
+      : 'The file is still saving — give it a moment and press Share again.');
+    return false;
   }
+  let fileUrl=null;
+  try{ const su=await sb.storage.from('vault').createSignedUrl(d.storagePath, 60*60*24*365); if(su&&su.data&&su.data.signedUrl) fileUrl=su.data.signedUrl; }catch(e){}
+  if(!fileUrl){ toast('Couldn’t prepare the file link — please try Share again in a moment.'); return false; }
   const rep={ id:'DOC-'+Date.now().toString(36).toUpperCase(), type:'document', accent:'#0d9488',
     title:'Shared document: '+name, from:currentAccount.name, forName:linkedFirm,
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
     sharedAt:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
     summary:[['Document',name],['File name',d.name],['Issued',fmtDocDate(d.issueDate)||'—'],['Expires',fmtDocDate(d.expiryDate)||'—']],
     tables:[], fileUrl:fileUrl, fileName:d.name,
-    note: fileUrl
-      ? (currentAccount.name+' shared the original document with you through HisabOne. Use the button above to open or download the exact file — this is the client’s uploaded document, not a copy.')
-      : (currentAccount.name+' shared this document, but the original file isn’t attached yet — ask them to re-upload it on their Company Information tab, then share again.') };
+    note: currentAccount.name+' shared the original document with you through HisabOne. Use the button above to open or download the exact file — this is the client’s uploaded document, not a copy.' };
   try{
     const {error}=await sb.from('shared_reports').insert({from_id:currentAccount.id, to_id:linkedFirmId, report:rep});
     if(error){ toast('Could not share — please try again.'); return false; }
     d.sharedWithFirm=true; saveAccountData(); renderPage();
-    toast(fileUrl ? (name+' (original file) shared with '+linkedFirm) : (name+' shared with '+linkedFirm));
+    toast(name+' (original file) shared with '+linkedFirm);
     return true;
   }catch(e){ toast('Could not share — please try again.'); return false; }
 }
@@ -2803,8 +2807,8 @@ freports:()=>{
       </div>
     </div>
     <div class="card">
-      <div class="cardhead"><h3>${svgIcon('inbox',16)} Received reports</h3>${sharedReports.length?`<span class="pill p-teal">${sharedReports.length}</span>`:''}</div>
-      ${sharedReports.length ? sharedReports.map((r,i)=>sharedReportRow(r,i)).join('') : `<div class="muted" style="text-align:center;padding:22px;font-size:13px">No reports received yet. Compliance reports your clients share with you appear here.</div>`}
+      <div class="cardhead"><h3>${svgIcon('inbox',16)} Received reports</h3>${reportShares().length?`<span class="pill p-teal">${reportShares().length}</span>`:''}</div>
+      ${reportShares().length ? sharedReports.map((r,i)=>r.type==='document'?'':sharedReportRow(r,i)).join('') : `<div class="muted" style="text-align:center;padding:22px;font-size:13px">No reports received yet. Compliance reports your clients share with you appear here. Documents clients share appear in <span class="link" onclick="go('taxdocs')">Tax Documents</span>.</div>`}
     </div>
   </div>
   ${reportViewerHTML()}`;
@@ -3137,7 +3141,7 @@ function buildNotifs(){
     (myClients||[]).forEach(c=>out.push({id:'cli_'+c.business_id, ic:'users', t:'Client linked', s:c.business_name+' is in your client list', page:'clients'}));
     firmTaxReqs.filter(r=>/Received/.test(r.st)).forEach(r=>out.push({id:'rcv_'+r.id, ic:'check', t:'Document received', s:r.doc+' — '+r.client, page:'taxdocs'}));
     firmAuditReqs.filter(r=>/Received/.test(r.st)).forEach(r=>out.push({id:'rcva_'+r.id, ic:'check', t:'Audit document received', s:r.doc+' — '+r.client, page:'auditdocs'}));
-    (sharedReports||[]).forEach((r,i)=>out.push({id:'frep_'+(r.sharedAt||i), ic:'chart', t:'Report shared with you', s:(r.title||'Report'), page:'freports'}));
+    (sharedReports||[]).forEach((r,i)=>{ if(r&&r.type==='document') out.push({id:'fdoc_'+(r.sharedAt||i), ic:'inbox', t:'Document shared by client', s:(r.title||'Document').replace(/^Shared document:\s*/,'')+(r.from?(' — '+r.from):''), page:'taxdocs'}); else out.push({id:'frep_'+(r.sharedAt||i), ic:'chart', t:'Report shared with you', s:(r.title||'Report'), page:'freports'}); });
   }
   (returnsList||[]).forEach(function(rt){
     if(currentAccount.role==='business'){
@@ -3763,13 +3767,34 @@ function fClientRow(c){
     <td>${h.exposure>0?`<b style="color:#c0392b">${fmtAED(h.exposure)}</b>`:'<span class="muted">—</span>'}</td>
     <td><span class="pill ${rp}">${c.risk[0].toUpperCase()+c.risk.slice(1)}</span></td>
     <td><span class="pill ${u[0]}">${u[1]}</span></td></tr>`;}
+/* firm: documents proactively shared by clients (from their Company Information tab) */
+function docShares(){ return (sharedReports||[]).filter(function(r){return r && r.type==='document';}); }
+function reportShares(){ return (sharedReports||[]).filter(function(r){return !r || r.type!=='document';}); }
+function receivedDocRow(r){
+  var client=r.from||'Client';
+  var docName=(r.title||'Shared document').replace(/^Shared document:\s*/,'');
+  var file=r.fileUrl
+    ? '<a class="btn ghost sm" href="'+r.fileUrl+'" target="_blank" rel="noopener" title="Open the original file">'+svgIcon('download',13)+' Open</a>'
+    : '<span class="muted" title="Shared before file attachments were reliable — ask the client to re-share">No file</span>';
+  return '<tr><td><b>'+ctEsc(client)+'</b></td><td>'+ctEsc(docName)+(r.fileName?'<div class="muted" style="font-size:11.5px">'+ctEsc(r.fileName)+'</div>':'')+'</td><td class="muted">'+(r.sharedAt||r.date||'—')+'</td><td>'+file+'</td></tr>';
+}
+function receivedDocsCard(){
+  var docs=docShares();
+  return '<div class="card mb14" style="padding:0;overflow-x:auto">'
+    +'<div style="padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 style="font-size:15px">'+svgIcon('inbox',16)+' Documents shared by clients</h3>'+(docs.length?'<span class="pill p-teal">'+docs.length+'</span>':'')+'</div>'
+    +(docs.length
+      ? '<table><tr><th>Client</th><th>Document</th><th>Shared</th><th>File</th></tr>'+docs.map(receivedDocRow).join('')+'</table>'
+      : '<div class="muted" style="text-align:center;padding:22px;font-size:13px">No documents shared by clients yet. When a client shares a document from their Company Information tab, it appears here with a link to the original file.</div>')
+    +'</div>';
+}
 /* firm: Tax / Audit document-request page (shared) */
 function reqDocPage(kind){
   const tax=kind==='tax';
   const arr=tax?firmTaxReqs:firmAuditReqs;
   return `
-  <h1>${tax?'Tax Documents Requested':'Audit Report Documents Requested'}</h1>
-  <div class="sub">Documents you've requested from clients for their ${tax?'VAT &amp; corporate tax filings':'audit engagements'}, with ${tax?'application':'engagement'}, urgency, risk and attachments.</div>
+  <h1>${tax?'Tax Documents':'Audit Report Documents Requested'}</h1>
+  <div class="sub">${tax?'Documents your clients have shared, plus everything you’ve requested from them for their VAT &amp; corporate tax filings.':'Documents you’ve requested from clients for their audit engagements, with engagement, urgency, risk and attachments.'}</div>
+  ${tax?receivedDocsCard():''}
   <div class="ai mb14"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>Auto-chase is on</h3><p>HisabOne reminds clients until every document is uploaded — prioritised by urgency and risk. Received files attach here automatically.</p></div></div>
   ${formOpen[kind]?reqForm(kind):''}

@@ -714,11 +714,51 @@
   /* -- accessibility: visible keyboard focus -- */
   .btn:focus-visible,.iconbtn:focus-visible,.navitem:focus-visible,.seg button:focus-visible,.ltab:focus-visible,.lf-btn:focus-visible,.link:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:9px}
 
+  /* ================= MODERNIZE v4 — roomier forms, gradient accents, chat ================= */
+  /* roomier inputs & grids (fields were too tight) */
+  .finput{padding:12px 14px;font-size:14px;border-radius:11px}
+  .grid{gap:18px}
+  .flabel{margin-bottom:7px}
+  .lfield{margin-bottom:16px}
+  td .finput{min-width:96px}
+  #s_body td,#p_body td{padding:10px 8px}
+  #s_body td:first-child,#p_body td:first-child{min-width:170px}
+  /* gradient primary buttons (respects each portal's accent) + glassy topbar */
+  .btn:not(.ghost):not(.sm){background:linear-gradient(125deg,var(--accent),var(--accent-d,var(--accent)))}
+  .topbar{backdrop-filter:blur(10px)}
+  /* VAT201 boxes */
+  .v201 table{width:100%;border-collapse:collapse}
+  .v201 td{padding:9px 8px;font-size:13px}
+  .v201 .boxno{font-weight:800;color:var(--accent);white-space:nowrap;font-size:12px}
+  .v201 input.finput{text-align:right;padding:9px 11px;font-size:13.5px}
+  .v201 tr.total td{background:var(--panel2);font-weight:700}
+  /* ---- in-app chat ---- */
+  .chatlog{display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding:14px;background:var(--panel2);border-radius:12px}
+  .chatmsg{max-width:78%;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.45;word-wrap:break-word;animation:msgIn .25s var(--ease) both}
+  .chatmsg.me{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+  .chatmsg.them{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+  .chatmsg .cwho{font-size:10.5px;opacity:.7;margin-bottom:2px;font-weight:600}
+  .chatmsg .cwhen{font-size:10px;opacity:.55;margin-top:3px;text-align:right}
+  @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  #chatFab{position:fixed;right:22px;bottom:22px;z-index:300;width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
+    background:linear-gradient(135deg,#0d9488,#4f7ef0);color:#fff;display:none;align-items:center;justify-content:center;
+    box-shadow:0 10px 28px rgba(13,148,136,.4);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+  #chatFab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 14px 34px rgba(13,148,136,.5)}
+  #chatFab .fabbadge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;min-width:19px;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff}
+  #chatPanel{position:fixed;right:22px;bottom:88px;z-index:300;width:min(370px,calc(100vw - 30px));height:min(480px,calc(100vh - 130px));
+    background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px rgba(8,20,40,.25);display:none;flex-direction:column;overflow:hidden;
+    animation:modalIn .28s var(--ease) both;transform-origin:bottom right}
+  #chatPanel .chead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,rgba(13,148,136,.08),rgba(79,126,240,.07))}
+  #chatPanel .chatlog{flex:1;border-radius:0;background:var(--panel2)}
+  .chatsend{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
+  .chatsend .finput{flex:1}
+  @media(max-width:700px){#chatFab{right:14px;bottom:14px}#chatPanel{right:8px;bottom:76px}}
+
   /* -- respect reduced motion -- */
   @media(prefers-reduced-motion:reduce){
-    #main.pagein > *,.modal-overlay,.modal-overlay > div,.notifpanel,.hero-badge{animation:none !important}
+    #main.pagein > *,.modal-overlay,.modal-overlay > div,.notifpanel,.hero-badge,.chatmsg,#chatPanel{animation:none !important}
     #login::before,#login::after{animation:none !important}
-    .card,.btn,.navitem,.mock,.lportal-card,.flowstep{transition:none !important}
+    .card,.btn,.navitem,.mock,.lportal-card,.flowstep,#chatFab{transition:none !important}
     html{scroll-behavior:auto}
   }
 </style>
@@ -1245,6 +1285,21 @@
 
 <!-- ================= APP ================= -->
 <input type="file" id="fileInput" style="display:none">
+
+<!-- floating in-app chat (business ↔ accountant) -->
+<button id="chatFab" onclick="toggleChatPanel()" aria-label="Open chat" title="Chat">
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
+  <span class="fabbadge" id="chatFabBadge" style="display:none">0</span>
+</button>
+<div id="chatPanel">
+  <div class="chead">
+    <span style="color:var(--accent)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></span>
+    <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13.5px" id="chatFabTitle">Messages</div><div class="muted" style="font-size:11px" id="chatFabSub">Secure in-app chat</div></div>
+    <button class="iconbtn" onclick="toggleChatPanel()" title="Close" aria-label="Close chat">✕</button>
+  </div>
+  <div id="chatFabBody" style="display:flex;flex-direction:column;flex:1;min-height:0"></div>
+</div>
+
 <div id="app" class="hidden">
   <div class="topbar">
     <div class="logo"><span class="mark" role="img" aria-label="HisabOne logo"></span>
@@ -1886,6 +1941,7 @@ function enterApp(r){
   document.getElementById('app').classList.remove('hidden');
   updateTrialPill();
   setRole(r);
+  if(typeof chatInit==='function') chatInit();
 }
 function logout(){
   _blobDirty=true; flushAccountData();
@@ -1897,6 +1953,7 @@ function logout(){
   onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null; bizRevenueBand=null;
   linkedFirm=''; linkedFirmId=''; inviteCode='';
+  if(typeof chatTeardown==='function') chatTeardown();
   document.getElementById('app').classList.add('hidden');
   document.getElementById('login').classList.remove('hidden');
   backToPortals();
@@ -2101,6 +2158,7 @@ const NAV = {
     {id:'docs', ic:'folder', label:'Company Information'},
     {id:'calendar', ic:'calendar', label:'Compliance Calendar'},
     {id:'breports', ic:'chart', label:'Reports'},
+    {id:'bchat', ic:'chat', label:'Messages'},
     {id:'links', ic:'link', label:'Linked Firm'},
   ],
   firm:[
@@ -2113,6 +2171,7 @@ const NAV = {
     {id:'ct', ic:'building', label:'Corporate Tax'},
     {id:'reminders', ic:'mail', label:'Email Reminders'},
     {id:'freports', ic:'chart', label:'Reports'},
+    {id:'fchat', ic:'chat', label:'Messages'},
     {id:'team', ic:'users', label:'Team'},
   ]
 };
@@ -2123,6 +2182,7 @@ function navBadge(id){
   if(id==='baudit') return bizAuditDocs.filter(d=>d.state!=='done').length;
   if(id==='taxdocs') return firmTaxReqs.filter(r=>!/Received/.test(r.st)).length;
   if(id==='auditdocs') return firmAuditReqs.filter(r=>!/Received/.test(r.st)).length;
+  if(id==='bchat'||id==='fchat') return (typeof chatUnreadTotal==='function')?chatUnreadTotal():0;
   return 0;
 }
 function setRole(r){
@@ -2169,9 +2229,11 @@ function renderPage(){ var m=document.getElementById('main');
   m.classList.add('pagein');
   countUpStats(m);
   if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT();
+  if(page==='vat' && typeof recalcVat201==='function') recalcVat201();
   if(page==='ct' && typeof recalcCT==='function') recalcCT();
   if(page==='guides' && typeof aiRenderLog==='function') aiRenderLog('business');
   if(page==='fguides' && typeof aiRenderLog==='function') aiRenderLog('firm');
+  if((page==='bchat'||page==='fchat') && typeof chatAfterRender==='function') chatAfterRender();
   if(typeof updateBell==='function') updateBell();
   saveAccountData(); }
 
@@ -2665,7 +2727,7 @@ vat:()=>{
     </div>
   </div>
 
-  <div class="grid g2 mb14">
+  <div style="display:flex;flex-direction:column;gap:18px" class="mb14">
     <div class="card" style="padding:0;overflow-x:auto">
       <div style="padding:14px 18px;border-bottom:1px solid var(--line)"><h3 style="font-size:15px">Output VAT — Sales</h3></div>
       <div style="padding:0 6px"><table>
@@ -2675,9 +2737,9 @@ vat:()=>{
       <div style="padding:8px 12px 12px"><button class="btn ghost sm" onclick="addVatRow('s');">+ Add row</button></div>
     </div>
     <div class="card" style="padding:0;overflow-x:auto">
-      <div style="padding:14px 18px;border-bottom:1px solid var(--line)"><h3 style="font-size:15px">Input VAT — Purchases</h3></div>
+      <div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px"><h3 style="font-size:15px">Input VAT — Purchases</h3><span class="pill p-teal" style="font-size:10px">${svgIcon('sparkles',11)} Auto-categorized</span></div>
       <div style="padding:0 6px"><table>
-        <thead><tr><th>Description</th><th style="text-align:right">Net (AED)</th><th>Rate</th><th style="text-align:right">VAT</th></tr></thead>
+        <thead><tr><th>Description</th><th>Category</th><th style="text-align:right">Net (AED)</th><th>Rate</th><th style="text-align:right">VAT</th></tr></thead>
         <tbody id="p_body">${Array.from({length:N},(_,i)=>vatRowHTML('p',i)).join('')}</tbody>
       </table></div>
       <div style="padding:8px 12px 12px"><button class="btn ghost sm" onclick="addVatRow('p');">+ Add row</button></div>
@@ -2694,6 +2756,57 @@ vat:()=>{
     </div>
     <div class="ai mt18"><div class="sparkle">${svgIcon('sparkles',22)}</div>
       <div><h3 id="vatVerdict">Net position</h3><p id="vatNote">Enter sales and purchases above — HisabOne computes output VAT, recoverable input VAT, and the net amount due to (or from) the FTA. VAT returns are filed within 28 days of the period end.</p></div></div>
+  </div>
+
+  <div class="card mt18 v201" style="border-color:var(--accent)">
+    <div class="cardhead"><h3>${svgIcon('file-text',16)} VAT return (VAT201) — FTA boxes</h3><span class="pill p-teal">EmaraTax-ready</span></div>
+    <p class="muted" style="font-size:12.5px;margin:-2px 0 12px">The official VAT201 structure. Fill it by hand, or click the button to allocate the calculator totals — then transcribe the boxes straight into EmaraTax. These boxes are included when you share the draft return for client approval.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px">
+      <div><label class="flabel">Allocate standard-rated sales to</label>
+        <select id="v2Emirate" class="finput" style="min-width:190px">
+          <option value="1">Dubai</option><option value="0">Abu Dhabi</option><option value="2">Sharjah</option>
+          <option value="3">Ajman</option><option value="4">Umm Al Quwain</option><option value="5">Ras Al Khaimah</option><option value="6">Fujairah</option>
+        </select></div>
+      <button class="btn ghost" onclick="prefillVat201()">${svgIcon('sparkles',14)} Fill from calculator</button>
+    </div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th style="width:52px">Box</th><th>Description</th><th style="text-align:right;width:170px">Amount (AED)</th><th style="text-align:right;width:150px">VAT (AED)</th></tr></thead>
+      <tbody>
+        ${['Abu Dhabi','Dubai','Sharjah','Ajman','Umm Al Quwain','Ras Al Khaimah','Fujairah'].map((em,i)=>`
+        <tr><td class="boxno">1${'abcdefg'[i]}</td><td>Standard-rated supplies — ${em}</td>
+          <td><input id="v2e${i}a" class="finput" type="number" min="0" placeholder="0.00" oninput="vat201Auto(${i});recalcVat201()"></td>
+          <td><input id="v2e${i}v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>`).join('')}
+        <tr><td class="boxno">2</td><td>Tax refunds provided to tourists (deduction)</td><td></td>
+          <td><input id="v2t2v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>
+        <tr><td class="boxno">3</td><td>Supplies subject to reverse charge</td>
+          <td><input id="v2rc3a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>
+          <td><input id="v2rc3v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>
+        <tr><td class="boxno">4</td><td>Zero-rated supplies</td>
+          <td><input id="v2zr4a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td><td class="muted" style="text-align:right">0.00</td></tr>
+        <tr><td class="boxno">5</td><td>Exempt supplies</td>
+          <td><input id="v2ex5a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td><td class="muted" style="text-align:right">—</td></tr>
+        <tr><td class="boxno">6</td><td>Goods imported into the UAE (customs)</td>
+          <td><input id="v2im6a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>
+          <td><input id="v2im6v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>
+        <tr><td class="boxno">7</td><td>Adjustments to goods imported</td>
+          <td><input id="v2ad7a" class="finput" type="number" placeholder="0.00" oninput="recalcVat201()"></td>
+          <td><input id="v2ad7v" class="finput" type="number" placeholder="0.00" oninput="recalcVat201()"></td></tr>
+        <tr class="total"><td class="boxno">8</td><td>Totals — outputs</td>
+          <td style="text-align:right" id="v2t8a">AED 0.00</td><td style="text-align:right" id="v2t8v">AED 0.00</td></tr>
+        <tr><td class="boxno">9</td><td>Standard-rated expenses (recoverable)</td>
+          <td><input id="v2ex9a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>
+          <td><input id="v2ex9v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>
+        <tr><td class="boxno">10</td><td>Supplies subject to reverse charge (recoverable)</td>
+          <td><input id="v2rc10a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>
+          <td><input id="v2rc10v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>
+        <tr class="total"><td class="boxno">11</td><td>Totals — inputs</td>
+          <td style="text-align:right" id="v2t11a">AED 0.00</td><td style="text-align:right" id="v2t11v">AED 0.00</td></tr>
+        <tr class="total"><td class="boxno">12</td><td>Total value of due tax for the period</td><td></td><td style="text-align:right" id="v2t12">AED 0.00</td></tr>
+        <tr class="total"><td class="boxno">13</td><td>Total value of recoverable tax for the period</td><td></td><td style="text-align:right" id="v2t13">AED 0.00</td></tr>
+        <tr class="total" style="border-top:2px solid var(--accent)"><td class="boxno">14</td><td id="v2t14lbl"><b>Payable tax for the period</b></td><td></td><td style="text-align:right;color:var(--accent)"><b id="v2t14">AED 0.00</b></td></tr>
+      </tbody>
+    </table></div>
+    <div class="note" style="margin-top:12px">${svgIcon('shield',13)} HisabOne prepares the return; filing happens on the FTA’s EmaraTax portal. Verify every box against source records before submitting.</div>
   </div>
 
   <div class="card mt18">
@@ -2730,6 +2843,10 @@ ct:()=>`
       <div><label class="flabel">Accounting net profit (AED)</label><input id="ctProfit" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
       <div><label class="flabel">Add: non-deductible expenses (AED)</label><input id="ctAdd" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
       <div><label class="flabel">Less: exempt / already-taxed income (AED)</label><input id="ctExempt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
+      <div><label class="flabel">Less: tax losses brought forward (AED)</label><input id="ctLosses" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right">
+        <div class="muted" style="font-size:11.5px;margin-top:3px" id="ctLossHint">Relief is capped at 75% of taxable income; the rest carries forward.</div></div>
+      <div><label class="flabel">Foreign tax credit (AED)</label><input id="ctFTC" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right">
+        <div class="muted" style="font-size:11.5px;margin-top:3px">Foreign tax paid on income also taxed in the UAE — credited against the CT payable.</div></div>
     </div>
     <div id="ctFzWrap" style="display:none;margin-top:10px">
       <label class="flabel">Of taxable income, qualifying (0%) portion (AED)</label>
@@ -2813,6 +2930,26 @@ freports:()=>{
   </div>
   ${reportViewerHTML()}`;
 },
+
+bchat:()=>`
+  <h1>Messages</h1>
+  <div class="sub">Chat securely with ${linkedFirm?ctEsc(linkedFirm):'your accountant'} — questions, clarifications and follow-ups stay in one place, inside HisabOne.</div>
+  ${linkedFirmId
+    ? `<div class="card" style="max-width:760px">${chatThreadHTML('Page')}</div>`
+    : `<div class="card muted" style="text-align:center;padding:34px 20px;font-size:13.5px;max-width:760px">${svgIcon('link',26)}<div style="margin-top:10px">Link your accountant first — then you can message them here.</div><button class="btn mt18" onclick="go('links')">Go to Linked Firm</button></div>`}`,
+
+fchat:()=>`
+  <h1>Messages</h1>
+  <div class="sub">Chat securely with your clients — every conversation stays inside HisabOne, next to the work.</div>
+  ${(myClients&&myClients.length)
+    ? `<div class="card" style="max-width:760px">
+        <div style="display:flex;gap:10px;align-items:end;margin-bottom:12px">
+          <div style="flex:1;max-width:320px"><label class="flabel">Conversation with</label>
+            <select id="chatPeerSel" class="finput" onchange="chatSelectPeer(this.value)">${myClients.map(c=>`<option value="${c.business_id}" ${chatPeer===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')}</select></div>
+        </div>
+        ${chatThreadHTML('Page')}
+      </div>`
+    : `<div class="card muted" style="text-align:center;padding:34px 20px;font-size:13.5px;max-width:760px">${svgIcon('users',26)}<div style="margin-top:10px">No linked clients yet — share your invite code from the Clients page, then chat with each client here.</div><button class="btn mt18" onclick="go('clients')">Go to Clients</button></div>`}`,
 };
 
 /* ---------- VAT CALCULATOR: EXPORT & SHARE ---------- */
@@ -2850,10 +2987,22 @@ function exportVAT(){
 }
 function toggleShareVAT(){const p=document.getElementById('shareVATPanel');if(p)p.style.display=(p.style.display==='none'||!p.style.display)?'block':'none';}
 /* ---------- VAT CALCULATOR LOGIC ---------- */
+var EXP_CATS=['Goods & inventory','Rent & office','Utilities & telecom','Professional services','Marketing & advertising','Travel & transport','Entertainment','Equipment & IT','Insurance','Bank & finance','Other'];
+/* fallback keyword categorizer, used when AI OCR doesn't return a category */
+function guessExpenseCat(text){
+  var t=String(text||'').toLowerCase();
+  var rules=[[/hotel|restaurant|cafe|catering|dining|event/,'Entertainment'],[/etisalat|du\b|telecom|internet|wifi|mobile/,'Utilities & telecom'],[/dewa|sewa|fewa|electric|water|utility/,'Utilities & telecom'],[/rent|lease|ejari|office space/,'Rent & office'],[/audit|legal|consult|advisor|accounting|attorney|law firm/,'Professional services'],[/marketing|advertis|media|campaign|seo|social/,'Marketing & advertising'],[/flight|airline|taxi|uber|careem|travel|hotel booking|transport/,'Travel & transport'],[/laptop|computer|software|licen[cs]e|server|hosting|it services|hardware/,'Equipment & IT'],[/insurance|takaful|premium/,'Insurance'],[/bank|finance charge|interest|card fee/,'Bank & finance'],[/trading|supplies|materials|wholesale|goods|inventory/,'Goods & inventory']];
+  for(var i=0;i<rules.length;i++){ if(rules[i][0].test(t)) return rules[i][1]; }
+  return 'Other';
+}
 function vatRowHTML(pfx,i){
   var kind=pfx==='s'?'Sales':'Purchase';
+  var cat = pfx==='p'
+    ? '<td><select id="p_cat'+i+'" class="finput" style="min-width:150px" oninput="recalcVAT()"><option value="">Category…</option>'+EXP_CATS.map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('')+'</select></td>'
+    : '';
   return '<tr>'
     +'<td><input id="'+pfx+'_desc'+i+'" class="finput" placeholder="'+kind+' item '+(i+1)+'"></td>'
+    +cat
     +'<td><input id="'+pfx+'_amt'+i+'" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></td>'
     +'<td><select id="'+pfx+'_rate'+i+'" class="finput" oninput="recalcVAT()"><option value="5">Standard 5%</option><option value="0">Zero-rated 0%</option><option value="exempt">Exempt</option></select></td>'
     +'<td style="text-align:right;font-weight:600" id="'+pfx+'_vat'+i+'">AED 0.00</td></tr>';
@@ -2863,6 +3012,71 @@ function addVatRow(pfx){
   var i=0; while(document.getElementById(pfx+'_amt'+i)) i++;
   body.insertAdjacentHTML('beforeend', vatRowHTML(pfx,i));
   return i;
+}
+
+/* ---------- VAT201 (FTA return boxes) ---------- */
+var V2_EMIRATES=['Abu Dhabi','Dubai','Sharjah','Ajman','Umm Al Quwain','Ras Al Khaimah','Fujairah'];
+function v2n(id){ var e=document.getElementById(id); return e?(parseFloat(e.value)||0):0; }
+function v2set(id,v){ var e=document.getElementById(id); if(e) e.value=v?v.toFixed(2):''; }
+function vat201Auto(i){
+  /* typing a standard-rated amount auto-computes 5% VAT (still editable) */
+  var a=v2n('v2e'+i+'a'); var vEl=document.getElementById('v2e'+i+'v');
+  if(vEl) vEl.value=a? (a*0.05).toFixed(2):'';
+}
+function recalcVat201(){
+  if(!document.getElementById('v2t8a')) return;
+  var fmt=function(n){return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var outA=0,outV=0;
+  for(var i=0;i<7;i++){ outA+=v2n('v2e'+i+'a'); outV+=v2n('v2e'+i+'v'); }
+  outV-=v2n('v2t2v');
+  outA+=v2n('v2rc3a'); outV+=v2n('v2rc3v');
+  outA+=v2n('v2zr4a')+v2n('v2ex5a');
+  outA+=v2n('v2im6a'); outV+=v2n('v2im6v');
+  outA+=v2n('v2ad7a'); outV+=v2n('v2ad7v');
+  var inA=v2n('v2ex9a')+v2n('v2rc10a'), inV=v2n('v2ex9v')+v2n('v2rc10v');
+  var net=outV-inV;
+  var $=function(id){return document.getElementById(id);};
+  $('v2t8a').textContent=fmt(outA); $('v2t8v').textContent=fmt(outV);
+  $('v2t11a').textContent=fmt(inA); $('v2t11v').textContent=fmt(inV);
+  $('v2t12').textContent=fmt(outV); $('v2t13').textContent=fmt(inV);
+  $('v2t14').textContent=fmt(Math.abs(net));
+  $('v2t14lbl').innerHTML='<b>'+(net>=0?'Payable tax for the period':'Refundable tax for the period')+'</b>';
+}
+function prefillVat201(){
+  /* allocate calculator totals into the boxes: standard-rated → chosen emirate, zero-rated → box 4, exempt → box 5, purchases → box 9 */
+  var $=function(id){return document.getElementById(id);};
+  var rateVal=function(v){return v==='exempt'?'exempt':(parseFloat(v)||0);};
+  var stdA=0,stdV=0,zrA=0,exA=0,pA=0,pV=0;
+  for(var i=0;$('s_amt'+i);i++){
+    var a=parseFloat($('s_amt'+i).value)||0; if(!a) continue;
+    var r=rateVal($('s_rate'+i).value);
+    if(r==='exempt') exA+=a; else if(r===0) zrA+=a; else { stdA+=a; stdV+=a*r/100; }
+  }
+  for(var j=0;$('p_amt'+j);j++){
+    var b=parseFloat($('p_amt'+j).value)||0; if(!b) continue;
+    var r2=rateVal($('p_rate'+j).value);
+    if(r2!=='exempt' && r2>0){ pA+=b; pV+=b*r2/100; }
+  }
+  var em=parseInt(($('v2Emirate')||{}).value||'1',10);
+  for(var k=0;k<7;k++){ v2set('v2e'+k+'a', k===em?stdA:0); v2set('v2e'+k+'v', k===em?stdV:0); }
+  v2set('v2zr4a',zrA); v2set('v2ex5a',exA); v2set('v2ex9a',pA); v2set('v2ex9v',pV);
+  recalcVat201();
+  toast(stdA||zrA||exA||pA ? 'VAT201 boxes filled from the calculator — review each box before sharing' : 'No calculator figures yet — enter sales/purchases above first');
+}
+function collectVat201(){
+  if(!document.getElementById('v2t8a')) return null;
+  var em=[]; var any=false;
+  for(var i=0;i<7;i++){ var a=v2n('v2e'+i+'a'), v=v2n('v2e'+i+'v'); em.push({e:V2_EMIRATES[i],a:a,v:v}); if(a||v) any=true; }
+  var o={ emirates:em, tourist:v2n('v2t2v'), rc3a:v2n('v2rc3a'), rc3v:v2n('v2rc3v'),
+    zr4:v2n('v2zr4a'), ex5:v2n('v2ex5a'), im6a:v2n('v2im6a'), im6v:v2n('v2im6v'),
+    ad7a:v2n('v2ad7a'), ad7v:v2n('v2ad7v'), ex9a:v2n('v2ex9a'), ex9v:v2n('v2ex9v'),
+    rc10a:v2n('v2rc10a'), rc10v:v2n('v2rc10v') };
+  if(o.tourist||o.rc3a||o.rc3v||o.zr4||o.ex5||o.im6a||o.im6v||o.ad7a||o.ad7v||o.ex9a||o.ex9v||o.rc10a||o.rc10v) any=true;
+  if(!any) return null;
+  var outV=em.reduce(function(s,x){return s+x.v;},0)-o.tourist+o.rc3v+o.im6v+o.ad7v;
+  var inV=o.ex9v+o.rc10v;
+  o.due=outV; o.recoverable=inV; o.net=outV-inV;
+  return o;
 }
 function recalcVAT(){
   const $=id=>document.getElementById(id);
@@ -2916,6 +3130,7 @@ function ctReadInputs(){
   return {
     entity: ctEntity,
     revenue: num('ctRev'), profit: num('ctProfit'), addbacks: num('ctAdd'), exempt: num('ctExempt'),
+    losses: num('ctLosses'), ftc: num('ctFTC'),
     qualifying: num('ctQual'),
     sbr: !!(document.getElementById('ctSBR') && document.getElementById('ctSBR').checked),
     mne: !!(document.getElementById('ctMNE') && document.getElementById('ctMNE').checked)
@@ -2923,7 +3138,12 @@ function ctReadInputs(){
 }
 function computeCT(inp){
   const THR=375000, SBR_REV=3000000, DM_ABS=5000000;
-  const taxable=Math.max(0, (inp.profit||0)+(inp.addbacks||0)-(inp.exempt||0));
+  const preLoss=Math.max(0, (inp.profit||0)+(inp.addbacks||0)-(inp.exempt||0));
+  /* tax-loss relief: capped at 75% of taxable income; the unused balance carries forward */
+  const lossCap=preLoss*0.75;
+  const lossesUsed=Math.min(Math.max(0,inp.losses||0), lossCap);
+  const lossesCarried=Math.max(0,(inp.losses||0)-lossesUsed);
+  const taxable=Math.max(0, preLoss-lossesUsed);
   const rev=inp.revenue||0;
   const flags=[];
   const sbrEligible = inp.entity==='mainland' && !inp.mne && rev>0 && rev<=SBR_REV;
@@ -2951,8 +3171,11 @@ function computeCT(inp){
     const floor=taxable*0.15;
     if(floor>ct){ dmtt=floor-ct; ct=floor; flags.push('dmtt'); } else flags.push('dmtt0');
   }
+  /* foreign tax credit reduces the payable (never below zero, no refund of excess) */
+  const ftcUsed=Math.min(Math.max(0,inp.ftc||0), ct);
+  ct=ct-ftcUsed;
   const eff = taxable>0 ? ct/taxable*100 : 0;
-  return {taxable, band0, band9, ct, eff, relief, regime, flags, sbrEligible, dmtt};
+  return {taxable, preLoss, lossesUsed, lossesCarried, ftcUsed, band0, band9, ct, eff, relief, regime, flags, sbrEligible, dmtt};
 }
 function recalcCT(){
   if(!document.getElementById('ctProfit')) return;
@@ -2971,6 +3194,12 @@ function recalcCT(){
     if(inp.entity!=='mainland') sh.textContent='Small Business Relief applies to mainland entities only.';
     else if(inp.mne) sh.textContent='Not available to members of multinational groups.';
     else sh.textContent = (inp.revenue>0 && inp.revenue<=3000000) ? 'Eligible: revenue is at or below AED 3,000,000 — you can elect Small Business Relief.' : (inp.revenue>0?'Not eligible: revenue exceeds AED 3,000,000.':'Enter revenue to check Small Business Relief eligibility.');
+  }
+  const lh=$('ctLossHint');
+  if(lh){
+    lh.textContent = (inp.losses>0)
+      ? ('Utilised '+fmt(r.lossesUsed)+' (75% cap)'+(r.lossesCarried>0?(' · '+fmt(r.lossesCarried)+' carries forward'):''))
+      : 'Relief is capped at 75% of taxable income; the rest carries forward.';
   }
   const fzh=$('ctFzHint');
   if(fzh && inp.entity==='freezone'){
@@ -3561,6 +3790,16 @@ function applyInvoiceToCalculator(inv,target,fname){
   document.getElementById(pfx+'_amt'+row).value=net.toFixed(2);
   var rateEl=document.getElementById(pfx+'_rate'+row);
   if(rateEl){ rateEl.value = (rate!=null ? (rate>=2.5?'5':'0') : ((vat!=null&&vat>0)?'5':'0')); }
+  /* auto-categorize the expense (AI category from the invoice; keyword fallback) */
+  var catUsed=null;
+  if(pfx==='p'){
+    var catEl=document.getElementById('p_cat'+row);
+    if(catEl){
+      var aiCat=(inv.category&&EXP_CATS.indexOf(inv.category)>-1)?inv.category:null;
+      catUsed=aiCat||guessExpenseCat((inv.vendor||'')+' '+(inv.description||'')+' '+fname);
+      catEl.value=catUsed;
+    }
+  }
   recalcVAT();
   var bits=[];
   if(inv.vendor) bits.push(inv.vendor);
@@ -3568,6 +3807,7 @@ function applyInvoiceToCalculator(inv,target,fname){
   bits.push('net AED '+net.toFixed(2));
   if(vat!=null) bits.push('VAT AED '+vat.toFixed(2));
   bits.push((rate!=null?rate:(vat&&vat>0?5:0))+'%');
+  if(catUsed) bits.push('categorized: '+catUsed);
   return {ok:true,msg:'row '+(row+1)+' of '+(target==='s'?'Sales':'Purchases')+' · '+bits.join(' · ')};
 }
 
@@ -3990,13 +4230,22 @@ function collectVATFigures(){
   var rateVal=function(v){return v==='exempt'?0:(parseFloat(v)||0);};
   var salesNet=0,output=0,input=0,purchNet=0,sales=[],purch=[];
   for(var i=0;$('s_amt'+i);i++){var a=num('s_amt'+i);if(a||sval('s_desc'+i)){var r=rateVal(sval('s_rate'+i)),v=a*r/100;salesNet+=a;output+=v;sales.push({d:sval('s_desc'+i)||('Sales '+(i+1)),a:a,r:r,v:v});}}
-  for(var j=0;$('p_amt'+j);j++){var b=num('p_amt'+j);if(b||sval('p_desc'+j)){var r2=rateVal(sval('p_rate'+j)),v2=b*r2/100;purchNet+=b;input+=v2;purch.push({d:sval('p_desc'+j)||('Purchase '+(j+1)),a:b,r:r2,v:v2});}}
-  return {sales:sales,purch:purch,salesNet:salesNet,purchNet:purchNet,output:output,input:input,net:output-input};
+  for(var j=0;$('p_amt'+j);j++){var b=num('p_amt'+j);if(b||sval('p_desc'+j)){var r2=rateVal(sval('p_rate'+j)),v2=b*r2/100;purchNet+=b;input+=v2;purch.push({d:sval('p_desc'+j)||('Purchase '+(j+1)),a:b,r:r2,v:v2,cat:sval('p_cat'+j)||''});}}
+  var out={sales:sales,purch:purch,salesNet:salesNet,purchNet:purchNet,output:output,input:input,net:output-input};
+  if(typeof collectVat201==='function'){ var bx=collectVat201(); if(bx) out.boxes=bx; }
+  return out;
 }
 function collectCTFigures(){
   var txt=function(id){var e=document.getElementById(id);return e?e.textContent:'—';};
   var inp=(typeof ctReadInputs==='function')?ctReadInputs():{};
-  return {entity:inp.entity||ctEntity,revenue:inp.revenue||0,profit:inp.profit||0,taxable:txt('ctTaxable'),band0:txt('ctBand0'),band9:txt('ctBand9'),payable:txt('ctPayable'),eff:txt('ctEff')};
+  var r=(typeof computeCT==='function')?computeCT(inp):{};
+  var money=function(n){return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  return {entity:inp.entity||ctEntity,revenue:inp.revenue||0,profit:inp.profit||0,
+    addbacks:inp.addbacks||0,exempt:inp.exempt||0,
+    losses:inp.losses||0,lossesUsed:r.lossesUsed||0,lossesCarried:r.lossesCarried||0,
+    ftc:inp.ftc||0,ftcUsed:r.ftcUsed||0,
+    preLoss:money(r.preLoss||0),
+    taxable:txt('ctTaxable'),band0:txt('ctBand0'),band9:txt('ctBand9'),payable:txt('ctPayable'),eff:txt('ctEff'),regime:r.regime||''};
 }
 
 /* ---- share a draft return to a selected business ---- */
@@ -4060,12 +4309,45 @@ function retRow(l,v,net){ return '<div style="display:flex;justify-content:space
 function returnFiguresHTML(rt){
   var f=rt.figures||{};
   if(rt.kind==='vat'){
-    var lines=function(arr,lbl){ return (arr&&arr.length)?arr.map(function(x){return '<tr><td>'+ctEsc(x.d)+'</td><td style="text-align:right">'+moneyAED(x.a)+'</td><td>'+x.r+'%</td><td style="text-align:right">'+moneyAED(x.v)+'</td></tr>';}).join(''):'<tr><td colspan="4" class="muted" style="padding:8px">No '+lbl+' lines</td></tr>'; };
-    return '<div style="overflow-x:auto"><table style="width:100%"><thead><tr><th style="text-align:left">Output VAT — Sales</th><th style="text-align:right">Net</th><th>Rate</th><th style="text-align:right">VAT</th></tr></thead><tbody>'+lines(f.sales,'sales')+'</tbody>'
-      +'<thead><tr><th style="text-align:left">Input VAT — Purchases</th><th style="text-align:right">Net</th><th>Rate</th><th style="text-align:right">VAT</th></tr></thead><tbody>'+lines(f.purch,'purchase')+'</tbody></table></div>'
+    var sLines=(f.sales&&f.sales.length)?f.sales.map(function(x){return '<tr><td>'+ctEsc(x.d)+'</td><td style="text-align:right">'+moneyAED(x.a)+'</td><td>'+x.r+'%</td><td style="text-align:right">'+moneyAED(x.v)+'</td></tr>';}).join(''):'<tr><td colspan="4" class="muted" style="padding:8px">No sales lines</td></tr>';
+    var pLines=(f.purch&&f.purch.length)?f.purch.map(function(x){return '<tr><td>'+ctEsc(x.d)+(x.cat?('<div class="muted" style="font-size:10.5px">'+ctEsc(x.cat)+'</div>'):'')+'</td><td style="text-align:right">'+moneyAED(x.a)+'</td><td>'+x.r+'%</td><td style="text-align:right">'+moneyAED(x.v)+'</td></tr>';}).join(''):'<tr><td colspan="4" class="muted" style="padding:8px">No purchase lines</td></tr>';
+    var html='<div style="overflow-x:auto"><table style="width:100%"><thead><tr><th style="text-align:left">Output VAT — Sales</th><th style="text-align:right">Net</th><th>Rate</th><th style="text-align:right">VAT</th></tr></thead><tbody>'+sLines+'</tbody>'
+      +'<thead><tr><th style="text-align:left">Input VAT — Purchases</th><th style="text-align:right">Net</th><th>Rate</th><th style="text-align:right">VAT</th></tr></thead><tbody>'+pLines+'</tbody></table></div>'
       +'<div style="margin-top:12px">'+retRow('Total sales (net)',moneyAED(f.salesNet))+retRow('Output VAT (sales)',moneyAED(f.output))+retRow('Input VAT (purchases)',moneyAED(f.input))+retRow((f.net>=0?'Net VAT payable to FTA':'Net VAT refundable'),moneyAED(Math.abs(f.net)),true)+'</div>';
+    if(f.boxes){
+      var b=f.boxes;
+      var boxRow=function(no,d,a,v,total){return '<tr'+(total?' style="background:var(--panel2);font-weight:700"':'')+'><td style="font-weight:800;color:var(--accent);white-space:nowrap;font-size:11.5px;padding:6px 8px">'+no+'</td><td style="padding:6px 8px;font-size:12.5px">'+d+'</td><td style="text-align:right;padding:6px 8px">'+(a==null?'—':moneyAED(a))+'</td><td style="text-align:right;padding:6px 8px">'+(v==null?'—':moneyAED(v))+'</td></tr>';};
+      var em=(b.emirates||[]).map(function(x,i){ return (x.a||x.v)?boxRow('1'+('abcdefg'[i]),'Standard-rated — '+ctEsc(x.e),x.a,x.v):''; }).join('');
+      html+='<div style="margin-top:16px"><div style="font-weight:700;font-size:12.5px;margin-bottom:6px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px">VAT201 return boxes</div>'
+        +'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">'
+        +'<thead><tr><th style="text-align:left;padding:6px 8px">Box</th><th style="text-align:left;padding:6px 8px">Description</th><th style="text-align:right;padding:6px 8px">Amount</th><th style="text-align:right;padding:6px 8px">VAT</th></tr></thead><tbody>'
+        +em
+        +(b.tourist?boxRow('2','Tax refunds provided to tourists',null,-b.tourist):'')
+        +((b.rc3a||b.rc3v)?boxRow('3','Supplies subject to reverse charge',b.rc3a,b.rc3v):'')
+        +(b.zr4?boxRow('4','Zero-rated supplies',b.zr4,0):'')
+        +(b.ex5?boxRow('5','Exempt supplies',b.ex5,null):'')
+        +((b.im6a||b.im6v)?boxRow('6','Goods imported into the UAE',b.im6a,b.im6v):'')
+        +((b.ad7a||b.ad7v)?boxRow('7','Adjustments to goods imported',b.ad7a,b.ad7v):'')
+        +((b.ex9a||b.ex9v)?boxRow('9','Standard-rated expenses (recoverable)',b.ex9a,b.ex9v):'')
+        +((b.rc10a||b.rc10v)?boxRow('10','Reverse-charge expenses (recoverable)',b.rc10a,b.rc10v):'')
+        +boxRow('12','Total due tax for the period',null,b.due,true)
+        +boxRow('13','Total recoverable tax for the period',null,b.recoverable,true)
+        +boxRow('14',(b.net>=0?'Payable tax for the period':'Refundable tax for the period'),null,Math.abs(b.net),true)
+        +'</tbody></table></div></div>';
+    }
+    return html;
   }
-  return '<div>'+retRow('Entity',f.entity==='freezone'?'Qualifying Free Zone':'Mainland')+retRow('Revenue for the period',moneyAED(f.revenue))+retRow('Taxable income',f.taxable)+retRow('Taxed at 0%',f.band0)+retRow('Taxed at 9% / 15%',f.band9)+retRow('Corporate tax payable',f.payable,true)+'</div><div class="muted" style="font-size:12px;margin-top:8px">Effective rate '+ctEsc(f.eff||'—')+'</div>';
+  var ctExtra='';
+  if(f.lossesUsed) ctExtra+=retRow('Tax losses utilised (75% cap)','− '+moneyAED(f.lossesUsed));
+  if(f.lossesCarried) ctExtra+=retRow('Losses carried forward',moneyAED(f.lossesCarried));
+  if(f.ftcUsed) ctExtra+=retRow('Foreign tax credit','− '+moneyAED(f.ftcUsed));
+  return '<div>'+retRow('Entity',f.entity==='freezone'?'Qualifying Free Zone':'Mainland')
+    +(f.regime?retRow('Regime',ctEsc(f.regime)):'')
+    +retRow('Revenue for the period',moneyAED(f.revenue))
+    +(f.addbacks?retRow('Add: non-deductible expenses',moneyAED(f.addbacks)):'')
+    +(f.exempt?retRow('Less: exempt income','− '+moneyAED(f.exempt)):'')
+    +ctExtra
+    +retRow('Taxable income',f.taxable)+retRow('Taxed at 0%',f.band0)+retRow('Taxed at 9% / 15%',f.band9)+retRow('Corporate tax payable',f.payable,true)+'</div><div class="muted" style="font-size:12px;margin-top:8px">Effective rate '+ctEsc(f.eff||'—')+'</div>';
 }
 function returnAuditHTML(id){
   var evs=(returnEvents[id]||[]).slice().sort(function(a,b){return a.created_at<b.created_at?-1:1;});
@@ -4590,6 +4872,160 @@ function einvReadinessHTML(){
         +'<button class="btn" onclick="trnCheck(\'biz\')">'+svgIcon('check',15)+' Validate</button></div>'
       +'<div id="bizTrnResult" style="display:none;margin-top:12px"></div></div>'
     +'</div>';
+}
+
+/* ================= IN-APP CHAT (business ↔ accountant) ================= */
+var chatMsgs=[];        /* every message visible to this account (RLS-scoped) */
+var chatPeer=null;      /* firm side: currently selected business_id */
+var _chatTimer=null, _chatLastBadge=-1;
+
+function chatSeenMap(){ try{ return JSON.parse(localStorage.getItem('hisab_chat_seen_'+(currentAccount&&currentAccount.id))||'{}'); }catch(e){ return {}; } }
+function chatThreadKey(bizId){ return bizId||'t'; }
+function chatMyRole(){ return currentAccount&&currentAccount.role==='firm'?'firm':'business'; }
+function chatThreadMsgs(){
+  if(!currentAccount) return [];
+  if(currentAccount.role==='business') return chatMsgs;
+  return chatMsgs.filter(function(m){ return m.business_id===chatPeer; });
+}
+function chatUnreadTotal(){
+  if(!currentAccount||!chatMsgs.length) return 0;
+  var seen=chatSeenMap(), mine=chatMyRole(), n=0;
+  chatMsgs.forEach(function(m){
+    if(m.sender_role===mine) return;
+    var last=seen[chatThreadKey(m.business_id)]||'';
+    if(m.created_at>last) n++;
+  });
+  return n;
+}
+function markChatSeen(bizId){
+  if(!currentAccount) return;
+  var seen=chatSeenMap();
+  seen[chatThreadKey(bizId)]=new Date(Date.now()+1000).toISOString();
+  try{ localStorage.setItem('hisab_chat_seen_'+currentAccount.id, JSON.stringify(seen)); }catch(e){}
+  updateChatBadges();
+}
+function updateChatBadges(){
+  var n=chatUnreadTotal();
+  var b=document.getElementById('chatFabBadge');
+  if(b){ b.style.display=n?'flex':'none'; b.textContent=n>9?'9+':n; }
+  if(n!==_chatLastBadge){ _chatLastBadge=n; if(typeof renderNav==='function'&&currentAccount) renderNav(); }
+}
+function chatTimeFmt(iso){
+  var d=new Date(iso), now=new Date();
+  var sameDay=d.toDateString()===now.toDateString();
+  return sameDay? d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
+    : d.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+}
+function chatMsgsHTML(){
+  var list=chatThreadMsgs(), mine=chatMyRole();
+  if(!list.length) return '<div class="muted" style="text-align:center;padding:26px 10px;font-size:12.5px">No messages yet — say hello. Messages are private to you'+(mine==='firm'?' and this client.':' and your accountant.')+'</div>';
+  return list.map(function(m){
+    var me=m.sender_role===mine;
+    return '<div class="chatmsg '+(me?'me':'them')+'">'
+      +(!me?('<div class="cwho">'+ctEsc(m.sender_name||(m.sender_role==='firm'?'Accountant':'Client'))+'</div>'):'')
+      +ctEsc(m.body)
+      +'<div class="cwhen">'+chatTimeFmt(m.created_at)+'</div></div>';
+  }).join('');
+}
+function chatThreadHTML(mode){
+  return '<div class="chatlog" id="chatLog'+mode+'" style="'+(mode==='Page'?'height:380px':'')+'">'+chatMsgsHTML()+'</div>'
+    +'<div class="chatsend" style="'+(mode==='Page'?'padding:12px 0 0;border-top:0':'')+'">'
+    +'<input id="chatIn'+mode+'" class="finput" placeholder="Type a message…" maxlength="2000" onkeydown="if(event.key===\'Enter\'){event.preventDefault();sendChat(\''+mode+'\')}">'
+    +'<button class="btn" onclick="sendChat(\''+mode+'\')" style="white-space:nowrap">'+svgIcon('share',14)+' Send</button></div>';
+}
+function chatScroll(){
+  ['chatLogPage','chatLogFab'].forEach(function(id){ var el=document.getElementById(id); if(el) el.scrollTop=el.scrollHeight; });
+}
+function renderChatUI(){
+  ['Page','Fab'].forEach(function(mode){
+    var log=document.getElementById('chatLog'+mode);
+    if(log) log.innerHTML=chatMsgsHTML();
+  });
+  chatScroll();
+  updateChatBadges();
+}
+async function loadChat(silent){
+  if(!sb||!currentAccount) return;
+  try{
+    var q=await sb.from('messages').select('*').order('created_at',{ascending:true}).limit(800);
+    if(q.error||!q.data) return;
+    var changed = q.data.length!==chatMsgs.length;
+    chatMsgs=q.data;
+    if(currentAccount.role==='firm' && !chatPeer && myClients && myClients.length) chatPeer=myClients[0].business_id;
+    if(changed||!silent) renderChatUI(); else updateChatBadges();
+  }catch(e){}
+}
+function chatPeerIds(){
+  if(!currentAccount) return null;
+  if(currentAccount.role==='business'){
+    if(!linkedFirmId) return null;
+    return {business_id:currentAccount.id, firm_id:linkedFirmId};
+  }
+  if(!chatPeer) return null;
+  return {business_id:chatPeer, firm_id:effFirmId()};
+}
+async function sendChat(mode){
+  var inp=document.getElementById('chatIn'+mode); if(!inp) return;
+  var body=(inp.value||'').trim(); if(!body) return;
+  var ids=chatPeerIds();
+  if(!ids){ toast(currentAccount&&currentAccount.role==='firm'?'Select a client to message first.':'Link your accountant first, then you can message them.'); return; }
+  if(!sb||!currentAccount){ toast('Not signed in.'); return; }
+  inp.value='';
+  var m={business_id:ids.business_id, firm_id:ids.firm_id, sender_id:currentAccount.id,
+         sender_name:currentAccount.name||'', sender_role:chatMyRole(), body:body};
+  var optimistic=Object.assign({id:'tmp'+Date.now(), created_at:new Date().toISOString()}, m);
+  chatMsgs.push(optimistic); renderChatUI(); markChatSeen(ids.business_id);
+  try{
+    var r=await sb.from('messages').insert(m).select('*').single();
+    if(r.error){ chatMsgs=chatMsgs.filter(function(x){return x.id!==optimistic.id;}); renderChatUI(); toast('Message not sent — please try again.'); return; }
+    chatMsgs=chatMsgs.map(function(x){ return x.id===optimistic.id?r.data:x; });
+    renderChatUI(); markChatSeen(ids.business_id);
+    /* notify the other side by email, quietly */
+    try{
+      if(currentAccount.role==='firm'){
+        var c=(myClients||[]).find(function(x){return x.business_id===ids.business_id;});
+        if(c&&c.business_email) sendAppEmail(c.business_email,'New message from '+(currentAccount.firmName||currentAccount.name)+' on HisabOne', currentAccount.name+' sent you a message in HisabOne:\n\n"'+body+'"\n\nSign in to reply.');
+      }
+    }catch(e){}
+  }catch(e){ toast('Message not sent — please try again.'); }
+}
+function chatSelectPeer(bizId){ chatPeer=bizId; renderChatUI(); markChatSeen(bizId); }
+function toggleChatPanel(){
+  var p=document.getElementById('chatPanel'); if(!p) return;
+  var open=p.style.display==='flex';
+  if(open){ p.style.display='none'; return; }
+  var body=document.getElementById('chatFabBody');
+  var sel='';
+  if(currentAccount&&currentAccount.role==='firm'&&myClients&&myClients.length){
+    sel='<div style="padding:10px 10px 0"><select class="finput" onchange="chatSelectPeer(this.value)">'
+      +myClients.map(function(c){return '<option value="'+c.business_id+'" '+(chatPeer===c.business_id?'selected':'')+'>'+ctEsc(c.business_name)+'</option>';}).join('')+'</select></div>';
+  }
+  if(body) body.innerHTML=sel+chatThreadHTML('Fab');
+  var t=document.getElementById('chatFabTitle'), s=document.getElementById('chatFabSub');
+  if(t) t.textContent = currentAccount&&currentAccount.role==='business' ? (linkedFirm||'Your accountant') : 'Client messages';
+  if(s) s.textContent = 'Secure in-app chat · only you and the other side can read this';
+  p.style.display='flex';
+  renderChatUI();
+  var ids=chatPeerIds(); if(ids) markChatSeen(ids.business_id);
+  var inp=document.getElementById('chatInFab'); if(inp) setTimeout(function(){ inp.focus(); },60);
+}
+function chatAfterRender(){
+  chatScroll();
+  var ids=chatPeerIds(); if(ids) markChatSeen(ids.business_id);
+  var inp=document.getElementById('chatInPage'); if(inp) setTimeout(function(){ inp.focus(); },60);
+}
+function chatInit(){
+  var fab=document.getElementById('chatFab'); if(fab) fab.style.display='flex';
+  chatMsgs=[]; chatPeer=null; _chatLastBadge=-1;
+  loadChat();
+  clearInterval(_chatTimer);
+  _chatTimer=setInterval(function(){ loadChat(true); }, 15000);
+}
+function chatTeardown(){
+  clearInterval(_chatTimer); _chatTimer=null;
+  chatMsgs=[]; chatPeer=null; _chatLastBadge=-1;
+  var fab=document.getElementById('chatFab'); if(fab) fab.style.display='none';
+  var p=document.getElementById('chatPanel'); if(p) p.style.display='none';
 }
 
 /* ---------- SESSION RESUME (server-backed) ---------- */

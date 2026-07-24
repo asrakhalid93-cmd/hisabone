@@ -800,6 +800,18 @@
   .adm-bar .b i{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:9px;color:#71809a;font-style:normal;white-space:nowrap}
   .adm-muted{color:#8fa0ba;font-size:12px}
   .adm-note{font-size:11.5px;color:#8fa0ba;background:rgba(255,255,255,.04);border-left:3px solid #27e0cf;padding:9px 12px;border-radius:0 9px 9px 0}
+  .adm-pill.high{background:rgba(255,90,90,.18);color:#ff9a9a}
+  .adm-pill.med{background:rgba(255,190,70,.16);color:#ffd27a}
+  .adm-pill.low{background:rgba(255,255,255,.1);color:#9fb0c8}
+  .adm-pill.review{background:rgba(124,196,255,.18);color:#9ecfff}
+  .adm-prog{height:7px;background:rgba(255,255,255,.09);border-radius:5px;overflow:hidden;min-width:60px}
+  .adm-prog>div{height:100%;background:linear-gradient(90deg,#27e0cf,#4f7ef0);transition:width .4s var(--ease)}
+  .adm-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cdd9ea;border-radius:20px;padding:7px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:.16s}
+  .adm-chip:hover{border-color:#27e0cf;color:#fff}
+  .adm-chip.on{background:linear-gradient(120deg,#0d9488,#4f7ef0);color:#fff;border-color:transparent}
+  .adm-md{font-size:13px;line-height:1.6;color:#dbe5f2}
+  .adm-md b{color:#fff}
+  .adm-md ul{margin:6px 0 6px 4px;padding-left:18px}
   .adm-login{max-width:400px;margin:11vh auto 0;text-align:center}
   @keyframes admIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   .adm-wrap>*{animation:admIn .4s var(--ease) both}
@@ -3810,6 +3822,7 @@ function handleInvoiceFile(inp){
           var out=applyInvoiceToCalculator(x.d.invoice, target, f.name);
           if(!out.ok) throw new Error(out.msg);
           results[idx].state='done'; results[idx].detail=esc(out.msg); render();
+          if(typeof trackEvent==='function') trackEvent('ai_ocr');
         })
         .catch(function(err){
           results[idx].state='error'; results[idx].detail=esc(err&&err.message?err.message:err); render();
@@ -3984,6 +3997,7 @@ async function aiAsk(scope){
     AI_CHAT[scope]=AI_CHAT[scope].filter(function(m){return m.role!=='pending';});
     if(r.ok && data && data.ok && data.reply){
       AI_CHAT[scope].push({role:'assistant',content:data.reply});
+      if(typeof trackEvent==='function') trackEvent('ai_ask');
     } else {
       var em=(data&&data.error)? (typeof data.error==='string'?data.error:JSON.stringify(data.error)) : ('Request failed ('+r.status+')');
       if(r.status===500 && /not configured/i.test(em)) em='AI Assist isn’t switched on yet — the workspace’s ANTHROPIC_API_KEY needs to be set in the deployment. Once it’s added, this will work instantly.';
@@ -5094,6 +5108,7 @@ function admEl(){
 function admShow(html){ var r=admEl(); r.style.display='block'; r.innerHTML=html; }
 function admSeed(){
   return {
+    v:2,
     tracker:[
       {t:'Resend email domain verified & digests live', s:'doing'},
       {t:'Open sign-ups to the public (remove passcode gate)', s:'todo'},
@@ -5103,24 +5118,38 @@ function admSeed(){
       {t:'In-app chat between portals', s:'done'}
     ],
     costs:[
+      {name:'Claude Max plan (5×)', cat:'AI', amt:367, cycle:'monthly'},
       {name:'Domain hisabone.ae (Tasjeel)', cat:'Infrastructure', amt:145, cycle:'yearly'},
       {name:'Vercel Hobby', cat:'Infrastructure', amt:0, cycle:'monthly'},
       {name:'Supabase Free (Frankfurt)', cat:'Infrastructure', amt:0, cycle:'monthly'},
       {name:'Resend Free (3k emails/mo)', cat:'Email', amt:0, cycle:'monthly'},
-      {name:'Anthropic API (OCR + AI Assist)', cat:'AI', amt:0, cycle:'monthly'}
+      {name:'Zoho Mail (free plan)', cat:'Email', amt:0, cycle:'monthly'}
     ],
+    rates:{ocr:0.05, ask:0.05},
     depts:[
-      {dept:'Product & Engineering', role:'Full-stack developer', person:'', st:'open'},
-      {dept:'Tax & Compliance content', role:'UAE tax reviewer', person:'', st:'open'},
-      {dept:'Marketing & Growth', role:'Growth marketer', person:'', st:'open'},
-      {dept:'Customer Support', role:'Support lead', person:'', st:'open'},
-      {dept:'Finance & Admin', role:'Bookkeeper', person:'', st:'open'}
+      {dept:'Product & Engineering', role:'Full-stack developer', person:'', st:'open', tasks:[
+        {t:'Verify Resend domain & switch email digests live', as:'', due:'', pr:'high', s:'doing', fu:[]},
+        {t:'Set up error monitoring (Sentry) & analytics', as:'', due:'', pr:'med', s:'todo', fu:[]}
+      ]},
+      {dept:'Tax & Compliance content', role:'UAE tax reviewer', person:'', st:'open', tasks:[
+        {t:'Review VAT201 box wording against EmaraTax', as:'', due:'', pr:'high', s:'todo', fu:[]}
+      ]},
+      {dept:'Marketing & Growth', role:'Growth marketer', person:'', st:'open', tasks:[
+        {t:'Launch penalty-checker social campaign', as:'', due:'', pr:'med', s:'todo', fu:[]}
+      ]},
+      {dept:'Customer Support', role:'Support lead', person:'', st:'open', tasks:[
+        {t:'Write onboarding help guide for firms', as:'', due:'', pr:'low', s:'todo', fu:[]}
+      ]},
+      {dept:'Finance & Admin', role:'Bookkeeper', person:'', st:'open', tasks:[
+        {t:'Assess VAT registration threshold for HisabOne itself', as:'', due:'', pr:'low', s:'todo', fu:[]}
+      ]}
     ],
     marketing:[
       {title:'Penalty-check lead magnet push', channel:'LinkedIn / Instagram', st:'idea', budget:0, note:'Free tool → account sign-ups'},
       {title:'TRN validator SEO page', channel:'SEO', st:'idea', budget:0, note:'Rank for "TRN check UAE"'},
       {title:'Accountant referral programme', channel:'Partnerships', st:'idea', budget:0, note:'Firms bring their whole client book'}
-    ]
+    ],
+    mkAI:{}
   };
 }
 function admSave(){
@@ -5177,6 +5206,18 @@ async function admLoadAll(){
     _admData=(q.data&&q.data.data&&q.data.data.tracker)?q.data.data:null;
   }catch(e){}
   if(!_admData){ _admData=admSeed(); admSave(); }
+  /* v1 → v2 upgrade + normalise (idempotent) */
+  var seed=admSeed(); var changed=false;
+  if(!_admData.v||_admData.v<2){
+    _admData.v=2; changed=true;
+    var names=(_admData.costs||[]).map(function(c){return c.name;});
+    seed.costs.forEach(function(c){ if(names.indexOf(c.name)<0) _admData.costs.push(c); });
+    _admData.costs=(_admData.costs||[]).filter(function(c){ return c.name!=='Anthropic API (OCR + AI Assist)'; });
+  }
+  _admData.rates=_admData.rates||seed.rates;
+  _admData.mkAI=_admData.mkAI||{};
+  (_admData.depts||[]).forEach(function(d){ d.tasks=d.tasks||[]; });
+  if(changed) admSave();
   try{ var st=await sb.rpc('admin_stats'); if(!st.error) _admStats=st.data; }catch(e){}
 }
 function admStatTiles(){
@@ -5219,71 +5260,164 @@ function admAssign(i){
   _admData.depts[i].st=v.trim()?'filled':'open';
   admSave(); admRender();
 }
+function admUsageEst(){
+  var em=(_admStats&&_admStats.events_month)||{};
+  var r=(_admData&&_admData.rates)||{ocr:0.05,ask:0.05};
+  var ocr=em.ai_ocr||0, ask=em.ai_ask||0;
+  return {ocr:ocr, ask:ask, cost: ocr*(r.ocr||0)+ask*(r.ask||0)};
+}
 function admMonthlyCost(){
   var m=0,y=0;
   (_admData.costs||[]).forEach(function(c){ if(c.cycle==='monthly') m+=c.amt; else if(c.cycle==='yearly') y+=c.amt; });
-  return {monthly:m+y/12, annual:m*12+y};
+  var use=admUsageEst();
+  return {monthly:m+y/12+use.cost, annual:m*12+y+use.cost*12, manualMonthly:m+y/12, usage:use.cost};
+}
+function admDeptPageHTML(){
+  var d=_admData.depts[_admDept];
+  if(!d){ _admTab='depts'; return ''; }
+  var tasks=d.tasks||[];
+  var done=tasks.filter(function(k){return k.s==='done';}).length;
+  var pct=tasks.length?Math.round(done/tasks.length*100):0;
+  var today=(typeof todayISO==='function')?todayISO():'';
+  var rows=tasks.map(function(k,ti){
+    var overdue=k.due&&today&&k.due<today&&k.s!=='done';
+    var fu=(k.fu&&k.fu.length)?k.fu.map(function(f){ return '<div class="adm-muted" style="width:100%;padding-left:34px;font-size:11px">↳ '+ctEsc(f.n)+' <span style="opacity:.6">· '+ctEsc(f.at)+'</span></div>'; }).join(''):'';
+    return '<div class="adm-row">'
+      +'<span class="adm-pill '+k.s+'" onclick="admTaskCycle('+ti+')" title="Click to move status">'+k.s+'</span>'
+      +'<span class="adm-pill '+(k.pr||'med')+'">'+(k.pr||'med')+'</span>'
+      +'<span style="flex:1;min-width:160px;'+(k.s==='done'?'opacity:.55;text-decoration:line-through':'')+'">'+ctEsc(k.t)+'</span>'
+      +'<span class="adm-muted" style="min-width:110px;cursor:pointer" onclick="admTaskAssign('+ti+')" title="Click to reassign">'+(k.as?('👤 '+ctEsc(k.as)):'— unassigned —')+'</span>'
+      +(k.due?('<span style="min-width:90px;font-size:11.5px;'+(overdue?'color:#ff9a9a;font-weight:700':'color:#8fa0ba')+'">'+ctEsc(k.due)+(overdue?' ⚠':'')+'</span>'):'')
+      +'<button class="adm-btn ghost" style="padding:5px 11px;font-size:11px" onclick="admTaskFU('+ti+')">+ Follow-up'+((k.fu&&k.fu.length)?(' ('+k.fu.length+')'):'')+'</button>'
+      +'<button class="adm-x" onclick="admTaskDel('+ti+')">✕</button>'
+      +fu+'</div>';
+  }).join('');
+  return '<button class="adm-btn ghost" style="margin-bottom:14px" onclick="admSetTab(\'depts\')">← All departments</button>'
+    +'<div class="adm-card"><h3>🏢 '+ctEsc(d.dept)+' <span class="adm-pill '+d.st+'" onclick="admCycle(\'depts\','+_admDept+')">'+d.st+'</span></h3>'
+    +'<div class="adm-row" style="border-bottom:1px solid rgba(255,255,255,.07)"><span class="adm-muted">Lead role:</span><b>'+ctEsc(d.role)+'</b><span class="adm-muted">'+(d.person?('assigned to '+ctEsc(d.person)):'unassigned')+'</span><button class="adm-btn ghost" style="padding:5px 11px;font-size:11px" onclick="admAssign('+_admDept+')">Assign role</button></div>'
+    +'<div style="display:flex;align-items:center;gap:12px;margin:12px 0 4px"><div class="adm-prog" style="flex:1"><div style="width:'+pct+'%"></div></div><span class="adm-muted">'+done+' of '+tasks.length+' tasks done</span></div></div>'
+    +'<div class="adm-card"><h3>📋 Work tasks</h3>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'
+    +'<input id="admTkTitle" class="adm-in" placeholder="Task…" style="flex:2;min-width:180px" onkeydown="if(event.key===\'Enter\')admAddTask()">'
+    +'<input id="admTkAs" class="adm-in" placeholder="Assign to" style="flex:1;min-width:110px">'
+    +'<input id="admTkDue" class="adm-in" type="date" style="width:150px">'
+    +'<select id="admTkPr" class="adm-in"><option value="med">Medium</option><option value="high">High</option><option value="low">Low</option></select>'
+    +'<button class="adm-btn" onclick="admAddTask()">Add task</button></div>'
+    +(rows||'<div class="adm-muted" style="padding:12px 2px">No tasks yet — add the first one above.</div>')
+    +'</div>'
+    +'<div class="adm-note">Click a status pill to move a task along todo → doing → review → done. Click the assignee to reassign. Follow-ups are timestamped so you can track every chase.</div>';
 }
 function admTabHTML(){
   var d=_admData, s=_admStats||{};
   var fmt=function(n){ return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{maximumFractionDigits:0}); };
+  if(_admTab==='deptpage') return admDeptPageHTML();
   if(_admTab==='overview'){
     var done=(d.tracker||[]).filter(function(x){return x.s==='done';}).length;
+    var tot=admMonthlyCost(), use=admUsageEst();
+    var openTasks=0; (d.depts||[]).forEach(function(x){ openTasks+=(x.tasks||[]).filter(function(k){return k.s!=='done';}).length; });
+    var deptSum=(d.depts||[]).map(function(x,i){
+      var t=(x.tasks||[]); var dn=t.filter(function(k){return k.s==='done';}).length;
+      var pct=t.length?Math.round(dn/t.length*100):0;
+      return '<div class="adm-row" style="cursor:pointer" onclick="admOpenDept('+i+')"><b style="min-width:190px">'+ctEsc(x.dept)+'</b><div class="adm-prog" style="flex:1"><div style="width:'+pct+'%"></div></div><span class="adm-muted" style="min-width:64px;text-align:right">'+dn+' / '+t.length+'</span><span class="adm-muted">→</span></div>';
+    }).join('');
     return admStatTiles()
+      +'<div class="adm-grid adm-g3" style="margin-top:14px">'
+      +'<div class="adm-stat"><div class="n">'+fmt(tot.monthly)+'</div><div class="l">Monthly run-rate (incl. AI usage)</div></div>'
+      +'<div class="adm-stat"><div class="n">'+(use.ocr+use.ask)+'</div><div class="l">AI calls this month</div></div>'
+      +'<div class="adm-stat"><div class="n">'+openTasks+'</div><div class="l">Open work tasks</div></div></div>'
       +'<div class="adm-card" style="margin-top:16px"><h3>🚀 Progress tracker <span class="adm-muted" style="font-weight:400">'+done+' of '+(d.tracker||[]).length+' done</span></h3>'
       +'<div style="display:flex;gap:8px;margin-bottom:10px"><input id="admNewTrack" class="adm-in" placeholder="Add a milestone…" style="flex:1" onkeydown="if(event.key===\'Enter\')admAdd(\'tracker\')"><button class="adm-btn" onclick="admAdd(\'tracker\')">Add</button></div>'
       +(d.tracker||[]).map(function(x,i){ return '<div class="adm-row"><span class="adm-pill '+x.s+'" onclick="admCycle(\'tracker\','+i+')" title="Click to change status">'+x.s+'</span><span style="flex:1;'+(x.s==='done'?'opacity:.55;text-decoration:line-through':'')+'">'+ctEsc(x.t)+'</span><button class="adm-x" onclick="admDel(\'tracker\','+i+')">✕</button></div>'; }).join('')
       +'</div>'
+      +'<div class="adm-card"><h3>🏢 Departments at a glance</h3>'+deptSum+'</div>'
       +'<div class="adm-note">This manager sits outside the product — nothing here is visible to users or affects the app. Data is stored under your account only; the database rejects every other user.</div>';
   }
   if(_admTab==='costs'){
-    var tot=admMonthlyCost();
+    var tot=admMonthlyCost(), use=admUsageEst(), r=d.rates||{ocr:0.05,ask:0.05};
     return '<div class="adm-grid adm-g3">'
       +'<div class="adm-stat"><div class="n">'+fmt(tot.monthly)+'</div><div class="l">Effective monthly run-rate</div></div>'
       +'<div class="adm-stat"><div class="n">'+fmt(tot.annual)+'</div><div class="l">Annualised cost</div></div>'
-      +'<div class="adm-stat"><div class="n">'+(d.costs||[]).length+'</div><div class="l">Cost lines</div></div></div>'
-      +'<div class="adm-card" style="margin-top:16px"><h3>💳 Cost lines</h3>'
+      +'<div class="adm-stat"><div class="n">AED '+use.cost.toFixed(2)+'</div><div class="l">Claude Console usage · this month</div></div></div>'
+      +'<div class="adm-card" style="margin-top:16px"><h3>🤖 Claude Console — usage-based estimate <span class="adm-muted" style="font-weight:400">auto-updates from real usage</span></h3>'
+      +'<div class="adm-row"><span style="flex:1">Invoice OCR reads this month</span><b>'+use.ocr+'</b><span class="adm-muted">×</span><input class="adm-in" type="number" step="0.01" value="'+(r.ocr||0)+'" style="width:90px" onchange="admSetRate(\'ocr\',this.value);admRender()"><span class="adm-muted">AED/call</span><b style="min-width:90px;text-align:right">AED '+(use.ocr*(r.ocr||0)).toFixed(2)+'</b></div>'
+      +'<div class="adm-row"><span style="flex:1">AI Assist replies this month</span><b>'+use.ask+'</b><span class="adm-muted">×</span><input class="adm-in" type="number" step="0.01" value="'+(r.ask||0)+'" style="width:90px" onchange="admSetRate(\'ask\',this.value);admRender()"><span class="adm-muted">AED/call</span><b style="min-width:90px;text-align:right">AED '+(use.ask*(r.ask||0)).toFixed(2)+'</b></div>'
+      +'<div class="adm-note" style="margin-top:10px">Counted live from the app (every invoice read and AI answer is tracked). Default rates are a conservative estimate for Claude Sonnet at ~AED 0.05 per call — adjust to match your Anthropic Console invoice. USD costs converted at 3.67.</div></div>'
+      +'<div class="adm-card"><h3>💳 Cost lines</h3>'
       +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'
-      +'<input id="admCostName" class="adm-in" placeholder="Name (e.g. Supabase Pro)" style="flex:2;min-width:170px">'
+      +'<input id="admCostName" class="adm-in" placeholder="Name (e.g. Zoho Mail Lite)" style="flex:2;min-width:170px">'
       +'<input id="admCostCat" class="adm-in" placeholder="Category" style="flex:1;min-width:110px">'
       +'<input id="admCostAmt" class="adm-in" type="number" placeholder="AED" style="width:100px">'
       +'<select id="admCostCycle" class="adm-in"><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select>'
       +'<button class="adm-btn" onclick="admAdd(\'costs\')">Add</button></div>'
       +(d.costs||[]).map(function(c,i){ return '<div class="adm-row"><span style="flex:2;min-width:160px">'+ctEsc(c.name)+'</span><span class="adm-muted" style="flex:1">'+ctEsc(c.cat)+'</span><b style="min-width:110px;text-align:right">'+fmt(c.amt)+'</b><span class="adm-muted" style="width:70px">/'+(c.cycle==='yearly'?'year':'month')+'</span><button class="adm-x" onclick="admDel(\'costs\','+i+')">✕</button></div>'; }).join('')
+      +'<div class="adm-note" style="margin-top:10px">Claude Max (5×) is seeded at AED 367/mo ($100). Zoho Mail is seeded as the free plan — if you upgrade to Mail Lite (~AED 4/user/mo), edit the line here.</div>'
       +'</div>';
   }
   if(_admTab==='depts'){
     var open=(d.depts||[]).filter(function(x){return x.st==='open';}).length;
-    return '<div class="adm-card"><h3>🏢 Departments &amp; roles <span class="adm-muted" style="font-weight:400">'+open+' open role'+(open===1?'':'s')+'</span></h3>'
-      +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'
+    var cards=(d.depts||[]).map(function(x,i){
+      var t=(x.tasks||[]); var dn=t.filter(function(k){return k.s==='done';}).length;
+      var today=(typeof todayISO==='function')?todayISO():'';
+      var od=t.filter(function(k){return k.due&&today&&k.due<today&&k.s!=='done';}).length;
+      var pct=t.length?Math.round(dn/t.length*100):0;
+      return '<div class="adm-card" style="margin-bottom:0"><h3>'+ctEsc(x.dept)+' <span class="adm-pill '+x.st+'">'+x.st+'</span></h3>'
+        +'<div class="adm-muted" style="margin-bottom:8px">'+ctEsc(x.role)+' · '+(x.person?ctEsc(x.person):'unassigned')+'</div>'
+        +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="adm-prog" style="flex:1"><div style="width:'+pct+'%"></div></div><span class="adm-muted" style="font-size:11.5px">'+dn+'/'+t.length+' tasks'+(od?(' · <b style=\'color:#ff9a9a\'>'+od+' overdue</b>'):'')+'</span></div>'
+        +'<div style="display:flex;gap:8px"><button class="adm-btn" style="flex:1" onclick="admOpenDept('+i+')">Open workspace →</button><button class="adm-btn ghost" onclick="admAssign('+i+')">Assign</button><button class="adm-x" onclick="admDel(\'depts\','+i+')">✕</button></div></div>';
+    }).join('');
+    return '<div class="adm-card"><h3>🏢 Departments <span class="adm-muted" style="font-weight:400">'+open+' open role'+(open===1?'':'s')+' — each department has its own task workspace</span></h3>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
       +'<input id="admDeptName" class="adm-in" placeholder="Department" style="flex:1;min-width:140px">'
-      +'<input id="admDeptRole" class="adm-in" placeholder="Role to assign" style="flex:1;min-width:140px">'
+      +'<input id="admDeptRole" class="adm-in" placeholder="Lead role" style="flex:1;min-width:140px">'
       +'<input id="admDeptPerson" class="adm-in" placeholder="Assigned to (optional)" style="flex:1;min-width:140px">'
-      +'<button class="adm-btn" onclick="admAdd(\'depts\')">Add</button></div>'
-      +(d.depts||[]).map(function(x,i){ return '<div class="adm-row"><b style="min-width:170px">'+ctEsc(x.dept)+'</b><span style="flex:1">'+ctEsc(x.role)+'</span><span class="adm-muted" style="min-width:130px">'+(x.person?ctEsc(x.person):'— unassigned —')+'</span><span class="adm-pill '+x.st+'" onclick="admCycle(\'depts\','+i+')">'+x.st+'</span><button class="adm-btn ghost" style="padding:5px 11px;font-size:11px" onclick="admAssign('+i+')">Assign</button><button class="adm-x" onclick="admDel(\'depts\','+i+')">✕</button></div>'; }).join('')
-      +'</div>'
-      +'<div class="adm-note">These are your internal management roles for running HisabOne the company — separate from the in-product team accounts (Tax Consultant / Manager) that firms create for themselves.</div>';
+      +'<button class="adm-btn" onclick="admAdd(\'depts\')">Add department</button></div></div>'
+      +'<div class="adm-grid adm-g2">'+cards+'</div>';
   }
   if(_admTab==='marketing'){
-    return '<div class="adm-card"><h3>📣 Marketing &amp; growth</h3>'
+    var trends=[
+      ['E-invoicing wave','The single biggest UAE compliance anxiety of 2026 — accreditation deadlines Oct 2026 / Mar 2027. Deadline-countdown creative converts.'],
+      ['CT first filings','Thousands of SMEs face their first-ever Corporate Tax return this year. "First filing? Don\u2019t do it alone" angles work.'],
+      ['Penalty fear','AED 10,000 late-registration fines are the proven hook — your free penalty checker turns that fear into sign-ups.'],
+      ['WhatsApp-first culture','UAE businesses live on WhatsApp. Click-to-WhatsApp ads outperform web forms for SME outreach.'],
+      ['Accountants as channel','One firm brings 10–50 clients. LinkedIn outreach to firms beats chasing SMEs one by one.']
+    ];
+    var platforms=['LinkedIn','Instagram','TikTok','X (Twitter)','Google Ads','YouTube','WhatsApp'];
+    var sel=_admMkSel, cached=sel&&d.mkAI&&d.mkAI[sel];
+    var aiBody;
+    if(_admMkBusy) aiBody='<div class="adm-muted" style="padding:18px 4px">✨ Asking the AI strategist about '+ctEsc(sel||'')+'… (a few seconds)</div>';
+    else if(cached) aiBody='<div class="adm-md">'+(typeof aiMd==='function'?aiMd(cached.md):ctEsc(cached.md))+'</div>'
+      +'<div style="display:flex;gap:10px;align-items:center;margin-top:12px">'+(cached.at?('<span class="adm-muted" style="font-size:11px">Generated '+ctEsc(cached.at)+'</span>'):'')+'<button class="adm-btn ghost" style="font-size:11px;padding:6px 12px" onclick="admMkAI(\''+sel+'\',true)">↻ Regenerate</button></div>';
+    else aiBody='<div class="adm-muted" style="padding:14px 4px">Pick a platform above — the AI builds a HisabOne-specific advertising playbook for it: targeting, hooks, creative format, starter budget in AED, and ready-to-use ad copy.</div>';
+    return '<div class="adm-card"><h3>📈 UAE trends to ride right now</h3>'
+      +trends.map(function(t){ return '<div class="adm-row"><span class="adm-pill doing" style="min-width:120px;text-align:center">'+t[0]+'</span><span style="flex:1;font-size:12.5px">'+t[1]+'</span></div>'; }).join('')
+      +'</div>'
+      +'<div class="adm-card"><h3>🤖 AI advertising strategist <span class="adm-muted" style="font-weight:400">powered by your live product data</span></h3>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">'+platforms.map(function(p){ var on=(sel===p), has=d.mkAI&&d.mkAI[p]; return '<button class="adm-chip '+(on?'on':'')+'" onclick="admMkAI(\''+p+'\')">'+(has?'✓ ':'')+p+'</button>'; }).join('')+'</div>'
+      +aiBody+'</div>'
+      +'<div class="adm-card"><h3>📣 Campaign board</h3>'
       +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">'
       +'<input id="admMkTitle" class="adm-in" placeholder="Campaign / initiative" style="flex:2;min-width:170px">'
       +'<input id="admMkChannel" class="adm-in" placeholder="Channel" style="flex:1;min-width:110px">'
       +'<input id="admMkBudget" class="adm-in" type="number" placeholder="Budget AED" style="width:110px">'
       +'<input id="admMkNote" class="adm-in" placeholder="Note" style="flex:2;min-width:150px">'
       +'<button class="adm-btn" onclick="admAdd(\'marketing\')">Add</button></div>'
-      +(d.marketing||[]).map(function(x,i){ return '<div class="adm-row"><b style="flex:2;min-width:170px">'+ctEsc(x.title)+'</b><span class="adm-muted" style="flex:1;min-width:100px">'+ctEsc(x.channel)+'</span>'+(x.budget?'<span style="min-width:90px">AED '+x.budget.toLocaleString()+'</span>':'')+'<span class="adm-pill '+x.st+'" onclick="admCycle(\'marketing\','+i+')">'+x.st+'</span><button class="adm-x" onclick="admDel(\'marketing\','+i+')">✕</button>'+(x.note?'<div class="adm-muted" style="width:100%;padding-left:2px;font-size:11.5px">'+ctEsc(x.note)+'</div>':'')+'</div>'; }).join('')
-      +'</div>'
-      +'<div class="adm-note">Your two live lead magnets — the penalty checker and the TRN validator — feed the Insights tab, so you can see which one pulls visitors.</div>';
+      +(d.marketing||[]).map(function(x,i){ return '<div class="adm-row"><b style="flex:2;min-width:170px">'+ctEsc(x.title)+'</b><span class="adm-muted" style="flex:1;min-width:100px">'+ctEsc(x.channel)+'</span>'+(x.budget?('<span style="min-width:90px">AED '+x.budget.toLocaleString()+'</span>'):'')+'<span class="adm-pill '+x.st+'" onclick="admCycle(\'marketing\','+i+')">'+x.st+'</span><button class="adm-x" onclick="admDel(\'marketing\','+i+')">✕</button>'+(x.note?('<div class="adm-muted" style="width:100%;padding-left:2px;font-size:11.5px">'+ctEsc(x.note)+'</div>'):'')+'</div>'; }).join('')
+      +'</div>';
   }
   /* insights */
-  var ev=s.events_30d||{};
+  var ev=s.events_30d||{}, em=s.events_month||{};
+  var mb=s.vault_bytes?(s.vault_bytes/1048576).toFixed(1):'0';
   return admStatTiles()
     +'<div class="adm-grid adm-g4" style="margin-top:14px">'
     +'<div class="adm-stat"><div class="n">'+(ev.visit||0)+'</div><div class="l">Site visits · 30d</div></div>'
     +'<div class="adm-stat"><div class="n">'+(ev.penalty_check||0)+'</div><div class="l">Penalty checks · 30d</div></div>'
     +'<div class="adm-stat"><div class="n">'+(ev.trn_check||0)+'</div><div class="l">TRN checks · 30d</div></div>'
     +'<div class="adm-stat"><div class="n">'+(ev.signup_view||0)+'</div><div class="l">Sign-up page views · 30d</div></div></div>'
+    +'<div class="adm-grid adm-g4" style="margin-top:14px">'
+    +'<div class="adm-stat"><div class="n">'+((em.ai_ocr||0)+(em.ai_ask||0))+'</div><div class="l">AI calls · this month</div></div>'
+    +'<div class="adm-stat"><div class="n">'+(s.messages_7d||0)+'</div><div class="l">Chat messages · 7d</div></div>'
+    +'<div class="adm-stat"><div class="n">'+mb+' MB</div><div class="l">Vault storage used</div></div>'
+    +'<div class="adm-stat"><div class="n">'+(s.team_members||0)+'</div><div class="l">Firm team members</div></div></div>'
     +'<div class="adm-card" style="margin-top:16px"><h3>📈 Activity by day <span class="adm-muted" style="font-weight:400">last 14 days</span></h3>'+admBars(s.events_by_day,'d','n')+'</div>'
     +'<div class="adm-grid adm-g2">'
     +'<div class="adm-card"><h3>🗓 Sign-ups by week</h3>'+admBars(s.signups_by_week,'week','n')+'</div>'
@@ -5300,12 +5434,67 @@ function admRender(){
     +'<button class="adm-btn ghost" onclick="admRefresh()">↻ Refresh data</button>'
     +'<a href="/" class="adm-btn ghost" style="text-decoration:none">Open HisabOne →</a>'
     +'<button class="adm-btn ghost" onclick="admSwitchAccount()">Sign out</button></div>'
-    +'<div class="adm-tabs">'+tabs.map(function(t){ return '<button class="'+(_admTab===t[0]?'on':'')+'" onclick="admSetTab(\''+t[0]+'\')">'+t[1]+'</button>'; }).join('')+'</div>'
+    +'<div class="adm-tabs">'+tabs.map(function(t){ var on=(_admTab===t[0])||(_admTab==='deptpage'&&t[0]==='depts'); return '<button class="'+(on?'on':'')+'" onclick="admSetTab(\''+t[0]+'\')">'+t[1]+'</button>'; }).join('')+'</div>'
     +admTabHTML()
     +'</div>');
 }
 function admSetTab(t){ _admTab=t; admRender(); }
 async function admRefresh(){ await admLoadAll(); admRender(); toast('Command Centre refreshed'); }
+
+/* ---- department workspaces (tasks, assignment, follow-ups) ---- */
+var _admDept=0, _admMkSel=null, _admMkBusy=false;
+function admOpenDept(i){ _admDept=i; _admTab='deptpage'; admRender(); }
+function admAddTask(){
+  var g=function(id){ var e=document.getElementById(id); return e?e.value.trim():''; };
+  var t=g('admTkTitle'); if(!t) return;
+  var d=_admData.depts[_admDept]; d.tasks=d.tasks||[];
+  d.tasks.unshift({t:t, as:g('admTkAs'), due:g('admTkDue'), pr:g('admTkPr')||'med', s:'todo', fu:[]});
+  admSave(); admRender();
+}
+function admTaskCycle(ti){
+  var seq=['todo','doing','review','done'];
+  var k=_admData.depts[_admDept].tasks[ti]; if(!k) return;
+  k.s=seq[(seq.indexOf(k.s)+1)%seq.length];
+  admSave(); admRender();
+}
+function admTaskDel(ti){ _admData.depts[_admDept].tasks.splice(ti,1); admSave(); admRender(); }
+function admTaskAssign(ti){
+  var k=_admData.depts[_admDept].tasks[ti]; if(!k) return;
+  var v=prompt('Assign this task to:', k.as||_admData.depts[_admDept].person||'');
+  if(v===null) return;
+  k.as=v.trim(); admSave(); admRender();
+}
+function admTaskFU(ti){
+  var k=_admData.depts[_admDept].tasks[ti]; if(!k) return;
+  var v=prompt('Follow-up note for "'+k.t+'":','');
+  if(!v||!v.trim()) return;
+  k.fu=k.fu||[];
+  k.fu.push({n:v.trim(), at:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})});
+  admSave(); admRender();
+}
+function admSetRate(key,v){ _admData.rates=_admData.rates||{}; _admData.rates[key]=parseFloat(v)||0; admSave(); }
+/* ---- AI advertising strategist (per-platform playbooks) ---- */
+async function admMkAI(p, force){
+  _admMkSel=p;
+  var cached=_admData.mkAI&&_admData.mkAI[p];
+  if(cached&&!force){ admRender(); return; }
+  if(_admMkBusy) return;
+  _admMkBusy=true; admRender();
+  try{
+    var s=_admStats||{}; var e30=s.events_30d||{};
+    var ctx='Businesses on platform: '+(s.businesses||0)+'. Accounting firms: '+(s.firms||0)+'. Site visits (30d): '+(e30.visit||0)+'. Penalty-checker uses (30d): '+(e30.penalty_check||0)+'. TRN-validator uses (30d): '+(e30.trn_check||0)+'. Sign-up page views (30d): '+(e30.signup_view||0)+'.';
+    var r=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({mode:'marketing', context:ctx, messages:[{role:'user',content:'Give me the HisabOne advertising playbook for '+p+' in the UAE right now.'}]})});
+    var d=await r.json().catch(function(){return {};});
+    if(r.ok&&d.ok&&d.reply){
+      _admData.mkAI[p]={md:d.reply, at:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
+      admSave();
+    } else {
+      _admData.mkAI[p]={md:'Could not generate the playbook right now — try Regenerate in a moment.', at:''};
+    }
+  }catch(e){ _admData.mkAI[p]={md:'Could not reach the AI service — check your connection and try again.', at:''}; }
+  _admMkBusy=false; admRender();
+}
 
 /* ---- anonymous usage tracking (fail-silent, session-throttled, no personal data) ---- */
 function trackEvent(kind){
@@ -5313,7 +5502,8 @@ function trackEvent(kind){
     if(window._adminMode||!sb) return;
     var k='hisab_ev_'+kind;
     var n=parseInt(sessionStorage.getItem(k)||'0',10);
-    var cap=(kind==='visit'||kind==='signup_view')?1:5;
+    var caps={visit:1, signup_view:1, penalty_check:5, trn_check:5, ai_ocr:400, ai_ask:400};
+    var cap=caps[kind]||5;
     if(n>=cap) return;
     sessionStorage.setItem(k, String(n+1));
     sb.from('site_events').insert({kind:kind}).then(function(){},function(){});

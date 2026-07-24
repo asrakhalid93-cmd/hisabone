@@ -9,7 +9,7 @@
 const PROMPT = `You are a precise OCR engine for UAE tax invoices. Read the attached invoice carefully and extract its details.
 
 Return ONLY a minified JSON object (no markdown, no code fences, no commentary) with exactly these keys:
-{"vendor":string|null,"customer":string|null,"invoiceNumber":string|null,"date":string|null,"trn":string|null,"currency":string|null,"netAmount":number|null,"vatAmount":number|null,"grossAmount":number|null,"vatRatePercent":number|null,"description":string|null}
+{"vendor":string|null,"customer":string|null,"invoiceNumber":string|null,"date":string|null,"trn":string|null,"currency":string|null,"netAmount":number|null,"vatAmount":number|null,"grossAmount":number|null,"vatRatePercent":number|null,"description":string|null,"category":string|null}
 
 Rules:
 - vendor = the supplier/seller issuing the invoice; customer = the buyer.
@@ -18,6 +18,7 @@ Rules:
 - Numbers must be plain JSON numbers with no thousands separators or currency symbols.
 - If VAT is shown as 5% or amounts imply ~5%, vatRatePercent = 5. If the invoice is zero-rated or shows no VAT, vatRatePercent = 0.
 - If the totals are inconsistent, trust gross and VAT, and compute net = gross - VAT.
+- category = the expense category this invoice most likely belongs to, judged from the vendor and line items. It MUST be exactly one of: "Goods & inventory", "Rent & office", "Utilities & telecom", "Professional services", "Marketing & advertising", "Travel & transport", "Entertainment", "Equipment & IT", "Insurance", "Bank & finance", "Other". Use "Entertainment" for hospitality/meals/events (input VAT on entertainment is generally blocked in the UAE). If unsure, use "Other".
 - Use null for anything genuinely not present. Do not guess values that are not on the invoice.`;
 
 // --- lightweight abuse protection so the API key can't be freely reused off-site ---

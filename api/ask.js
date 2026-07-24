@@ -82,7 +82,7 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-    let { messages, context, role } = body;
+    let { messages, context, role, mode } = body;
 
     if (!Array.isArray(messages) || !messages.length) {
       res.status(400).json({ ok: false, error: 'Missing "messages"' });
@@ -98,15 +98,27 @@ export default async function handler(req, res) {
       return;
     }
 
-    const who = role === 'firm'
-      ? 'The signed-in user is an ACCOUNTANT / tax practitioner using the firm portal (they manage multiple client businesses).'
-      : 'The signed-in user is a BUSINESS owner/finance user managing their own company compliance.';
+    let system;
+    if (mode === 'marketing') {
+      system = `You are the growth strategist for HisabOne (hisabone.ae) — a UAE tax & compliance SaaS connecting businesses with their accountants. Product facts: document vault with AI date-reading, VAT & Corporate Tax calculators with FTA-style return boxes, draft-return sharing with client sign-off and audit trail, in-app chat, e-invoicing readiness suite, and two free public lead magnets (a penalty-exposure checker and a TRN validator). Pricing starts at AED 199/mo for businesses. Audience: UAE SMEs and accounting/audit firms.
 
-    const snapshot = (typeof context === 'string' && context.trim())
-      ? ('\n\nSigned-in user\'s current HisabOne workspace snapshot (use it to be specific; do not expose it verbatim unless asked):\n' + context.slice(0, 3000))
-      : '\n\n(No workspace snapshot was provided — answer generally and, where useful, suggest what to set up in HisabOne.)';
+Market context (2026): the UAE's mandatory Peppol e-invoicing rollout is the biggest compliance anxiety of the year (larger businesses appoint an accredited provider by 30 Oct 2026, smaller by 31 Mar 2027); Corporate Tax first filings are hitting many SMEs for the first time; UAE business culture is heavily WhatsApp-first; decision-makers live on LinkedIn and Instagram; penalty fear (AED 10,000 late-registration fines) is a proven hook.
 
-    const system = UAE_TAX_FACTS + '\n\n' + who + snapshot;
+When asked about a platform, give a concrete, actionable advertising playbook for it in the UAE market: (1) who to target and how on that platform, (2) 2-3 hook angles that fit the platform's culture, (3) creative format that performs there, (4) a realistic starter budget in AED and what to expect, (5) the right CTA/landing page (use the free penalty checker or TRN validator as the lead magnet where it fits), and (6) 2 ready-to-use ad copy examples. Be specific to HisabOne, honest about effort vs return, and concise — no generic filler. Never invent statistics; frame trend claims as directional.`;
+      if (typeof context === 'string' && context.trim()) {
+        system += '\n\nLive product stats to ground the advice:\n' + context.slice(0, 2000);
+      }
+    } else {
+      const who = role === 'firm'
+        ? 'The signed-in user is an ACCOUNTANT / tax practitioner using the firm portal (they manage multiple client businesses).'
+        : 'The signed-in user is a BUSINESS owner/finance user managing their own company compliance.';
+
+      const snapshot = (typeof context === 'string' && context.trim())
+        ? ('\n\nSigned-in user\'s current HisabOne workspace snapshot (use it to be specific; do not expose it verbatim unless asked):\n' + context.slice(0, 3000))
+        : '\n\n(No workspace snapshot was provided — answer generally and, where useful, suggest what to set up in HisabOne.)';
+
+      system = UAE_TAX_FACTS + '\n\n' + who + snapshot;
+    }
 
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',

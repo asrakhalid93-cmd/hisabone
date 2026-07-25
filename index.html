@@ -1027,7 +1027,7 @@
       <h2 class="homeh2 reveal">What could a missed deadline cost you?</h2>
       <div class="reveal" style="max-width:640px;margin:0 auto">
         <p class="muted" style="font-size:15px;margin-bottom:20px">Check your UAE tax penalty exposure and get your Compliance Health Score in 60 seconds — free, and no sign-up required.</p>
-        <button class="lf-btn" style="width:auto;padding:14px 32px" onclick="switchView('penalty')">${svgIcon('shield',16)} Check your penalty exposure &rarr;</button>
+        <button class="lf-btn" style="width:auto;padding:14px 32px;display:inline-flex;align-items:center;gap:9px;justify-content:center" onclick="switchView('penalty')"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/></svg> Check your penalty exposure &rarr;</button>
       </div>
     </div>
 
@@ -1432,10 +1432,28 @@ function rebuildFirmClients(){
     const meta=clientMeta[c.business_name]||{};
     const mine=all.filter(r=>r.client===c.business_name);
     const done=mine.filter(r=>r.st==='Received ✓').length;
-    return {name:c.business_name, trn:meta.trn||'—', deadline:meta.deadline||'Onboarding',
+    return {name:c.business_name, id:c.business_id, email:c.business_email||'',
+            registered:c.registered_at||null, trialEnds:c.trial_ends_at||null,
+            trn:meta.trn||'—', deadline:meta.deadline||'Onboarding',
             docs:done+'/'+mine.length, risk:meta.risk||'medium', urgency:meta.urgency||'soon'};
   });
   clients = firmClients.map(c=>c.name);
+}
+/* trial status helper: label + pill class from trial_ends_at */
+function trialBadge(iso){
+  if(!iso) return {label:'—', cls:'p-gray', days:null};
+  var end=new Date(iso), now=new Date();
+  var days=Math.ceil((end.getTime()-now.getTime())/86400000);
+  if(days>3650) return {label:'Complimentary', cls:'p-teal', days:days};
+  if(days<0) return {label:'Expired '+Math.abs(days)+'d ago', cls:'p-red', days:days};
+  if(days===0) return {label:'Ends today', cls:'p-red', days:days};
+  if(days<=3) return {label:days+' day'+(days===1?'':'s')+' left', cls:'p-red', days:days};
+  if(days<=7) return {label:days+' days left', cls:'p-amber', days:days};
+  return {label:days+' days left', cls:'p-green', days:days};
+}
+function fmtRegDate(iso){
+  if(!iso) return '—';
+  try{ return new Date(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return '—'; }
 }
 
 /* load everything this user can see from the database into the app state */
@@ -2268,7 +2286,7 @@ function renderNav(){
   const items = NAV[role];
   document.getElementById('sidebar').innerHTML =
     '<div class="navlabel">'+(role==='business'?'My company':'Practice')+'</div>'+
-    items.map(i=>{const b=navBadge(i.id);return `<div class="navitem ${page===i.id?'active':''}" onclick="go('${i.id}')">
+    items.map(i=>{const b=navBadge(i.id);const act=(page===i.id)||(page==='clientprofile'&&i.id==='clients');return `<div class="navitem ${act?'active':''}" onclick="go('${i.id}')">
       <span class="ic">${svgIcon(i.ic)}</span><span class="txt">${i.label}</span>
       ${b?`<span class="badge">${b}</span>`:''}</div>`;}).join('');
 }
@@ -2698,14 +2716,25 @@ clients:()=>{
         <button class="${urgFilter==='ok'?'on':''}" onclick="setUrg('ok')">On track</button>
       </span></div>
   </div>
+  ${selClientCount()?`
+  <div class="banner" style="border-color:var(--accent)">
+    <div style="color:var(--accent)">${svgIcon('mail',26)}</div>
+    <div style="flex:1"><div class="big">${selClientCount()} client${selClientCount()===1?'':'s'} selected</div>
+      <div style="opacity:.7;font-size:13px">Send a professional upgrade reminder — delivered by email and into their in-app Messages.</div></div>
+    <button class="btn" onclick="sendPlanReminders()">${svgIcon('share',15)} Send purchase reminder</button>
+    <button class="btn ghost" onclick="clearClientSel()">Clear</button>
+  </div>`:''}
   <div class="card" style="padding:0;overflow-x:auto">
     <table>
-      <tr><th>Client</th><th>TRN</th><th>Next deadline</th><th>Documents</th><th>Health score</th><th>Penalty exposure</th><th>Risk</th><th>Urgency</th></tr>
-      ${rows.map(fClientRow).join('') || `<tr><td colspan="8" class="muted" style="text-align:center;padding:22px">${firmClients.length?'No clients match these filters.':'No clients yet — share your invite code above to link your first client.'}</td></tr>`}
+      <tr><th style="width:34px"><input type="checkbox" onclick="toggleAllClients(this.checked)" ${allClientsSelected()?'checked':''} title="Select all" style="width:16px;height:16px;cursor:pointer"></th>
+        <th>Client</th><th>Registered</th><th>Trial ends</th><th>Documents</th><th>Health</th><th>Penalty exposure</th><th>Risk</th><th>Urgency</th></tr>
+      ${rows.map(fClientRow).join('') || `<tr><td colspan="9" class="muted" style="text-align:center;padding:22px">${firmClients.length?'No clients match these filters.':'No clients yet — share your invite code above to link your first client.'}</td></tr>`}
     </table>
   </div>
-  <div class="note">Showing ${rows.length} of ${firmClients.length} clients</div>`;
+  <div class="note">Showing ${rows.length} of ${firmClients.length} clients · click a client's name to open their full profile</div>`;
 },
+
+clientprofile:()=>clientProfileHTML(),
 
 taxdocs:()=>reqDocPage('tax'),
 auditdocs:()=>reqDocPage('audit'),
@@ -4063,16 +4092,132 @@ function bizDocPage(kind){
       <p>Documents marked submitted were pulled automatically from your linked software and bank. The rest need your upload — your ${tax?'accountant':'auditor'} sees them the moment you do.</p></div></div>`;}
 /* firm: risk/urgency pill + client database row + tax request form */
 function lvlPill(v){const m={High:'p-red',Urgent:'p-red',Medium:'p-amber',Low:'p-green'};return `<span class="pill ${m[v]||'p-gray'}">${v}</span>`;}
+/* ---- client selection + trial purchase reminders ---- */
+var _selClients={};
+function selClientCount(){ var n=0; for(var k in _selClients){ if(_selClients[k]) n++; } return n; }
+function allClientsSelected(){ return firmClients.length>0 && firmClients.every(function(c){return _selClients[c.id];}); }
+function toggleClientSel(id){ _selClients[id]=!_selClients[id]; renderPage(); }
+function toggleAllClients(on){ firmClients.forEach(function(c){ _selClients[c.id]=!!on; }); renderPage(); }
+function clearClientSel(){ _selClients={}; renderPage(); }
+async function sendPlanReminders(){
+  var sel=firmClients.filter(function(c){ return _selClients[c.id]; });
+  if(!sel.length){ toast('Tick at least one client first.'); return; }
+  if(!sb||!currentAccount){ toast('Not signed in.'); return; }
+  var firmName=currentAccount.firmName||currentAccount.name||'Your accountant';
+  var sent=0;
+  for(var i=0;i<sel.length;i++){
+    var c=sel[i];
+    var tb=trialBadge(c.trialEnds);
+    var when = tb.days==null ? 'soon' : (tb.days<0 ? 'already ended' : ('on '+fmtRegDate(c.trialEnds)));
+    var msg='Hello '+c.name+' — a quick note from '+firmName+'. Your HisabOne free trial '+(tb.days!=null&&tb.days<0?'has ended':'ends '+when)+'. To keep your compliance workspace, document vault and our shared workflow running without interruption, please choose a plan at hisabone.ae (Pricing). Happy to help you pick the right one.';
+    /* in-app chat message from the firm */
+    try{
+      var r=await sb.from('messages').insert({business_id:c.id, firm_id:effFirmId(), sender_id:currentAccount.id,
+        sender_name:currentAccount.name||firmName, sender_role:'firm', body:msg});
+      if(!r.error) sent++;
+    }catch(e){}
+    /* email reminder */
+    try{ if(c.email) sendAppEmail(c.email, 'Your HisabOne free trial — choose your plan', msg); }catch(e){}
+  }
+  logActivity('plan_reminder','Sent plan purchase reminder to '+sel.length+' client'+(sel.length===1?'':'s'));
+  clearClientSel();
+  toast('Reminder sent to '+sent+' client'+(sent===1?'':'s')+' — in-app now, email'+(sent===1?'':'s')+' on the way.');
+  if(typeof loadChat==='function') loadChat(true);
+}
 function fClientRow(c){
   const rp={high:'p-red',medium:'p-amber',low:'p-green'}[c.risk];
   const u={overdue:['p-red','Overdue'],soon:['p-amber','Due soon'],ok:['p-green','On track']}[c.urgency];
   const h=clientHealth(c);
-  return `<tr class="clickable" onclick="go('taxdocs')"><td><b>${c.name}</b></td><td class="muted">${c.trn}</td>
-    <td>${c.deadline}</td><td>${c.docs}</td>
-    <td><span style="display:inline-flex;align-items:center;gap:7px;font-weight:700;color:${h.band.col}"><span style="width:9px;height:9px;border-radius:50%;background:${h.band.col}"></span>${h.score}</span></td>
+  const tb=trialBadge(c.trialEnds);
+  return `<tr>
+    <td onclick="event.stopPropagation()"><input type="checkbox" ${_selClients[c.id]?'checked':''} onclick="toggleClientSel('${c.id}')" style="width:16px;height:16px;cursor:pointer"></td>
+    <td><span class="link" style="font-weight:700" onclick="openClientProfile('${c.id}')">${ctEsc(c.name)}</span><div class="muted" style="font-size:11px">${ctEsc(c.trn)}</div></td>
+    <td class="muted">${fmtRegDate(c.registered)}</td>
+    <td><span class="pill ${tb.cls}">${tb.label}</span></td>
+    <td>${c.docs}</td>
+    <td><span style="display:inline-flex;align-items:center;gap:7px;font-weight:700;color:${h.band.col};cursor:pointer" onclick="openClientProfile('${c.id}')"><span style="width:9px;height:9px;border-radius:50%;background:${h.band.col}"></span>${h.score}</span></td>
     <td>${h.exposure>0?`<b style="color:#c0392b">${fmtAED(h.exposure)}</b>`:'<span class="muted">—</span>'}</td>
     <td><span class="pill ${rp}">${c.risk[0].toUpperCase()+c.risk.slice(1)}</span></td>
     <td><span class="pill ${u[0]}">${u[1]}</span></td></tr>`;}
+
+/* ---- client profile page (firm) ---- */
+var _viewClientId=null;
+function openClientProfile(id){ _viewClientId=id; go('clientprofile'); }
+function saveClientMeta(field, value){
+  var c=firmClients.find(function(x){return x.id===_viewClientId;}); if(!c) return;
+  clientMeta[c.name]=clientMeta[c.name]||{};
+  clientMeta[c.name][field]=value;
+  saveAccountData(); rebuildFirmClients(); renderPage();
+}
+function clientProfileHTML(){
+  var c=firmClients.find(function(x){return x.id===_viewClientId;});
+  if(!c) return '<h1>Client profile</h1><div class="card muted" style="text-align:center;padding:30px">Client not found — <span class="link" onclick="go(\'clients\')">back to Client Database</span>.</div>';
+  var meta=clientMeta[c.name]||{};
+  var h=clientHealth(c);
+  var tb=trialBadge(c.trialEnds);
+  var reqs=[...firmTaxReqs.map(r=>({...r,kind:'Tax'})), ...firmAuditReqs.map(r=>({...r,kind:'Audit'}))].filter(function(r){return r.client===c.name;});
+  var openReqs=reqs.filter(function(r){return !/Received/.test(r.st);});
+  var rets=(returnsList||[]).filter(function(r){return r.business_id===c.id;});
+  var msgs=(chatMsgs||[]).filter(function(m){return m.business_id===c.id;});
+  var recent=msgs.slice(-8).reverse();
+  var shared=(typeof docShares==='function'?docShares():[]).filter(function(r){return r.from===c.name;});
+  var acts=(activityLog||[]).filter(function(a){return (a.detail||'').indexOf(c.name)>-1;}).slice(0,6);
+  var tmOpts=(teamMembers||[]).map(function(t){ var n=t.name||t.email||'Member'; return '<option '+((meta.assignee===n)?'selected':'')+'>'+ctEsc(n)+'</option>'; }).join('');
+  return `
+  <button class="btn ghost sm mb14" onclick="go('clients')">&larr; Client Database</button>
+  <div class="card mb14" style="border-color:var(--accent)">
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div class="avatar" style="width:52px;height:52px;font-size:22px;background:var(--accent-bg);color:var(--accent)">${ctEsc(c.name[0]||'C')}</div>
+      <div style="flex:1;min-width:220px">
+        <h1 style="font-size:21px;margin:0">${ctEsc(c.name)}</h1>
+        <div class="muted" style="font-size:12.5px;margin-top:3px">Registered ${fmtRegDate(c.registered)} · Free trial: <span class="pill ${tb.cls}" style="font-size:10px">${tb.label}</span></div>
+      </div>
+      ${scoreGauge(h.score, h.band.col, 84)}
+      <div style="min-width:150px"><div style="font-weight:700;color:${h.band.col}">${h.band.label}</div>
+        <div class="muted" style="font-size:12px">${h.exposure>0?('Penalty exposure '+fmtAED(h.exposure)):'No penalty exposure'}</div></div>
+    </div>
+  </div>
+  <div class="grid g4 mb14">
+    <div class="card stat clk" onclick="go('taxdocs')"><div class="ic">${svgIcon('inbox',20)}</div><div class="num">${openReqs.length}</div><div class="lbl">Open requests</div></div>
+    <div class="card stat clk" onclick="go('taxdocs')"><div class="ic">${svgIcon('check',20)}</div><div class="num">${reqs.length-openReqs.length}</div><div class="lbl">Documents received</div></div>
+    <div class="card stat clk" onclick="go('freports')"><div class="ic">${svgIcon('clipboard',20)}</div><div class="num">${rets.length}</div><div class="lbl">Draft returns</div></div>
+    <div class="card stat clk" onclick="chatSelectPeer('${c.id}');go('fchat')"><div class="ic">${svgIcon('chat',20)}</div><div class="num">${msgs.length}</div><div class="lbl">Messages</div></div>
+  </div>
+  <div class="grid g2 mb14">
+    <div class="card">
+      <div class="cardhead"><h3>${svgIcon('users',16)} Account &amp; contact</h3></div>
+      <div class="drow"><span class="muted" style="min-width:140px">Contact person</span>
+        <input class="finput" style="max-width:230px" value="${ctEsc(meta.contact||'')}" placeholder="e.g. Ahmed (Finance)" onchange="saveClientMeta('contact',this.value)"></div>
+      <div class="drow"><span class="muted" style="min-width:140px">Email</span><span style="word-break:break-all">${ctEsc(c.email||'—')}</span></div>
+      <div class="drow"><span class="muted" style="min-width:140px">TRN</span>
+        <input class="finput" style="max-width:230px" value="${meta.trn&&meta.trn!=='—'?ctEsc(meta.trn):''}" placeholder="100 XXXX XXXX XXXX" onchange="saveClientMeta('trn',this.value)"></div>
+      <div class="drow"><span class="muted" style="min-width:140px">Team member assigned</span>
+        ${teamMembers&&teamMembers.length?`<select class="finput" style="max-width:230px" onchange="saveClientMeta('assignee',this.value)"><option value="" ${!meta.assignee?'selected':''}>— unassigned —</option>${tmOpts}</select>`:'<span class="muted">Add team members on the Team page first</span>'}</div>
+      <div class="drow"><span class="muted" style="min-width:140px">Next deadline</span>
+        <input class="finput" style="max-width:230px" value="${meta.deadline?ctEsc(meta.deadline):''}" placeholder="e.g. VAT Q3 · 28 Oct 2026" onchange="saveClientMeta('deadline',this.value)"></div>
+      <div class="drow"><span class="muted" style="min-width:140px">Risk level</span>
+        <select class="finput" style="max-width:230px" onchange="saveClientMeta('risk',this.value)">${['high','medium','low'].map(v=>`<option value="${v}" ${(meta.risk||'medium')===v?'selected':''}>${v[0].toUpperCase()+v.slice(1)}</option>`).join('')}</select></div>
+      <div class="drow"><span class="muted" style="min-width:140px">Urgency</span>
+        <select class="finput" style="max-width:230px" onchange="saveClientMeta('urgency',this.value)">${[['overdue','Overdue'],['soon','Due soon'],['ok','On track']].map(v=>`<option value="${v[0]}" ${(meta.urgency||'soon')===v[0]?'selected':''}>${v[1]}</option>`).join('')}</select></div>
+    </div>
+    <div class="card">
+      <div class="cardhead"><h3>${svgIcon('chat',16)} Communication log</h3><span class="link" onclick="chatSelectPeer('${c.id}');go('fchat')">Open chat</span></div>
+      ${recent.length?recent.map(function(m){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon(m.sender_role==='firm'?'share':'inbox',15)+'</div><div style="flex:1;min-width:0"><div style="font-size:12.5px">'+ctEsc(m.body.length>90?m.body.slice(0,90)+'…':m.body)+'</div><div class="muted" style="font-size:10.5px">'+ctEsc(m.sender_name||'')+' · '+chatTimeFmt(m.created_at)+'</div></div></div>'; }).join(''):'<div class="muted" style="text-align:center;padding:18px;font-size:13px">No messages yet — open the chat to start the conversation.</div>'}
+      ${acts.length?'<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><div class="muted" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Firm activity involving this client</div>'+acts.map(function(a){ return '<div class="drow" style="padding:6px 2px"><div style="color:var(--accent)">'+svgIcon('activity',13)+'</div><div style="flex:1;font-size:12px">'+ctEsc(a.detail)+'<span class="muted" style="font-size:10.5px"> · '+new Date(a.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'</span></div></div>'; }).join('')+'</div>':''}
+    </div>
+  </div>
+  <div class="grid g2 mb14">
+    <div class="card">
+      <div class="cardhead"><h3>${svgIcon('file-text',16)} Document requests</h3>${openReqs.length?`<span class="pill p-amber">${openReqs.length} open</span>`:'<span class="pill p-green">All received</span>'}</div>
+      ${reqs.length?reqs.slice(0,8).map(function(r){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('inbox',15)+'</div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(r.doc)+'</div><div class="dmeta">'+r.kind+' · '+ctEsc(r.app||'')+'</div></div><span class="pill '+r.cls+'">'+r.st+'</span></div>'; }).join(''):'<div class="muted" style="text-align:center;padding:18px;font-size:13px">No requests yet for this client.</div>'}
+    </div>
+    <div class="card">
+      <div class="cardhead"><h3>${svgIcon('clipboard',16)} Draft returns &amp; shared documents</h3></div>
+      ${rets.length?rets.map(function(rt){ var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>'); return '<div class="drow" style="cursor:pointer" onclick="viewReturn(\''+rt.id+'\')"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7a5af8')+'"></div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(rt.title||'Return')+'</div><div class="dmeta">'+ctEsc(rt.period||'')+'</div></div>'+st+'</div>'; }).join(''):'<div class="muted" style="font-size:12.5px;padding:8px 2px">No draft returns shared yet.</div>'}
+      ${shared.length?'<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px">'+shared.slice(0,5).map(function(r){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('file',15)+'</div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc((r.title||'').replace(/^Shared document:\\s*/,''))+'</div><div class="dmeta">Shared '+(r.sharedAt||'')+'</div></div>'+(r.fileUrl?('<a class="btn ghost sm" href="'+r.fileUrl+'" target="_blank" rel="noopener">'+svgIcon('download',13)+' Open</a>'):'')+'</div>'; }).join('')+'</div>':''}
+    </div>
+  </div>`;
+}
 /* firm: documents proactively shared by clients (from their Company Information tab) */
 function docShares(){ return (sharedReports||[]).filter(function(r){return r && r.type==='document';}); }
 function reportShares(){ return (sharedReports||[]).filter(function(r){return !r || r.type!=='document';}); }
@@ -4128,8 +4273,8 @@ function reqForm(kind){
   const sel=(id,opts)=>`<select id="${pfx}${id}" class="finput">${opts.map(o=>`<option>${o}</option>`).join('')}</select>`;
   const appLabel=tax?'Application / filing':'Audit engagement';
   const appOpts=tax
-    ?['VAT Return Q2 2026','VAT Return Q3 2026','VAT Registration','Corporate Tax Return FY2025','Corporate Tax Registration','FTA Amendment']
-    :['Audit FY2025','Audit FY2024','Interim review FY2026','Agreed-upon procedures'];
+    ?['VAT Return Q2 2026','VAT Return Q3 2026','VAT Registration','Corporate Tax Return FY2025','Corporate Tax Registration','TRC — Tax Residency Certificate application','VAT Refund claim','VAT De-registration','FTA Amendment','FTA Clarification request','Voluntary Disclosure (VAT / CT)','E-invoicing readiness']
+    :['Statutory annual audit FY2025','Statutory annual audit FY2024','Interim review FY2026','Review engagement (ISRE 2400)','Agreed-upon procedures','Internal audit','Forensic audit / investigation','Due diligence review','Liquidation / de-registration audit','Free zone annual audit','RERA / escrow account audit','ICV certification audit','Stock count / inventory observation'];
   return `<div class="card mb14" style="border-color:var(--accent)">
     <div class="cardhead"><h3>New ${tax?'tax':'audit'} document request</h3></div>
     <div class="grid g2" style="margin-bottom:14px">
@@ -5222,11 +5367,47 @@ async function admLoadAll(){
 }
 function admStatTiles(){
   var s=_admStats||{};
-  var t=function(n,l){ return '<div class="adm-stat"><div class="n">'+(n==null?'—':n)+'</div><div class="l">'+l+'</div></div>'; };
+  var t=function(key,n,l){ return '<div class="adm-stat" style="cursor:pointer" onclick="admShowStat(\''+key+'\')" title="Click for details"><div class="n">'+(n==null?'—':n)+'</div><div class="l">'+l+' ›</div></div>'; };
   return '<div class="adm-grid adm-g4">'
-    +t(s.businesses,'Businesses')+t(s.firms,'Accounting firms')+t(s.links,'Linked pairs')+t(s.signups_30d,'Sign-ups · 30d')
-    +t(s.returns_total,'Draft returns')+t(s.returns_approved,'Returns approved')+t(s.messages,'Chat messages')+t(s.vault_files,'Vault files')
-    +'</div>';
+    +t('businesses',s.businesses,'Businesses')+t('firms',s.firms,'Accounting firms')+t('links',s.links,'Linked pairs')+t('signups',s.signups_30d,'Sign-ups · 30d')
+    +t('returns',s.returns_total,'Draft returns')+t('approved',s.returns_approved,'Returns approved')+t('messages',s.messages,'Chat messages')+t('vault',s.vault_files,'Vault files')
+    +'</div>'
+    +admStatDetail();
+}
+var _admStatSel=null;
+function admShowStat(key){ _admStatSel=(_admStatSel===key)?null:key; admRender(); }
+function admStatDetail(){
+  if(!_admStatSel) return '';
+  var s=_admStats||{};
+  var row=function(l,v){ return '<div class="adm-row"><span style="flex:1">'+l+'</span><b>'+(v==null?'—':v)+'</b></div>'; };
+  var split=function(items){
+    var max=Math.max.apply(null,items.map(function(x){return x[1];}).concat([1]));
+    return items.map(function(x){ var w=Math.max(3,Math.round(x[1]/max*100)); return '<div class="adm-row"><span style="min-width:170px">'+x[0]+'</span><div class="adm-prog" style="flex:1"><div style="width:'+w+'%"></div></div><b style="min-width:40px;text-align:right">'+x[1]+'</b></div>'; }).join('');
+  };
+  var sig=(s.recent_signups||[]);
+  var title='', body='';
+  if(_admStatSel==='businesses'){ title='Businesses — detail';
+    body=split([['Business accounts',s.businesses||0],['Linked to a firm',s.links||0],['Not yet linked',Math.max(0,(s.businesses||0)-(s.links||0))]])
+      +'<div class="adm-muted" style="margin:10px 0 4px;text-transform:uppercase;font-size:10.5px;letter-spacing:.5px">Recent business sign-ups</div>'
+      +(sig.filter(function(r){return r.role==='business';}).map(function(r){ return row(ctEsc(r.name), ctEsc(r.at)); }).join('')||'<div class="adm-muted">None yet.</div>'); }
+  else if(_admStatSel==='firms'){ title='Accounting firms — detail';
+    body=split([['Firm accounts',s.firms||0],['Team member accounts',s.team_members||0],['Clients under management',s.links||0]])
+      +'<div class="adm-muted" style="margin:10px 0 4px;text-transform:uppercase;font-size:10.5px;letter-spacing:.5px">Recent firm sign-ups</div>'
+      +(sig.filter(function(r){return r.role==='firm';}).map(function(r){ return row(ctEsc(r.name), ctEsc(r.at)); }).join('')||'<div class="adm-muted">None yet.</div>'); }
+  else if(_admStatSel==='links'){ title='Linked pairs — detail';
+    body=split([['Business ↔ firm links',s.links||0],['Businesses total',s.businesses||0],['Firms total',s.firms||0]])
+      +'<div class="adm-note" style="margin-top:10px">Each link is a business that entered a firm\'s invite code — your core activation metric.</div>'; }
+  else if(_admStatSel==='signups'){ title='Sign-ups — last 8 weeks';
+    body=admBars(s.signups_by_week,'week','n'); }
+  else if(_admStatSel==='returns'||_admStatSel==='approved'){ title='Draft returns — status split';
+    body=split([['Pending review',s.returns_pending||0],['Approved & signed',s.returns_approved||0],['Changes requested',s.returns_changes||0]])
+      +'<div class="adm-note" style="margin-top:10px">'+(s.returns_total||0)+' drafts shared in total between firms and their clients.</div>'; }
+  else if(_admStatSel==='messages'){ title='Chat messages — detail';
+    body=split([['All time',s.messages||0],['Last 7 days',s.messages_7d||0]]); }
+  else if(_admStatSel==='vault'){ title='Document vault — detail';
+    body=split([['Files stored',s.vault_files||0],['Document requests fulfilled',s.doc_requests_done||0],['Requests total',s.doc_requests||0]])
+      +'<div class="adm-note" style="margin-top:10px">'+(s.vault_bytes?(s.vault_bytes/1048576).toFixed(1):'0')+' MB of private, owner-scoped storage in use.</div>'; }
+  return '<div class="adm-card" style="margin-top:14px;border-color:rgba(39,224,207,.35)"><h3>🔍 '+title+' <span style="flex:1"></span><button class="adm-x" onclick="admShowStat(\''+_admStatSel+'\')" title="Close">✕</button></h3>'+body+'</div>';
 }
 function admBars(arr,keyL,keyN){
   if(!arr||!arr.length) return '<div class="adm-muted" style="padding:14px 2px">No data yet.</div>';

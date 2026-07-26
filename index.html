@@ -22,6 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
 <style>
   :root{
     --h1logo:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='t' x1='6' y1='0' x2='94' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%2320d3bf'/><stop offset='0.52' stop-color='%234f7ef0'/><stop offset='1' stop-color='%238a5cf6'/></linearGradient></defs><rect width='100' height='100' fill='url(%23t)'/><g fill='%23ffffff'><rect x='18' y='28' width='11' height='44' rx='3.5'/><rect x='37' y='28' width='11' height='44' rx='3.5'/><rect x='18' y='44' width='30' height='11' rx='3'/><rect x='66' y='28' width='11' height='44' rx='3.5'/><path d='M56 35 L66 28 L66 39 Z'/><rect x='61' y='67' width='21' height='5' rx='2.5'/></g></svg>");
@@ -268,8 +269,8 @@
     --accent-bg:rgba(13,148,136,.10); --accent-bg2:rgba(13,148,136,.16); --topbar:rgba(255,255,255,.9);
   }
   body[data-role="firm"]{
-    --bg1:#f2f1fa; --bg2:#fbfaff; --accent:#7a5af8; --accent-d:#6445e6;
-    --accent-bg:rgba(122,90,248,.10); --accent-bg2:rgba(122,90,248,.16); --topbar:rgba(255,255,255,.9);
+    --bg1:#f2f1fa; --bg2:#fbfaff; --accent:#6444d8; --accent-d:#4f30bd;
+    --accent-bg:rgba(100,68,216,.10); --accent-bg2:rgba(100,68,216,.16); --topbar:rgba(255,255,255,.9);
   }
   body{ background:
     radial-gradient(760px 520px at 6% -6%, rgba(13,148,136,.14), transparent 56%),
@@ -753,6 +754,37 @@
   .chatsend{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
   .chatsend .finput{flex:1}
   @media(max-width:700px){#chatFab{right:14px;bottom:14px}#chatPanel{right:8px;bottom:76px}}
+
+  /* ================= POLISH v5 — professional layout & tabs ================= */
+  h1{font-size:24px;letter-spacing:-.45px}
+  .sub{font-size:13.5px;margin:5px 0 20px}
+  .card{border-radius:15px}
+  .cardhead h3{letter-spacing:-.2px}
+  th{font-size:10.5px;letter-spacing:.7px;padding:11px 12px;font-weight:700}
+  .btn{border-radius:11px}
+  .seg{border-radius:12px;padding:3px}
+  .seg button{border-radius:9px;font-weight:700}
+  /* sidebar: refined tabs */
+  #sidebar{padding:16px 12px}
+  .navlabel{font-size:10px;letter-spacing:1.2px;font-weight:800;opacity:.55;margin:2px 10px 10px}
+  .navitem{border-radius:11px;margin-bottom:3px;padding-top:9px;padding-bottom:9px;font-weight:600;font-size:13.3px}
+  .navitem .ic{opacity:.75}
+  .navitem.active{background:var(--accent-bg);color:var(--accent-d);font-weight:700}
+  .navitem.active .ic{opacity:1;color:var(--accent)}
+  .navitem.active::before{opacity:1;transform:scaleY(1)}
+  .navitem:hover:not(.active){background:rgba(16,32,60,.045)}
+  .badge{background:var(--accent);box-shadow:0 2px 8px var(--accent-bg2)}
+  /* topbar: crisper */
+  .topbar{box-shadow:0 1px 0 var(--line),0 6px 22px rgba(16,32,60,.04)}
+  /* section chips for the FTA CT return form */
+  .ctsec{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:5px 11px;border-radius:16px;border:1px solid var(--line);background:var(--panel2);color:var(--muted)}
+  .ctsec.on{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-d)}
+  .ctsec.na{opacity:.42;text-decoration:line-through}
+  .cthead{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--accent-d);margin:16px 0 6px;padding-bottom:5px;border-bottom:2px solid var(--accent-bg2)}
+  .ctrow{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--line);font-size:13px;flex-wrap:wrap}
+  .ctrow:last-child{border-bottom:0}
+  .ctrow b.val{font-variant-numeric:tabular-nums}
+  .ctrow.total{background:var(--panel2);border-radius:9px;padding:10px;font-weight:700}
 
   /* ================= COMMAND CENTRE (owner-only, /admin) ================= */
   #adminRoot{position:fixed;inset:0;z-index:500;overflow-y:auto;display:none;color:#e6edf6;
@@ -1605,13 +1637,29 @@ let firmReminders = [];
 let reminderFormOpen=false;
 function toggleReminderForm(){reminderFormOpen=!reminderFormOpen;renderPage();}
 function submitReminder(){
-  const g=id=>document.getElementById(id).value;
-  const rec={client:g('remClient'),app:g('remApp'),doc:g('remDoc')||'Document',last:'Just scheduled',next:g('remWhen'),auto:g('remAuto')==='On'?'green':'gray'};
+  const g=id=>{const e=document.getElementById(id);return e?e.value:'';};
+  const mode=g('remWhen');
+  const days=Math.max(1,Math.min(60,parseInt(g('remDays'),10)||3));
+  const every=Math.max(1,Math.min(30,parseInt(g('remEvery'),10)||3));
+  const next = mode==='now' ? 'Today' : ('In '+days+' day'+(days===1?'':'s'));
+  const rec={client:g('remClient'),app:g('remApp'),doc:g('remDoc')||'Document',last:'Just scheduled',next:next,days:(mode==='now'?0:days),every:every,auto:g('remAuto')==='On'?'green':'gray'};
   firmReminders.unshift(rec);
-  logActivity('reminder_set', 'Scheduled reminder for '+rec.client+' — '+rec.app);
-  const sendNow = g('remWhen')==='Immediately' || rec.auto==='green';
+  logActivity('reminder_set', 'Scheduled reminder for '+rec.client+' — '+rec.app+(rec.days?(' (first in '+rec.days+'d, every '+every+'d)'):' (immediate, every '+every+'d)'));
+  saveAccountData();
+  const sendNow = mode==='now';
   reminderFormOpen=false;renderPage();
   if(sendNow) sendReminderNow(0);
+}
+function deleteReminder(i){
+  var r=firmReminders[i]; if(!r) return;
+  openConfirm({title:'Delete reminder', confirmLabel:'Delete',
+    message:'Are you sure you want to delete the reminder for "'+r.doc+'" to '+r.client+'? This stops all future chases for it.',
+    onYes:function(){
+      firmReminders.splice(i,1);
+      logActivity('reminder_deleted','Deleted reminder for '+r.client+' — '+r.doc);
+      saveAccountData(); renderPage();
+      toast('Reminder deleted');
+    }});
 }
 
 /* business: documents requested by accountant + working upload */
@@ -2757,8 +2805,10 @@ reminders:()=>`
       <div><label class="flabel">Client</label><select id="remClient" class="finput">${clients.map(c=>`<option>${c}</option>`).join('')}</select></div>
       <div><label class="flabel">Ongoing application</label><select id="remApp" class="finput">${REMINDER_APPS.map(o=>`<option>${o}</option>`).join('')}</select></div>
       <div><label class="flabel">Document needed</label><input id="remDoc" class="finput" placeholder="e.g. June sales invoices"></div>
-      <div><label class="flabel">Send</label><select id="remWhen" class="finput"><option>Immediately</option><option>Tomorrow · 09:00</option><option>In 3 days</option><option>In 7 days</option></select></div>
+      <div><label class="flabel">First reminder</label><select id="remWhen" class="finput" onchange="var d=document.getElementById('remDaysWrap');if(d)d.style.display=this.value==='days'?'block':'none'"><option value="now">Immediately</option><option value="days" selected>After a number of days</option></select></div>
+      <div id="remDaysWrap"><label class="flabel">Days until first reminder</label><input id="remDays" class="finput" type="number" min="1" max="60" value="3" style="text-align:right"></div>
       <div><label class="flabel">Auto-chase</label><select id="remAuto" class="finput"><option>On</option><option>Off</option></select></div>
+      <div><label class="flabel">Then chase every (days)</label><input id="remEvery" class="finput" type="number" min="1" max="30" value="3" style="text-align:right"></div>
     </div>
     <button class="btn" onclick="submitReminder()">Schedule reminder</button>
     <button class="btn ghost" style="margin-left:8px" onclick="toggleReminderForm()">Cancel</button>
@@ -2909,10 +2959,11 @@ vat:()=>{
       <button class="btn ghost" onclick="toggleShareVAT()">${svgIcon('share',15)} Share report to Business</button>
     </div>
     <div id="shareVATPanel" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
-      <div class="grid g2" style="margin-bottom:12px">
+      <div class="grid g3" style="margin-bottom:12px">
         <div><label class="flabel">Send to client / business</label>
-          <select id="shareClient" class="finput">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
+          <select id="shareClient" class="finput" onchange="prefillShareContact('vat')">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
         <div><label class="flabel">Period label</label><input id="sharePeriod" class="finput" value="VAT Return Q2 2026"></div>
+        <div><label class="flabel">Business signatory (contact person)</label><input id="shareContact" class="finput" placeholder="e.g. Ahmed Al Mansoori" value="${ctEsc(shareContactFor((myClients[0]||{}).business_name))}"></div>
       </div>
       <p class="muted" style="font-size:12px;margin:-2px 0 10px">The draft return goes to the business for review — they can approve &amp; sign it or request changes, and every step is recorded on the audit trail.</p>
       <button class="btn" onclick="shareVATReturn()">${svgIcon('share',14)} Share draft return in-app</button>
@@ -2958,6 +3009,13 @@ ct:()=>`
     <div class="card" style="text-align:center;border-color:var(--accent)"><div class="muted" style="font-size:12px">Corporate tax payable</div><div id="ctPayable" style="font-size:20px;font-weight:700;color:var(--accent)">AED 0.00</div></div>
   </div>
 
+  <div class="card mb14" style="border-color:var(--accent)">
+    <div class="cardhead"><h3>${svgIcon('file-text',16)} Corporate Tax return — FTA structure</h3><span class="pill p-teal">EmaraTax-ready</span></div>
+    <p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Mirrors the sections of the FTA Corporate Tax return and adapts automatically: <b>Small Business Relief</b> filers complete a reduced return, <b>Qualifying Free Zone Persons</b> complete the Free Zone Schedule, and standard filers the full computation. Every value flows live from the calculator above, and the whole structure travels with the draft return you share for sign-off.</p>
+    <div id="ctFormBody">${ctFormHTML()}</div>
+    <div class="note" style="margin-top:12px">${svgIcon('shield',13)} Section structure follows the FTA return (Taxable Person, Elections, Free Zone Schedule, Accounting Schedule, Reliefs, Adjustments &amp; Exempt income, Other adjustments, Tax liability &amp; credits). Filing itself happens on EmaraTax — verify each figure against source records first.</div>
+  </div>
+
   <div class="card">
     <div class="cardhead"><h3>Result</h3><span class="pill p-gray">Effective rate <span id="ctEff">0.00%</span></span></div>
     <div class="ai"><div class="sparkle">${svgIcon('sparkles',22)}</div>
@@ -2985,10 +3043,11 @@ ct:()=>`
 
   <div class="card mt18">
     <div class="cardhead"><h3>${svgIcon('share',16)} Share draft return to Business</h3><span class="muted" style="font-size:12px">Send this computation for review &amp; sign-off</span></div>
-    <div class="grid g2" style="margin-bottom:10px">
+    <div class="grid g3" style="margin-bottom:10px">
       <div><label class="flabel">Send to client / business</label>
-        <select id="ctShareClient" class="finput">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
+        <select id="ctShareClient" class="finput" onchange="prefillShareContact('ct')">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
       <div><label class="flabel">Period label</label><input id="ctSharePeriod" class="finput" value="Corporate Tax FY2025"></div>
+      <div><label class="flabel">Business signatory (contact person)</label><input id="ctShareContact" class="finput" placeholder="e.g. Ahmed Al Mansoori" value="${ctEsc(shareContactFor((myClients[0]||{}).business_name))}"></div>
     </div>
     <p class="muted" style="font-size:12px;margin:-2px 0 10px">The business reviews the draft, then approves &amp; signs or requests changes — with a full audit trail of access, changes and signatures.</p>
     <button class="btn" onclick="shareCTReturn()">${svgIcon('share',14)} Share draft return in-app</button>
@@ -3270,6 +3329,76 @@ function computeCT(inp){
   const eff = taxable>0 ? ct/taxable*100 : 0;
   return {taxable, preLoss, lossesUsed, lossesCarried, ftcUsed, band0, band9, ct, eff, relief, regime, flags, sbrEligible, dmtt};
 }
+/* ---------- FTA CT RETURN FORM (adaptive: SBR / QFZP / standard) ---------- */
+var ctBasis='IFRS — audited', ctRealisation='No', ctTransitional='No';
+function setCtFormOpt(key,val){
+  if(key==='basis') ctBasis=val;
+  else if(key==='real') ctRealisation=val;
+  else if(key==='trans') ctTransitional=val;
+  recalcCT();
+}
+function ctFormHTML(){
+  var inp=(typeof ctReadInputs==='function'&&document.getElementById('ctProfit'))?ctReadInputs():{entity:ctEntity,revenue:0,profit:0,addbacks:0,exempt:0,losses:0,ftc:0,qualifying:0,sbr:false,mne:false};
+  var r=computeCT(inp);
+  var fmt=function(n){return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var sbr=r.relief, fz=inp.entity==='freezone';
+  var secs=[['1','Taxable Person',true],['2','Elections',true],['3','Free Zone Schedule',fz],['4','Accounting Schedule',true],
+    ['5','Reliefs',!sbr&&!fz],['6','Adjustments & Exempt income',!sbr],['7','Other adjustments',!sbr],['8','Tax liability & credits',!sbr]];
+  var chips='<div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:2px">'+secs.map(function(s){return '<span class="ctsec '+(s[2]?'on':'na')+'">'+s[0]+' · '+s[1]+'</span>';}).join('')+'</div>';
+  var row=function(l,v,tot){return '<div class="ctrow'+(tot?' total':'')+'"><span>'+l+'</span><b class="val">'+v+'</b></div>';};
+  var selRow=function(l,key,cur,opts){return '<div class="ctrow"><span>'+l+'</span><select class="finput" style="max-width:230px" onchange="setCtFormOpt(\''+key+'\',this.value)">'+opts.map(function(o){return '<option '+(cur===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>';};
+  var html=chips;
+  /* 1 · Taxable Person */
+  html+='<div class="cthead">1 · Taxable Person details</div>'
+    +row('Taxable Person type', sbr?'Resident juridical person — Small Business Relief':(fz?(r.flags.indexOf('breach')>-1?'Free Zone Person — de-minimis breached':'Qualifying Free Zone Person'):'Resident juridical person (Mainland)'))
+    +row('Regime applied', r.regime||'—');
+  /* 2 · Elections */
+  html+='<div class="cthead">2 · Elections</div>'
+    +row('Small Business Relief election', inp.sbr?(r.sbrEligible?'Elected — eligible':'Elected — NOT eligible (revenue over AED 3M or excluded)'):'Not elected')
+    +selRow('Realisation basis election','real',ctRealisation,['No','Yes'])
+    +selRow('Transitional rules relief','trans',ctTransitional,['No','Yes']);
+  /* 3 · Free Zone Schedule */
+  if(fz){
+    var qual=Math.min(Math.max(0,inp.qualifying||0), r.taxable);
+    var nonQual=Math.max(0, r.taxable-qual);
+    var dm=Math.min((inp.revenue||0)*0.05, 5000000);
+    html+='<div class="cthead">3 · Free Zone Schedule</div>'
+      +row('Qualifying income', fmt(qual))
+      +row('Non-qualifying income', fmt(nonQual))
+      +row('De-minimis limit (lower of 5% of revenue / AED 5,000,000)', fmt(dm))
+      +row('De-minimis test', r.flags.indexOf('breach')>-1?'❌ FAILED — taxed at 9% on all income':'✓ Passed — qualifying income at 0%', true);
+  }
+  /* 4 · Accounting Schedule */
+  html+='<div class="cthead">4 · Accounting Schedule</div>'
+    +selRow('Basis of financial statements','basis',ctBasis,['IFRS — audited','IFRS — unaudited','IFRS for SMEs','Cash basis (revenue ≤ AED 3M)'])
+    +row('Revenue for the period', fmt(inp.revenue))
+    +row('Accounting income (net profit)', fmt(inp.profit));
+  if(sbr){
+    html+='<div class="ctrow" style="border:0;background:var(--accent-bg);border-radius:10px;padding:12px;margin-top:10px;font-size:12.5px">Small Business Relief applies — the return is limited to the sections above: no taxable-income computation is required for this period. Registration and on-time filing are still mandatory.</div>'
+      +row('Corporate Tax payable', fmt(0), true);
+    return html;
+  }
+  /* 5 · Reliefs (standard only) */
+  if(!fz) html+='<div class="cthead">5 · Reliefs</div>'+row('Group transfer / business restructuring relief','Not claimed');
+  /* 6 · Adjustments & Exempt income */
+  html+='<div class="cthead">6 · Adjustments &amp; Exempt income</div>'
+    +row('Less: exempt income (dividends, participation exemption)', inp.exempt?('− '+fmt(inp.exempt)):fmt(0));
+  /* 7 · Other adjustments */
+  html+='<div class="cthead">7 · Other adjustments</div>'
+    +row('Add: non-deductible expenses (fines, 50% entertainment, etc.)', inp.addbacks?('+ '+fmt(inp.addbacks)):fmt(0));
+  /* 8 · Tax liability & credits */
+  html+='<div class="cthead">8 · Tax liability &amp; credits</div>'
+    +row('Taxable income before loss relief', fmt(r.preLoss));
+  if(inp.losses) html+=row('Less: tax losses utilised (capped at 75%)','− '+fmt(r.lossesUsed));
+  if(r.lossesCarried) html+=row('Tax losses carried forward', fmt(r.lossesCarried));
+  html+=row('Taxable income', fmt(r.taxable), true)
+    +row(fz?'Taxed at 0% (qualifying income)':'Taxed at 0% (first AED 375,000)', fmt(r.band0))
+    +row('Taxed at 9%', fmt(r.band9));
+  if(r.dmtt) html+=row('Domestic Minimum Top-up Tax (to 15%)','+ '+fmt(r.dmtt));
+  if(r.ftcUsed) html+=row('Less: foreign tax credit','− '+fmt(r.ftcUsed));
+  html+=row('Corporate Tax payable', fmt(r.ct), true);
+  return html;
+}
 function recalcCT(){
   if(!document.getElementById('ctProfit')) return;
   const fmt=n=>'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -3310,6 +3439,7 @@ function recalcCT(){
     else { v.textContent=fmt(r.ct)+' corporate tax'; note.textContent='9% applies to '+fmt(r.band9)+' above the AED 375,000 threshold. File and pay within 9 months of the financial year-end.'; }
   }
   const sb=$('ctScenBody'); if(sb) sb.innerHTML=ctScenTable();
+  const fb=$('ctFormBody'); if(fb) fb.innerHTML=ctFormHTML();
 }
 function ctScenTable(){
   const fmt=n=>'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{maximumFractionDigits:0});
@@ -4292,8 +4422,9 @@ function reqForm(kind){
 function remRow(r,i){
   const on=r.auto==='green';
   return `<tr><td><b>${r.client}</b></td><td>${r.app||'—'}</td><td>${r.doc}</td><td class="muted">${r.last}</td><td>${r.next}</td>
-    <td><span class="pill ${on?'p-green':'p-gray'}">${on?'On':'Off'}</span></td>
-    <td><button class="btn ghost sm" onclick="sendReminderNow(${i})">Send now</button></td></tr>`;}
+    <td><span class="pill ${on?'p-green':'p-gray'}">${on?'On':'Off'}${r.every?(' · every '+r.every+'d'):''}</span></td>
+    <td style="white-space:nowrap"><button class="btn ghost sm" onclick="sendReminderNow(${i})">Send now</button>
+    <button class="iconbtn" title="Delete reminder" onclick="deleteReminder(${i})">${svgIcon('trash',15)}</button></td></tr>`;}
 function docRow(ic,n,c,m){const col={red:'var(--red)',amber:'var(--amber)',green:'var(--green)'}[c];
   return `<div class="drow"><div style="color:var(--accent)">${svgIcon(ic,18)}</div>
     <div style="flex:1"><div class="dtitle">${n}</div><div class="dmeta">${m}</div></div>
@@ -4451,15 +4582,35 @@ function collectCTFigures(){
   var inp=(typeof ctReadInputs==='function')?ctReadInputs():{};
   var r=(typeof computeCT==='function')?computeCT(inp):{};
   var money=function(n){return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var fz=(inp.entity==='freezone');
+  var qual=fz?Math.min(Math.max(0,inp.qualifying||0), r.taxable||0):0;
   return {entity:inp.entity||ctEntity,revenue:inp.revenue||0,profit:inp.profit||0,
     addbacks:inp.addbacks||0,exempt:inp.exempt||0,
     losses:inp.losses||0,lossesUsed:r.lossesUsed||0,lossesCarried:r.lossesCarried||0,
     ftc:inp.ftc||0,ftcUsed:r.ftcUsed||0,
     preLoss:money(r.preLoss||0),
-    taxable:txt('ctTaxable'),band0:txt('ctBand0'),band9:txt('ctBand9'),payable:txt('ctPayable'),eff:txt('ctEff'),regime:r.regime||''};
+    taxable:txt('ctTaxable'),band0:txt('ctBand0'),band9:txt('ctBand9'),payable:txt('ctPayable'),eff:txt('ctEff'),regime:r.regime||'',
+    basis:(typeof ctBasis!=='undefined'?ctBasis:''), realisation:(typeof ctRealisation!=='undefined'?ctRealisation:''), transitional:(typeof ctTransitional!=='undefined'?ctTransitional:''),
+    sbrElected:!!inp.sbr, sbrApplied:!!r.relief, dmtt:r.dmtt||0,
+    fzQualifying:qual, fzNonQualifying:fz?Math.max(0,(r.taxable||0)-qual):0,
+    fzDeMinimis:fz?Math.min((inp.revenue||0)*0.05,5000000):0,
+    fzTest:fz?(r.flags&&r.flags.indexOf('breach')>-1?'FAILED':'Passed'):''};
 }
 
 /* ---- share a draft return to a selected business ---- */
+function shareContactFor(bizName){
+  if(!bizName) return '';
+  var m=clientMeta[bizName]||{};
+  return m.contact||'';
+}
+function prefillShareContact(kind){
+  var sel=document.getElementById(kind==='vat'?'shareClient':'ctShareClient');
+  var inp=document.getElementById(kind==='vat'?'shareContact':'ctShareContact');
+  if(!sel||!inp) return;
+  var name=(sel.selectedOptions[0]||{}).textContent||'';
+  var c=shareContactFor(name);
+  if(c) inp.value=c;
+}
 async function shareReturn(kind){
   var selId=kind==='vat'?'shareClient':'ctShareClient';
   var perId=kind==='vat'?'sharePeriod':'ctSharePeriod';
@@ -4473,6 +4624,9 @@ async function shareReturn(kind){
   if(!sb||!currentAccount){ toast('Not signed in'); return; }
   var fig=kind==='vat'?collectVATFigures():collectCTFigures();
   if(kind==='vat' && !fig.sales.length && !fig.purch.length){ toast('Enter some sales or purchase figures first'); return; }
+  var contactEl=document.getElementById(kind==='vat'?'shareContact':'ctShareContact');
+  var signatory=(contactEl&&contactEl.value.trim())||'';
+  if(signatory){ fig.signatory=signatory; if(bizName){ clientMeta[bizName]=clientMeta[bizName]||{}; if(!clientMeta[bizName].contact) { clientMeta[bizName].contact=signatory; saveAccountData(); } } }
   var title=(kind==='vat'?'VAT Return — ':'Corporate Tax — ')+per;
   var rt={firm_id:effFirmId(), business_id:bizId, kind:kind, title:title, period:per, figures:fig, status:'pending_review', created_by:currentAccount.name};
   var data;
@@ -4552,12 +4706,23 @@ function returnFiguresHTML(rt){
   if(f.lossesUsed) ctExtra+=retRow('Tax losses utilised (75% cap)','− '+moneyAED(f.lossesUsed));
   if(f.lossesCarried) ctExtra+=retRow('Losses carried forward',moneyAED(f.lossesCarried));
   if(f.ftcUsed) ctExtra+=retRow('Foreign tax credit','− '+moneyAED(f.ftcUsed));
+  var fzBlock='';
+  if(f.entity==='freezone'&&f.fzTest){
+    fzBlock=retRow('Free Zone Schedule — qualifying income',moneyAED(f.fzQualifying))
+      +retRow('Non-qualifying income',moneyAED(f.fzNonQualifying))
+      +retRow('De-minimis test',(f.fzTest==='FAILED'?'FAILED — 9% on all income':'Passed')+' (limit '+moneyAED(f.fzDeMinimis)+')');
+  }
   return '<div>'+retRow('Entity',f.entity==='freezone'?'Qualifying Free Zone':'Mainland')
     +(f.regime?retRow('Regime',ctEsc(f.regime)):'')
+    +(f.basis?retRow('Basis of financial statements',ctEsc(f.basis)):'')
+    +(typeof f.sbrElected!=='undefined'?retRow('Small Business Relief election',f.sbrApplied?'Elected & applied':(f.sbrElected?'Elected — not eligible':'Not elected')):'')
+    +(f.realisation?retRow('Realisation basis election',ctEsc(f.realisation)):'')
+    +fzBlock
     +retRow('Revenue for the period',moneyAED(f.revenue))
     +(f.addbacks?retRow('Add: non-deductible expenses',moneyAED(f.addbacks)):'')
     +(f.exempt?retRow('Less: exempt income','− '+moneyAED(f.exempt)):'')
     +ctExtra
+    +(f.dmtt?retRow('Domestic Minimum Top-up Tax','+ '+moneyAED(f.dmtt)):'')
     +retRow('Taxable income',f.taxable)+retRow('Taxed at 0%',f.band0)+retRow('Taxed at 9% / 15%',f.band9)+retRow('Corporate tax payable',f.payable,true)+'</div><div class="muted" style="font-size:12px;margin-top:8px">Effective rate '+ctEsc(f.eff||'—')+'</div>';
 }
 function returnAuditHTML(id){
@@ -4637,8 +4802,8 @@ function renderReturnModal(){
       +'<button class="btn" onclick="beginApprove()">'+svgIcon('check',15)+' Approve &amp; sign</button>'
       +'<button class="btn ghost" onclick="beginChanges()">'+svgIcon('warn',15)+' Request changes</button></div>'
       +'<div id="retApprove" style="display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px">'
-        +'<label class="flabel">Type your full name to sign this approval</label>'
-        +'<input id="retSig" class="finput" placeholder="'+ctEsc(currentAccount?currentAccount.name:'')+'" style="max-width:340px">'
+        +'<label class="flabel">Type your full name to sign this approval'+((rt.figures&&rt.figures.signatory)?(' — requested signatory: '+ctEsc(rt.figures.signatory)):'')+'</label>'
+        +'<input id="retSig" class="finput" placeholder="'+ctEsc((rt.figures&&rt.figures.signatory)||(currentAccount?currentAccount.name:''))+'" style="max-width:340px">'
         +'<p class="muted" style="font-size:11.5px;margin:6px 0 10px">Your typed name is recorded as an electronic signature, timestamped on the audit trail below.</p>'
         +'<button class="btn" onclick="doApproveReturn(\''+rt.id+'\')">'+svgIcon('check',14)+' Confirm approval</button></div>'
       +'<div id="retChanges" style="display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px">'
@@ -4655,7 +4820,8 @@ function renderReturnModal(){
       +'<div style="flex:1;min-width:0"><h3 style="font-size:16px;margin:0">'+ctEsc(rt.title||'Return')+'</h3><div class="muted" style="font-size:12px">'+ctEsc(rt.period||'')+' · '+(rt.kind==='vat'?'VAT':'Corporate Tax')+'</div></div>'
       +stPill+'<button class="btn sm ghost" onclick="closeReturn()">Close</button></div>'
     +'<div style="padding:18px 20px">'
-      +'<div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">'+(isBiz?('Shared by '+ctEsc(rt.created_by||'your accountant')):('For '+ctEsc(bizNameById(rt.business_id))))+' · '+new Date(rt.created_at).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</div>'
+      +'<div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">'+(isBiz?('Shared by '+ctEsc(rt.created_by||'your accountant')):('For '+ctEsc(bizNameById(rt.business_id))))+' · '+new Date(rt.created_at).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+      +((rt.figures&&rt.figures.signatory)?('<div style="margin-top:4px;font-weight:600;color:var(--text)">'+svgIcon('users',13)+' Sign-off requested from: '+ctEsc(rt.figures.signatory)+'</div>'):'')+'</div>'
       +returnFiguresHTML(rt)+actions
       +'<div style="margin-top:22px"><div style="font-weight:700;font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:7px">'+svgIcon('activity',15)+' Audit trail</div>'
       +'<div class="muted" style="font-size:11.5px;margin-bottom:6px">Every access, change and signature is recorded and timestamped.</div>'
@@ -5704,17 +5870,6 @@ function trackEvent(kind){
   }catch(e){}
   try{ if(/[?&]join=/.test(location.search)) await handleJoinParam(); }catch(e){}
 })();
-</script>
-<!-- Live chat (Tawk.to) — set TAWK_SRC to your embed URL: Tawk dashboard → Admin → Channels → Chat Widget → copy the embed src -->
-<script>
-  window.TAWK_SRC = ''; /* e.g. 'https://embed.tawk.to/6xxxxxxxxxxxxx/1abcd2efg' */
-  (function(){
-    if(!window.TAWK_SRC) return;
-    window.Tawk_API = window.Tawk_API || {}; window.Tawk_LoadStart = new Date();
-    var s1=document.createElement('script'), s0=document.getElementsByTagName('script')[0];
-    s1.async=true; s1.src=window.TAWK_SRC; s1.charset='UTF-8'; s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-  })();
 </script>
 <script>
   /* landing: scroll reveals + count-up numbers */

@@ -785,6 +785,14 @@
   .ctrow:last-child{border-bottom:0}
   .ctrow b.val{font-variant-numeric:tabular-nums}
   .ctrow.total{background:var(--panel2);border-radius:9px;padding:10px;font-weight:700}
+  .ctsec.cur{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 10px var(--accent-bg2)}
+  .ctsec.pick{cursor:pointer}
+  .ctsec.pick:hover{border-color:var(--accent)}
+  .ctwfoot{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .ctwfoot .cell{flex:1;min-width:130px;text-align:center;background:var(--panel2);border-radius:11px;padding:9px 8px}
+  .ctwfoot .cell .lbl{font-size:11px;color:var(--muted)}
+  .ctwfoot .cell b{font-size:15.5px;font-variant-numeric:tabular-nums}
+  .ctwfoot .cell.hot{background:var(--accent-bg);color:var(--accent-d)}
 
   /* ================= COMMAND CENTRE (owner-only, /admin) ================= */
   #adminRoot{position:fixed;inset:0;z-index:500;overflow-y:auto;display:none;color:#e6edf6;
@@ -1452,7 +1460,7 @@ async function flushAccountData(){
   if(!currentAccount||!sb||!_blobDirty||_sampleMode) return; _blobDirty=false;
   const cleanVault=(vaultDocs||[]).map(function(d){ var o={}; for(var k in d){ if(k!=='_up'&&k!=='uploading'&&k!=='uploadError'&&Object.prototype.hasOwnProperty.call(d,k)) o[k]=d[k]; } return o; });
   const data = currentAccount.role==='business'
-    ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand}
+    ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, companyProfile:bizCompany}
     : {firmReminders, clientMeta, ctScenarios, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   try{ await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()}); }catch(e){}
 }
@@ -1505,6 +1513,7 @@ async function loadWorkspace(){
       vaultDocs=d.vaultDocs||[]; notifSeen=d.notifSeen||[];
       calendarEvents=d.calendarEvents||[]; vatCertMeta=d.vatCertMeta||null; ctCertMeta=d.ctCertMeta||null; calYear=null; calMonth=null;
       bizRevenueBand=d.bizRevenueBand||null;
+      bizCompany=d.companyProfile||{};
       const [{data:lnk},{data:reqs}] = await Promise.all([
         sb.from('links').select('firm_id').eq('business_id',uid).maybeSingle(),
         sb.from('doc_requests').select('*').eq('business_id',uid).order('created_at',{ascending:false})
@@ -1524,11 +1533,13 @@ async function loadWorkspace(){
       firmReminders=d.firmReminders||[]; clientMeta=d.clientMeta||{}; ctScenarios=d.ctScenarios||[]; notifSeen=d.notifSeen||[];
       if(currentAccount.teamRole==='owner') currentAccount.digestFreq=d.ownerDigest||'off';
       inviteCode=currentAccount.inviteCode||'';
-      const [{data:cls},{data:reqs}] = await Promise.all([
+      const [{data:cls},{data:reqs},{data:profs}] = await Promise.all([
         sb.rpc('my_clients'),
-        sb.from('doc_requests').select('*').eq('firm_id',fid).order('created_at',{ascending:false})
+        sb.from('doc_requests').select('*').eq('firm_id',fid).order('created_at',{ascending:false}),
+        sb.rpc('my_clients_company_profiles')
       ]);
       myClients=cls||[];
+      clientProfiles={}; (profs||[]).forEach(p=>{ if(p&&p.profile) clientProfiles[p.business_id]=p.profile; });
       firmTaxReqs=[]; firmAuditReqs=[];
       (reqs||[]).forEach(r=>{
         const row={id:r.id,client:r.client_name,doc:r.doc,app:r.app,due:r.due||'—',urg:r.urgency,risk:r.risk,
@@ -2082,6 +2093,8 @@ function logout(){
   returnsList=[]; returnEvents={}; viewingReturn=null; _accessLogged={}; _pendingChangeDoc=null;
   onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null; bizRevenueBand=null;
+  bizCompany={}; clientProfiles={}; ctVals={rev:'',profit:'',add:'',exempt:'',losses:'',ftc:'',qual:''};
+  ctSBRon=false; ctMNEon=false; ctStep=0; ctClient=''; ctTP={}; ctTPsource='';
   linkedFirm=''; linkedFirmId=''; inviteCode='';
   if(typeof chatTeardown==='function') chatTeardown();
   document.getElementById('app').classList.add('hidden');
@@ -2094,6 +2107,8 @@ function logout(){
 /* ---------- SVG ICON SYSTEM (replaces emoji) ---------- */
 /* ================= COMPLIANCE CALENDAR + DOC SHARING ================= */
 let calendarEvents = [];   /* {id,type:'vat'|'ct'|'other',title,date(ISO),detail,source,periodEnd?} */
+let bizCompany = {};       /* business's own company profile: legal, license, authority, entityType, vatTrn, ctTrn, fyEnd, address, emirate, cName, cRole, cEmail, cPhone */
+let clientProfiles = {};   /* firm side: business_id -> that client's companyProfile (via RPC) */
 let vatCertMeta = null;    /* {name,readAt,periodEnd,taxPeriod,next,detected} */
 let ctCertMeta = null;     /* {name,readAt,fyEnd,next,detected} */
 let calYear = null, calMonth = null;
@@ -2295,8 +2310,8 @@ const NAV = {
     {id:'fdash', ic:'home', label:'Accountant Dashboard'},
     {id:'fguides', ic:'sparkles', label:'AI Assist'},
     {id:'clients', ic:'users', label:'Clients'},
-    {id:'taxdocs', ic:'file-text', label:'Tax Documents'},
-    {id:'auditdocs', ic:'clipboard', label:'Audit Documents'},
+    {id:'taxdocs', ic:'file-text', label:'Tax'},
+    {id:'auditdocs', ic:'clipboard', label:'Audit'},
     {id:'vat', ic:'calc', label:'VAT Calculator'},
     {id:'ct', ic:'building', label:'Corporate Tax'},
     {id:'reminders', ic:'mail', label:'Email Reminders'},
@@ -2360,7 +2375,7 @@ function renderPage(){ var m=document.getElementById('main');
   countUpStats(m);
   if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT();
   if(page==='vat' && typeof recalcVat201==='function') recalcVat201();
-  if(page==='ct' && typeof recalcCT==='function') recalcCT();
+  if(page==='ct' && typeof recalcCT==='function'){ recalcCT(); if(typeof qRecalc==='function') qRecalc(); }
   if(page==='guides' && typeof aiRenderLog==='function') aiRenderLog('business');
   if(page==='fguides' && typeof aiRenderLog==='function') aiRenderLog('firm');
   if((page==='bchat'||page==='fchat') && typeof chatAfterRender==='function') chatAfterRender();
@@ -2589,7 +2604,8 @@ docs:()=>{
   const otherDocs=vaultDocs.filter(d=>!d.typeId);
   return `
   <h1>Company Information</h1>
-  <div class="sub">Your secure vault. Keep your core company documents on file, share them with your accountant in one click, and let HisabOne read their issue and expiry dates for you.</div>
+  <div class="sub">Your company profile and secure document vault. Fill in your details once — your accountant's Corporate Tax return picks them up automatically — and keep your core documents on file with dates read for you.</div>
+  ${companyProfileCardsHTML()}
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('folder',16)} Company documents</h3><span class="pill p-teal">${onFile}/${COMPANY_DOC_TYPES.length} on file</span></div>
     <p class="muted" style="font-size:12.5px;margin-bottom:6px">Upload each document once. HisabOne reads the issue and expiry dates automatically and flags anything expiring soon.</p>
@@ -2973,50 +2989,36 @@ vat:()=>{
   </div>`;
 },
 ct:()=>`
-  <h1>Corporate Tax Calculator</h1>
-  <div class="sub">Estimate a client's UAE Corporate Tax across regimes — mainland standard (0% / 9%), Small Business Relief, Qualifying Free Zone (0% / 9% with de-minimis), and the 15% Domestic Minimum Top-up Tax for large groups. Then compare scenarios side by side.</div>
-
-  <div class="card mb14">
-    <div class="cardhead"><h3>${svgIcon('building',16)} Entity &amp; income</h3><span class="pill p-teal" id="ctRegimePill">Mainland &middot; 9% regime</span></div>
-    <div class="seg" style="margin-bottom:14px">
-      <button id="ctSegMain" class="on" onclick="setCtEntity('mainland')">Mainland</button>
-      <button id="ctSegFz" onclick="setCtEntity('freezone')">Qualifying Free Zone</button>
-    </div>
-    <div class="grid g2" style="align-items:end">
-      <div><label class="flabel">Revenue for the period (AED)</label><input id="ctRev" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
-      <div><label class="flabel">Accounting net profit (AED)</label><input id="ctProfit" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
-      <div><label class="flabel">Add: non-deductible expenses (AED)</label><input id="ctAdd" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
-      <div><label class="flabel">Less: exempt / already-taxed income (AED)</label><input id="ctExempt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right"></div>
-      <div><label class="flabel">Less: tax losses brought forward (AED)</label><input id="ctLosses" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right">
-        <div class="muted" style="font-size:11.5px;margin-top:3px" id="ctLossHint">Relief is capped at 75% of taxable income; the rest carries forward.</div></div>
-      <div><label class="flabel">Foreign tax credit (AED)</label><input id="ctFTC" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right">
-        <div class="muted" style="font-size:11.5px;margin-top:3px">Foreign tax paid on income also taxed in the UAE — credited against the CT payable.</div></div>
-    </div>
-    <div id="ctFzWrap" style="display:none;margin-top:10px">
-      <label class="flabel">Of taxable income, qualifying (0%) portion (AED)</label>
-      <input id="ctQual" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcCT()" style="text-align:right;max-width:340px">
-      <div class="muted" style="font-size:12px;margin-top:2px" id="ctFzHint">Qualifying income is taxed at 0%; the rest is non-qualifying. Free-zone status holds only if non-qualifying income stays within the de-minimis limit.</div>
-    </div>
-    <label class="check" style="border:0;cursor:pointer;margin-top:8px"><input type="checkbox" id="ctSBR" onchange="recalcCT()" style="width:18px;height:18px;border:0"> <span>Elect <b>Small Business Relief</b> (revenue &le; AED 3,000,000; mainland only)</span></label>
-    <div class="muted" id="ctSBRhint" style="font-size:12px;margin-top:2px">Enter revenue to check Small Business Relief eligibility.</div>
-    <label class="check" style="border:0;cursor:pointer;margin-top:4px"><input type="checkbox" id="ctMNE" onchange="recalcCT()" style="width:18px;height:18px;border:0"> <span>Part of a multinational group with revenue &ge; EUR 750M (<b>15% DMTT</b> applies)</span></label>
-  </div>
-
-  <div class="grid g4 mb14">
-    <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxable income</div><div id="ctTaxable" style="font-size:20px;font-weight:700">AED 0.00</div></div>
-    <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxed at 0%</div><div id="ctBand0" style="font-size:20px;font-weight:700">AED 0.00</div></div>
-    <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxed at 9% / 15%</div><div id="ctBand9" style="font-size:20px;font-weight:700">AED 0.00</div></div>
-    <div class="card" style="text-align:center;border-color:var(--accent)"><div class="muted" style="font-size:12px">Corporate tax payable</div><div id="ctPayable" style="font-size:20px;font-weight:700;color:var(--accent)">AED 0.00</div></div>
-  </div>
+  <h1>Corporate Tax</h1>
+  <div class="sub">Prepare the FTA Corporate Tax return page by page. Pick the client and their company profile fills the Taxable Person section automatically — the return adapts to Small Business Relief, Qualifying Free Zone and standard filers as you go.</div>
 
   <div class="card mb14" style="border-color:var(--accent)">
     <div class="cardhead"><h3>${svgIcon('file-text',16)} Corporate Tax return — FTA structure</h3><span class="pill p-teal">EmaraTax-ready</span></div>
-    <p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Mirrors the sections of the FTA Corporate Tax return and adapts automatically: <b>Small Business Relief</b> filers complete a reduced return, <b>Qualifying Free Zone Persons</b> complete the Free Zone Schedule, and standard filers the full computation. Every value flows live from the calculator above, and the whole structure travels with the draft return you share for sign-off.</p>
-    <div id="ctFormBody">${ctFormHTML()}</div>
-    <div class="note" style="margin-top:12px">${svgIcon('shield',13)} Section structure follows the FTA return (Taxable Person, Elections, Free Zone Schedule, Accounting Schedule, Reliefs, Adjustments &amp; Exempt income, Other adjustments, Tax liability &amp; credits). Filing itself happens on EmaraTax — verify each figure against source records first.</div>
+    <div class="grid g2" style="margin-bottom:12px;align-items:end">
+      <div><label class="flabel">Prepare for client</label>
+        <select id="ctClientSel" class="finput" onchange="ctSelectClient(this.value)">
+          <option value="">— No client selected (manual entry) —</option>
+          ${myClients.map(c=>`<option value="${c.business_id}" ${ctClient===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')}
+        </select></div>
+      <div class="muted" id="ctTPsrcNote" style="font-size:12px;padding-bottom:9px">${ctTPsourceNote()}</div>
+    </div>
+    <div id="ctWizChips">${ctWizChipsHTML()}</div>
+    <div id="ctWizBody" style="margin-top:6px">${ctWizStepHTML()}</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn ghost sm" id="ctWizBack" onclick="ctGoStep(-1)">← Back</button>
+      <span class="muted" style="font-size:12px" id="ctWizPageNo">${ctWizPageLabel()}</span>
+      <button class="btn sm" id="ctWizNext" onclick="ctGoStep(1)">${ctWizNextLabel()}</button>
+    </div>
+    <div class="ctwfoot">
+      <div class="cell"><div class="lbl">Taxable income</div><b id="ctTaxable">AED 0.00</b></div>
+      <div class="cell"><div class="lbl">Taxed at 0%</div><b id="ctBand0">AED 0.00</b></div>
+      <div class="cell"><div class="lbl">Taxed at 9% / 15%</div><b id="ctBand9">AED 0.00</b></div>
+      <div class="cell hot"><div class="lbl">Corporate tax payable</div><b id="ctPayable">AED 0.00</b></div>
+    </div>
+    <div class="note" style="margin-top:12px">${svgIcon('shield',13)} Section structure follows the FTA return. Filing itself happens on EmaraTax — verify each figure against source records first.</div>
   </div>
 
-  <div class="card">
+  <div class="card mb14">
     <div class="cardhead"><h3>Result</h3><span class="pill p-gray">Effective rate <span id="ctEff">0.00%</span></span></div>
     <div class="ai"><div class="sparkle">${svgIcon('sparkles',22)}</div>
       <div><h3 id="ctVerdict">Enter figures to calculate</h3><p id="ctNote">UAE corporate tax is 0% on the first AED 375,000 of taxable income and 9% on the excess. Returns are filed within 9 months of the financial year-end.</p></div></div>
@@ -3024,6 +3026,30 @@ ct:()=>`
       <button class="btn sm" onclick="saveCtScenario()">${svgIcon('plus',13)} Save as scenario</button>
       <span class="muted" style="font-size:12px;align-self:center">Add a few, then compare regimes side by side below.</span>
     </div>
+  </div>
+
+  <div class="card mb14">
+    <div class="cardhead"><h3>${svgIcon('share',16)} Share draft return to Business</h3><span class="muted" style="font-size:12px">Send this return for review &amp; sign-off</span></div>
+    <div class="grid g3" style="margin-bottom:10px">
+      <div><label class="flabel">Send to client / business</label>
+        <select id="ctShareClient" class="finput" onchange="prefillShareContact('ct')">${myClients.map(c=>`<option value="${c.business_id}" ${ctClient===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
+      <div><label class="flabel">Period label</label><input id="ctSharePeriod" class="finput" value="Corporate Tax FY2025"></div>
+      <div><label class="flabel">Business signatory (contact person)</label><input id="ctShareContact" class="finput" placeholder="e.g. Ahmed Al Mansoori" value="${ctEsc(ctTP.cName||shareContactFor((myClients[0]||{}).business_name))}"></div>
+    </div>
+    <p class="muted" style="font-size:12px;margin:-2px 0 10px">The business reviews the draft — including the Taxable Person details — then approves &amp; signs or requests changes, with a full audit trail.</p>
+    <button class="btn" onclick="shareCTReturn()">${svgIcon('share',14)} Share draft return in-app</button>
+    <div id="ctShareMsg" style="display:none;margin-top:14px"></div>
+  </div>
+
+  <div class="card mb14">
+    <div class="cardhead"><h3>${svgIcon('calc',16)} Quick estimate</h3><span class="muted" style="font-size:12px">What-if — does not touch the return</span></div>
+    <div class="grid g4" style="align-items:end">
+      <div><label class="flabel">Revenue (AED)</label><input id="qRev" class="finput" type="number" min="0" placeholder="0" oninput="qRecalc()" style="text-align:right"></div>
+      <div><label class="flabel">Net profit (AED)</label><input id="qProfit" class="finput" type="number" min="0" placeholder="0" oninput="qRecalc()" style="text-align:right"></div>
+      <div><label class="flabel">Regime</label><select id="qRegime" class="finput" onchange="qRecalc()"><option value="mainland">Mainland</option><option value="sbr">Mainland + SBR</option><option value="freezone">Free Zone (all qualifying)</option></select></div>
+      <div style="background:var(--accent-bg);border-radius:11px;padding:9px 12px;text-align:center"><div class="muted" style="font-size:11px">Payable</div><b id="qOut" style="font-size:16px;color:var(--accent-d)">AED 0</b></div>
+    </div>
+    <div class="muted" id="qHint" style="font-size:11.5px;margin-top:8px">A fast headline number — use the return above for the full computation.</div>
   </div>
 
   <div class="card mt18">
@@ -3039,19 +3065,6 @@ ct:()=>`
     <div class="step"><div class="stepnum">4</div><div><h4>Qualifying Free Zone Person</h4><p>Qualifying income is taxed at 0%. Non-qualifying income must stay within the de-minimis limit — the lower of 5% of total revenue or AED 5,000,000 — or the entity loses free-zone status and is taxed at 9% on all income.</p></div></div>
     <div class="step"><div class="stepnum">5</div><div><h4>Domestic Minimum Top-up Tax</h4><p>Multinational groups with consolidated revenue of at least EUR 750M face a 15% effective minimum tax on UAE profits, applied as a top-up over the 9% rate.</p></div></div>
     <div class="note">Estimate only, based on headline UAE Corporate Tax rules. Free-zone and DMTT treatment involve conditions this tool simplifies — confirm every figure with the client's tax adviser before filing.</div>
-  </div>
-
-  <div class="card mt18">
-    <div class="cardhead"><h3>${svgIcon('share',16)} Share draft return to Business</h3><span class="muted" style="font-size:12px">Send this computation for review &amp; sign-off</span></div>
-    <div class="grid g3" style="margin-bottom:10px">
-      <div><label class="flabel">Send to client / business</label>
-        <select id="ctShareClient" class="finput" onchange="prefillShareContact('ct')">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
-      <div><label class="flabel">Period label</label><input id="ctSharePeriod" class="finput" value="Corporate Tax FY2025"></div>
-      <div><label class="flabel">Business signatory (contact person)</label><input id="ctShareContact" class="finput" placeholder="e.g. Ahmed Al Mansoori" value="${ctEsc(shareContactFor((myClients[0]||{}).business_name))}"></div>
-    </div>
-    <p class="muted" style="font-size:12px;margin:-2px 0 10px">The business reviews the draft, then approves &amp; signs or requests changes — with a full audit trail of access, changes and signatures.</p>
-    <button class="btn" onclick="shareCTReturn()">${svgIcon('share',14)} Share draft return in-app</button>
-    <div id="ctShareMsg" style="display:none;margin-top:14px"></div>
   </div>`,
 
 team:()=>renderTeamPage(),
@@ -3077,7 +3090,7 @@ freports:()=>{
     </div>
     <div class="card">
       <div class="cardhead"><h3>${svgIcon('inbox',16)} Received reports</h3>${reportShares().length?`<span class="pill p-teal">${reportShares().length}</span>`:''}</div>
-      ${reportShares().length ? sharedReports.map((r,i)=>r.type==='document'?'':sharedReportRow(r,i)).join('') : `<div class="muted" style="text-align:center;padding:22px;font-size:13px">No reports received yet. Compliance reports your clients share with you appear here. Documents clients share appear in <span class="link" onclick="go('taxdocs')">Tax Documents</span>.</div>`}
+      ${reportShares().length ? sharedReports.map((r,i)=>r.type==='document'?'':sharedReportRow(r,i)).join('') : `<div class="muted" style="text-align:center;padding:22px;font-size:13px">No reports received yet. Compliance reports your clients share with you appear here. Documents clients share appear in the <span class="link" onclick="go('taxdocs')">Tax</span> tab.</div>`}
     </div>
   </div>
   ${reportViewerHTML()}`;
@@ -3270,22 +3283,29 @@ function recalcVAT(){
 let ctEntity='mainland';
 let ctScenarios=[];
 function ctEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* return values live in state so the page-by-page form keeps them across pages */
+let ctVals={rev:'',profit:'',add:'',exempt:'',losses:'',ftc:'',qual:''};
+let ctSBRon=false, ctMNEon=false;
+let ctStep=0;                 /* index within the VISIBLE wizard steps */
+let ctClient='';              /* business_id the return is being prepared for */
+let ctTP={};                  /* taxable-person details (auto-filled, editable) */
+let ctTPsource='';            /* 'profile' | 'firm' | '' (manual) */
+function ctSetVal(k,v){ ctVals[k]=v; recalcCT(); }
 function setCtEntity(e){
   ctEntity=e;
-  const m=document.getElementById('ctSegMain'), f=document.getElementById('ctSegFz');
-  if(m&&f){ m.classList.toggle('on', e==='mainland'); f.classList.toggle('on', e==='freezone'); }
-  const w=document.getElementById('ctFzWrap'); if(w) w.style.display = e==='freezone'?'block':'none';
-  recalcCT();
+  if(e!=='mainland') ctSBRon=false;
+  ctWizRefresh();
 }
+function setCtSBR(on){ ctSBRon=!!on; ctWizRefresh(); }
+function setCtMNE(on){ ctMNEon=!!on; if(on) ctSBRon=false; ctWizRefresh(); }
 function ctReadInputs(){
-  const num=id=>{const e=document.getElementById(id);return e?(parseFloat(e.value)||0):0;};
+  const num=v=>parseFloat(v)||0;
   return {
     entity: ctEntity,
-    revenue: num('ctRev'), profit: num('ctProfit'), addbacks: num('ctAdd'), exempt: num('ctExempt'),
-    losses: num('ctLosses'), ftc: num('ctFTC'),
-    qualifying: num('ctQual'),
-    sbr: !!(document.getElementById('ctSBR') && document.getElementById('ctSBR').checked),
-    mne: !!(document.getElementById('ctMNE') && document.getElementById('ctMNE').checked)
+    revenue: num(ctVals.rev), profit: num(ctVals.profit), addbacks: num(ctVals.add), exempt: num(ctVals.exempt),
+    losses: num(ctVals.losses), ftc: num(ctVals.ftc),
+    qualifying: num(ctVals.qual),
+    sbr: ctSBRon, mne: ctMNEon
   };
 }
 function computeCT(inp){
@@ -3337,70 +3357,247 @@ function setCtFormOpt(key,val){
   else if(key==='trans') ctTransitional=val;
   recalcCT();
 }
-function ctFormHTML(){
-  var inp=(typeof ctReadInputs==='function'&&document.getElementById('ctProfit'))?ctReadInputs():{entity:ctEntity,revenue:0,profit:0,addbacks:0,exempt:0,losses:0,ftc:0,qualifying:0,sbr:false,mne:false};
-  var r=computeCT(inp);
-  var fmt=function(n){return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});};
+function ctFmtA(n){return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+var _ctStepKey='';
+function ctVisibleSteps(){
+  var inp=ctReadInputs(), r=computeCT(inp);
   var sbr=r.relief, fz=inp.entity==='freezone';
-  var secs=[['1','Taxable Person',true],['2','Elections',true],['3','Free Zone Schedule',fz],['4','Accounting Schedule',true],
-    ['5','Reliefs',!sbr&&!fz],['6','Adjustments & Exempt income',!sbr],['7','Other adjustments',!sbr],['8','Tax liability & credits',!sbr]];
-  var chips='<div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:2px">'+secs.map(function(s){return '<span class="ctsec '+(s[2]?'on':'na')+'">'+s[0]+' · '+s[1]+'</span>';}).join('')+'</div>';
+  return [
+    {n:'1',t:'Taxable Person',on:true,page:ctPageTP},
+    {n:'2',t:'Elections',on:true,page:ctPageElections},
+    {n:'3',t:'Free Zone Schedule',on:fz,page:ctPageFZ},
+    {n:'4',t:'Accounting Schedule',on:true,page:ctPageAcc},
+    {n:'5',t:'Reliefs',on:!sbr&&!fz,page:ctPageReliefs},
+    {n:'6',t:'Adjustments & Exempt income',on:!sbr,page:ctPageAdj},
+    {n:'7',t:'Other adjustments',on:!sbr,page:ctPageOther},
+    {n:'8',t:'Tax liability & credits',on:!sbr,page:ctPageLiab}
+  ];
+}
+function ctOnSteps(){ return ctVisibleSteps().filter(function(s){return s.on;}); }
+function ctClampStep(){ var n=ctOnSteps().length; if(ctStep>=n) ctStep=Math.max(0,n-1); if(ctStep<0) ctStep=0; }
+function ctWizChipsHTML(){
+  ctClampStep();
+  var vi=0;
+  return '<div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px">'+ctVisibleSteps().map(function(s){
+    if(!s.on) return '<span class="ctsec na">'+s.n+' &middot; '+s.t+'</span>';
+    var i=vi++;
+    return '<span class="ctsec '+(i===ctStep?'cur':'on')+' pick" onclick="ctJumpStep('+i+')">'+s.n+' &middot; '+s.t+'</span>';
+  }).join('')+'</div>';
+}
+function ctJumpStep(i){ ctStep=i; ctWizRefresh(); }
+function ctGoStep(d){
+  var n=ctOnSteps().length, nx=ctStep+d;
+  if(nx>=n){ var el=document.getElementById('ctShareClient'); if(el&&el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  ctStep=Math.max(0,nx); ctWizRefresh();
+}
+function ctWizPageLabel(){ ctClampStep(); return 'Page '+(ctStep+1)+' of '+ctOnSteps().length; }
+function ctWizNextLabel(){ ctClampStep(); var on=ctOnSteps(); return ctStep>=on.length-1 ? 'Done — share for sign-off ↓' : ('Next: '+on[ctStep+1].t+' →'); }
+function ctWizStepHTML(){ ctClampStep(); var s=ctOnSteps()[ctStep]; if(!s) return ''; _ctStepKey=s.n; return '<div class="cthead">'+s.n+' &middot; '+s.t+'</div>'+s.page(); }
+function ctWizNav(){
+  var p=document.getElementById('ctWizPageNo'); if(p) p.textContent=ctWizPageLabel();
+  var nx=document.getElementById('ctWizNext'); if(nx) nx.innerHTML=ctWizNextLabel();
+  var bk=document.getElementById('ctWizBack'); if(bk) bk.style.visibility = ctStep===0?'hidden':'visible';
+}
+function ctWizRefresh(){
+  var b=document.getElementById('ctWizBody'); if(b) b.innerHTML=ctWizStepHTML();
+  var c=document.getElementById('ctWizChips'); if(c) c.innerHTML=ctWizChipsHTML();
+  ctWizNav();
+  recalcCT();
+}
+/* ---- taxable-person + numeric field helpers (state-backed so pages keep values) ---- */
+function ctSetTP(k,v){
+  ctTP[k]=v;
+  if(k==='cName'){ var el=document.getElementById('ctShareContact'); if(el) el.value=v; }
+}
+function ctTPfield(label,key,ph){
+  return '<div><label class="flabel">'+label+'</label><input class="finput" placeholder="'+ctEsc(ph||'')+'" value="'+ctEsc(ctTP[key]||'')+'" oninput="ctSetTP(\''+key+'\',this.value)"></div>';
+}
+function ctTPselect(label,key,opts){
+  return '<div><label class="flabel">'+label+'</label><select class="finput" onchange="ctSetTP(\''+key+'\',this.value)">'+opts.map(function(o){return '<option value="'+ctEsc(o)+'"'+((ctTP[key]||'')===o?' selected':'')+'>'+(o||'&mdash; Select &mdash;')+'</option>';}).join('')+'</select></div>';
+}
+function ctwNum(label,key,id,hint,hintId){
+  return '<div><label class="flabel">'+label+'</label><input id="'+id+'" class="finput" type="number" min="0" placeholder="0.00" style="text-align:right" value="'+ctEsc(ctVals[key]||'')+'" oninput="ctSetVal(\''+key+'\',this.value)">'
+    +(hint?'<div class="muted" style="font-size:11.5px;margin-top:3px"'+(hintId?(' id="'+hintId+'"'):'')+'>'+hint+'</div>':'')+'</div>';
+}
+function ctSBRhintText(){
+  var inp=ctReadInputs();
+  if(inp.entity!=='mainland') return 'Small Business Relief applies to mainland entities only.';
+  if(inp.mne) return 'Not available to members of multinational groups.';
+  return (inp.revenue>0 && inp.revenue<=3000000) ? 'Eligible: revenue is at or below AED 3,000,000 — you can elect Small Business Relief.' : (inp.revenue>0?'Not eligible: revenue exceeds AED 3,000,000.':'Enter revenue (page 4) to check Small Business Relief eligibility.');
+}
+function ctTPsourceNote(){
+  if(!ctClient) return 'No client selected — Taxable Person details can be typed manually.';
+  if(ctTPsource==='profile') return svgIcon('success',12)+' Taxable Person details filled from the client&rsquo;s company profile.';
+  if(ctTPsource==='firm') return 'Filled from your client notes — the client hasn&rsquo;t completed their Company Information tab yet.';
+  return 'This client hasn&rsquo;t filled their company profile yet — enter details manually or ask them to complete Company Information.';
+}
+function ctSelectClient(id){
+  ctClient=id||'';
+  var c=(myClients||[]).find(function(x){return x.business_id===id;});
+  var name=c?c.business_name:'';
+  var p=id?clientProfiles[id]:null;
+  if(p){
+    ctTP={legal:p.legal||name, entityType:p.entityType||'', license:p.license||'', authority:p.authority||'',
+          vatTrn:p.vatTrn||'', ctTrn:p.ctTrn||'', fyEnd:p.fyEnd||'', emirate:p.emirate||'', address:p.address||'',
+          cName:p.cName||'', cRole:p.cRole||'', cEmail:p.cEmail||'', cPhone:p.cPhone||''};
+    ctTPsource='profile';
+    ctEntity=/free zone/i.test(p.entityType||'')?'freezone':'mainland';
+    if(ctEntity!=='mainland') ctSBRon=false;
+  } else if(id){
+    var m=clientMeta[name]||{};
+    ctTP={legal:name, vatTrn:(m.trn&&m.trn!=='—')?m.trn:'', cName:m.contact||''};
+    ctTPsource=(m.contact||(m.trn&&m.trn!=='—'))?'firm':'';
+  } else { ctTP={}; ctTPsource=''; }
+  var sel=document.getElementById('ctShareClient'); if(sel&&id) sel.value=id;
+  var con=document.getElementById('ctShareContact'); if(con) con.value=ctTP.cName||shareContactFor(name)||'';
+  var note=document.getElementById('ctTPsrcNote'); if(note) note.innerHTML=ctTPsourceNote();
+  ctStep=0;
+  ctWizRefresh();
+  if(id&&sb){
+    sb.rpc('my_clients_company_profiles').then(function(res){
+      if(res&&res.data){
+        clientProfiles={}; res.data.forEach(function(x){ if(x&&x.profile) clientProfiles[x.business_id]=x.profile; });
+        if(ctClient===id && clientProfiles[id] && ctTPsource!=='profile') ctSelectClient(id);
+      }
+    }).catch(function(){});
+  }
+}
+/* ---- the eight FTA return pages ---- */
+function ctPageTP(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Details of the entity filing this return. Every field stays editable.</p>'
+  +'<div class="grid g2" style="gap:10px">'
+  +ctTPfield('Legal name (as licensed)','legal','e.g. Acme Trading LLC')
+  +ctTPselect('Entity type','entityType',CO_ENTITY_TYPES)
+  +ctTPfield('Trade licence no.','license','e.g. CN-1234567')
+  +ctTPfield('Licensing authority','authority','e.g. Dubai DED, ADGM, DMCC')
+  +ctTPfield('Corporate Tax TRN','ctTrn','From the CT registration certificate')
+  +ctTPfield('VAT TRN','vatTrn','100 XXXX XXXX XXX')
+  +ctTPselect('Financial year end','fyEnd',CO_FY_ENDS)
+  +ctTPselect('Emirate','emirate',CO_EMIRATES)
+  +'</div>'
+  +'<div style="margin-top:10px"><label class="flabel">Registered address</label><input class="finput" placeholder="Office, street, area" value="'+ctEsc(ctTP.address||'')+'" oninput="ctSetTP(\'address\',this.value)"></div>'
+  +'<div class="grid g2" style="gap:10px;margin-top:10px">'
+  +ctTPfield('Contact person (signatory)','cName','e.g. Ahmed Al Mansoori')
+  +ctTPfield('Contact email','cEmail','name@company.ae')
+  +'</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctPageElections(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Choose the regime and the elections that apply for this period — the rest of the return adapts automatically.</p>'
+  +'<div class="seg" style="margin-bottom:12px"><button id="ctSegMain" class="'+(ctEntity==='mainland'?'on':'')+'" onclick="setCtEntity(\'mainland\')">Mainland</button><button id="ctSegFz" class="'+(ctEntity==='freezone'?'on':'')+'" onclick="setCtEntity(\'freezone\')">Qualifying Free Zone</button></div>'
+  +'<label class="check" style="border:0;cursor:pointer"><input type="checkbox" id="ctSBR" '+(ctSBRon?'checked':'')+' onchange="setCtSBR(this.checked)" style="width:18px;height:18px;border:0"> <span>Elect <b>Small Business Relief</b> (revenue &le; AED 3,000,000; mainland only)</span></label>'
+  +'<div class="muted" id="ctSBRhint" style="font-size:12px;margin:2px 0 6px">'+ctSBRhintText()+'</div>'
+  +'<label class="check" style="border:0;cursor:pointer;margin-top:2px"><input type="checkbox" id="ctMNE" '+(ctMNEon?'checked':'')+' onchange="setCtMNE(this.checked)" style="width:18px;height:18px;border:0"> <span>Part of a multinational group with revenue &ge; EUR 750M (<b>15% DMTT</b> applies)</span></label>'
+  +'<div class="grid g2" style="gap:10px;margin-top:12px">'
+  +'<div><label class="flabel">Realisation basis election</label><select class="finput" onchange="setCtFormOpt(\'real\',this.value)"><option '+(ctRealisation==='No'?'selected':'')+'>No</option><option '+(ctRealisation==='Yes'?'selected':'')+'>Yes</option></select></div>'
+  +'<div><label class="flabel">Transitional rules relief</label><select class="finput" onchange="setCtFormOpt(\'trans\',this.value)"><option '+(ctTransitional==='No'?'selected':'')+'>No</option><option '+(ctTransitional==='Yes'?'selected':'')+'>Yes</option></select></div>'
+  +'</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctPageFZ(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Split the period&rsquo;s taxable income between qualifying (0%) and non-qualifying activities.</p>'
+  +'<div class="grid g2" style="gap:10px;align-items:end">'
+  +ctwNum('Of taxable income, qualifying (0%) portion (AED)','qual','ctQual','Qualifying income is taxed at 0%; the rest is non-qualifying.','ctFzHint')
+  +'</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctPageAcc(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">The financial statements this return is prepared from.</p>'
+  +'<div class="grid g2" style="gap:10px;margin-bottom:4px">'
+  +'<div><label class="flabel">Basis of financial statements</label><select class="finput" onchange="setCtFormOpt(\'basis\',this.value)">'+['IFRS — audited','IFRS — unaudited','IFRS for SMEs','Cash basis (revenue ≤ AED 3M)'].map(function(o){return '<option '+(ctBasis===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>'
+  +'<div></div>'
+  +ctwNum('Revenue for the period (AED)','rev','ctRev')
+  +ctwNum('Accounting income — net profit (AED)','profit','ctProfit')
+  +'</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctPageReliefs(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Reliefs under the Corporate Tax Law — claimed only where a qualifying transaction happened in the period.</p>'
+  +'<div class="ctrow"><span>Transfers within a qualifying group (Art. 26)</span><b class="val">Not claimed</b></div>'
+  +'<div class="ctrow"><span>Business restructuring relief (Art. 27)</span><b class="val">Not claimed</b></div>'
+  +'<div class="muted" style="font-size:11.5px;margin-top:8px">If the client transferred assets within a qualifying group or restructured during the period, these need supporting schedules — flag it to the engagement partner.</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctPageAdj(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Income exempt from Corporate Tax — dividends from UAE companies, participation-exemption income and already-taxed amounts.</p>'
+  +'<div class="grid g2" style="gap:10px">'
+  +ctwNum('Less: exempt / already-taxed income (AED)','exempt','ctExempt')
+  +'</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctPageOther(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Expenses booked in the accounts that are not deductible for Corporate Tax — fines and penalties, 50% of entertainment, donations to non-approved bodies.</p>'
+  +'<div class="grid g2" style="gap:10px">'
+  +ctwNum('Add: non-deductible expenses (AED)','add','ctAdd')
+  +'</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctPageLiab(){
+  return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Loss relief, foreign tax credits and the final computation.</p>'
+  +'<div class="grid g2" style="gap:10px">'
+  +ctwNum('Less: tax losses brought forward (AED)','losses','ctLosses','Relief is capped at 75% of taxable income; the rest carries forward.','ctLossHint')
+  +ctwNum('Foreign tax credit (AED)','ftc','ctFTC','Foreign tax paid on income also taxed in the UAE — credited against the CT payable.')
+  +'</div>'
+  +'<div id="ctwCalc">'+ctWizCalcHTML()+'</div>';
+}
+function ctWizCalcHTML(){
+  var inp=ctReadInputs(), r=computeCT(inp), fmt=ctFmtA;
+  var s=ctOnSteps()[ctStep]; if(!s) return '';
   var row=function(l,v,tot){return '<div class="ctrow'+(tot?' total':'')+'"><span>'+l+'</span><b class="val">'+v+'</b></div>';};
-  var selRow=function(l,key,cur,opts){return '<div class="ctrow"><span>'+l+'</span><select class="finput" style="max-width:230px" onchange="setCtFormOpt(\''+key+'\',this.value)">'+opts.map(function(o){return '<option '+(cur===o?'selected':'')+'>'+o+'</option>';}).join('')+'</select></div>';};
-  var html=chips;
-  /* 1 · Taxable Person */
-  html+='<div class="cthead">1 · Taxable Person details</div>'
-    +row('Taxable Person type', sbr?'Resident juridical person — Small Business Relief':(fz?(r.flags.indexOf('breach')>-1?'Free Zone Person — de-minimis breached':'Qualifying Free Zone Person'):'Resident juridical person (Mainland)'))
-    +row('Regime applied', r.regime||'—');
-  /* 2 · Elections */
-  html+='<div class="cthead">2 · Elections</div>'
-    +row('Small Business Relief election', inp.sbr?(r.sbrEligible?'Elected — eligible':'Elected — NOT eligible (revenue over AED 3M or excluded)'):'Not elected')
-    +selRow('Realisation basis election','real',ctRealisation,['No','Yes'])
-    +selRow('Transitional rules relief','trans',ctTransitional,['No','Yes']);
-  /* 3 · Free Zone Schedule */
-  if(fz){
-    var qual=Math.min(Math.max(0,inp.qualifying||0), r.taxable);
-    var nonQual=Math.max(0, r.taxable-qual);
-    var dm=Math.min((inp.revenue||0)*0.05, 5000000);
-    html+='<div class="cthead">3 · Free Zone Schedule</div>'
-      +row('Qualifying income', fmt(qual))
-      +row('Non-qualifying income', fmt(nonQual))
-      +row('De-minimis limit (lower of 5% of revenue / AED 5,000,000)', fmt(dm))
-      +row('De-minimis test', r.flags.indexOf('breach')>-1?'❌ FAILED — taxed at 9% on all income':'✓ Passed — qualifying income at 0%', true);
+  var sbr=r.relief, fz=inp.entity==='freezone';
+  switch(s.n){
+    case '1':
+      return '<div style="margin-top:12px">'+row('Taxable Person type', sbr?'Resident juridical person — Small Business Relief':(fz?(r.flags.indexOf('breach')>-1?'Free Zone Person — de-minimis breached':'Qualifying Free Zone Person'):'Resident juridical person (Mainland)'))
+        +row('Regime applied', r.regime||'—')+'</div>';
+    case '2':
+      return '<div style="margin-top:12px">'+row('Small Business Relief election', inp.sbr?(r.sbrEligible?'Elected — eligible':'Elected — NOT eligible (revenue over AED 3M or excluded)'):'Not elected')+'</div>';
+    case '3': {
+      var qual=Math.min(Math.max(0,inp.qualifying||0), r.taxable);
+      var nonQual=Math.max(0, r.taxable-qual);
+      var dm=Math.min((inp.revenue||0)*0.05, 5000000);
+      return '<div style="margin-top:12px">'+row('Qualifying income', fmt(qual))
+        +row('Non-qualifying income', fmt(nonQual))
+        +row('De-minimis limit (lower of 5% of revenue / AED 5,000,000)', fmt(dm))
+        +row('De-minimis test', r.flags.indexOf('breach')>-1?'❌ FAILED — taxed at 9% on all income':'✓ Passed — qualifying income at 0%', true)+'</div>';
+    }
+    case '4':
+      return sbr?('<div class="ctrow" style="border:0;background:var(--accent-bg);border-radius:10px;padding:12px;margin-top:12px;font-size:12.5px">Small Business Relief applies — the return is limited to the sections completed so far: no taxable-income computation is required for this period. Registration and on-time filing are still mandatory.</div>'+row('Corporate Tax payable', fmt(0), true)):'';
+    case '6':
+      return '<div style="margin-top:12px">'+row('Less: exempt income (dividends, participation exemption)', inp.exempt?('− '+fmt(inp.exempt)):fmt(0))+'</div>';
+    case '7':
+      return '<div style="margin-top:12px">'+row('Add: non-deductible expenses (fines, 50% entertainment, etc.)', inp.addbacks?('+ '+fmt(inp.addbacks)):fmt(0))+'</div>';
+    case '8': {
+      var h='<div style="margin-top:12px">'+row('Taxable income before loss relief', fmt(r.preLoss));
+      if(inp.losses) h+=row('Less: tax losses utilised (capped at 75%)','− '+fmt(r.lossesUsed));
+      if(r.lossesCarried) h+=row('Tax losses carried forward', fmt(r.lossesCarried));
+      h+=row('Taxable income', fmt(r.taxable), true)
+        +row(fz?'Taxed at 0% (qualifying income)':'Taxed at 0% (first AED 375,000)', fmt(r.band0))
+        +row('Taxed at 9%', fmt(r.band9));
+      if(r.dmtt) h+=row('Domestic Minimum Top-up Tax (to 15%)','+ '+fmt(r.dmtt));
+      if(r.ftcUsed) h+=row('Less: foreign tax credit','− '+fmt(r.ftcUsed));
+      h+=row('Corporate Tax payable', fmt(r.ct), true)+'</div>';
+      return h;
+    }
+    default: return '';
   }
-  /* 4 · Accounting Schedule */
-  html+='<div class="cthead">4 · Accounting Schedule</div>'
-    +selRow('Basis of financial statements','basis',ctBasis,['IFRS — audited','IFRS — unaudited','IFRS for SMEs','Cash basis (revenue ≤ AED 3M)'])
-    +row('Revenue for the period', fmt(inp.revenue))
-    +row('Accounting income (net profit)', fmt(inp.profit));
-  if(sbr){
-    html+='<div class="ctrow" style="border:0;background:var(--accent-bg);border-radius:10px;padding:12px;margin-top:10px;font-size:12.5px">Small Business Relief applies — the return is limited to the sections above: no taxable-income computation is required for this period. Registration and on-time filing are still mandatory.</div>'
-      +row('Corporate Tax payable', fmt(0), true);
-    return html;
+}
+/* quick what-if estimate — independent of the return */
+function qRecalc(){
+  var g=function(id){return document.getElementById(id);};
+  if(!g('qOut')) return;
+  var rev=parseFloat(g('qRev').value)||0, profit=parseFloat(g('qProfit').value)||0, mode=g('qRegime').value;
+  var inp={entity:mode==='freezone'?'freezone':'mainland', revenue:rev, profit:profit, addbacks:0, exempt:0, losses:0, ftc:0, qualifying:mode==='freezone'?profit:0, sbr:mode==='sbr', mne:false};
+  var r=computeCT(inp);
+  g('qOut').textContent='AED '+(isFinite(r.ct)?r.ct:0).toLocaleString('en-US',{maximumFractionDigits:0});
+  var hint=g('qHint');
+  if(hint){
+    if(mode==='sbr'&&!r.relief&&rev>0) hint.textContent='Not SBR-eligible at this revenue (over AED 3M) — showing the standard 9% computation.';
+    else if(mode!=='sbr'&&rev>0&&rev<=3000000) hint.textContent='This revenue is SBR-eligible — a Small Business Relief election could bring the payable to AED 0.';
+    else hint.textContent='A fast headline number — use the return above for the full computation.';
   }
-  /* 5 · Reliefs (standard only) */
-  if(!fz) html+='<div class="cthead">5 · Reliefs</div>'+row('Group transfer / business restructuring relief','Not claimed');
-  /* 6 · Adjustments & Exempt income */
-  html+='<div class="cthead">6 · Adjustments &amp; Exempt income</div>'
-    +row('Less: exempt income (dividends, participation exemption)', inp.exempt?('− '+fmt(inp.exempt)):fmt(0));
-  /* 7 · Other adjustments */
-  html+='<div class="cthead">7 · Other adjustments</div>'
-    +row('Add: non-deductible expenses (fines, 50% entertainment, etc.)', inp.addbacks?('+ '+fmt(inp.addbacks)):fmt(0));
-  /* 8 · Tax liability & credits */
-  html+='<div class="cthead">8 · Tax liability &amp; credits</div>'
-    +row('Taxable income before loss relief', fmt(r.preLoss));
-  if(inp.losses) html+=row('Less: tax losses utilised (capped at 75%)','− '+fmt(r.lossesUsed));
-  if(r.lossesCarried) html+=row('Tax losses carried forward', fmt(r.lossesCarried));
-  html+=row('Taxable income', fmt(r.taxable), true)
-    +row(fz?'Taxed at 0% (qualifying income)':'Taxed at 0% (first AED 375,000)', fmt(r.band0))
-    +row('Taxed at 9%', fmt(r.band9));
-  if(r.dmtt) html+=row('Domestic Minimum Top-up Tax (to 15%)','+ '+fmt(r.dmtt));
-  if(r.ftcUsed) html+=row('Less: foreign tax credit','− '+fmt(r.ftcUsed));
-  html+=row('Corporate Tax payable', fmt(r.ct), true);
-  return html;
 }
 function recalcCT(){
-  if(!document.getElementById('ctProfit')) return;
+  if(!document.getElementById('ctPayable')) return;
   const fmt=n=>'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
   const $=id=>document.getElementById(id);
   const inp=ctReadInputs();
@@ -3410,13 +3607,7 @@ function recalcCT(){
   $('ctBand9').textContent=fmt(r.band9);
   $('ctPayable').textContent=fmt(r.ct);
   $('ctEff').textContent=r.eff.toFixed(2)+'%';
-  const pill=$('ctRegimePill'); if(pill) pill.textContent = inp.entity==='freezone' ? 'Free Zone · 0% / 9%' : 'Mainland · 9% regime';
-  const sh=$('ctSBRhint');
-  if(sh){
-    if(inp.entity!=='mainland') sh.textContent='Small Business Relief applies to mainland entities only.';
-    else if(inp.mne) sh.textContent='Not available to members of multinational groups.';
-    else sh.textContent = (inp.revenue>0 && inp.revenue<=3000000) ? 'Eligible: revenue is at or below AED 3,000,000 — you can elect Small Business Relief.' : (inp.revenue>0?'Not eligible: revenue exceeds AED 3,000,000.':'Enter revenue to check Small Business Relief eligibility.');
-  }
+  const sh=$('ctSBRhint'); if(sh) sh.textContent=ctSBRhintText();
   const lh=$('ctLossHint');
   if(lh){
     lh.textContent = (inp.losses>0)
@@ -3438,8 +3629,17 @@ function recalcCT(){
     else if(r.taxable<=375000){ v.textContent=fmt(r.ct)+' — within the 0% band'; note.textContent='Taxable income is at or below AED 375,000, so corporate tax is nil. Registration and filing are still required.'; }
     else { v.textContent=fmt(r.ct)+' corporate tax'; note.textContent='9% applies to '+fmt(r.band9)+' above the AED 375,000 threshold. File and pay within 9 months of the financial year-end.'; }
   }
-  const sb=$('ctScenBody'); if(sb) sb.innerHTML=ctScenTable();
-  const fb=$('ctFormBody'); if(fb) fb.innerHTML=ctFormHTML();
+  const sb2=$('ctScenBody'); if(sb2) sb2.innerHTML=ctScenTable();
+  const cc=$('ctwCalc'); if(cc) cc.innerHTML=ctWizCalcHTML();
+  /* typing revenue can flip SBR applicability — keep chips, nav and (if the current
+     page itself changed) the page body in sync without stealing input focus */
+  const chips=$('ctWizChips');
+  if(chips){
+    chips.innerHTML=ctWizChipsHTML();
+    ctWizNav();
+    const cur=ctOnSteps()[ctStep];
+    if(cur && cur.n!==_ctStepKey){ const b=$('ctWizBody'); if(b) b.innerHTML=ctWizStepHTML(); }
+  }
 }
 function ctScenTable(){
   const fmt=n=>'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{maximumFractionDigits:0});
@@ -4373,7 +4573,7 @@ function reqDocPage(kind){
   const tax=kind==='tax';
   const arr=tax?firmTaxReqs:firmAuditReqs;
   return `
-  <h1>${tax?'Tax Documents':'Audit Report Documents Requested'}</h1>
+  <h1>${tax?'Tax':'Audit'}</h1>
   <div class="sub">${tax?'Documents your clients have shared, plus everything you’ve requested from them for their VAT &amp; corporate tax filings.':'Documents you’ve requested from clients for their audit engagements, with engagement, urgency, risk and attachments.'}</div>
   ${tax?receivedDocsCard():''}
   <div class="ai mb14"><div class="sparkle">${svgIcon('sparkles',22)}</div>
@@ -4442,6 +4642,48 @@ function vaultDocRow(d,i){
   <div style="flex:1;min-width:150px"><div class="dtitle">${d.name}</div><div class="dmeta">Added ${d.added}</div></div>
   ${shareBtn}
   <button class="iconbtn" title="Delete document" onclick="deleteVaultDoc(${i})">${svgIcon('trash',15)}</button></div>`;}
+/* ---- business company profile (feeds the accountant's CT return) ---- */
+const CO_EMIRATES=['','Abu Dhabi','Dubai','Sharjah','Ajman','Umm Al Quwain','Ras Al Khaimah','Fujairah'];
+const CO_ENTITY_TYPES=['','LLC','Sole Establishment','Free Zone Company (FZ-LLC / FZE)','Branch of a foreign company','Civil Company','Public / Private JSC','Partnership','Other'];
+const CO_FY_ENDS=['','31 December','31 March','30 June','30 September','Other'];
+function setBizCompany(k,v){ bizCompany[k]=v; saveAccountData(); const p=document.getElementById('coProfilePill'); if(p) p.textContent=companyProfilePct()+'% complete'; }
+function companyProfilePct(){
+  const keys=['legal','license','authority','entityType','vatTrn','ctTrn','fyEnd','address','emirate','cName','cRole','cEmail','cPhone'];
+  const filled=keys.filter(k=>String(bizCompany[k]||'').trim()).length;
+  return Math.round(filled/keys.length*100);
+}
+function coField(label,key,ph,type){
+  return '<div><label class="flabel">'+label+'</label><input class="finput" type="'+(type||'text')+'" placeholder="'+ctEsc(ph||'')+'" value="'+ctEsc(bizCompany[key]||'')+'" oninput="setBizCompany(\''+key+'\',this.value)"></div>';
+}
+function coSelect(label,key,opts){
+  return '<div><label class="flabel">'+label+'</label><select class="finput" onchange="setBizCompany(\''+key+'\',this.value)">'
+    +opts.map(o=>'<option value="'+ctEsc(o)+'"'+((bizCompany[key]||'')===o?' selected':'')+'>'+(o||'— Select —')+'</option>').join('')+'</select></div>';
+}
+function companyProfileCardsHTML(){
+  return '<div class="grid g2 mb14" style="align-items:start">'
+    +'<div class="card"><div class="cardhead"><h3>'+svgIcon('building',16)+' Company details</h3><span class="pill p-teal" id="coProfilePill">'+companyProfilePct()+'% complete</span></div>'
+    +'<div class="grid g2" style="gap:10px">'
+    +coField('Legal name (as licensed)','legal','e.g. Acme Trading LLC')
+    +coSelect('Entity type','entityType',CO_ENTITY_TYPES)
+    +coField('Trade licence no.','license','e.g. CN-1234567')
+    +coField('Licensing authority','authority','e.g. Dubai DED, ADGM, DMCC')
+    +coField('VAT TRN (15 digits)','vatTrn','100 XXXX XXXX XXX')
+    +coField('Corporate Tax TRN','ctTrn','From your CT registration certificate')
+    +coSelect('Financial year end','fyEnd',CO_FY_ENDS)
+    +coSelect('Emirate','emirate',CO_EMIRATES)
+    +'</div>'
+    +'<div style="margin-top:10px"><label class="flabel">Registered address</label><input class="finput" placeholder="Office, street, area" value="'+ctEsc(bizCompany.address||'')+'" oninput="setBizCompany(\'address\',this.value)"></div>'
+    +'<p class="muted" style="font-size:11.5px;margin-top:9px">'+svgIcon('shield',12)+' Shared only with your linked accountant — it pre-fills the Taxable Person section of your Corporate Tax return.</p></div>'
+    +'<div class="card"><div class="cardhead"><h3>'+svgIcon('users',16)+' Contact person</h3><span class="muted" style="font-size:11.5px">Signs off returns</span></div>'
+    +'<div class="grid g2" style="gap:10px">'
+    +coField('Full name','cName','e.g. Ahmed Al Mansoori')
+    +coField('Role / title','cRole','e.g. Managing Director')
+    +coField('Email','cEmail','name@company.ae','email')
+    +coField('Phone','cPhone','+971 5x xxx xxxx')
+    +'</div>'
+    +'<p class="muted" style="font-size:11.5px;margin-top:9px">This person appears as the signatory on draft VAT and Corporate Tax returns your accountant shares for approval.</p></div>'
+    +'</div>';
+}
 function companyDocRow(t){
   const d=vaultDocs.find(x=>x.typeId===t.id);
   const reading=companyDocReading[t.id];
@@ -4592,6 +4834,7 @@ function collectCTFigures(){
     taxable:txt('ctTaxable'),band0:txt('ctBand0'),band9:txt('ctBand9'),payable:txt('ctPayable'),eff:txt('ctEff'),regime:r.regime||'',
     basis:(typeof ctBasis!=='undefined'?ctBasis:''), realisation:(typeof ctRealisation!=='undefined'?ctRealisation:''), transitional:(typeof ctTransitional!=='undefined'?ctTransitional:''),
     sbrElected:!!inp.sbr, sbrApplied:!!r.relief, dmtt:r.dmtt||0,
+    taxablePerson:Object.assign({},ctTP), clientId:ctClient||'', tpSource:ctTPsource||'',
     fzQualifying:qual, fzNonQualifying:fz?Math.max(0,(r.taxable||0)-qual):0,
     fzDeMinimis:fz?Math.min((inp.revenue||0)*0.05,5000000):0,
     fzTest:fz?(r.flags&&r.flags.indexOf('breach')>-1?'FAILED':'Passed'):''};
@@ -4600,6 +4843,9 @@ function collectCTFigures(){
 /* ---- share a draft return to a selected business ---- */
 function shareContactFor(bizName){
   if(!bizName) return '';
+  var c=(myClients||[]).find(function(x){return x.business_name===bizName;});
+  var p=c?clientProfiles[c.business_id]:null;
+  if(p&&p.cName) return p.cName;   /* the business's own profile wins */
   var m=clientMeta[bizName]||{};
   return m.contact||'';
 }
@@ -4712,7 +4958,20 @@ function returnFiguresHTML(rt){
       +retRow('Non-qualifying income',moneyAED(f.fzNonQualifying))
       +retRow('De-minimis test',(f.fzTest==='FAILED'?'FAILED — 9% on all income':'Passed')+' (limit '+moneyAED(f.fzDeMinimis)+')');
   }
-  return '<div>'+retRow('Entity',f.entity==='freezone'?'Qualifying Free Zone':'Mainland')
+  var tp=f.taxablePerson||{}; var tpBlock='';
+  if(tp.legal||tp.ctTrn||tp.vatTrn||tp.license){
+    tpBlock='<div style="font-weight:700;font-size:12px;margin-bottom:4px;color:var(--accent);text-transform:uppercase;letter-spacing:.5px">Taxable Person</div>'
+      +(tp.legal?retRow('Legal name',ctEsc(tp.legal)):'')
+      +(tp.entityType?retRow('Entity type',ctEsc(tp.entityType)):'')
+      +(tp.license?retRow('Trade licence',ctEsc(tp.license)+(tp.authority?(' · '+ctEsc(tp.authority)):'')):'')
+      +(tp.ctTrn?retRow('Corporate Tax TRN',ctEsc(tp.ctTrn)):'')
+      +(tp.vatTrn?retRow('VAT TRN',ctEsc(tp.vatTrn)):'')
+      +(tp.fyEnd?retRow('Financial year end',ctEsc(tp.fyEnd)):'')
+      +((tp.emirate||tp.address)?retRow('Registered address',ctEsc([tp.address,tp.emirate].filter(Boolean).join(', '))):'')
+      +(tp.cName?retRow('Contact person',ctEsc(tp.cName)+(tp.cRole?(' — '+ctEsc(tp.cRole)):'')):'')
+      +'<div style="height:10px"></div>';
+  }
+  return '<div>'+tpBlock+retRow('Entity',f.entity==='freezone'?'Qualifying Free Zone':'Mainland')
     +(f.regime?retRow('Regime',ctEsc(f.regime)):'')
     +(f.basis?retRow('Basis of financial statements',ctEsc(f.basis)):'')
     +(typeof f.sbrElected!=='undefined'?retRow('Small Business Relief election',f.sbrApplied?'Elected & applied':(f.sbrElected?'Elected — not eligible':'Not elected')):'')
@@ -4939,7 +5198,7 @@ function onboardingSteps(){
   }
   return [
     {t:'Add your first client — share your invite code', done:(clients&&clients.length>0), pg:'clients', cta:'Clients'},
-    {t:'Send your first document request', done:(((firmTaxReqs||[]).length+(firmAuditReqs||[]).length)>0), pg:'taxdocs', cta:'Tax Documents'},
+    {t:'Send your first document request', done:(((firmTaxReqs||[]).length+(firmAuditReqs||[]).length)>0), pg:'taxdocs', cta:'Tax'},
     {t:'Invite a team member', done:((teamMembers||[]).length>1), pg:'team', cta:'Team'},
     {t:'Share a draft VAT or CT return for sign-off', done:((returnsList||[]).length>0), pg:'vat', cta:'VAT Calculator'}
   ];

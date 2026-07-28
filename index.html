@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="HisabOne — Tax & Compliance, Simplified">
 <meta name="twitter:description" content="The UAE compliance layer for businesses and accountants.">
 <meta name="twitter:image" content="https://hisabone.ae/og.png">
-<link rel="icon" type="image/png" href="/favicon.png"><defs><linearGradient id='gh' x1='0' y1='0' x2='0.35' y2='1'><stop offset='0' stop-color='%2320d3bf'/><stop offset='1' stop-color='%233b6fe0'/></linearGradient><linearGradient id='g1' x1='0' y1='0' x2='0.25' y2='1'><stop offset='0' stop-color='%238a5cf6'/><stop offset='1' stop-color='%235b3fd4'/></linearGradient><linearGradient id='gr' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%231fa8c9'/><stop offset='1' stop-color='%233b6fe0'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='%23ffffff'/><rect width='100' height='100' rx='22' fill='none' stroke='%23e8e8ee' stroke-width='2'/><path d='M22 20 q0 -4 4 -4 h3 q16 0 16 16 v36 q0 16 -16 16 h-3 q-4 0 -4 -4 z' fill='url(%23gh)'/><path d='M44 46 C56 46 53 58 66 58 L66 72 C51 72 56 60 44 60 Z' fill='url(%23gr)'/><path d='M80 12 L52 33 L52 44 L62 40 L62 84 L80 84 Z' fill='url(%23g1)'/></svg>">
+<link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,12 +32,12 @@
     --green:#34d399; --amber:#fbbf24; --red:#f87171;
     --green-bg:rgba(52,211,153,.15); --amber-bg:rgba(251,191,36,.15); --red-bg:rgba(248,113,113,.15);
     /* defaults (business / blue) */
-    --bg1:#071326; --bg2:#0b2244; --accent:#22e3d3; --accent-d:#0fb5a6;
-    --accent-bg:rgba(34,227,211,.15); --topbar:rgba(7,17,34,.85);
+    --bg1:#071326; --bg2:#0b2244; --accent:#1e9bff; --accent-d:#0073fc;
+    --accent-bg:rgba(30,155,255,.15); --topbar:rgba(7,17,34,.85);
   }
   body[data-role="business"]{
-    --bg1:#06122a; --bg2:#0c2750; --accent:#27e0cf; --accent-d:#16c2b3;
-    --accent-bg:rgba(39,224,207,.15); --topbar:rgba(6,18,42,.85);
+    --bg1:#06122a; --bg2:#0c2750; --accent:#1e9bff; --accent-d:#0073fc;
+    --accent-bg:rgba(30,155,255,.15); --topbar:rgba(6,18,42,.85);
   }
   body[data-role="firm"]{
     --bg1:#150a26; --bg2:#2c1252; --accent:#d27bff; --accent-d:#b455f5;
@@ -74,7 +74,7 @@
     background:var(--h1logo) center/cover no-repeat;
     box-shadow:0 16px 40px rgba(17,28,48,.22),0 5px 14px rgba(17,28,48,.14)}
   .llogo-word{font-size:50px;font-weight:800;letter-spacing:-1.5px;color:#fff;display:flex;align-items:center;line-height:1}
-  .llogo-word .llogo-one{margin-left:4px;background:linear-gradient(135deg,#5fe0d0,#7cc4ff,#bd8cff);
+  .llogo-word .llogo-one{margin-left:4px;background:linear-gradient(135deg,#38a3ff,#7cb5ff,#bd8cff);
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .llogo-tag{color:rgba(255,255,255,.6);font-size:15px;letter-spacing:.4px}
   .lprompt{color:rgba(255,255,255,.5);font-size:15px;text-align:center;margin-bottom:30px}
@@ -215,7 +215,7 @@
   .modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(3,8,20,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}
   .modal{background:#0e1b34;border:1px solid var(--line);border-radius:16px;padding:26px;max-width:410px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5)}
   .modal h3{font-size:18px;margin-bottom:8px}.modal p{color:var(--muted);font-size:13.5px;margin-bottom:16px;line-height:1.5}
-  .lf-btn{width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px;color:#06122a;background:linear-gradient(135deg,#5fe0d0,#56a8f5,#a472f0)}
+  .lf-btn{width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px;color:#fff;background:linear-gradient(135deg,#38a3ff,#0073fc,#8a3df2)}
   .lf-btn:hover{filter:brightness(1.07)}
   .lfield{margin-bottom:12px}
   .pw-wrap{position:relative}
@@ -258,32 +258,32 @@
     --panel:#ffffff; --panel2:#f2f5f9;
     --green:#0e9f6e; --amber:#b7791f; --red:#dd3a53;
     --green-bg:rgba(14,159,110,.11); --amber-bg:rgba(183,121,31,.12); --red-bg:rgba(221,58,83,.10);
-    --bg1:#f1f4f9; --bg2:#fafbfd; --accent:#0d9488; --accent-d:#0a7d73;
-    --accent-bg:rgba(13,148,136,.10); --accent-bg2:rgba(13,148,136,.16); --topbar:rgba(255,255,255,.88);
-    --brand-grad:linear-gradient(120deg,#0d9488,#3b6fe0 52%,#7a5af8);
+    --bg1:#f1f4f9; --bg2:#fafbfd; --accent:#0073fc; --accent-d:#0053d6;
+    --accent-bg:rgba(0,115,252,.10); --accent-bg2:rgba(0,115,252,.16); --topbar:rgba(255,255,255,.88);
+    --brand-grad:linear-gradient(120deg,#008efe,#0059f9 52%,#7a2ff0);
     --shadow-1:0 1px 2px rgba(17,28,48,.05);
     --shadow-2:0 1px 2px rgba(17,28,48,.04),0 8px 24px rgba(17,28,48,.06);
   }
   body[data-role="business"]{
-    --bg1:#eef4f3; --bg2:#f8fbfa; --accent:#0d9488; --accent-d:#0a7d73;
-    --accent-bg:rgba(13,148,136,.10); --accent-bg2:rgba(13,148,136,.16); --topbar:rgba(255,255,255,.9);
+    --bg1:#eef4f3; --bg2:#f8fbfa; --accent:#0073fc; --accent-d:#0053d6;
+    --accent-bg:rgba(0,115,252,.10); --accent-bg2:rgba(0,115,252,.16); --topbar:rgba(255,255,255,.9);
   }
   body[data-role="firm"]{
     --bg1:#f2f1fa; --bg2:#fbfaff; --accent:#6444d8; --accent-d:#4f30bd;
     --accent-bg:rgba(100,68,216,.10); --accent-bg2:rgba(100,68,216,.16); --topbar:rgba(255,255,255,.9);
   }
   body{ background:
-    radial-gradient(760px 520px at 6% -6%, rgba(13,148,136,.14), transparent 56%),
+    radial-gradient(760px 520px at 6% -6%, rgba(0,115,252,.14), transparent 56%),
     radial-gradient(820px 560px at 94% -4%, rgba(122,90,248,.15), transparent 56%),
     linear-gradient(180deg,#f7f9fc,#f3f4fb);
     background-attachment:fixed; }
   body[data-role="business"]{ background:
-    radial-gradient(720px 520px at 4% -6%, rgba(13,148,136,.20), transparent 55%),
+    radial-gradient(720px 520px at 4% -6%, rgba(0,115,252,.20), transparent 55%),
     radial-gradient(780px 560px at 97% 0%, rgba(122,90,248,.10), transparent 58%),
     linear-gradient(180deg,#f5faf9,#eff6f4);
     background-attachment:fixed; }
   body[data-role="firm"]{ background:
-    radial-gradient(720px 520px at 4% -6%, rgba(13,148,136,.09), transparent 58%),
+    radial-gradient(720px 520px at 4% -6%, rgba(0,115,252,.09), transparent 58%),
     radial-gradient(800px 560px at 97% -2%, rgba(122,90,248,.21), transparent 54%),
     linear-gradient(180deg,#f8f6fd,#f2f0fb);
     background-attachment:fixed; }
@@ -317,7 +317,7 @@
   .drow.clk:hover{ background:var(--panel2); border-radius:8px; }
   /* login light */
   #login{ background:
-    radial-gradient(820px 560px at 8% -8%, rgba(13,148,136,.16), transparent 55%),
+    radial-gradient(820px 560px at 8% -8%, rgba(0,115,252,.16), transparent 55%),
     radial-gradient(880px 600px at 92% -4%, rgba(122,90,248,.18), transparent 55%),
     linear-gradient(160deg,#f5faf9 0%,#f1f5fb 45%,#f4f1fc 100%); }
   .ltopbar{ border-bottom:1px solid var(--line); }
@@ -331,15 +331,15 @@
   .lportal-card{ background:#fff; backdrop-filter:none; box-shadow:0 1px 2px rgba(16,32,60,.04),0 10px 30px rgba(16,32,60,.06); }
   .lportal-card:hover{ background:#fff; box-shadow:0 16px 42px rgba(16,32,60,.12); transform:translateY(-3px); }
   .lportal-card{ border-width:1px; border-color:var(--line); }
-  .lportal-card.biz{ border-color:rgba(13,148,136,.35); }
+  .lportal-card.biz{ border-color:rgba(0,115,252,.35); }
   .lportal-card.firm{ border-color:rgba(122,90,248,.35); }
   .lportal-card h2{ color:var(--text); } .lportal-card p{ color:var(--muted); }
-  .lpc-ic.biz{ background:rgba(13,148,136,.10); color:#0a7d73; }
+  .lpc-ic.biz{ background:rgba(0,115,252,.10); color:#0053d6; }
   .lpc-ic.firm{ background:rgba(122,90,248,.10); color:#6445e6; }
-  .lportal-label.biz{ color:#0a7d73; } .lportal-label.firm{ color:#6445e6; }
-  .enter.biz{ color:#0d9488; } .enter.firm{ color:#7a5af8; }
+  .lportal-label.biz{ color:#0053d6; } .lportal-label.firm{ color:#6445e6; }
+  .enter.biz{ color:#0073fc; } .enter.firm{ color:#7a5af8; }
   .finput{ background:#fff; }
-  .lf-btn{ color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-d)); box-shadow:0 8px 22px rgba(13,148,136,.26); }
+  .lf-btn{ color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-d)); box-shadow:0 8px 22px rgba(0,115,252,.26); }
   /* ===== refinement layer ===== */
   .ai{ background:var(--accent-bg); border:0; }
   .ai h3{ color:var(--ink); }
@@ -359,7 +359,7 @@
   .cardhead h3 svg{ color:var(--accent-d); vertical-align:-3px; }
   .seg{ background:#fff; box-shadow:var(--shadow-1); }
   .avatar{ background:var(--accent); }
-  .logo .mark,.mock-mk,.ltopbar-logo .mk,.llogo-mark{ background-color:#ffffff; box-shadow:0 2px 10px rgba(20,30,70,.18); }
+  .logo .mark,.mock-mk,.ltopbar-logo .mk,.llogo-mark{ background-color:transparent; }
   /* auth mode tabs */
   .lmode{display:none;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:4px;margin-bottom:16px}
   .lmtab{flex:1;border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
@@ -470,7 +470,7 @@
   .homesect{margin-top:28px;text-align:center;scroll-margin-top:80px}
   /* section-to-section flow connector */
   .sectflow{display:flex;flex-direction:column;align-items:center;justify-content:center;height:74px;margin:6px 0 0}
-  .sectflow .l{width:2px;height:40px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(13,148,136,.65))}
+  .sectflow .l{width:2px;height:40px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(0,115,252,.65))}
   .sectflow .c{margin-top:2px;color:var(--accent);display:flex;animation:flowbob 1.9s ease-in-out infinite}
   @keyframes flowbob{0%,100%{transform:translateY(-1px);opacity:.5}50%{transform:translateY(3px);opacity:1}}
   @media(prefers-reduced-motion:reduce){.sectflow .c{animation:none}}
@@ -498,15 +498,15 @@
   .ctaband .hero-ghost:hover{background:rgba(255,255,255,.18);color:#fff}
   .homefoot{text-align:center;color:var(--muted);font-size:12.5px;padding:26px 0 8px}
   .homefoot a{color:var(--accent-d);text-decoration:none;font-weight:600}
-  .footcontact{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:11px 22px;border-radius:12px;font-weight:700;font-size:13.5px;color:#fff;text-decoration:none;background:linear-gradient(120deg,#0d9488,#4f7ef0 60%,#8a5cf6);box-shadow:0 10px 26px rgba(79,126,240,.26);transition:transform .16s ease,box-shadow .16s ease}
+  .footcontact{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:11px 22px;border-radius:12px;font-weight:700;font-size:13.5px;color:#fff;text-decoration:none;background:linear-gradient(120deg,#0073fc,#4f7ef0 60%,#8a5cf6);box-shadow:0 10px 26px rgba(79,126,240,.26);transition:transform .16s ease,box-shadow .16s ease}
   .footcontact:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(79,126,240,.34);color:#fff}
   /* pricing */
-  .annualpromo{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 22px;max-width:600px;padding:13px 22px;border-radius:14px;color:#fff;font-weight:700;font-size:13.5px;letter-spacing:.2px;text-align:center;background:linear-gradient(120deg,#0d9488,#4f7ef0 55%,#8a5cf6);box-shadow:0 12px 30px rgba(79,126,240,.28)}
+  .annualpromo{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 22px;max-width:600px;padding:13px 22px;border-radius:14px;color:#fff;font-weight:700;font-size:13.5px;letter-spacing:.2px;text-align:center;background:linear-gradient(120deg,#0073fc,#4f7ef0 55%,#8a5cf6);box-shadow:0 12px 30px rgba(79,126,240,.28)}
   .annualpromo::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);transform:translateX(-130%);animation:promoshine 3.3s ease-in-out infinite}
   @keyframes promoshine{0%{transform:translateX(-130%)}62%,100%{transform:translateX(130%)}}
   .annualpromo .g{display:flex;flex-shrink:0}
   .billtoggle{display:flex;justify-content:center;margin-bottom:18px}
-  .billsave{display:inline-block;margin-left:7px;font-size:10px;font-weight:800;color:#0d9488;background:rgba(13,148,136,.14);border-radius:999px;padding:2px 8px;vertical-align:middle;letter-spacing:.3px}
+  .billsave{display:inline-block;margin-left:7px;font-size:10px;font-weight:800;color:#0073fc;background:rgba(0,115,252,.14);border-radius:999px;padding:2px 8px;vertical-align:middle;letter-spacing:.3px}
   .seg button.on .billsave{color:#fff;background:rgba(255,255,255,.24)}
   .pcard{display:flex;flex-direction:column;text-align:left;transition:transform .16s ease,box-shadow .16s ease}
   .pcard:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(16,32,60,.12)}
@@ -581,7 +581,7 @@
   @keyframes barfill{from{width:0}to{width:24%}}
   /* aurora glow behind the marketing shell */
   #login::before,#login::after{content:"";position:absolute;border-radius:50%;filter:blur(64px);pointer-events:none;z-index:0;opacity:.5}
-  #login::before{width:520px;height:520px;left:-130px;top:-150px;background:radial-gradient(circle,rgba(13,148,136,.55),transparent 70%);animation:auroraA 18s ease-in-out infinite}
+  #login::before{width:520px;height:520px;left:-130px;top:-150px;background:radial-gradient(circle,rgba(0,115,252,.55),transparent 70%);animation:auroraA 18s ease-in-out infinite}
   #login::after{width:560px;height:560px;right:-150px;top:-120px;background:radial-gradient(circle,rgba(122,90,248,.5),transparent 70%);animation:auroraB 22s ease-in-out infinite}
   #login>*{position:relative;z-index:1}
   /* shimmering brand words */
@@ -595,7 +595,7 @@
   .flow .flowstep:nth-of-type(7){transition-delay:.24s}
   /* primary button: lift + shine sweep */
   .lf-btn{position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}
-  .lf-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(13,148,136,.38)}
+  .lf-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,115,252,.38)}
   .lf-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.42) 50%,transparent 70%);transform:translateX(-135%);transition:transform .6s ease;pointer-events:none}
   .lf-btn:hover::after{transform:translateX(135%)}
   /* card hover depth */
@@ -628,7 +628,7 @@
   .certbox{border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--panel2)}
   .certbox.drop{cursor:pointer;border-style:dashed;transition:.15s}
   .certbox.drop:hover{border-color:var(--accent);background:var(--accent-bg)}
-  .certbox.done{border-color:rgba(13,148,136,.32);background:var(--accent-bg)}
+  .certbox.done{border-color:rgba(0,115,252,.32);background:var(--accent-bg)}
   .certtop{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text)}
   .lfremember{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:-2px 0 12px;cursor:pointer;user-select:none}
   .lfremember input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;margin:0}
@@ -654,13 +654,13 @@
   /* -- cards: consistent depth + lift on interactive ones -- */
   .card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)}
   .card.clk,.card.stat.clk,tr.clickable{cursor:pointer}
-  .card.clk:hover,.card.stat.clk:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(16,32,60,.06),0 16px 34px rgba(16,32,60,.12);border-color:rgba(13,148,136,.35)}
+  .card.clk:hover,.card.stat.clk:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(16,32,60,.06),0 16px 34px rgba(16,32,60,.12);border-color:rgba(0,115,252,.35)}
   .card.stat .ic{transition:transform .22s var(--ease)}
   .card.stat.clk:hover .ic{transform:scale(1.1)}
 
   /* -- buttons: hover lift + press feedback everywhere -- */
   .btn,.iconbtn,.logout,.seg button,.hero-ghost,.lf-btn{transition:transform .16s var(--ease),box-shadow .16s var(--ease),background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),filter .16s var(--ease)}
-  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(13,148,136,.28)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,115,252,.28)}
   .btn:active,.lf-btn:active,.seg button:active{transform:translateY(0) scale(.97)}
   .btn.ghost:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,32,60,.10)}
   .iconbtn:hover{transform:translateY(-1px)}
@@ -682,7 +682,7 @@
 
   /* -- inputs: focus glow -- */
   .finput{transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
-  .finput:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(13,148,136,.14)}
+  .finput:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,115,252,.14)}
 
   /* -- modals & popovers: pop-in entrance -- */
   @keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
@@ -742,14 +742,14 @@
   .chatmsg .cwhen{font-size:10px;opacity:.55;margin-top:3px;text-align:right}
   @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   #chatFab{position:fixed;right:22px;bottom:22px;z-index:300;width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
-    background:linear-gradient(135deg,#0d9488,#4f7ef0);color:#fff;display:none;align-items:center;justify-content:center;
-    box-shadow:0 10px 28px rgba(13,148,136,.4);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
-  #chatFab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 14px 34px rgba(13,148,136,.5)}
+    background:linear-gradient(135deg,#0073fc,#4f7ef0);color:#fff;display:none;align-items:center;justify-content:center;
+    box-shadow:0 10px 28px rgba(0,115,252,.4);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+  #chatFab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 14px 34px rgba(0,115,252,.5)}
   #chatFab .fabbadge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;min-width:19px;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff}
   #chatPanel{position:fixed;right:22px;bottom:88px;z-index:300;width:min(370px,calc(100vw - 30px));height:min(480px,calc(100vh - 130px));
     background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px rgba(8,20,40,.25);display:none;flex-direction:column;overflow:hidden;
     animation:modalIn .28s var(--ease) both;transform-origin:bottom right}
-  #chatPanel .chead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,rgba(13,148,136,.08),rgba(79,126,240,.07))}
+  #chatPanel .chead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,rgba(0,115,252,.08),rgba(79,126,240,.07))}
   #chatPanel .chatlog{flex:1;border-radius:0;background:var(--panel2)}
   .chatsend{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
   .chatsend .finput{flex:1}
@@ -796,16 +796,16 @@
 
   /* ================= COMMAND CENTRE (owner-only, /admin) ================= */
   #adminRoot{position:fixed;inset:0;z-index:500;overflow-y:auto;display:none;color:#e6edf6;
-    background:radial-gradient(900px 600px at 8% -10%, rgba(13,148,136,.25), transparent 55%),
+    background:radial-gradient(900px 600px at 8% -10%, rgba(0,115,252,.25), transparent 55%),
                radial-gradient(900px 620px at 95% -8%, rgba(122,90,248,.22), transparent 55%),
                linear-gradient(180deg,#0b1526,#0e1830);font-family:'Inter',system-ui,sans-serif}
   .adm-wrap{max-width:1180px;margin:0 auto;padding:26px 22px 60px}
   .adm-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
   .adm-top h1{font-size:22px;letter-spacing:-.3px;color:#fff}
-  .adm-badge{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#7ef0dd;background:rgba(39,224,207,.13);border:1px solid rgba(39,224,207,.3);padding:4px 10px;border-radius:20px}
+  .adm-badge{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#7ef0dd;background:rgba(30,155,255,.13);border:1px solid rgba(30,155,255,.3);padding:4px 10px;border-radius:20px}
   .adm-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;background:rgba(255,255,255,.05);padding:5px;border-radius:13px;border:1px solid rgba(255,255,255,.08)}
   .adm-tabs button{flex:1;min-width:110px;background:transparent;border:0;color:#9fb0c8;font-weight:700;font-size:12.5px;padding:9px 12px;border-radius:9px;cursor:pointer;transition:.18s}
-  .adm-tabs button.on{background:linear-gradient(120deg,#0d9488,#4f7ef0);color:#fff;box-shadow:0 6px 18px rgba(13,148,136,.35)}
+  .adm-tabs button.on{background:linear-gradient(120deg,#0073fc,#4f7ef0);color:#fff;box-shadow:0 6px 18px rgba(0,115,252,.35)}
   .adm-card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:15px;padding:18px;margin-bottom:16px;backdrop-filter:blur(6px)}
   .adm-card h3{font-size:14px;color:#fff;margin-bottom:10px;display:flex;align-items:center;gap:8px}
   .adm-grid{display:grid;gap:14px}
@@ -818,10 +818,10 @@
   .adm-row:last-child{border-bottom:0}
   .adm-in{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#e6edf6;border-radius:9px;padding:9px 12px;font-size:13px}
   .adm-in::placeholder{color:#71809a}
-  .adm-in:focus{outline:none;border-color:#27e0cf}
+  .adm-in:focus{outline:none;border-color:#1e9bff}
   select.adm-in option{color:#0d1b24}
-  .adm-btn{background:linear-gradient(120deg,#0d9488,#4f7ef0);border:0;color:#fff;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:.16s}
-  .adm-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(13,148,136,.4)}
+  .adm-btn{background:linear-gradient(120deg,#0073fc,#4f7ef0);border:0;color:#fff;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:.16s}
+  .adm-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,115,252,.4)}
   .adm-btn.ghost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
   .adm-x{background:transparent;border:0;color:#7a8aa3;cursor:pointer;font-size:14px;padding:4px 7px;border-radius:7px}
   .adm-x:hover{color:#ff8f8f;background:rgba(255,80,80,.12)}
@@ -835,20 +835,20 @@
   .adm-pill.active{background:rgba(60,220,150,.16);color:#7ef0b8}
   .adm-pill.paused{background:rgba(255,190,70,.16);color:#ffd27a}
   .adm-bar{display:flex;align-items:flex-end;gap:6px;height:90px;padding-top:6px}
-  .adm-bar .b{flex:1;background:linear-gradient(180deg,#27e0cf,#4f7ef0);border-radius:5px 5px 2px 2px;min-height:3px;position:relative}
+  .adm-bar .b{flex:1;background:linear-gradient(180deg,#1e9bff,#4f7ef0);border-radius:5px 5px 2px 2px;min-height:3px;position:relative}
   .adm-bar .b span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:9.5px;color:#9fb0c8}
   .adm-bar .b i{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:9px;color:#71809a;font-style:normal;white-space:nowrap}
   .adm-muted{color:#8fa0ba;font-size:12px}
-  .adm-note{font-size:11.5px;color:#8fa0ba;background:rgba(255,255,255,.04);border-left:3px solid #27e0cf;padding:9px 12px;border-radius:0 9px 9px 0}
+  .adm-note{font-size:11.5px;color:#8fa0ba;background:rgba(255,255,255,.04);border-left:3px solid #1e9bff;padding:9px 12px;border-radius:0 9px 9px 0}
   .adm-pill.high{background:rgba(255,90,90,.18);color:#ff9a9a}
   .adm-pill.med{background:rgba(255,190,70,.16);color:#ffd27a}
   .adm-pill.low{background:rgba(255,255,255,.1);color:#9fb0c8}
   .adm-pill.review{background:rgba(124,196,255,.18);color:#9ecfff}
   .adm-prog{height:7px;background:rgba(255,255,255,.09);border-radius:5px;overflow:hidden;min-width:60px}
-  .adm-prog>div{height:100%;background:linear-gradient(90deg,#27e0cf,#4f7ef0);transition:width .4s var(--ease)}
+  .adm-prog>div{height:100%;background:linear-gradient(90deg,#1e9bff,#4f7ef0);transition:width .4s var(--ease)}
   .adm-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cdd9ea;border-radius:20px;padding:7px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:.16s}
-  .adm-chip:hover{border-color:#27e0cf;color:#fff}
-  .adm-chip.on{background:linear-gradient(120deg,#0d9488,#4f7ef0);color:#fff;border-color:transparent}
+  .adm-chip:hover{border-color:#1e9bff;color:#fff}
+  .adm-chip.on{background:linear-gradient(120deg,#0073fc,#4f7ef0);color:#fff;border-color:transparent}
   .adm-md{font-size:13px;line-height:1.6;color:#dbe5f2}
   .adm-md b{color:#fff}
   .adm-md ul{margin:6px 0 6px 4px;padding-left:18px}
@@ -871,16 +871,16 @@
 <!-- ================= PRIVATE PREVIEW ACCESS GATE ================= -->
 <div id="accessGate" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(150deg,#0b1530,#101c38 45%,#1a1240);display:flex;align-items:center;justify-content:center;padding:22px;font-family:Inter,system-ui,-apple-system,sans-serif">
   <div style="max-width:380px;width:100%;text-align:center;color:#fff">
-    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 18px;background:linear-gradient(135deg,#20d3bf,#4f7ef0 52%,#8a5cf6);display:flex;align-items:center;justify-content:center">
+    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 18px;background:linear-gradient(135deg,#1e9bff,#4f7ef0 52%,#8a5cf6);display:flex;align-items:center;justify-content:center">
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
     </div>
-    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px">Hisab<span style="background:linear-gradient(120deg,#20d3bf,#8a5cf6);-webkit-background-clip:text;background-clip:text;color:transparent">One</span></div>
+    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px">Hisab<span style="background:linear-gradient(120deg,#1e9bff,#8a5cf6);-webkit-background-clip:text;background-clip:text;color:transparent">One</span></div>
     <div style="font-size:14px;color:rgba(255,255,255,.62);margin-bottom:22px">Private preview — enter your access code to continue.</div>
     <input id="gateInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Access code"
       style="width:100%;padding:13px 15px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:15px;text-align:center;letter-spacing:3px;outline:none"
       onkeydown="if(event.key==='Enter')gateCheck()">
     <div id="gateErr" style="color:#ff8b8b;font-size:12.5px;height:16px;margin:9px 0 4px"></div>
-    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#06122a;background:linear-gradient(135deg,#5fe0d0,#56a8f5,#a472f0)">Enter &rarr;</button>
+    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#38a3ff,#0073fc,#8a3df2)">Enter &rarr;</button>
     <div style="font-size:11.5px;color:rgba(255,255,255,.4);margin-top:16px">Access by invitation only</div>
   </div>
 </div>
@@ -1144,7 +1144,7 @@
       <div id="lfErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
       <div id="lfNotice" style="color:var(--green);font-size:12.5px;margin-bottom:2px;display:none"></div>
       <button type="submit" id="lfSubmit" class="lf-btn">Sign in →</button>
-      <div class="muted" id="lfTrialNote" style="display:none;text-align:center;font-size:11.5px;margin-top:9px">14-day free trial · No credit card needed · Cancel anytime</div>
+      <div class="muted" id="lfTrialNote" style="display:none;text-align:center;font-size:11.5px;margin-top:9px">3-month free trial · No credit card needed · Cancel anytime</div>
       </form>
       <div style="text-align:center;margin-top:15px"><span class="link" onclick="backToPortals()">← Choose a different portal</span></div>
       <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">By continuing you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span> (including AI &amp; data-processing disclosures).</div>
@@ -1165,7 +1165,7 @@
       <div class="lportal-card" style="cursor:default">
         <div class="lportal-label biz" id="suLabel">Business Portal</div>
         <h2 style="margin-bottom:4px">Create your account</h2>
-        <p class="muted" style="font-size:13px;margin-bottom:15px">14-day free trial · no credit card · cancel anytime</p>
+        <p class="muted" style="font-size:13px;margin-bottom:15px">3-month free trial · no credit card · cancel anytime</p>
         <div class="billtoggle" style="margin:0 0 16px">
           <span class="seg" style="display:flex;width:100%">
             <button type="button" id="suRoleBiz" class="on" style="flex:1" onclick="suSetRole('business')">I’m a business</button>
@@ -1183,8 +1183,8 @@
           </div>
           <div id="suErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
           <div id="suNotice" style="color:var(--green);font-size:12.5px;margin-bottom:2px;display:none"></div>
-          <button type="submit" id="suSubmit" class="lf-btn">Start free 14-day trial →</button>
-          <div class="muted" style="text-align:center;font-size:11.5px;margin-top:9px">14-day free trial · No credit card needed · Cancel anytime</div>
+          <button type="submit" id="suSubmit" class="lf-btn">Start free 3-month trial →</button>
+          <div class="muted" style="text-align:center;font-size:11.5px;margin-top:9px">3-month free trial · No credit card needed · Cancel anytime</div>
         </form>
         <div style="text-align:center;margin-top:15px"><span class="muted" style="font-size:12.5px">Already have an account? </span><span class="link" onclick="switchView('signin')">Sign in →</span></div>
         <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px;line-height:1.65">By creating an account you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and consent to your data being processed as described in our <span class="link" onclick="switchView('privacy')">Privacy Policy</span> — including secure storage in the EU (Frankfurt) and AI document processing. AI features can make mistakes — always verify before filing.</div>
@@ -1370,7 +1370,7 @@
         <h2>2. Your account</h2>
         <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
         <h2>3. Free trial &amp; billing</h2>
-        <p>New accounts start with a 14-day free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
+        <p>New accounts start with a 3-month free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
         <h2>4. Your data &amp; consent</h2>
         <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
         <h2>5. AI features — accuracy disclaimer</h2>
@@ -1444,7 +1444,7 @@
         <h2>2. Your account</h2>
         <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
         <h2>3. Free trial &amp; billing</h2>
-        <p>New accounts start with a 14-day free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
+        <p>New accounts start with a 3-month free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
         <h2>4. Your data &amp; consent</h2>
         <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
         <h2>5. AI features — accuracy disclaimer</h2>
@@ -2027,7 +2027,7 @@ function setLfMode(m){
   g('lfTrialNote').style.display=su?'block':'none';
   const rm=g('lfRememberWrap'); if(rm) rm.style.display=su?'none':'flex';
   g('lfErr').style.display='none'; g('lfNotice').style.display='none';
-  g('lfSubmit').textContent=su?'Start free 14-day trial →':'Sign in →';
+  g('lfSubmit').textContent=su?'Start free 3-month trial →':'Sign in →';
   g('lfTitle').textContent=(loginRole==='business')
     ? (su?'Create your business account':'Business sign in')
     : (su?'Create your firm account':'Accountant sign in');
@@ -2065,7 +2065,7 @@ async function doLogin(){
   finally{ setLfBusy(false); }
 }
 
-/* ---------- SIGN UP (14-day free trial, no credit card) ---------- */
+/* ---------- SIGN UP (3-month free trial, no credit card) ---------- */
 async function doSignup(){
   const name=document.getElementById('lfName').value.trim();
   const email=document.getElementById('lfEmail').value.trim();
@@ -2309,7 +2309,7 @@ async function shareStoredDoc(d, name){
   let fileUrl=null;
   try{ const su=await sb.storage.from('vault').createSignedUrl(d.storagePath, 60*60*24*365); if(su&&su.data&&su.data.signedUrl) fileUrl=su.data.signedUrl; }catch(e){}
   if(!fileUrl){ toast('Couldn’t prepare the file link — please try Share again in a moment.'); return false; }
-  const rep={ id:'DOC-'+Date.now().toString(36).toUpperCase(), type:'document', accent:'#0d9488',
+  const rep={ id:'DOC-'+Date.now().toString(36).toUpperCase(), type:'document', accent:'#0073fc',
     title:'Shared document: '+name, from:currentAccount.name, forName:linkedFirm,
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
     sharedAt:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
@@ -4357,11 +4357,11 @@ function bizEmailByName(name){ const c=myClients.find(x=>x.business_name===name)
 function buildEmailHTML(text){
   const body = String(text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
   return '<div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f1f33">'
-    +'<div style="font-weight:800;font-size:20px;color:#0e1733;margin-bottom:2px">Hisab<span style="color:#0d9488">One</span></div>'
+    +'<div style="font-weight:800;font-size:20px;color:#0e1733;margin-bottom:2px">Hisab<span style="color:#0073fc">One</span></div>'
     +'<div style="font-size:12px;color:#64748b;margin-bottom:20px">Tax &amp; Compliance, Simplified</div>'
     +'<div style="font-size:14px;line-height:1.7">'+body+'</div>'
-    +'<div style="margin:26px 0 8px"><a href="https://hisabone.ae" style="display:inline-block;background:#0d9488;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 26px;border-radius:10px">Sign in &amp; upload &rarr;</a></div>'
-    +'<div style="font-size:12px;color:#94a3b8;margin-top:20px;border-top:1px solid #e2e8f0;padding-top:14px">You received this because your business is linked on HisabOne. Visit <a href="https://hisabone.ae" style="color:#0d9488">hisabone.ae</a> to sign in and upload your documents securely.</div>'
+    +'<div style="margin:26px 0 8px"><a href="https://hisabone.ae" style="display:inline-block;background:#0073fc;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 26px;border-radius:10px">Sign in &amp; upload &rarr;</a></div>'
+    +'<div style="font-size:12px;color:#94a3b8;margin-top:20px;border-top:1px solid #e2e8f0;padding-top:14px">You received this because your business is linked on HisabOne. Visit <a href="https://hisabone.ae" style="color:#0073fc">hisabone.ae</a> to sign in and upload your documents securely.</div>'
     +'</div>';
 }
 async function sendAppEmail(to,subject,text){
@@ -4431,7 +4431,7 @@ function buildComplianceReport(){
   const deadlineRows=upcoming.slice(0,8).map(e=>{ const dl=calDaysUntil(e.date); return [e.title, e.detail, calFmt(e.date), dl<0?'Overdue':('in '+dl+' days')]; });
   return {
     id:'CR-'+Date.now().toString(36).toUpperCase(),
-    type:'compliance', accent:'#0d9488',
+    type:'compliance', accent:'#0073fc',
     title:'Compliance Report',
     from:name, forName:linkedFirm||name,
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
@@ -4479,7 +4479,7 @@ function buildAuditTrailReport(){
 }
 /* themed report document (inline-styled so the PDF matches the in-app view exactly) */
 function reportDocHTML(rep){
-  const A=rep.accent||'#0d9488';
+  const A=rep.accent||'#0073fc';
   const sum=(rep.summary||[]).map(s=>'<div style="flex:1;min-width:140px;background:#f6fafc;border:1px solid #e5ecf1;border-radius:10px;padding:13px 15px"><div style="font-size:10.5px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">'+s[0]+'</div><div style="font-size:19px;font-weight:700;color:#0d1b24;margin-top:4px;word-break:break-word">'+s[1]+'</div></div>').join('');
   const tables=(rep.tables||[]).map(t=>'<div style="margin-top:22px"><div style="font-size:12.5px;font-weight:700;color:'+A+';text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">'+t.title+'</div><table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr>'+t.headers.map(h=>'<th style="text-align:left;background:'+A+';color:#fff;padding:8px 10px;font-weight:600">'+h+'</th>').join('')+'</tr>'+(t.rows.length?t.rows.map((r,ri)=>'<tr>'+r.map(c=>'<td style="padding:8px 10px;border-bottom:1px solid #e8eef3;color:#22313d;background:'+(ri%2?'#f8fbfd':'#ffffff')+'">'+(c==null?'—':c)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+t.headers.length+'" style="padding:14px;color:#8aa0ae;text-align:center;border-bottom:1px solid #e8eef3">No records yet</td></tr>')+'</table></div>').join('');
   return '<div style="background:#ffffff;color:#0d1b24;font-family:Inter,system-ui,-apple-system,sans-serif">'
@@ -6247,7 +6247,7 @@ async function adminBoot(){
     admShow('<div class="adm-login"><div style="font-size:30px;margin-bottom:10px">🔒</div><h1 style="color:#fff;font-size:19px">Not authorised</h1>'
       +'<p class="adm-muted" style="margin-top:10px">The Command Centre is restricted to the owner account. You are signed in as '+ctEsc(em)+'.</p>'
       +'<button class="adm-btn ghost" style="margin-top:16px" onclick="admSwitchAccount()">Sign in with a different account</button>'
-      +'<div style="margin-top:12px"><a href="/" style="color:#27e0cf;font-size:12.5px">← Back to HisabOne</a></div></div>');
+      +'<div style="margin-top:12px"><a href="/" style="color:#1e9bff;font-size:12.5px">← Back to HisabOne</a></div></div>');
     return;
   }
   _admSession=s;
@@ -6264,7 +6264,7 @@ function admLoginForm(msg){
     +'<input id="admEmail" class="adm-in" type="email" placeholder="Email" style="width:100%;margin-bottom:10px" autocomplete="username">'
     +'<input id="admPass" class="adm-in" type="password" placeholder="Password" style="width:100%;margin-bottom:14px" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')admDoLogin()">'
     +'<button class="adm-btn" style="width:100%;padding:12px" onclick="admDoLogin()">Enter →</button>'
-    +'<div style="margin-top:14px"><a href="/" style="color:#27e0cf;font-size:12.5px">← Back to HisabOne</a></div></div>');
+    +'<div style="margin-top:14px"><a href="/" style="color:#1e9bff;font-size:12.5px">← Back to HisabOne</a></div></div>');
 }
 async function admDoLogin(){
   var em=(document.getElementById('admEmail')||{}).value||'', pw=(document.getElementById('admPass')||{}).value||'';
@@ -6338,7 +6338,7 @@ function admStatDetail(){
   else if(_admStatSel==='vault'){ title='Document vault — detail';
     body=split([['Files stored',s.vault_files||0],['Document requests fulfilled',s.doc_requests_done||0],['Requests total',s.doc_requests||0]])
       +'<div class="adm-note" style="margin-top:10px">'+(s.vault_bytes?(s.vault_bytes/1048576).toFixed(1):'0')+' MB of private, owner-scoped storage in use.</div>'; }
-  return '<div class="adm-card" style="margin-top:14px;border-color:rgba(39,224,207,.35)"><h3>🔍 '+title+' <span style="flex:1"></span><button class="adm-x" onclick="admShowStat(\''+_admStatSel+'\')" title="Close">✕</button></h3>'+body+'</div>';
+  return '<div class="adm-card" style="margin-top:14px;border-color:rgba(30,155,255,.35)"><h3>🔍 '+title+' <span style="flex:1"></span><button class="adm-x" onclick="admShowStat(\''+_admStatSel+'\')" title="Close">✕</button></h3>'+body+'</div>';
 }
 function admBars(arr,keyL,keyN){
   if(!arr||!arr.length) return '<div class="adm-muted" style="padding:14px 2px">No data yet.</div>';

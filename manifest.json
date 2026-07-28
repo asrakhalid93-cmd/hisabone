@@ -1,0 +1,13 @@
+{
+  "name": "HisabOne — Tax & Compliance, Simplified",
+  "short_name": "HisabOne",
+  "description": "The UAE compliance layer: VAT, Corporate Tax, audits and deadlines for businesses and their accountants.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f1f4f9",
+  "theme_color": "#0073fc",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "/logo.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any" }
+  ]
+}

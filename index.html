@@ -18,6 +18,9 @@
 <meta name="twitter:description" content="The UAE compliance layer for businesses and accountants.">
 <meta name="twitter:image" content="https://hisabone.ae/og.png">
 <link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0073fc">
+<link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -29,8 +32,8 @@
     /* dark base */
     --text:#e8eef6; --muted:#8ea3bd; --line:rgba(255,255,255,.09);
     --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.07);
-    --green:#34d399; --amber:#fbbf24; --red:#f87171;
-    --green-bg:rgba(52,211,153,.15); --amber-bg:rgba(251,191,36,.15); --red-bg:rgba(248,113,113,.15);
+    --green:#1e9bff; --amber:#fbbf24; --red:#f87171;
+    --green-bg:rgba(30,155,255,.15); --amber-bg:rgba(251,191,36,.15); --red-bg:rgba(248,113,113,.15);
     /* defaults (business / blue) */
     --bg1:#071326; --bg2:#0b2244; --accent:#1e9bff; --accent-d:#0073fc;
     --accent-bg:rgba(30,155,255,.15); --topbar:rgba(7,17,34,.85);
@@ -186,7 +189,7 @@
   .step{display:flex;gap:14px;padding:16px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
   .stepnum{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#06122a;
     font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .stepnum.done{background:var(--green);color:#06241a}
+  .stepnum.done{background:var(--green);color:#fff}
   .step h4{font-size:14.5px;margin-bottom:3px}.step p{color:var(--muted);font-size:13px}
   .check{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
   .check:last-child{border-bottom:0}
@@ -256,8 +259,8 @@
   :root{
     --ink:#111c30; --text:#22304a; --muted:#5f6e88; --line:#e7ebf2;
     --panel:#ffffff; --panel2:#f2f5f9;
-    --green:#0e9f6e; --amber:#b7791f; --red:#dd3a53;
-    --green-bg:rgba(14,159,110,.11); --amber-bg:rgba(183,121,31,.12); --red-bg:rgba(221,58,83,.10);
+    --green:#0073fc; --amber:#b7791f; --red:#dd3a53;
+    --green-bg:rgba(0,115,252,.10); --amber-bg:rgba(183,121,31,.12); --red-bg:rgba(221,58,83,.10);
     --bg1:#f1f4f9; --bg2:#fafbfd; --accent:#0073fc; --accent-d:#0053d6;
     --accent-bg:rgba(0,115,252,.10); --accent-bg2:rgba(0,115,252,.16); --topbar:rgba(255,255,255,.88);
     --brand-grad:linear-gradient(120deg,#008efe,#0059f9 52%,#7a2ff0);
@@ -802,7 +805,7 @@
   .adm-wrap{max-width:1180px;margin:0 auto;padding:26px 22px 60px}
   .adm-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
   .adm-top h1{font-size:22px;letter-spacing:-.3px;color:#fff}
-  .adm-badge{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#7ef0dd;background:rgba(30,155,255,.13);border:1px solid rgba(30,155,255,.3);padding:4px 10px;border-radius:20px}
+  .adm-badge{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#7cc0ff;background:rgba(30,155,255,.13);border:1px solid rgba(30,155,255,.3);padding:4px 10px;border-radius:20px}
   .adm-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;background:rgba(255,255,255,.05);padding:5px;border-radius:13px;border:1px solid rgba(255,255,255,.08)}
   .adm-tabs button{flex:1;min-width:110px;background:transparent;border:0;color:#9fb0c8;font-weight:700;font-size:12.5px;padding:9px 12px;border-radius:9px;cursor:pointer;transition:.18s}
   .adm-tabs button.on{background:linear-gradient(120deg,#0073fc,#4f7ef0);color:#fff;box-shadow:0 6px 18px rgba(0,115,252,.35)}
@@ -828,11 +831,11 @@
   .adm-pill{font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:12px;cursor:pointer;user-select:none}
   .adm-pill.todo{background:rgba(255,255,255,.1);color:#9fb0c8}
   .adm-pill.doing{background:rgba(255,190,70,.16);color:#ffd27a}
-  .adm-pill.done{background:rgba(60,220,150,.16);color:#7ef0b8}
+  .adm-pill.done{background:rgba(30,155,255,.16);color:#7cc0ff}
   .adm-pill.open{background:rgba(255,190,70,.16);color:#ffd27a}
-  .adm-pill.filled{background:rgba(60,220,150,.16);color:#7ef0b8}
+  .adm-pill.filled{background:rgba(30,155,255,.16);color:#7cc0ff}
   .adm-pill.idea{background:rgba(255,255,255,.1);color:#9fb0c8}
-  .adm-pill.active{background:rgba(60,220,150,.16);color:#7ef0b8}
+  .adm-pill.active{background:rgba(30,155,255,.16);color:#7cc0ff}
   .adm-pill.paused{background:rgba(255,190,70,.16);color:#ffd27a}
   .adm-bar{display:flex;align-items:flex-end;gap:6px;height:90px;padding-top:6px}
   .adm-bar .b{flex:1;background:linear-gradient(180deg,#1e9bff,#4f7ef0);border-radius:5px 5px 2px 2px;min-height:3px;position:relative}
@@ -904,10 +907,12 @@
 
 <!-- ================= LOGIN (full-page gradient portal selector) ================= -->
 <div id="login">
+  <div id="betaStrip" style="background:linear-gradient(90deg,#008efe,#0059f9 55%,#7a2ff0);color:#fff;text-align:center;font-size:12px;font-weight:600;letter-spacing:.3px;padding:7px 14px">HisabOne is in beta — new features ship weekly &middot; 3-month free trial for early users</div>
   <div class="ltopbar">
     <div class="ltopbar-logo">
       <span class="mk" role="img" aria-label="HisabOne logo"></span>
       <span class="word">Hisab<span class="one">One</span></span>
+      <span style="font-size:9.5px;font-weight:800;letter-spacing:.8px;background:rgba(0,115,252,.14);color:#0073fc;border:1px solid rgba(0,115,252,.35);padding:3px 8px;border-radius:12px;margin-left:6px;align-self:center">BETA</span>
     </div>
     <div class="ltabs">
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
@@ -916,6 +921,7 @@
       <button id="tabSignup" class="ltab" onclick="switchView('signup')">Sign Up</button>
       <button id="tabPricing" class="ltab" onclick="switchView('pricing')">Pricing</button>
       <button id="tabSecurity" class="ltab" onclick="switchView('security')">Security</button>
+      <button id="langBtn" class="ltab" onclick="toggleLang()" title="اللغة العربية" style="font-weight:700">عربي</button>
     </div>
   </div>
 
@@ -926,14 +932,18 @@
     <!-- hero -->
     <div class="hero">
       <div class="hero-copy reveal">
-        <div class="hero-badge">UAE-native &middot; FTA-first &middot; AI-assisted</div>
-        <h1 class="hero-h1">The compliance layer for the&nbsp;<span class="hgrad">UAE</span>.</h1>
-        <p class="hero-p">One secure workspace for businesses and their accountants — every VAT, corporate-tax and audit deadline tracked and chased by AI.</p>
+        <div class="hero-badge" id="heroBadge">UAE-native &middot; FTA-first &middot; AI-assisted</div>
+        <h1 class="hero-h1" id="heroH1">The compliance layer for the&nbsp;<span class="hgrad">UAE</span>.</h1>
+        <p class="hero-p" id="heroSub">One secure workspace for businesses and their accountants — every VAT, corporate-tax and audit deadline tracked and chased by AI.</p>
         <div class="hero-cta">
-          <button class="lf-btn" style="width:auto;padding:13px 30px" onclick="switchView('signup')">Start free trial &rarr;</button>
-          <button class="hero-ghost" onclick="switchView('signin')">Sign in</button>
+          <button class="lf-btn" id="ctaTrial" style="width:auto;padding:13px 30px" onclick="switchView('signup')">Start free trial &rarr;</button>
+          <button class="hero-ghost" id="ctaSignin" onclick="switchView('signin')">Sign in</button>
         </div>
-        <div class="hero-note">Private preview &middot; access by invitation &middot; built for the era of VAT, Corporate Tax &amp; e-invoicing</div>
+        <div class="hero-note" id="heroNote">Beta &middot; 3-month free trial for early users &middot; built for the era of VAT, Corporate Tax &amp; e-invoicing</div>
+        <div id="in5Line" style="display:flex;align-items:center;gap:9px;margin-top:16px;font-size:12.5px;color:rgba(255,255,255,.78)">
+          <span style="font-weight:800;font-size:13px;letter-spacing:.5px;background:#fff;color:#0b1226;border-radius:8px;padding:4px 9px">in5</span>
+          <span>Backed by <b>in5 tech</b> — Dubai's technology startup incubator (TECOM Group)</span>
+        </div>
       </div>
       <div class="hero-visual reveal" aria-hidden="true">
         <div class="mock">
@@ -1085,6 +1095,7 @@
     <div class="homefoot">
       <a class="footcontact" href="mailto:info@hisabone.ae"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg> Contact us</a>
       <div>HisabOne &middot; Tax &amp; Compliance, Simplified &middot; <a href="mailto:info@hisabone.ae">info@hisabone.ae</a></div>
+      <div style="margin-top:7px;color:rgba(255,255,255,.6);font-size:12px">Beta phase &middot; Backed by <b style="color:rgba(255,255,255,.85)">in5 tech</b>, Dubai (TECOM Group)</div>
       <div style="margin-top:7px"><a href="#" onclick="switchView('security');return false">Security</a> &middot; <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> &middot; <a href="#" onclick="switchView('terms');return false">Terms of Service</a></div></div>
   </div>
   </div><!-- /viewHome -->
@@ -1213,36 +1224,45 @@
       <div class="grid g3" style="margin-bottom:30px;align-items:stretch">
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Starter</div>
-          <div class="psub">For a small business</div>
-          <div class="priceblk" data-monthly="199" style="margin-bottom:14px"><span class="price-amt">AED 199</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Corporate Tax registration &amp; application</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI Assist &amp; tax guides</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Document vault &amp; expiry alerts</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link your accountant</span></div>
-          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Sign in</button>
+          <div class="psub">Stay compliant</div>
+          <div class="priceblk" data-monthly="199" style="margin-bottom:10px"><span class="price-amt">AED 199</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">2 seats — 1 team member + 1 Manager</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Dashboard, health score &amp; “Needs your action”</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Compliance calendar &amp; Regulation radar</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Document vault — AI date-reading, expiry alerts &amp; renewals</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link your accountant · requests &amp; in-app messages</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI Assist (fair use) &amp; AI invoice reading — 25/mo</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>E-invoicing readiness, TRN &amp; penalty checks</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
         </div>
         <div class="card pcard" style="cursor:default;border:2px solid var(--accent);position:relative">
           <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
           <div class="ptitle">Growth</div>
-          <div class="psub">For a growing business</div>
-          <div class="priceblk" data-monthly="299" style="margin-bottom:14px"><span class="price-amt">AED 299</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="psub">Do your filings</div>
+          <div class="priceblk" data-monthly="299" style="margin-bottom:10px"><span class="price-amt">AED 299</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">4 seats — 3 team members + 1 Manager</div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Starter</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>All VAT &amp; Corporate Tax filings</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT &amp; CT calculator</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Automated compliance check</span></div>
-          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Sign in</button>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Invoice inbox with running VAT position — 150 AI reads/mo</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT calculator with full VAT201 boxes</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Corporate Tax calculator — FTA return, page by page</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Draft-return review &amp; e-signature workflow</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Bank statement drop · reports &amp; audit trail</span></div>
+          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
         </div>
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Business Pro</div>
-          <div class="psub">For a larger business</div>
-          <div class="priceblk" data-monthly="499" style="margin-bottom:14px"><span class="price-amt">AED 499</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="psub">Groups &amp; teams</div>
+          <div class="priceblk" data-monthly="499" style="margin-bottom:10px"><span class="price-amt">AED 499</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">11 seats — 10 team members + 1 Manager</div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Growth</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; tracking</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link an external auditor</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority support</span></div>
-          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Sign in</button>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Multi-company — up to 3 companies (AED 99/mo each extra)</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; external auditor link</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Unlimited AI invoice reading &amp; AI Assist (fair use)</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
         </div>
       </div>
+      <div class="muted" style="text-align:center;font-size:12px;margin:-16px 0 26px">Every plan includes one dedicated <b>Manager seat</b> — a separate login that oversees and observes the whole workspace (every page, report and message) without being able to edit anything. Invite yours from the Team tab.</div>
 
       <div class="lsectlabel" style="text-align:center">For Accountants &amp; Audit Firms</div>
       <div class="card" style="cursor:default;margin-bottom:10px">
@@ -1496,6 +1516,7 @@
     </div>
     <div class="spacer"></div>
     <div class="topuser">
+      <span id="coSwitchWrap" style="display:none"></span>
       <span id="trialPill" class="trial-pill" style="display:none"></span>
       <div class="notifwrap"><button class="bellbtn" id="bellBtn" aria-label="Notifications" onclick="toggleNotif(event)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4.5 1.8 5.8 1.8 5.8H4.2S6 13.5 6 9"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="belldot" id="bellDot" style="display:none"></span></button><div class="notifpanel" id="notifPanel" style="display:none"></div></div>
       <div class="avatar" id="avatar">?</div>
@@ -1537,16 +1558,29 @@ function updateTrialPill(){
 
 /* per-user private state → account_data.data (debounced write-through; cross-user data lives in real tables) */
 let _saveT=null, _blobDirty=false;
-function blobId(){ return (currentAccount && currentAccount.role==='firm') ? (currentAccount.firmId||currentAccount.id) : (currentAccount?currentAccount.id:null); }
+function blobId(){ if(!currentAccount) return null; return currentAccount.role==='firm' ? (currentAccount.firmId||currentAccount.id) : (currentAccount.bizId||currentAccount.id); }
+function bizWorkspaceId(){ return currentAccount ? (currentAccount.bizId||currentAccount.id) : null; }
 function canManage(){ return currentAccount && currentAccount.role==='firm' && (currentAccount.teamRole==='owner' || currentAccount.teamRole==='manager'); }
 function isOwnerRole(){ return currentAccount && currentAccount.role==='firm' && currentAccount.teamRole==='owner'; }
+function isBizOwner(){ return currentAccount && currentAccount.role==='business' && currentAccount.teamRole==='owner'; }
+/* the Manager seat oversees & observes — everything visible, nothing editable */
+function bizCan(){ return currentAccount && currentAccount.role==='business' && currentAccount.teamRole!=='manager'; }
+function bizGuard(){ if(currentAccount&&currentAccount.role==='business'&&currentAccount.teamRole==='manager'){ toast('This is a view-only Manager seat — a team member or the owner makes changes.'); return false; } return true; }
 var onboardDismissed=false, _sampleMode=false;
 function saveAccountData(){ if(!currentAccount||_sampleMode) return; _blobDirty=true; clearTimeout(_saveT); _saveT=setTimeout(flushAccountData, 900); }
+function cleanVaultCopy(arr){ return (arr||[]).map(function(d){ var o={}; for(var k in d){ if(k!=='_up'&&k!=='uploading'&&k!=='uploadError'&&Object.prototype.hasOwnProperty.call(d,k)) o[k]=d[k]; } return o; }); }
+function snapshotCompanies(cleanVault){
+  if(!bizCompanies) bizCompanies=[{id:bizActiveCo, name:(currentAccount&&currentAccount.name)||'My company'}];
+  var co=bizCompanies.find(function(c){return c.id===bizActiveCo;});
+  if(co){ co.profile=bizCompany; co.vault=cleanVault||cleanVaultCopy(vaultDocs); co.calendar=calendarEvents; co.vatCert=vatCertMeta; co.ctCert=ctCertMeta; co.revBand=bizRevenueBand; co.invoices=invoiceInbox; co.renewals=bizRenewals; }
+  return bizCompanies;
+}
 async function flushAccountData(){
   if(!currentAccount||!sb||!_blobDirty||_sampleMode) return; _blobDirty=false;
   const cleanVault=(vaultDocs||[]).map(function(d){ var o={}; for(var k in d){ if(k!=='_up'&&k!=='uploading'&&k!=='uploadError'&&Object.prototype.hasOwnProperty.call(d,k)) o[k]=d[k]; } return o; });
   const data = currentAccount.role==='business'
-    ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, companyProfile:bizCompany}
+    ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, companyProfile:bizCompany,
+       invoiceInbox:invoiceInbox, renewals:bizRenewals, companies:snapshotCompanies(cleanVault), activeCompany:bizActiveCo}
     : {firmReminders, clientMeta, ctScenarios, ctDrafts, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   try{ await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()}); }catch(e){}
 }
@@ -1586,7 +1620,7 @@ function fmtRegDate(iso){
 async function loadWorkspace(){
   if(!sb||!currentAccount) return;
   const uid=currentAccount.id;
-  const fid = currentAccount.role==='firm' ? (currentAccount.firmId||uid) : uid;
+  const fid = currentAccount.role==='firm' ? (currentAccount.firmId||uid) : (currentAccount.bizId||uid);
   try{
     const [{data:blob},{data:reps}] = await Promise.all([
       sb.from('account_data').select('data').eq('user_id',fid).maybeSingle(),
@@ -1600,9 +1634,13 @@ async function loadWorkspace(){
       calendarEvents=d.calendarEvents||[]; vatCertMeta=d.vatCertMeta||null; ctCertMeta=d.ctCertMeta||null; calYear=null; calMonth=null;
       bizRevenueBand=d.bizRevenueBand||null;
       bizCompany=d.companyProfile||{};
+      invoiceInbox=d.invoiceInbox||[]; bizRenewals=d.renewals||[];
+      bizCompanies=d.companies||null; bizActiveCo=d.activeCompany||'c1';
+      if(!bizCompanies) bizCompanies=[{id:bizActiveCo, name:(currentAccount.companyName||currentAccount.name)||'My company'}];
+      try{ const {data:tm}=await sb.from('team_members').select('*').eq('firm_id',fid).order('created_at',{ascending:true}); teamMembers=tm||[]; }catch(e){ teamMembers=[]; }
       const [{data:lnk},{data:reqs}] = await Promise.all([
-        sb.from('links').select('firm_id').eq('business_id',uid).maybeSingle(),
-        sb.from('doc_requests').select('*').eq('business_id',uid).order('created_at',{ascending:false})
+        sb.from('links').select('firm_id').eq('business_id',fid).maybeSingle(),
+        sb.from('doc_requests').select('*').eq('business_id',fid).order('created_at',{ascending:false})
       ]);
       linkedFirm=''; linkedFirmId='';
       if(lnk&&lnk.firm_id){
@@ -1680,6 +1718,7 @@ function rmClientInApp(i){
 
 /* business: link a firm using their invite code (looked up across registered firm accounts) */
 async function linkFirmByCode(){
+  if(!bizGuard()) return;
   const code=(document.getElementById('firmCode').value||'').trim().toUpperCase();
   const err=document.getElementById('linkErr');
   if(err) err.style.display='none';
@@ -1793,7 +1832,8 @@ function expiryInfo(iso){
   if(days<60) return {txt:txt+' · renew soon',col:'var(--amber)'};
   return {txt:txt,col:'var(--green)'};
 }
-function uploadCompanyDoc(typeId){ openDocTruth(function(){ runUploadCompanyDoc(typeId); }); }
+function uploadCompanyDoc(typeId){
+  if(!bizGuard()) return; openDocTruth(function(){ runUploadCompanyDoc(typeId); }); }
 function runUploadCompanyDoc(typeId){
   const inp=document.getElementById('fileInput');
   inp.value='';
@@ -1850,7 +1890,8 @@ function removeCompanyDoc(typeId){
     saveAccountData(); renderPage();
   }});
 }
-function uploadVaultDoc(){ openDocTruth(function(){ runUploadVaultDoc(); }); }
+function uploadVaultDoc(){
+  if(!bizGuard()) return; openDocTruth(function(){ runUploadVaultDoc(); }); }
 function runUploadVaultDoc(){
   const inp=document.getElementById('fileInput');
   inp.value='';
@@ -1867,10 +1908,12 @@ function runUploadVaultDoc(){
   inp.click();
 }
 function deleteVaultDoc(i){
+  if(!bizGuard()) return;
   var name=(vaultDocs[i]&&vaultDocs[i].name)||'this document';
   openConfirm({title:'Delete document', message:'Delete "'+name+'"? This cannot be undone.', onYes:function(){ vaultDocs.splice(i,1); renderPage(); }});
 }
-function uploadDoc(kind,i){ openDocTruth(function(){ runUploadDoc(kind,i); }); }
+function uploadDoc(kind,i){
+  if(!bizGuard()) return; openDocTruth(function(){ runUploadDoc(kind,i); }); }
 function runUploadDoc(kind,i){
   const arr = kind==='tax'?bizTaxDocs:bizAuditDocs;
   if(i==null||i<0) return;
@@ -1913,7 +1956,7 @@ function deleteReqDoc(kind,i){
 function performUnlink(p){
   if(!p) return;
   if(p.type==='firm'){
-    if(sb&&currentAccount){ try{ sb.from('links').delete().eq('business_id',currentAccount.id).then(()=>{}); }catch(e){} }
+    if(sb&&currentAccount){ try{ sb.from('links').delete().eq('business_id',bizWorkspaceId()).then(()=>{}); }catch(e){} }
     linkedFirm=''; linkedFirmId='';
   }
   else if(p.type==='client'){
@@ -1926,6 +1969,7 @@ function performUnlink(p){
   renderPage();
 }
 function requestUnlinkFirm(){
+  if(!bizGuard()) return;
   if(confirm('Unlink your accountant? They will no longer see your requests and shared reports.')) performUnlink({type:'firm'});
 }
 function requestUnlinkClient(i){
@@ -2081,6 +2125,7 @@ async function doSignup(){
   try{
     const meta={name:name, role:loginRole};
     if(window._joinToken){ meta.join_token=window._joinToken; }
+
     const {data,error}=await sb.auth.signUp({
       email:email, password:pass,
       options:{ data:meta, emailRedirectTo:'https://hisabone.ae' }
@@ -2149,16 +2194,15 @@ async function enterFromSession(session, expectRole){
                   inviteCode:prof.invite_code||'', trialEndsAt:prof.trial_ends_at,
                   parentFirmId:prof.parent_firm_id||null, teamRole:null,
                   firmId: prof.role==='firm' ? (prof.parent_firm_id||uid) : uid,
+                  bizId: prof.role==='business' ? (prof.parent_firm_id||uid) : uid,
                   firmName: prof.name, digestFreq:'off'};
-  if(prof.role==='firm'){
-    if(prof.parent_firm_id){
-      let tmRow=null;
-      try{ const {data}=await sb.from('team_members').select('team_role,digest_freq').eq('user_id',uid).maybeSingle(); tmRow=data; }catch(e){}
-      currentAccount.teamRole=(tmRow&&tmRow.team_role)||'consultant';
-      currentAccount.digestFreq=(tmRow&&tmRow.digest_freq)||'off';
-      try{ const {data:fp}=await sb.from('profiles').select('name,invite_code').eq('id',prof.parent_firm_id).maybeSingle(); if(fp){ currentAccount.firmName=fp.name; currentAccount.inviteCode=fp.invite_code||''; } }catch(e){}
-    } else { currentAccount.teamRole='owner'; }
-  }
+  if(prof.parent_firm_id){
+    let tmRow=null;
+    try{ const {data}=await sb.from('team_members').select('team_role,digest_freq').eq('user_id',uid).maybeSingle(); tmRow=data; }catch(e){}
+    currentAccount.teamRole=(tmRow&&tmRow.team_role)||'consultant';
+    currentAccount.digestFreq=(tmRow&&tmRow.digest_freq)||'off';
+    try{ const {data:fp}=await sb.from('profiles').select('name,invite_code').eq('id',prof.parent_firm_id).maybeSingle(); if(fp){ currentAccount.firmName=fp.name; if(prof.role==='firm') currentAccount.inviteCode=fp.invite_code||''; if(prof.role==='business') currentAccount.companyName=fp.name; } }catch(e){}
+  } else { currentAccount.teamRole='owner'; }
   window._joinToken=null;
   await loadWorkspace();
   enterApp(prof.role);
@@ -2180,6 +2224,7 @@ function logout(){
   onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null; bizRevenueBand=null;
   bizCompany={}; clientProfiles={}; ctR={}; ctDrafts={};
+  invoiceInbox=[]; bizRenewals=[]; bizCompanies=null; bizActiveCo='c1';
   ctSBRon=false; ctMNEon=false; ctStep=0; ctClient=''; ctTP={}; ctTPsource='';
   linkedFirm=''; linkedFirmId=''; inviteCode='';
   if(typeof chatTeardown==='function') chatTeardown();
@@ -2193,6 +2238,10 @@ function logout(){
 /* ---------- SVG ICON SYSTEM (replaces emoji) ---------- */
 /* ================= COMPLIANCE CALENDAR + DOC SHARING ================= */
 let calendarEvents = [];   /* {id,type:'vat'|'ct'|'other',title,date(ISO),detail,source,periodEnd?} */
+let invoiceInbox = [];     /* year-round invoice inbox for the ACTIVE company */
+let bizRenewals = [];      /* manual renewal items [{id,name,date}] */
+let bizCompanies = null;   /* [{id,name,profile,vault,calendar,vatCert,ctCert,revBand,invoices,renewals}] */
+let bizActiveCo = 'c1';
 let bizCompany = {};       /* business's own company profile: legal, license, authority, entityType, vatTrn, ctTrn, fyEnd, address, emirate, cName, cRole, cEmail, cPhone */
 let clientProfiles = {};   /* firm side: business_id -> that client's companyProfile (via RPC) */
 let vatCertMeta = null;    /* {name,readAt,periodEnd,taxPeriod,next,detected} */
@@ -2281,7 +2330,7 @@ function vaultUpload(entry, f){
   if(!sb||!currentAccount||!entry||!f) return;
   entry.uploading=true; entry.uploadError=false;
   try{
-    entry._up = sb.storage.from('vault').upload(currentAccount.id+'/'+Date.now()+'_'+f.name, f)
+    entry._up = sb.storage.from('vault').upload(bizWorkspaceId()+'/'+Date.now()+'_'+f.name, f)
       .then(function(r){ entry.uploading=false; if(r&&!r.error&&r.data){ entry.storagePath=r.data.path; saveAccountData(); } else { entry.uploadError=true; } if((page==='docs')&&typeof renderPage==='function') renderPage(); return r; })
       .catch(function(e){ entry.uploading=false; entry.uploadError=true; if((page==='docs')&&typeof renderPage==='function') renderPage(); return {error:e}; });
   }catch(e){ entry.uploading=false; entry.uploadError=true; }
@@ -2317,7 +2366,7 @@ async function shareStoredDoc(d, name){
     tables:[], fileUrl:fileUrl, fileName:d.name,
     note: currentAccount.name+' shared the original document with you through HisabOne. Use the button above to open or download the exact file — this is the client’s uploaded document, not a copy.' };
   try{
-    const {error}=await sb.from('shared_reports').insert({from_id:currentAccount.id, to_id:linkedFirmId, report:rep});
+    const {error}=await sb.from('shared_reports').insert({from_id:bizWorkspaceId(), to_id:linkedFirmId, report:rep});
     if(error){ toast('Could not share — please try again.'); return false; }
     d.sharedWithFirm=true; saveAccountData(); renderPage();
     toast(name+' (original file) shared with '+linkedFirm);
@@ -2326,10 +2375,12 @@ async function shareStoredDoc(d, name){
 }
 /* share a generic "Other documents" vault file with the linked accountant */
 async function shareVaultDoc(i){
+  if(!bizGuard()) return;
   const d=vaultDocs[i]; if(!d) return;
   await shareStoredDoc(d, d.name);
 }
 async function shareCompanyDoc(typeId){
+  if(!bizGuard()) return;
   const d=vaultDocs.find(x=>x.typeId===typeId); if(!d) return;
   const t=COMPANY_DOC_TYPES.find(x=>x.id===typeId); const name=t?t.name:'Company document';
   await shareStoredDoc(d, name);
@@ -2386,10 +2437,12 @@ const NAV = {
     {id:'btax', ic:'file-text', label:'Tax Documents'},
     {id:'baudit', ic:'clipboard', label:'Audit Documents'},
     {id:'bvat', ic:'calc', label:'VAT Calculator'},
+    {id:'binv', ic:'inbox', label:'Invoices'},
     {id:'docs', ic:'folder', label:'Company Information'},
     {id:'calendar', ic:'calendar', label:'Compliance Calendar'},
     {id:'breports', ic:'chart', label:'Reports'},
     {id:'bchat', ic:'chat', label:'Messages'},
+    {id:'bteam', ic:'users', label:'Team'},
     {id:'links', ic:'link', label:'Linked Firm'},
   ],
   firm:[
@@ -2466,12 +2519,14 @@ function renderPage(){ var m=document.getElementById('main');
   if(page==='fguides' && typeof aiRenderLog==='function') aiRenderLog('firm');
   if((page==='bchat'||page==='fchat') && typeof chatAfterRender==='function') chatAfterRender();
   if(typeof updateBell==='function') updateBell();
+  if(typeof renderCompanySwitch==='function') renderCompanySwitch();
   saveAccountData(); }
 
 /* ---------- PAGES ---------- */
 const PAGES = {
 dash:()=>{
   const firstName = currentAccount ? currentAccount.name : 'there';
+  const _approvals = approvalsInboxHTML();
   const open = [...bizTaxDocs.map(d=>({...d,kind:'tax'})), ...bizAuditDocs.map(d=>({...d,kind:'audit'}))].filter(d=>d.state!=='done');
   const urgent = open.filter(d=>d.urg==='Urgent'||d.urg==='High');
   const totalReq = bizTaxDocs.length + bizAuditDocs.length;
@@ -2482,6 +2537,8 @@ dash:()=>{
   return `
   <h1>Welcome back, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
+  ${_approvals}
+  ${regulationRadarHTML()}
   ${onboardingHTML()}
   ${einvoiceCountdownHTML()}
   ${einvReadinessHTML()}
@@ -2683,6 +2740,9 @@ bvat:()=>`
   <div class="ai"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>How it works</h3><p>Choose <b>Add VAT</b> when your figure is before VAT (HisabOne adds 5% on top), or <b>Extract VAT</b> when VAT is already included (HisabOne works out the VAT portion). Results update as you type.</p></div></div>`,
 
+binv:()=>invPageHTML(),
+bteam:()=>bizTeamPageHTML(),
+
 docs:()=>{
   const openTax=bizTaxDocs.filter(d=>d.state!=='done');
   const auditDone=bizAuditDocs.filter(d=>d.state==='done').length;
@@ -2692,6 +2752,8 @@ docs:()=>{
   <h1>Company Information</h1>
   <div class="sub">Your company profile and secure document vault. Fill in your details once — your accountant's Corporate Tax return picks them up automatically — and keep your core documents on file with dates read for you.</div>
   ${companyProfileCardsHTML()}
+  ${renewalsCardHTML()}
+  ${bankStatementsCardHTML()}
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('folder',16)} Company documents</h3><span class="pill p-teal">${onFile}/${COMPANY_DOC_TYPES.length} on file</span></div>
     <p class="muted" style="font-size:12.5px;margin-bottom:6px">Upload each document once. HisabOne reads the issue and expiry dates automatically and flags anything expiring soon.</p>
@@ -2953,6 +3015,15 @@ vat:()=>{
     </div>
     <input type="file" id="invFile" multiple accept="image/png,image/jpeg,image/webp,application/pdf" style="display:none" onchange="handleInvoiceFile(this)">
     <div id="invStatus" style="display:none;margin-top:12px"></div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+        <div><label class="flabel">Or import from a client's Invoice inbox</label>
+          <select id="impClient" class="finput" style="min-width:190px">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients</option>'}</select></div>
+        <div><label class="flabel">Quarter (blank = all)</label><input id="impQuarter" class="finput" placeholder="e.g. Q3 2026" style="max-width:130px"></div>
+        <button class="btn ghost" onclick="importClientInvoices()">${svgIcon('inbox',15)} Import client invoices</button>
+      </div>
+      <p class="muted" style="font-size:11.5px;margin-top:7px">Pulls the invoices your client has dropped into their Invoices tab all period — already OCR-read and categorised — straight into the tables below.</p>
+    </div>
   </div>
 
   <div class="card mb14">
@@ -4302,7 +4373,7 @@ function buildNotifs(){
   }
   (returnsList||[]).forEach(function(rt){
     if(currentAccount.role==='business'){
-      if(rt.business_id===currentAccount.id && rt.status==='pending_review') out.push({id:'ret_'+rt.id, ic:'clipboard', t:'Draft return to review', s:(rt.title||'Return')+(rt.period?(' · '+rt.period):''), page:'breports'});
+      if(rt.business_id===bizWorkspaceId() && rt.status==='pending_review') out.push({id:'ret_'+rt.id, ic:'clipboard', t:'Draft return to review', s:(rt.title||'Return')+(rt.period?(' · '+rt.period):''), page:'breports'});
     } else if(rt.firm_id===effFirmId()){
       if(rt.status==='approved') out.push({id:'reta_'+rt.id, ic:'success', t:'Return approved &amp; signed', s:(rt.title||'Return')+' — '+bizNameById(rt.business_id), page:'freports'});
       else if(rt.status==='changes_requested') out.push({id:'retc_'+rt.id, ic:'warn', t:'Changes requested', s:(rt.title||'Return')+' — '+bizNameById(rt.business_id), page:'freports'});
@@ -4590,7 +4661,7 @@ async function shareComplianceReport(){
   const rep=buildComplianceReport();
   rep.forName=linkedFirm; rep.sharedAt=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
   try{
-    const {error}=await sb.from('shared_reports').insert({from_id:currentAccount.id, to_id:linkedFirmId, report:rep});
+    const {error}=await sb.from('shared_reports').insert({from_id:bizWorkspaceId(), to_id:linkedFirmId, report:rep});
     if(error){ toast('Could not share the report — please try again.'); return; }
     toast('Compliance report shared with '+linkedFirm+' — it will appear in their Reports tab');
   }catch(e){ toast('Could not share the report — please try again.'); }
@@ -4738,6 +4809,426 @@ function applyInvoiceToCalculator(inv,target,fname){
   bits.push((rate!=null?rate:(vat&&vat>0?5:0))+'%');
   if(catUsed) bits.push('categorized: '+catUsed);
   return {ok:true,msg:'row '+(row+1)+' of '+(target==='s'?'Sales':'Purchases')+' · '+bits.join(' · ')};
+}
+
+/* ================= BUSINESS PORTAL v2: approvals, invoices, renewals, banks, companies, WhatsApp ================= */
+function waOpen(text, phone){
+  var p=(phone||'').replace(/[^0-9]/g,'');
+  var url='https://wa.me/'+(p?p:'')+'?text='+encodeURIComponent(text);
+  try{ window.open(url,'_blank'); }catch(e){}
+}
+function waRemind(i){
+  var r=(firmReminders||[])[i]; if(!r) return;
+  var c=(myClients||[]).find(function(x){return x.business_name===r.client;});
+  var p=c&&clientProfiles[c.business_id]?(clientProfiles[c.business_id].cPhone||''):'';
+  var txt='Hello '+r.client+' — a reminder from '+((currentAccount&&currentAccount.firmName)||'your accountant')+': please send "'+r.doc+'"'+(r.app?(' for '+r.app):'')+' via your HisabOne portal. Thank you!';
+  waOpen(txt, p);
+}
+function waClient(){
+  var c=(myClients||[]).find(function(x){return x.business_id===_viewClientId;});
+  if(!c){ toast('Open a client profile first'); return; }
+  var p=clientProfiles[c.business_id]?(clientProfiles[c.business_id].cPhone||''):'';
+  waOpen('Hello '+c.business_name+' — '+((currentAccount&&currentAccount.firmName)||'your accountant')+' here, via HisabOne. ', p);
+}
+/* ---- business team (seats incl. the Manager oversight seat) ---- */
+function bizRoleLabel(tr){
+  if(tr==='owner') return '<span class="pill p-teal" style="font-size:10px">Owner</span>';
+  if(tr==='manager') return '<span class="pill" style="font-size:10px;background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Manager · oversight</span>';
+  return '<span class="pill p-gray" style="font-size:10px">Team member</span>';
+}
+function bizTeamPageHTML(){
+  var owner=isBizOwner();
+  var members=(teamMembers||[]);
+  var hasManager=members.some(function(m){return m.team_role==='manager';});
+  var rows=members.map(function(m){
+    var tr=m.team_role||(m.is_owner?'owner':'consultant');
+    var pending=m.status==='invited';
+    var link='https://hisabone.ae/?join='+(m.invite_token||'');
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);flex-wrap:wrap">'
+      +'<div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent-bg);color:var(--accent-d);font-weight:700;flex-shrink:0">'+ctEsc((m.name||'?').trim().charAt(0).toUpperCase())+'</div>'
+      +'<div style="flex:1;min-width:130px"><div style="font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap">'+ctEsc(m.name)+bizRoleLabel(tr)+(pending?'<span class="pill p-amber" style="font-size:10px">Invite pending</span>':'')+'</div>'
+      +'<div class="muted" style="font-size:12px">'+(m.email?ctEsc(m.email):'')+'</div></div>'
+      +((owner&&pending&&m.invite_token)?'<button class="btn sm ghost" id="bcpy_'+m.id+'" onclick="copyJoinLink(\''+link+'\',\'bcpy_'+m.id+'\')">'+svgIcon('link',13)+' Copy link</button>':'')
+      +((owner&&!m.is_owner)?'<button class="btn sm ghost" onclick="rmBizMember(\''+m.id+'\')">Remove</button>':'')
+      +'</div>';
+  }).join('');
+  var invite='';
+  if(owner){
+    invite='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">'
+      +'<div class="flabel" style="margin-bottom:8px">Invite someone to this workspace</div>'
+      +'<div class="grid g2" style="gap:8px"><input id="btmName" class="finput" placeholder="Full name">'
+      +'<select id="btmRole" class="finput"><option value="consultant">Team member — works in the portal</option>'
+      +(hasManager?'':'<option value="manager">Manager — oversees &amp; observes (view-only)</option>')
+      +'</select></div>'
+      +'<input id="btmEmail" class="finput" placeholder="Work email" style="margin-top:8px">'
+      +'<button class="btn sm" style="margin-top:10px" onclick="addBizMember()">'+svgIcon('plus',13)+' Create invite link</button>'
+      +(hasManager?'<p class="muted" style="font-size:11.5px;margin-top:8px">Your Manager seat is taken — every plan includes exactly one Manager (oversight) login.</p>':'<p class="muted" style="font-size:11.5px;margin-top:8px">Every plan includes one dedicated <b>Manager</b> seat: a separate login that sees everything but changes nothing — perfect for an owner or supervisor who oversees the team.</p>')
+      +((typeof lastInvite!=='undefined'&&lastInvite)?('<div style="margin-top:12px;background:var(--accent-bg);border:1px dashed var(--accent);border-radius:10px;padding:12px">'
+        +'<div style="font-weight:600;font-size:12.5px;margin-bottom:6px">Invite link for '+ctEsc(lastInvite.name)+'</div>'
+        +'<div style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;word-break:break-all;color:var(--accent-d);margin-bottom:8px">'+ctEsc(lastInvite.link)+'</div>'
+        +'<button class="btn sm" id="bcpyLast" onclick="copyJoinLink(\''+lastInvite.link+'\',\'bcpyLast\')">'+svgIcon('link',13)+' Copy link</button>'
+        +'<p class="muted" style="font-size:11px;margin-top:7px">Share this link with '+ctEsc(lastInvite.name)+'. They open it, set a password, and get their own login into THIS workspace.</p></div>'):'')
+      +'</div>';
+  } else {
+    invite='<div class="muted" style="font-size:12.5px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">'+svgIcon('shield',13)+' Only the account owner can invite or remove team members.</div>';
+  }
+  return '<h1>Team</h1>'
+    +'<div class="sub">Give your staff their own logins to this workspace — plus one dedicated Manager seat that oversees and observes everything without editing.</div>'
+    +'<div class="grid g2 mb14" style="align-items:start">'
+    +'<div class="card"><div class="cardhead"><h3>'+svgIcon('users',16)+' Users &amp; seats</h3><span class="pill p-gray">'+(members.length||1)+' member'+(members.length===1?'':'s')+'</span></div>'
+    +(rows||'<div style="display:flex;align-items:center;gap:12px;padding:12px 4px"><div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent-bg);color:var(--accent-d);font-weight:700">'+ctEsc((currentAccount&&currentAccount.name||'?').charAt(0).toUpperCase())+'</div><div><div style="font-weight:600">'+ctEsc(currentAccount?currentAccount.name:'')+' '+bizRoleLabel('owner')+'</div><div class="muted" style="font-size:12px">'+ctEsc(currentAccount?currentAccount.email||'':'')+'</div></div></div>')
+    +invite+'</div>'
+    +'<div class="card"><div class="cardhead"><h3>'+svgIcon('shield',16)+' Seats on your plan</h3><span class="pill p-teal">incl. Manager seat</span></div>'
+    +'<div class="ctrow"><span><b>Starter</b> — AED 199/mo</span><b class="val">2 seats · 1 member + 1 Manager</b></div>'
+    +'<div class="ctrow"><span><b>Growth</b> — AED 299/mo</span><b class="val">4 seats · 3 members + 1 Manager</b></div>'
+    +'<div class="ctrow"><span><b>Business Pro</b> — AED 499/mo</span><b class="val">11 seats · 10 members + 1 Manager</b></div>'
+    +'<p class="muted" style="font-size:12px;margin-top:10px">The Manager seat is a separate login that can open every page, report and message in this workspace but cannot upload, edit, approve or delete anything — oversight without risk. Team members work normally; only the owner manages the team and billing.</p></div>'
+    +'</div>';
+}
+function bizSeatCap(){ return 11; } /* hard ceiling (Business Pro) until billing enforces per-plan */
+async function addBizMember(){
+  if(!isBizOwner()){ toast('Only the account owner can invite members'); return; }
+  var name=((document.getElementById('btmName')||{}).value||'').trim();
+  var email=((document.getElementById('btmEmail')||{}).value||'').trim();
+  var role=((document.getElementById('btmRole')||{}).value||'consultant');
+  if(!name){ toast('Enter their name'); return; }
+  if(role==='manager' && (teamMembers||[]).some(function(m){return m.team_role==='manager';})){ toast('Your plan includes one Manager seat — it is already taken.'); return; }
+  if((teamMembers||[]).length>=bizSeatCap()){ toast('Seat limit reached for this workspace.'); return; }
+  if(!sb||!currentAccount){ toast('Not signed in'); return; }
+  var token=(crypto&&crypto.randomUUID)?crypto.randomUUID().replace(/-/g,''):('t'+Date.now().toString(36)+Math.random().toString(36).slice(2));
+  try{
+    var r=await sb.from('team_members').insert({firm_id:currentAccount.id, name:name, email:email, position:(role==='manager'?'Manager (oversight)':'Team member'), is_owner:false, team_role:role, status:'invited', invite_token:token}).select('*').single();
+    if(r.error){ toast('Could not create the invite — please try again'); return; }
+    teamMembers.push(r.data);
+    lastInvite={name:name, link:'https://hisabone.ae/?join='+token};
+    renderPage();
+  }catch(e){ toast('Could not create the invite — please try again'); }
+}
+function rmBizMember(id){
+  var m=(teamMembers||[]).find(function(x){return String(x.id)===String(id);}); if(!m) return;
+  openConfirm({title:'Remove team member', confirmLabel:'Remove', message:'Remove '+ctEsc(m.name)+' from this workspace? Their login stops working immediately.', onYes:async function(){
+    try{ await sb.from('team_members').delete().eq('id',id); }catch(e){}
+    teamMembers=teamMembers.filter(function(x){return String(x.id)!==String(id);});
+    renderPage();
+  }});
+}
+/* ---- approvals inbox ---- */
+function approvalsInboxHTML(){
+  if(!currentAccount||currentAccount.role!=='business') return '';
+  var items=[];
+  (returnsList||[]).forEach(function(rt){
+    if(rt.business_id===bizWorkspaceId() && rt.status==='pending_review')
+      items.push({ic:'clipboard', t:(rt.title||'Draft return')+' awaits your review & sign-off', s:rt.period||'', pg:'breports', urg:1});
+  });
+  (bizTaxDocs||[]).filter(function(d){return d.state!=='done';}).forEach(function(d){
+    items.push({ic:'file', t:'Upload: '+d.name, s:(d.urg?d.urg+' · ':'')+'requested by your accountant', pg:'btax', urg:d.urg==='Urgent'?1:2});
+  });
+  (bizAuditDocs||[]).filter(function(d){return d.state!=='done';}).forEach(function(d){
+    items.push({ic:'clipboard', t:'Upload: '+d.name, s:'audit checklist', pg:'baudit', urg:2});
+  });
+  renewalItems().forEach(function(r){
+    if(r.days!=null && r.days<=30) items.push({ic:'clock', t:r.name+(r.days<0?' has EXPIRED':' expires in '+r.days+' day'+(r.days===1?'':'s')), s:'renewals', pg:'docs', urg:r.days<0?0:1});
+  });
+  var unread=(typeof chatUnreadTotal==='function')?chatUnreadTotal():0;
+  if(unread>0) items.push({ic:'chat', t:unread+' unread message'+(unread===1?'':'s')+' from your accountant', s:'Messages', pg:'bchat', urg:2});
+  items.sort(function(a,b){return a.urg-b.urg;});
+  if(!items.length){
+    return '<div class="card mb14" style="display:flex;align-items:center;gap:12px;padding:14px 18px"><span style="color:var(--accent)">'+svgIcon('success',20)+'</span><div><b style="font-size:14px">All clear — nothing needs your action</b><div class="muted" style="font-size:12px">New sign-offs, document requests and expiring renewals will appear here.</div></div></div>';
+  }
+  var rows=items.slice(0,6).map(function(it){
+    return '<div class="drow clk" onclick="go(\''+it.pg+'\')"><div class="dbar" style="background:'+(it.urg<=1?'var(--red)':'var(--accent)')+'"></div>'
+      +'<span style="display:inline-flex;color:var(--accent-d);margin-right:2px">'+svgIcon(it.ic,16)+'</span>'
+      +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(it.t)+'</div><div class="dmeta">'+ctEsc(it.s)+'</div></div>'
+      +'<span class="muted" style="font-size:11.5px">Open →</span></div>';
+  }).join('');
+  return '<div class="card mb14" style="border-color:var(--accent)"><div class="cardhead"><h3>'+svgIcon('bell',16)+' Needs your action</h3><span class="pill p-red">'+items.length+'</span></div>'+rows+(items.length>6?'<div class="muted" style="font-size:11.5px;margin-top:6px">+'+(items.length-6)+' more in their tabs</div>':'')+'</div>';
+}
+/* ---- regulation radar ---- */
+function regulationRadarHTML(){
+  var items=[
+    ['E-invoicing is coming','Larger businesses appoint an accredited provider by 30 Oct 2026 (go-live 1 Jan 2027); smaller by 31 Mar 2027 (go-live 1 Jul 2027). Clean TRNs and customer records now.','Am I ready for UAE e-invoicing and which wave am I in?'],
+    ['Corporate Tax returns','Your CT return is due within 9 months of financial year-end. Small Business Relief (revenue ≤ AED 3M) is scheduled to end for periods after 31 Dec 2026.','Explain my Corporate Tax filing deadline and whether Small Business Relief applies to me'],
+    ['Penalty exposure','Late VAT/CT registration carries an AED 10,000 penalty; late returns compound monthly. Keep registrations and filings current.','What FTA penalties am I exposed to and how do I avoid them?']
+  ];
+  var rows=items.map(function(x){
+    return '<div style="padding:10px 2px;border-bottom:1px solid var(--line)"><div style="font-weight:600;font-size:13px">'+x[0]+'</div>'
+      +'<div class="muted" style="font-size:12px;margin:2px 0 6px">'+x[1]+'</div>'
+      +'<span class="link" style="font-size:12px" onclick="radarAsk(\''+x[2].replace(/'/g,"\\'")+'\')">Ask HisabOne AI about this →</span></div>';
+  }).join('');
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('activity',16)+' Regulation radar</h3><span class="pill p-teal">UAE · updated</span></div>'+rows+'</div>';
+}
+function radarAsk(q){
+  go('guides');
+  setTimeout(function(){ var inp=document.getElementById('aiInput'); if(inp){ inp.value=q; inp.focus(); } },200);
+}
+/* ---- invoice inbox ---- */
+var invUpType='purchase'; var invFilterQ='';
+function invQuarterOf(iso){ if(!iso) return invCurrentQ(); var d=new Date(iso); if(isNaN(d.getTime())) return invCurrentQ(); return 'Q'+(Math.floor(d.getMonth()/3)+1)+' '+d.getFullYear(); }
+function invCurrentQ(){ var d=new Date(); return 'Q'+(Math.floor(d.getMonth()/3)+1)+' '+d.getFullYear(); }
+function invQuarters(){
+  var qs={}; qs[invCurrentQ()]=1;
+  (invoiceInbox||[]).forEach(function(it){ if(it.q) qs[it.q]=1; });
+  return Object.keys(qs).sort(function(a,b){
+    var pa=a.split(' '), pb=b.split(' ');
+    return (pb[1]-pa[1]) || (pb[0].charCodeAt(1)-pa[0].charCodeAt(1));
+  });
+}
+function invPosition(q){
+  var out=0, inRec=0, blocked=0, n=0;
+  (invoiceInbox||[]).forEach(function(it){
+    if(q && it.q!==q) return; n++;
+    var v=parseFloat(it.vat)||0;
+    if(it.type==='sale') out+=v;
+    else if((it.cat||'')==='Entertainment') blocked+=v;
+    else inRec+=v;
+  });
+  return {out:out, inRec:inRec, blocked:blocked, net:out-inRec, n:n};
+}
+function invSetUpType(t){ invUpType=t; var a=document.getElementById('invTypP'), b=document.getElementById('invTypS'); if(a&&b){ a.classList.toggle('on',t==='purchase'); b.classList.toggle('on',t==='sale'); } }
+function invSetFilter(q){ invFilterQ=q; renderPage(); }
+function invMoney(n){ return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function invPageHTML(){
+  var q=invFilterQ||invCurrentQ();
+  var pos=invPosition(q);
+  var qs=invQuarters();
+  var items=(invoiceInbox||[]).filter(function(it){ return !q || it.q===q; });
+  var rows=items.map(function(it){
+    return '<tr><td style="padding:7px 6px"><b>'+ctEsc(it.vendor||'—')+'</b><div class="muted" style="font-size:11px">'+ctEsc(it.date||'')+(it.cat?(' · '+ctEsc(it.cat)):'')+'</div></td>'
+      +'<td style="padding:7px 6px"><span class="pill '+(it.type==='sale'?'p-teal':'p-gray')+'" style="font-size:10.5px">'+(it.type==='sale'?'Sale':'Purchase')+'</span></td>'
+      +'<td style="padding:7px 6px;text-align:right">'+invMoney(parseFloat(it.net)||0)+'</td>'
+      +'<td style="padding:7px 6px;text-align:right"><b>'+invMoney(parseFloat(it.vat)||0)+'</b></td>'
+      +'<td style="padding:7px 6px;text-align:right"><button class="iconbtn" title="Remove" onclick="invDelete(\''+it.id+'\')">'+svgIcon('trash',14)+'</button></td></tr>';
+  }).join('');
+  return '<h1>Invoices</h1>'
+  +'<div class="sub">Drop invoices in all period long — HisabOne reads each one with AI, categorises it and keeps a running VAT position. At filing time your accountant imports the whole set in one click.</div>'
+  +'<div class="grid g4 mb14">'
+  +'<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Output VAT (sales)</div><div style="font-size:19px;font-weight:700">'+invMoney(pos.out)+'</div></div>'
+  +'<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Recoverable input VAT</div><div style="font-size:19px;font-weight:700">'+invMoney(pos.inRec)+'</div></div>'
+  +'<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Blocked (entertainment)</div><div style="font-size:19px;font-weight:700">'+invMoney(pos.blocked)+'</div></div>'
+  +'<div class="card" style="text-align:center;border-color:var(--accent)"><div class="muted" style="font-size:12px">'+(pos.net>=0?'Estimated payable':'Estimated refundable')+' · '+ctEsc(q)+'</div><div style="font-size:19px;font-weight:700;color:var(--accent-d)">'+invMoney(Math.abs(pos.net))+'</div></div>'
+  +'</div>'
+  +'<div class="card mb14" style="border-color:var(--accent)">'
+  +'<div class="cardhead"><h3>'+svgIcon('sparkles',16)+' Add invoices</h3><span class="pill p-teal">AI OCR</span></div>'
+  +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">'
+  +'<div><label class="flabel">These are</label><span class="seg" style="display:inline-flex"><button id="invTypP" class="'+(invUpType==='purchase'?'on':'')+'" onclick="invSetUpType(\'purchase\')">Purchases</button><button id="invTypS" class="'+(invUpType==='sale'?'on':'')+'" onclick="invSetUpType(\'sale\')">Sales</button></span></div>'
+  +'<button class="btn" id="invInboxBtn" onclick="document.getElementById(\'invInboxFile\').click()">'+svgIcon('plus',14)+' Upload invoices</button>'
+  +'<span class="muted" style="font-size:12px;padding-bottom:9px">photos, scans or PDFs — several at once is fine</span>'
+  +'</div>'
+  +'<input type="file" id="invInboxFile" multiple accept="image/png,image/jpeg,image/webp,application/pdf" style="display:none" onchange="invHandleFiles(this)">'
+  +'<div id="invInboxStatus" style="display:none;margin-top:12px"></div>'
+  +'<div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)">'
+  +'<div class="flabel" style="margin-bottom:6px">Or add one manually</div>'
+  +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">'
+  +'<input id="mVendor" class="finput" placeholder="Vendor / customer" style="max-width:170px">'
+  +'<input id="mDate" class="finput" type="date" style="max-width:150px">'
+  +'<input id="mNet" class="finput" type="number" placeholder="Net AED" style="max-width:110px;text-align:right">'
+  +'<input id="mVat" class="finput" type="number" placeholder="VAT AED" style="max-width:110px;text-align:right">'
+  +'<select id="mCat" class="finput" style="max-width:160px"><option value="">Category…</option>'+EXP_CATS.map(function(c){return '<option>'+c+'</option>';}).join('')+'</select>'
+  +'<button class="btn sm ghost" onclick="invAddManual()">Add</button>'
+  +'</div></div></div>'
+  +'<div class="card">'
+  +'<div class="cardhead"><h3>'+svgIcon('inbox',16)+' Inbox</h3><div style="display:flex;gap:8px;align-items:center"><select class="finput" style="padding:7px 10px;font-size:12.5px" onchange="invSetFilter(this.value)">'
+  +qs.map(function(x){return '<option value="'+x+'"'+(x===q?' selected':'')+'>'+x+'</option>';}).join('')
+  +'</select><span class="pill p-gray">'+items.length+'</span></div></div>'
+  +(items.length
+    ? '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="text-align:left;color:var(--muted);font-size:11.5px"><th style="padding:6px">Invoice</th><th style="padding:6px">Type</th><th style="padding:6px;text-align:right">Net</th><th style="padding:6px;text-align:right">VAT</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+    : '<div class="muted" style="text-align:center;padding:24px;font-size:13px">No invoices in '+ctEsc(q)+' yet. Upload as you go — your VAT position builds itself.</div>')
+  +'<div class="note" style="margin-top:10px">'+svgIcon('shield',13)+' AI reads invoices for you but can make mistakes — spot-check amounts against the originals. Your linked accountant can import this inbox into the VAT calculator when preparing your return.</div>'
+  +'</div>';
+}
+function invStatusLine(html){ var el=document.getElementById('invInboxStatus'); if(el){ el.style.display='block'; el.innerHTML=html; } }
+function invHandleFiles(input){
+  if(!bizGuard()) return;
+  var files=Array.prototype.slice.call(input.files||[]); input.value='';
+  if(!files.length) return;
+  var done=0, ok=0;
+  invStatusLine('Reading '+files.length+' invoice'+(files.length>1?'s':'')+' with AI…');
+  var chain=Promise.resolve();
+  files.forEach(function(f){
+    chain=chain.then(function(){
+      return fileToOCRPayload(f)
+        .then(function(payload){ return fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          done++;
+          if(d&&d.ok&&d.invoice){
+            var inv=d.invoice;
+            var net=parseFloat(inv.netAmount)||((parseFloat(inv.grossAmount)||0)-(parseFloat(inv.vatAmount)||0));
+            var entry={ id:'inv_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+              type:invUpType, vendor:(invUpType==='sale'?(inv.customer||inv.vendor):inv.vendor)||f.name,
+              date:inv.date||'', net:net||0, vat:parseFloat(inv.vatAmount)||0,
+              rate:inv.vatRatePercent!=null?inv.vatRatePercent:5,
+              cat:(inv.category&&EXP_CATS.indexOf(inv.category)>-1)?inv.category:guessExpenseCat((inv.vendor||'')+' '+(inv.description||'')) };
+            entry.q=invQuarterOf(entry.date);
+            invoiceInbox.unshift(entry); ok++;
+            saveAccountData();
+            if(typeof trackEvent==='function') trackEvent('ai_ocr');
+          }
+          invStatusLine(done+'/'+files.length+' read · '+ok+' added'+(done<files.length?'…':''));
+        })
+        .catch(function(){ done++; invStatusLine(done+'/'+files.length+' read · '+ok+' added — one failed'); });
+    });
+  });
+  chain.then(function(){ renderPage(); });
+}
+function invAddManual(){
+  if(!bizGuard()) return;
+  var g=function(id){return (document.getElementById(id)||{}).value||'';};
+  var vendor=g('mVendor').trim(), date=g('mDate'), net=parseFloat(g('mNet'))||0, vat=parseFloat(g('mVat'))||0, cat=g('mCat');
+  if(!vendor||(!net&&!vat)){ toast('Enter at least a name and an amount'); return; }
+  var entry={id:'inv_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), type:invUpType, vendor:vendor, date:date, net:net, vat:vat, rate:vat>0?5:0, cat:cat||'Other', q:invQuarterOf(date)};
+  invoiceInbox.unshift(entry); saveAccountData(); renderPage();
+}
+function invDelete(id){
+  if(!bizGuard()) return;
+  var it=(invoiceInbox||[]).find(function(x){return x.id===id;}); if(!it) return;
+  openConfirm({title:'Remove invoice', confirmLabel:'Remove', message:'Remove "'+ctEsc(it.vendor||'this invoice')+'" from your inbox?', onYes:function(){ invoiceInbox=invoiceInbox.filter(function(x){return x.id!==id;}); saveAccountData(); renderPage(); }});
+}
+async function importClientInvoices(){
+  var sel=document.getElementById('impClient'); var bizId=sel?sel.value:'';
+  if(!bizId){ toast('Link a client first'); return; }
+  if(!sb){ toast('Not signed in'); return; }
+  var q=((document.getElementById('impQuarter')||{}).value||'').trim();
+  var res=await sb.rpc('my_client_invoices',{p_business:bizId}).catch(function(){return null;});
+  var items=(res&&res.data)||[];
+  if(!items.length){ toast('This client has no invoices in their inbox yet'); return; }
+  var n=0;
+  items.forEach(function(it){
+    if(q && (it.q||'').toLowerCase()!==q.toLowerCase()) return;
+    var inv={vendor:it.vendor, netAmount:it.net, vatAmount:it.vat, vatRatePercent:it.rate, category:it.cat, description:it.vendor};
+    var out=applyInvoiceToCalculator(inv, it.type==='sale'?'s':'p', it.vendor||'invoice');
+    if(out.ok) n++;
+  });
+  toast(n? (n+' invoice'+(n===1?'':'s')+' imported — verify against the originals') : ('No invoices matched '+(q||'the filter')));
+}
+/* ---- renewals wallet ---- */
+function renewDaysLeft(iso){
+  if(!iso) return null;
+  var d=new Date(iso); if(isNaN(d.getTime())) return null;
+  return Math.ceil((d.getTime()-Date.now())/86400000);
+}
+function renewalItems(){
+  var items=[];
+  (vaultDocs||[]).forEach(function(d){
+    if(!d.expiryDate) return;
+    var t=(typeof COMPANY_DOC_TYPES!=='undefined')&&d.typeId?COMPANY_DOC_TYPES.find(function(x){return x.id===d.typeId;}):null;
+    items.push({name:(t?t.name:d.name)||'Document', date:d.expiryDate, days:renewDaysLeft(d.expiryDate), src:'doc'});
+  });
+  (bizRenewals||[]).forEach(function(r){ items.push({name:r.name, date:r.date, days:renewDaysLeft(r.date), src:'manual', id:r.id}); });
+  items.sort(function(a,b){ return (a.days==null?9999:a.days)-(b.days==null?9999:b.days); });
+  return items;
+}
+function renewalsCardHTML(){
+  var items=renewalItems();
+  var rows=items.map(function(r){
+    var pill = r.days==null ? '<span class="pill p-gray">no date</span>'
+      : (r.days<0 ? '<span class="pill p-red">expired '+Math.abs(r.days)+'d ago</span>'
+      : (r.days<=14 ? '<span class="pill p-red">'+r.days+'d left</span>'
+      : (r.days<=45 ? '<span class="pill p-amber">'+r.days+'d left</span>' : '<span class="pill p-teal">'+r.days+'d left</span>')));
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line)">'
+      +'<span style="display:inline-flex;color:var(--accent-d)">'+svgIcon('clock',15)+'</span>'
+      +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">'+ctEsc(r.name)+'</div><div class="muted" style="font-size:11.5px">'+(fmtDocDate(r.date)||ctEsc(r.date||''))+'</div></div>'
+      +pill
+      +'<button class="iconbtn" title="Send to WhatsApp" onclick="waOpen(\'Reminder: '+ctEsc(r.name).replace(/'/g,'')+' expires on '+(fmtDocDate(r.date)||'')+' — renew it before the deadline. (via HisabOne)\',\'\')">'+svgIcon('chat',14)+'</button>'
+      +(r.src==='manual'?'<button class="iconbtn" title="Remove" onclick="rmRenewal(\''+r.id+'\')">'+svgIcon('trash',14)+'</button>':'')
+      +'</div>';
+  }).join('');
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('refresh',16)+' Renewals</h3><span class="pill p-teal">'+items.length+' tracked</span></div>'
+    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 8px">Everything with an expiry in one place — document dates are read automatically from your vault; add anything else (Ejari, insurance, Emirates IDs) below. Items within 30 days appear in "Needs your action" on your dashboard.</p>'
+    +(rows||'<div class="muted" style="text-align:center;padding:16px;font-size:13px">Nothing tracked yet.</div>')
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)">'
+    +'<input id="rnName" class="finput" placeholder="e.g. Office Ejari, Vehicle insurance" style="max-width:230px">'
+    +'<input id="rnDate" class="finput" type="date" style="max-width:150px">'
+    +'<button class="btn sm" onclick="addRenewal()">'+svgIcon('plus',13)+' Track renewal</button>'
+    +'</div></div>';
+}
+function addRenewal(){
+  if(!bizGuard()) return;
+  var name=((document.getElementById('rnName')||{}).value||'').trim();
+  var date=(document.getElementById('rnDate')||{}).value||'';
+  if(!name||!date){ toast('Give the renewal a name and a date'); return; }
+  var id='rn_'+Date.now().toString(36);
+  bizRenewals.push({id:id, name:name, date:date});
+  calendarEvents.push({id:'cal_'+id, type:'other', title:name+' — renewal due', date:date, detail:'Tracked in Renewals (Company Information)', source:'renewals'});
+  saveAccountData(); renderPage();
+}
+function rmRenewal(id){
+  if(!bizGuard()) return;
+  var r=(bizRenewals||[]).find(function(x){return x.id===id;}); if(!r) return;
+  openConfirm({title:'Stop tracking', confirmLabel:'Remove', message:'Stop tracking "'+ctEsc(r.name)+'"?', onYes:function(){
+    bizRenewals=bizRenewals.filter(function(x){return x.id!==id;});
+    calendarEvents=(calendarEvents||[]).filter(function(e){return e.id!=='cal_'+id;});
+    saveAccountData(); renderPage(); }});
+}
+/* ---- bank statements ---- */
+var bankYear=(new Date()).getFullYear();
+function bankSetYear(d){ bankYear+=d; renderPage(); }
+function bankStatementsCardHTML(){
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var have=0;
+  var cells=months.map(function(mn,i){
+    var ym=bankYear+'-'+String(i+1).padStart(2,'0');
+    var d=(vaultDocs||[]).find(function(x){return x.typeId==='bank_'+ym;});
+    if(d){ have++;
+      return '<div style="border:1px solid var(--accent);background:var(--accent-bg);border-radius:10px;padding:9px 6px;text-align:center">'
+        +'<div style="font-weight:700;font-size:12px">'+mn+'</div><div style="font-size:10.5px;color:var(--accent-d)">✓ '+(d.sharedWithFirm?'shared':'uploaded')+'</div></div>';
+    }
+    return '<div style="border:1px dashed var(--line);border-radius:10px;padding:9px 6px;text-align:center;cursor:pointer" onclick="bankUpload(\''+ym+'\',\''+mn+'\')">'
+      +'<div style="font-weight:600;font-size:12px;color:var(--muted)">'+mn+'</div><div class="muted" style="font-size:10.5px">upload</div></div>';
+  }).join('');
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('bar',16)+' Bank statements</h3>'
+    +'<div style="display:flex;gap:6px;align-items:center"><button class="iconbtn" onclick="bankSetYear(-1)">‹</button><b style="font-size:13px">'+bankYear+'</b><button class="iconbtn" onclick="bankSetYear(1)">›</button><span class="pill '+(have>=6?'p-teal':'p-gray')+'">'+have+'/12</span></div></div>'
+    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 10px">One statement per month — uploaded files go to your vault and are '+(linkedFirm?'shared with '+ctEsc(linkedFirm)+' automatically.':'shared with your accountant automatically once you link a firm.')+'</p>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px">'+cells+'</div></div>';
+}
+function bankUpload(ym, label){
+  if(!bizGuard()) return;
+  openDocTruth(function(){
+    var inp=document.getElementById('fileInput');
+    inp.value=''; inp.accept='';
+    inp.onchange=function(){
+      var f=inp.files&&inp.files[0]; inp.onchange=null;
+      if(!f) return;
+      var entry={name:f.name, typeId:'bank_'+ym, added:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})};
+      vaultDocs.unshift(entry);
+      vaultUpload(entry, f);
+      saveAccountData(); renderPage();
+      if(linkedFirm){ shareStoredDoc(entry, 'Bank statement — '+label+' '+ym.slice(0,4)).then(function(){ renderPage(); }); }
+    };
+    inp.click();
+  });
+}
+/* ---- multi-company ---- */
+function switchCompany(id){
+  if(id===bizActiveCo) return;
+  snapshotCompanies(cleanVaultCopy(vaultDocs));
+  var co=(bizCompanies||[]).find(function(c){return c.id===id;});
+  if(!co) return;
+  bizActiveCo=id;
+  bizCompany=co.profile||{}; vaultDocs=co.vault||[]; calendarEvents=co.calendar||[];
+  vatCertMeta=co.vatCert||null; ctCertMeta=co.ctCert||null; bizRevenueBand=co.revBand||null;
+  invoiceInbox=co.invoices||[]; bizRenewals=co.renewals||[];
+  saveAccountData(); renderPage(); renderCompanySwitch();
+  toast('Switched to '+co.name);
+}
+function addCompanyPrompt(){
+  if(!bizGuard()) return;
+  var name=null;
+  try{ name=prompt('Name of the new company:'); }catch(e){}
+  renderCompanySwitch();
+  if(!name||!name.trim()) return;
+  snapshotCompanies(cleanVaultCopy(vaultDocs));
+  var id='c'+Date.now().toString(36);
+  bizCompanies.push({id:id, name:name.trim(), profile:{}, vault:[], calendar:[], invoices:[], renewals:[]});
+  switchCompany(id);
+}
+function renderCompanySwitch(){
+  var w=document.getElementById('coSwitchWrap'); if(!w) return;
+  if(!currentAccount||currentAccount.role!=='business'||!bizCompanies){ w.style.display='none'; return; }
+  w.style.display='inline-flex';
+  w.innerHTML='<select class="finput" style="padding:7px 10px;font-size:12.5px;max-width:170px" onchange="if(this.value===\'__add\'){addCompanyPrompt()}else{switchCompany(this.value)}" title="Switch company">'
+    +bizCompanies.map(function(c){return '<option value="'+c.id+'"'+(c.id===bizActiveCo?' selected':'')+'>'+ctEsc(c.name)+'</option>';}).join('')
+    +'<option value="__add">＋ Add company…</option></select>';
 }
 
 /* ---------- TEMPLATES ---------- */
@@ -5036,7 +5527,7 @@ function clientProfileHTML(){
         <select class="finput" style="max-width:230px" onchange="saveClientMeta('urgency',this.value)">${[['overdue','Overdue'],['soon','Due soon'],['ok','On track']].map(v=>`<option value="${v[0]}" ${(meta.urgency||'soon')===v[0]?'selected':''}>${v[1]}</option>`).join('')}</select></div>
     </div>
     <div class="card">
-      <div class="cardhead"><h3>${svgIcon('chat',16)} Communication log</h3><span class="link" onclick="chatSelectPeer('${c.id}');go('fchat')">Open chat</span></div>
+      <div class="cardhead"><h3>${svgIcon('chat',16)} Communication log</h3><span style="display:flex;gap:12px"><span class="link" onclick="waClient()">WhatsApp</span><span class="link" onclick="chatSelectPeer('${c.id}');go('fchat')">Open chat</span></span></div>
       ${recent.length?recent.map(function(m){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon(m.sender_role==='firm'?'share':'inbox',15)+'</div><div style="flex:1;min-width:0"><div style="font-size:12.5px">'+ctEsc(m.body.length>90?m.body.slice(0,90)+'…':m.body)+'</div><div class="muted" style="font-size:10.5px">'+ctEsc(m.sender_name||'')+' · '+chatTimeFmt(m.created_at)+'</div></div></div>'; }).join(''):'<div class="muted" style="text-align:center;padding:18px;font-size:13px">No messages yet — open the chat to start the conversation.</div>'}
       ${acts.length?'<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><div class="muted" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Firm activity involving this client</div>'+acts.map(function(a){ return '<div class="drow" style="padding:6px 2px"><div style="color:var(--accent)">'+svgIcon('activity',13)+'</div><div style="flex:1;font-size:12px">'+ctEsc(a.detail)+'<span class="muted" style="font-size:10.5px"> · '+new Date(a.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'</span></div></div>'; }).join('')+'</div>':''}
     </div>
@@ -5129,6 +5620,7 @@ function remRow(r,i){
   return `<tr><td><b>${r.client}</b></td><td>${r.app||'—'}</td><td>${r.doc}</td><td class="muted">${r.last}</td><td>${r.next}</td>
     <td><span class="pill ${on?'p-green':'p-gray'}">${on?'On':'Off'}${r.every?(' · every '+r.every+'d'):''}</span></td>
     <td style="white-space:nowrap"><button class="btn ghost sm" onclick="sendReminderNow(${i})">Send now</button>
+    <button class="iconbtn" title="Send via WhatsApp" onclick="waRemind(${i})">${svgIcon('chat',14)}</button>
     <button class="iconbtn" title="Delete reminder" onclick="deleteReminder(${i})">${svgIcon('trash',15)}</button></td></tr>`;}
 function docRow(ic,n,c,m){const col={red:'var(--red)',amber:'var(--amber)',green:'var(--green)'}[c];
   return `<div class="drow"><div style="color:var(--accent)">${svgIcon(ic,18)}</div>
@@ -5158,10 +5650,12 @@ function companyProfilePct(){
   return Math.round(filled/keys.length*100);
 }
 function coField(label,key,ph,type){
-  return '<div><label class="flabel">'+label+'</label><input class="finput" type="'+(type||'text')+'" placeholder="'+ctEsc(ph||'')+'" value="'+ctEsc(bizCompany[key]||'')+'" oninput="setBizCompany(\''+key+'\',this.value)"></div>';
+  var ro=(typeof bizCan==='function'&&!bizCan())?' disabled':'';
+  return '<div><label class="flabel">'+label+'</label><input class="finput" type="'+(type||'text')+'" placeholder="'+ctEsc(ph||'')+'" value="'+ctEsc(bizCompany[key]||'')+'" oninput="setBizCompany(\''+key+'\',this.value)"'+ro+'></div>';
 }
 function coSelect(label,key,opts){
-  return '<div><label class="flabel">'+label+'</label><select class="finput" onchange="setBizCompany(\''+key+'\',this.value)">'
+  var ro=(typeof bizCan==='function'&&!bizCan())?' disabled':'';
+  return '<div><label class="flabel">'+label+'</label><select class="finput"'+ro+' onchange="setBizCompany(\''+key+'\',this.value)">'
     +opts.map(o=>'<option value="'+ctEsc(o)+'"'+((bizCompany[key]||'')===o?' selected':'')+'>'+(o||'— Select —')+'</option>').join('')+'</select></div>';
 }
 function companyProfileCardsHTML(){
@@ -5401,7 +5895,7 @@ function shareCTReturn(){ shareReturn('ct'); }
 
 /* ---- returns list panel for the Reports tabs ---- */
 function returnsPanelHTML(side){
-  var list=(returnsList||[]).filter(function(rt){ return side==='firm' ? rt.firm_id===effFirmId() : rt.business_id===(currentAccount&&currentAccount.id); });
+  var list=(returnsList||[]).filter(function(rt){ return side==='firm' ? rt.firm_id===effFirmId() : rt.business_id===bizWorkspaceId(); });
   if(!list.length){
     if(side==='business') return '';
     return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' Draft returns &amp; sign-off</h3></div><p class="muted" style="font-size:12.5px;margin:0">Draft VAT and Corporate Tax returns you share from the calculators appear here — each with a full audit trail of access, changes and client sign-off.</p></div>';
@@ -5533,6 +6027,7 @@ function attachChangeDoc(id){
   });
 }
 async function doApproveReturn(id){
+  if(!bizGuard()) return;
   var rt=(returnsList||[]).find(function(r){return r.id===id;}); if(!rt) return;
   var sig=((document.getElementById('retSig')||{}).value||'').trim();
   if(!sig){ toast('Type your full name to sign this approval'); return; }
@@ -5543,6 +6038,7 @@ async function doApproveReturn(id){
   toast('Return approved and signed'); renderReturnModal(); renderPage();
 }
 async function submitReturnChanges(id){
+  if(!bizGuard()) return;
   var rt=(returnsList||[]).find(function(r){return r.id===id;}); if(!rt) return;
   var note=((document.getElementById('retNote')||{}).value||'').trim();
   if(!note){ toast('Describe what needs to change'); return; }
@@ -5678,8 +6174,9 @@ async function handleJoinParam(){
       return true;
     }
     window._joinToken=token;
-    switchView('signin'); openLogin('firm'); setLfMode('signup');
-    var roleLbl=row.team_role==='manager'?'Manager / Reviewer':'Tax Consultant';
+    var isBiz=(row.parent_role==='business');
+    switchView('signin'); openLogin(isBiz?'business':'firm'); setLfMode('signup');
+    var roleLbl=isBiz?(row.team_role==='manager'?'Manager (oversight)':'Team member'):(row.team_role==='manager'?'Manager / Reviewer':'Tax Consultant');
     document.getElementById('lfTitle').textContent='Join '+row.firm_name+' as '+roleLbl;
     document.getElementById('lfNameLabel').textContent='Your full name';
     var nm=document.getElementById('lfName'); if(nm){ nm.placeholder='Your full name'; nm.value=row.member_name||''; }
@@ -5737,7 +6234,7 @@ function showSampleBanner(show){
   if(show){
     if(!el){ el=document.createElement('div'); el.id='sampleBanner'; document.body.appendChild(el);
       el.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:350;background:#132033;color:#fff;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:13px;box-shadow:0 -6px 22px rgba(0,0,0,.22);flex-wrap:wrap'; }
-    el.innerHTML='<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#5eead4">'+svgIcon('sparkles',15)+'</span> <b>Sample data</b> — this is a preview. Nothing here is saved to your account.</span><button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="clearSampleData()">Exit preview</button>';
+    el.innerHTML='<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Sample data</b> — this is a preview. Nothing here is saved to your account.</span><button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="clearSampleData()">Exit preview</button>';
     el.style.display='flex';
   } else if(el){ el.style.display='none'; }
 }
@@ -5820,7 +6317,7 @@ var EINV = {
 var PENALTY = { vatLateReturn:1000, vatLateReturnRepeat:2000, vatLateReg:10000, ctLateReg:10000, ctFileMo:500, ctFileMoAfter:1000, einvAspMo:5000 };
 var bizRevenueBand = null;   /* 'lt50m' | 'ge50m' | null */
 function fmtAED(n){ return 'AED '+Math.round(n||0).toLocaleString('en-US'); }
-function healthBand(s){ return s>=80?{label:'Healthy',cls:'p-green',col:'#12805c'}:(s>=55?{label:'Needs attention',cls:'p-amber',col:'#b45309'}:{label:'At risk',cls:'p-red',col:'#c0392b'}); }
+function healthBand(s){ return s>=80?{label:'Healthy',cls:'p-green',col:'#0053d6'}:(s>=55?{label:'Needs attention',cls:'p-amber',col:'#b45309'}:{label:'At risk',cls:'p-red',col:'#c0392b'}); }
 function scoreGauge(score, col, size){
   size=size||96; var deg=Math.max(0,Math.min(100,score))*3.6;
   return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;flex-shrink:0;background:conic-gradient('+col+' '+deg+'deg,var(--panel2) 0deg);display:flex;align-items:center;justify-content:center">'
@@ -5829,7 +6326,8 @@ function scoreGauge(score, col, size){
 }
 
 /* ---- e-invoicing countdown + phase detection (business) ---- */
-function setRevenueBand(b){ bizRevenueBand=b; if(!_sampleMode) saveAccountData(); renderPage(); }
+function setRevenueBand(b){
+  if(!bizGuard()) return; bizRevenueBand=b; if(!_sampleMode) saveAccountData(); renderPage(); }
 function einvoiceCountdownHTML(){
   if(!currentAccount || currentAccount.role!=='business') return '';
   if(!bizRevenueBand){
@@ -5901,7 +6399,7 @@ function businessHealthCard(){
   var n=h.atRisk.length;
   var expLine = h.exposure>0
     ? '<div style="font-size:14px;margin-top:6px"><b style="color:#c0392b">'+fmtAED(h.exposure)+'</b> <span class="muted">exposed across '+n+' deadline'+(n===1?'':'s')+'</span></div>'
-    : '<div style="font-size:13.5px;margin-top:6px;color:#12805c;font-weight:600;display:inline-flex;align-items:center;gap:5px">'+svgIcon('success',14)+' No penalties currently at risk</div>';
+    : '<div style="font-size:13.5px;margin-top:6px;color:#0053d6;font-weight:600;display:inline-flex;align-items:center;gap:5px">'+svgIcon('success',14)+' No penalties currently at risk</div>';
   var list = h.atRisk.length? '<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px">'+h.atRisk.map(function(r){return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:4px 0"><span style="display:inline-flex;align-items:center;gap:6px;color:var(--text)"><span style="color:#c0392b">'+svgIcon('warn',12)+'</span>'+ctEsc(r.label)+'</span><b style="color:#c0392b">'+fmtAED(r.amount)+'</b></div>';}).join('')+'</div>' : '';
   return '<div class="card mb14" style="border-color:'+h.band.col+'">'
     +'<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'
@@ -5916,7 +6414,7 @@ function businessHealthCard(){
 function firmHealthCard(){
   var a=firmAggregateHealth();
   if(a.avg==null) return '';
-  var expLine=a.exposure>0?'<b style="color:#c0392b">'+fmtAED(a.exposure)+'</b> <span class="muted">estimated exposure across '+a.atRiskClients+' client'+(a.atRiskClients===1?'':'s')+' at risk</span>':'<span style="color:#12805c;font-weight:600">No penalties currently at risk</span>';
+  var expLine=a.exposure>0?'<b style="color:#c0392b">'+fmtAED(a.exposure)+'</b> <span class="muted">estimated exposure across '+a.atRiskClients+' client'+(a.atRiskClients===1?'':'s')+' at risk</span>':'<span style="color:#0053d6;font-weight:600">No penalties currently at risk</span>';
   return '<div class="card mb14" style="border-color:'+a.band.col+'"><div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'
     +scoreGauge(a.avg,a.band.col,96)
     +'<div style="flex:1;min-width:220px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="font-size:16px;margin:0">Practice Compliance Health</h3><span class="pill '+a.band.cls+'">'+a.band.label+'</span></div>'
@@ -5943,12 +6441,12 @@ function penaltyCheck(){
   if(ctFiled==='overdue') score-=20;
   score=Math.max(0,score);
   var band=healthBand(score);
-  var itemsHtml=items.length?items.map(function(it){return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)"><span>'+it[0]+'</span><b style="color:#c0392b">'+fmtAED(it[1])+'</b></div>';}).join(''):'<div style="color:#12805c;font-weight:600;font-size:13.5px">No obvious penalty exposure from your answers — well done. HisabOne keeps it that way.</div>';
+  var itemsHtml=items.length?items.map(function(it){return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)"><span>'+it[0]+'</span><b style="color:#c0392b">'+fmtAED(it[1])+'</b></div>';}).join(''):'<div style="color:#0053d6;font-weight:600;font-size:13.5px">No obvious penalty exposure from your answers — well done. HisabOne keeps it that way.</div>';
   var out=document.getElementById('pcResult'); if(!out) return;
   out.style.display='block';
   out.innerHTML='<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:12px">'+scoreGauge(score,band.col,104)
     +'<div style="flex:1;min-width:200px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:17px">Your Compliance Health Score</h3><span class="pill '+band.cls+'">'+band.label+'</span></div>'
-    +'<div style="font-size:16px;margin-top:8px">'+(exposure>0?'<b style="color:#c0392b">'+fmtAED(exposure)+'</b> <span class="muted">estimated penalty exposure</span>':'<span style="color:#12805c;font-weight:700">No estimated penalty exposure</span>')+'</div></div></div>'
+    +'<div style="font-size:16px;margin-top:8px">'+(exposure>0?'<b style="color:#c0392b">'+fmtAED(exposure)+'</b> <span class="muted">estimated penalty exposure</span>':'<span style="color:#0053d6;font-weight:700">No estimated penalty exposure</span>')+'</div></div></div>'
     +itemsHtml
     +'<div style="margin-top:16px;background:var(--accent-bg);border-radius:12px;padding:16px;text-align:center"><div style="font-weight:700;margin-bottom:6px">Fix these before they cost you.</div><div class="muted" style="font-size:12.5px;margin-bottom:12px">Create a free HisabOne account — we’ll track every deadline and chase every document so these fines never land.</div><button class="lf-btn" style="width:auto;padding:12px 28px" onclick="switchView(\'signin\');openLogin(\'business\')">Create your free account &rarr;</button></div>'
     +'<div class="muted" style="font-size:11px;margin-top:10px;text-align:center">Estimate only, based on published FTA fixed penalties. Not tax advice.</div>';
@@ -6000,7 +6498,7 @@ function einvReadinessHTML(){
   var rows=items.map(function(it){
     var done=it[1]===true, na=it[1]===null;
     var box = done
-      ? '<span style="flex:none;width:20px;height:20px;border-radius:6px;background:#12805c;color:#fff;display:inline-flex;align-items:center;justify-content:center">'+svgIcon('check',13)+'</span>'
+      ? '<span style="flex:none;width:20px;height:20px;border-radius:6px;background:#0053d6;color:#fff;display:inline-flex;align-items:center;justify-content:center">'+svgIcon('check',13)+'</span>'
       : '<span style="flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid '+(na?'#c0392b':'var(--line)')+';display:inline-block"></span>';
     return '<div style="display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)">'+box
       +'<div><div style="font-weight:600;font-size:13.5px">'+it[0]+'</div><div class="muted" style="font-size:12.5px;margin-top:2px">'+it[2]+'</div></div></div>';
@@ -6103,7 +6601,7 @@ function chatPeerIds(){
   if(!currentAccount) return null;
   if(currentAccount.role==='business'){
     if(!linkedFirmId) return null;
-    return {business_id:currentAccount.id, firm_id:linkedFirmId};
+    return {business_id:bizWorkspaceId(), firm_id:linkedFirmId};
   }
   if(!chatPeer) return null;
   return {business_id:chatPeer, firm_id:effFirmId()};
@@ -6637,6 +7135,35 @@ function trackEvent(kind){
 })();
 </script>
 <script>
+  /* PWA install + Arabic landing toggle */
+  try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){}); }catch(e){}
+  var LAND_AR={
+    betaStrip:'هيساب ون في مرحلة تجريبية (بيتا) — ميزات جديدة كل أسبوع · تجربة مجانية لمدة ٣ أشهر للمستخدمين الأوائل',
+    tabHome:'الرئيسية', tabPenalty:'فحص الغرامات', tabSignin:'تسجيل الدخول', tabSignup:'إنشاء حساب', tabPricing:'الأسعار', tabSecurity:'الأمان',
+    heroBadge:'إماراتي · متوافق مع الهيئة الاتحادية للضرائب · مدعوم بالذكاء الاصطناعي',
+    heroH1:'طبقة الامتثال الضريبي <span class="hgrad">للإمارات</span>.',
+    heroSub:'مساحة عمل آمنة واحدة تجمع الشركات ومحاسبيها — كل مواعيد ضريبة القيمة المضافة وضريبة الشركات والتدقيق تُتابَع وتُلاحَق بالذكاء الاصطناعي.',
+    ctaTrial:'ابدأ التجربة المجانية ←', ctaSignin:'تسجيل الدخول',
+    heroNote:'نسخة تجريبية · تجربة مجانية لمدة ٣ أشهر للمستخدمين الأوائل · مبنيّة لعصر ضريبة القيمة المضافة وضريبة الشركات والفوترة الإلكترونية',
+    in5Line:'<span style="font-weight:800;font-size:13px;letter-spacing:.5px;background:#fff;color:#0b1226;border-radius:8px;padding:4px 9px">in5</span><span>مدعومة من <b>in5 tech</b> — حاضنة تيكوم للشركات التقنية الناشئة في دبي</span>'
+  };
+  var _landEN={};
+  function applyLang(l){
+    var login=document.getElementById('login'); if(!login) return;
+    for(var id in LAND_AR){
+      var el=document.getElementById(id); if(!el) continue;
+      if(!(id in _landEN)) _landEN[id]=el.innerHTML;
+      el.innerHTML = (l==='ar') ? LAND_AR[id] : _landEN[id];
+    }
+    login.setAttribute('dir', l==='ar'?'rtl':'ltr');
+    var b=document.getElementById('langBtn'); if(b) b.textContent = l==='ar' ? 'English' : 'عربي';
+    try{ localStorage.setItem('h1_lang', l); }catch(e){}
+  }
+  function toggleLang(){
+    var cur='en'; try{ cur=localStorage.getItem('h1_lang')||'en'; }catch(e){}
+    applyLang(cur==='ar'?'en':'ar');
+  }
+  try{ var _l=localStorage.getItem('h1_lang'); if(_l==='ar') applyLang('ar'); }catch(e){}
   /* landing: scroll reveals + count-up numbers */
   (function(){
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;

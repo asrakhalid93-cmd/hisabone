@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="HisabOne — Tax & Compliance, Simplified">
 <meta name="twitter:description" content="The UAE compliance layer for businesses and accountants.">
 <meta name="twitter:image" content="https://hisabone.ae/og.png">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='t' x1='6' y1='0' x2='94' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%2320d3bf'/><stop offset='0.52' stop-color='%234f7ef0'/><stop offset='1' stop-color='%238a5cf6'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23t)'/><g fill='%23ffffff'><rect x='18' y='28' width='11' height='44' rx='3.5'/><rect x='37' y='28' width='11' height='44' rx='3.5'/><rect x='18' y='44' width='30' height='11' rx='3'/><rect x='66' y='28' width='11' height='44' rx='3.5'/><path d='M56 35 L66 28 L66 39 Z'/><rect x='61' y='67' width='21' height='5' rx='2.5'/></g></svg>">
+<link rel="icon" type="image/png" href="/favicon.png"><defs><linearGradient id='gh' x1='0' y1='0' x2='0.35' y2='1'><stop offset='0' stop-color='%2320d3bf'/><stop offset='1' stop-color='%233b6fe0'/></linearGradient><linearGradient id='g1' x1='0' y1='0' x2='0.25' y2='1'><stop offset='0' stop-color='%238a5cf6'/><stop offset='1' stop-color='%235b3fd4'/></linearGradient><linearGradient id='gr' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%231fa8c9'/><stop offset='1' stop-color='%233b6fe0'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='%23ffffff'/><rect width='100' height='100' rx='22' fill='none' stroke='%23e8e8ee' stroke-width='2'/><path d='M22 20 q0 -4 4 -4 h3 q16 0 16 16 v36 q0 16 -16 16 h-3 q-4 0 -4 -4 z' fill='url(%23gh)'/><path d='M44 46 C56 46 53 58 66 58 L66 72 C51 72 56 60 44 60 Z' fill='url(%23gr)'/><path d='M80 12 L52 33 L52 44 L62 40 L62 84 L80 84 Z' fill='url(%23g1)'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
 <script defer src="/_vercel/insights/script.js"></script>
 <style>
   :root{
-    --h1logo:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='t' x1='6' y1='0' x2='94' y2='100' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='%2320d3bf'/><stop offset='0.52' stop-color='%234f7ef0'/><stop offset='1' stop-color='%238a5cf6'/></linearGradient></defs><rect width='100' height='100' fill='url(%23t)'/><g fill='%23ffffff'><rect x='18' y='28' width='11' height='44' rx='3.5'/><rect x='37' y='28' width='11' height='44' rx='3.5'/><rect x='18' y='44' width='30' height='11' rx='3'/><rect x='66' y='28' width='11' height='44' rx='3.5'/><path d='M56 35 L66 28 L66 39 Z'/><rect x='61' y='67' width='21' height='5' rx='2.5'/></g></svg>");
+    --h1logo:url("/logo.png");
     /* dark base */
     --text:#e8eef6; --muted:#8ea3bd; --line:rgba(255,255,255,.09);
     --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.07);
@@ -359,7 +359,7 @@
   .cardhead h3 svg{ color:var(--accent-d); vertical-align:-3px; }
   .seg{ background:#fff; box-shadow:var(--shadow-1); }
   .avatar{ background:var(--accent); }
-  .logo .mark,.mock-mk,.ltopbar-logo .mk,.llogo-mark{ background-color:#101b33; }
+  .logo .mark,.mock-mk,.ltopbar-logo .mk,.llogo-mark{ background-color:#ffffff; box-shadow:0 2px 10px rgba(20,30,70,.18); }
   /* auth mode tabs */
   .lmode{display:none;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:4px;margin-bottom:16px}
   .lmtab{flex:1;border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
@@ -1147,7 +1147,7 @@
       <div class="muted" id="lfTrialNote" style="display:none;text-align:center;font-size:11.5px;margin-top:9px">14-day free trial · No credit card needed · Cancel anytime</div>
       </form>
       <div style="text-align:center;margin-top:15px"><span class="link" onclick="backToPortals()">← Choose a different portal</span></div>
-      <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">By continuing you agree to our <span class="link" onclick="switchView('terms')">Terms</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span>.</div>
+      <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">By continuing you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span> (including AI &amp; data-processing disclosures).</div>
     </div>
   </div>
   </div><!-- /viewSignin -->
@@ -1187,7 +1187,7 @@
           <div class="muted" style="text-align:center;font-size:11.5px;margin-top:9px">14-day free trial · No credit card needed · Cancel anytime</div>
         </form>
         <div style="text-align:center;margin-top:15px"><span class="muted" style="font-size:12.5px">Already have an account? </span><span class="link" onclick="switchView('signin')">Sign in →</span></div>
-        <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">By creating an account you agree to our <span class="link" onclick="switchView('terms')">Terms</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span>.</div>
+        <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px;line-height:1.65">By creating an account you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and consent to your data being processed as described in our <span class="link" onclick="switchView('privacy')">Privacy Policy</span> — including secure storage in the EU (Frankfurt) and AI document processing. AI features can make mistakes — always verify before filing.</div>
       </div>
     </div>
   </div><!-- /viewSignup -->
@@ -1296,7 +1296,7 @@
   <div id="viewSecurity" class="lview">
     <div style="max-width:900px;width:100%">
       <div class="lviewhead" style="text-align:center"><h1>Security &amp; trust</h1>
-        <p>You're trusting HisabOne with tax documents and filings. Here's exactly how we protect them — described honestly, with no invented badges.</p></div>
+        <p>You're trusting HisabOne with tax documents and filings. Here's exactly how we protect them — described honestly, with no invented badges — together with our full Privacy Policy, Terms of Use and AI disclaimer.</p></div>
 
       <div class="grid g3" style="margin-bottom:16px">
         <div class="lportal-card about-mini"><div class="about-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="10" width="13" height="9.5" rx="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3"/></svg></div><h3>Encrypted in transit &amp; at rest</h3><p>Every request is served over TLS, and your files and records are encrypted at rest in managed cloud storage.</p></div>
@@ -1323,6 +1323,77 @@
         <p>HisabOne is in private preview. We follow security best practices — encryption, least-privilege access and full audit logging — but we don't yet hold formal certifications such as ISO 27001 or SOC 2. Those are on our roadmap, and we'd rather tell you plainly than display a badge we haven't earned.</p>
       </div>
 
+      <div class="lportal-card about-card" id="secAI" style="border-color:rgba(245,180,60,.55)">
+        <h2>AI can make mistakes — our disclaimer</h2>
+        <p><b>AI can make mistakes.</b> HisabOne includes artificial-intelligence features: automatic document and date reading, invoice OCR and expense auto-categorisation, the AI Assist chat, the penalty-exposure checker, and the VAT and Corporate Tax calculators and draft returns. You acknowledge and agree that:</p>
+        <ul style="margin:8px 0;padding-left:20px;line-height:1.85">
+          <li>AI-generated output may be <b>inaccurate, incomplete or out of date</b>, even when it appears confident and precise.</li>
+          <li>Document reading and OCR may <b>misread amounts, dates, names, categories or TRNs</b> — especially on low-quality scans.</li>
+          <li>The calculators and draft returns <b>simplify rules</b> that carry conditions, exceptions and transitional provisions; they are preparation aids, not filings.</li>
+          <li>AI Assist answers are <b>general guidance only</b> and are not tax, legal, accounting or audit advice.</li>
+          <li>You must <b>verify every AI-generated figure against your source documents</b>, and every deadline, eligibility conclusion and computation with the FTA's EmaraTax portal or a qualified professional adviser, <b>before relying on it or filing</b>.</li>
+          <li>AI output is <b>not a substitute for professional review</b>, and to the maximum extent permitted by UAE law we are not liable for losses arising from reliance on unverified AI output.</li>
+        </ul>
+        <p>If you spot a suspected AI error, please report it to <a href="mailto:info@hisabone.ae">info@hisabone.ae</a> so we can investigate.</p>
+      </div>
+
+      <div class="lportal-card about-card legal-card" id="secPrivacy">
+        <h2 style="font-size:21px;margin-bottom:2px">Privacy Policy</h2>
+        <p class="muted" style="font-size:12px;margin-bottom:10px">Last updated: 28 July 2026</p>
+        <h2>Who we are</h2>
+        <p>HisabOne (“we”, “us”) provides a UAE tax &amp; compliance workspace connecting businesses and their accountants, available at hisabone.ae. For any privacy question or request, contact us at <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>.</p>
+        <h2>What we collect</h2>
+        <p>When you create an account we collect your name or company name, email address and password (stored only as a secure cryptographic hash by our authentication provider). While you use HisabOne we store the compliance data you choose to put in it: company profile details, document requests, deadlines, reminders, reports, draft returns, messages, and the company documents you upload to your vault.</p>
+        <h2>Lawful basis — your consent</h2>
+        <p>Under UAE Federal Decree-Law No. 45 of 2021 (the PDPL), consent is the primary lawful basis for processing personal data. By creating a HisabOne account and using its features you consent to the processing described in this policy. You may withdraw consent at any time by closing your account, after which your data is deleted as described below.</p>
+        <h2>How your data is used</h2>
+        <p>Your data is used solely to provide the service — showing your own workspace, sharing records you explicitly share with your linked accountant or clients, and sending the emails you ask us to send (such as document requests and reminders). We do not sell personal data, and we do not use your data for advertising.</p>
+        <h2>AI processing</h2>
+        <p>Some features send data to an AI model (Anthropic's Claude) to work: automatic document and date reading, invoice OCR and expense categorisation, and the AI Assist chat (which receives a short summary of your workspace so its answers are specific to you). This data is processed only to provide the feature and is not used to train AI models. AI output can contain mistakes — see the AI accuracy disclaimer in our Terms of Use.</p>
+        <h2>Where your data lives — international transfers</h2>
+        <p>Your account and workspace data is stored with Supabase (managed PostgreSQL and encrypted file storage) in the <b>EU — Frankfurt</b> region. The website is served by Vercel's global network; AI requests are processed by Anthropic (United States); and email is delivered by Resend (United States). Because these providers operate outside the UAE, using HisabOne involves cross-border transfers of your data as contemplated by Articles 22–23 of the PDPL. We protect those transfers with TLS encryption in transit, encryption at rest, contractual data-processing terms with each provider, and by sending each provider only the minimum data its function needs. You consent to these transfers by using the service.</p>
+        <h2>Retention &amp; deletion</h2>
+        <p>We keep your data while your account is active. Deleting your account removes your profile, workspace records and uploaded files from our systems; residual copies in encrypted backups expire on the backup provider's rotation schedule.</p>
+        <h2>Your rights</h2>
+        <p>In line with the PDPL, you may request access to, correction of, or deletion of your personal data at any time, and you may object to or ask about any automated processing we perform, by emailing <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>. We respond to every request.</p>
+        <h2>Cookies &amp; local storage</h2>
+        <p>We use only the browser storage necessary to keep you signed in, plus privacy-friendly, cookie-less visit analytics (Vercel Web Analytics). We do not use advertising or third-party tracking cookies.</p>
+        <h2>Changes</h2>
+        <p>If this policy changes materially, we will note the new date at the top of this page. Questions? <a href="mailto:info@hisabone.ae">Email us</a>.</p>
+      </div>
+
+      <div class="lportal-card about-card legal-card" id="secTerms">
+        <h2 style="font-size:21px;margin-bottom:2px">Terms of Use</h2>
+        <p class="muted" style="font-size:12px;margin-bottom:10px">Last updated: 28 July 2026</p>
+        <h2>1. The service</h2>
+        <p>HisabOne is a workspace that helps UAE businesses and their accountants organise tax and compliance work — registrations, filings, audits, documents and deadlines. HisabOne is a software tool: it does not provide tax, legal or audit advice, and it does not file returns with the Federal Tax Authority on your behalf. Decisions and filings remain the responsibility of you and your professional advisers.</p>
+        <h2>2. Your account</h2>
+        <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
+        <h2>3. Free trial &amp; billing</h2>
+        <p>New accounts start with a 14-day free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
+        <h2>4. Your data &amp; consent</h2>
+        <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
+        <h2>5. AI features — accuracy disclaimer</h2>
+        <p><b>AI can make mistakes.</b> HisabOne includes artificial-intelligence features: automatic document and date reading, invoice OCR and expense auto-categorisation, the AI Assist chat, the penalty-exposure checker, and the VAT and Corporate Tax calculators and draft returns. You acknowledge and agree that:</p>
+        <ul style="margin:8px 0;padding-left:20px;line-height:1.85">
+          <li>AI-generated output may be <b>inaccurate, incomplete or out of date</b>, even when it appears confident and precise.</li>
+          <li>Document reading and OCR may <b>misread amounts, dates, names, categories or TRNs</b> — especially on low-quality scans.</li>
+          <li>The calculators and draft returns <b>simplify rules</b> that carry conditions, exceptions and transitional provisions; they are preparation aids, not filings.</li>
+          <li>AI Assist answers are <b>general guidance only</b> and are not tax, legal, accounting or audit advice.</li>
+          <li>You must <b>verify every AI-generated figure against your source documents</b>, and every deadline, eligibility conclusion and computation with the FTA's EmaraTax portal or a qualified professional adviser, <b>before relying on it or filing</b>.</li>
+          <li>AI output is <b>not a substitute for professional review</b>, and to the maximum extent permitted by UAE law we are not liable for losses arising from reliance on unverified AI output.</li>
+        </ul>
+        <p>If you spot a suspected AI error, please report it to <a href="mailto:info@hisabone.ae">info@hisabone.ae</a> so we can investigate.</p>
+        <h2>6. Acceptable use</h2>
+        <p>You agree not to misuse the service — including attempting to access other accounts' data, uploading unlawful content, or using the platform to send spam.</p>
+        <h2>7. Service availability &amp; liability</h2>
+        <p>We work to keep HisabOne available and accurate, but the service is provided “as is” without warranties. To the maximum extent permitted by law, our liability is limited to the fees you paid in the twelve months before a claim. Nothing in these terms excludes liability that cannot be excluded under UAE law. Deadlines shown in HisabOne are aids, not guarantees — always verify statutory deadlines with the FTA or your adviser.</p>
+        <h2>8. Termination</h2>
+        <p>You may close your account at any time. We may suspend accounts that breach these terms. On closure, your data is deleted as described in the Privacy Policy.</p>
+        <h2>9. Governing law</h2>
+        <p>These terms are governed by the laws of the United Arab Emirates. Contact: <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>.</p>
+      </div>
+
       <div class="lportal-card about-card" style="text-align:center">
         <h2 style="margin-bottom:6px">Security questions?</h2>
         <p style="margin-bottom:14px">A due-diligence request, a data-processing question, or a vulnerability to report — we'll respond.</p>
@@ -1336,22 +1407,26 @@
   <!-- ===== PRIVACY POLICY VIEW ===== -->
   <div id="viewPrivacy" class="lview">
     <div style="max-width:760px;width:100%">
-      <div class="lviewhead"><h1>Privacy Policy</h1><p>Last updated: 13 July 2026</p></div>
+      <div class="lviewhead"><h1>Privacy Policy</h1><p>Last updated: 28 July 2026</p></div>
       <div class="lportal-card about-card legal-card">
         <h2>Who we are</h2>
-        <p>HisabOne ("we", "us") provides a UAE tax &amp; compliance workspace connecting businesses and their accountants, available at hisabone.ae. For any privacy question or request, contact us at <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>.</p>
+        <p>HisabOne (“we”, “us”) provides a UAE tax &amp; compliance workspace connecting businesses and their accountants, available at hisabone.ae. For any privacy question or request, contact us at <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>.</p>
         <h2>What we collect</h2>
-        <p>When you create an account we collect your name or company name, email address and password (stored only as a secure cryptographic hash by our authentication provider). While you use HisabOne we store the compliance data you choose to put in it: document requests, deadlines, reminders, reports, and the company documents you upload to your vault.</p>
+        <p>When you create an account we collect your name or company name, email address and password (stored only as a secure cryptographic hash by our authentication provider). While you use HisabOne we store the compliance data you choose to put in it: company profile details, document requests, deadlines, reminders, reports, draft returns, messages, and the company documents you upload to your vault.</p>
+        <h2>Lawful basis — your consent</h2>
+        <p>Under UAE Federal Decree-Law No. 45 of 2021 (the PDPL), consent is the primary lawful basis for processing personal data. By creating a HisabOne account and using its features you consent to the processing described in this policy. You may withdraw consent at any time by closing your account, after which your data is deleted as described below.</p>
         <h2>How your data is used</h2>
         <p>Your data is used solely to provide the service — showing your own workspace, sharing records you explicitly share with your linked accountant or clients, and sending the emails you ask us to send (such as document requests and reminders). We do not sell personal data, and we do not use your data for advertising.</p>
-        <h2>AI document reading</h2>
-        <p>When you upload an invoice or company document for automatic reading, the file is processed by Anthropic's Claude API to extract the fields shown to you (amounts, dates, registration numbers). These files are processed to provide the feature and are not used to train AI models.</p>
-        <h2>Where your data lives</h2>
-        <p>Account and workspace data is stored with Supabase (managed PostgreSQL with row-level security) and our website is served by Vercel. All traffic is encrypted in transit using TLS. Access controls ensure each account can only read its own records and records explicitly shared with it.</p>
+        <h2>AI processing</h2>
+        <p>Some features send data to an AI model (Anthropic's Claude) to work: automatic document and date reading, invoice OCR and expense categorisation, and the AI Assist chat (which receives a short summary of your workspace so its answers are specific to you). This data is processed only to provide the feature and is not used to train AI models. AI output can contain mistakes — see the AI accuracy disclaimer in our Terms of Use.</p>
+        <h2>Where your data lives — international transfers</h2>
+        <p>Your account and workspace data is stored with Supabase (managed PostgreSQL and encrypted file storage) in the <b>EU — Frankfurt</b> region. The website is served by Vercel's global network; AI requests are processed by Anthropic (United States); and email is delivered by Resend (United States). Because these providers operate outside the UAE, using HisabOne involves cross-border transfers of your data as contemplated by Articles 22–23 of the PDPL. We protect those transfers with TLS encryption in transit, encryption at rest, contractual data-processing terms with each provider, and by sending each provider only the minimum data its function needs. You consent to these transfers by using the service.</p>
+        <h2>Retention &amp; deletion</h2>
+        <p>We keep your data while your account is active. Deleting your account removes your profile, workspace records and uploaded files from our systems; residual copies in encrypted backups expire on the backup provider's rotation schedule.</p>
         <h2>Your rights</h2>
-        <p>In line with UAE Federal Decree-Law No. 45 of 2021 on the Protection of Personal Data (PDPL), you may request access to, correction of, or deletion of your personal data at any time by emailing us. Deleting your account removes your profile, workspace records and uploaded files from our systems.</p>
+        <p>In line with the PDPL, you may request access to, correction of, or deletion of your personal data at any time, and you may object to or ask about any automated processing we perform, by emailing <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>. We respond to every request.</p>
         <h2>Cookies &amp; local storage</h2>
-        <p>We use only the browser storage necessary to keep you signed in. We do not use advertising or third-party tracking cookies.</p>
+        <p>We use only the browser storage necessary to keep you signed in, plus privacy-friendly, cookie-less visit analytics (Vercel Web Analytics). We do not use advertising or third-party tracking cookies.</p>
         <h2>Changes</h2>
         <p>If this policy changes materially, we will note the new date at the top of this page. Questions? <a href="mailto:info@hisabone.ae">Email us</a>.</p>
       </div>
@@ -1362,7 +1437,7 @@
   <!-- ===== TERMS VIEW ===== -->
   <div id="viewTerms" class="lview">
     <div style="max-width:760px;width:100%">
-      <div class="lviewhead"><h1>Terms of Service</h1><p>Last updated: 13 July 2026</p></div>
+      <div class="lviewhead"><h1>Terms of Use</h1><p>Last updated: 28 July 2026</p></div>
       <div class="lportal-card about-card legal-card">
         <h2>1. The service</h2>
         <p>HisabOne is a workspace that helps UAE businesses and their accountants organise tax and compliance work — registrations, filings, audits, documents and deadlines. HisabOne is a software tool: it does not provide tax, legal or audit advice, and it does not file returns with the Federal Tax Authority on your behalf. Decisions and filings remain the responsibility of you and your professional advisers.</p>
@@ -1370,15 +1445,26 @@
         <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
         <h2>3. Free trial &amp; billing</h2>
         <p>New accounts start with a 14-day free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
-        <h2>4. Your data</h2>
-        <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a>. You may export your data and request deletion at any time.</p>
-        <h2>5. Acceptable use</h2>
+        <h2>4. Your data &amp; consent</h2>
+        <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
+        <h2>5. AI features — accuracy disclaimer</h2>
+        <p><b>AI can make mistakes.</b> HisabOne includes artificial-intelligence features: automatic document and date reading, invoice OCR and expense auto-categorisation, the AI Assist chat, the penalty-exposure checker, and the VAT and Corporate Tax calculators and draft returns. You acknowledge and agree that:</p>
+        <ul style="margin:8px 0;padding-left:20px;line-height:1.85">
+          <li>AI-generated output may be <b>inaccurate, incomplete or out of date</b>, even when it appears confident and precise.</li>
+          <li>Document reading and OCR may <b>misread amounts, dates, names, categories or TRNs</b> — especially on low-quality scans.</li>
+          <li>The calculators and draft returns <b>simplify rules</b> that carry conditions, exceptions and transitional provisions; they are preparation aids, not filings.</li>
+          <li>AI Assist answers are <b>general guidance only</b> and are not tax, legal, accounting or audit advice.</li>
+          <li>You must <b>verify every AI-generated figure against your source documents</b>, and every deadline, eligibility conclusion and computation with the FTA's EmaraTax portal or a qualified professional adviser, <b>before relying on it or filing</b>.</li>
+          <li>AI output is <b>not a substitute for professional review</b>, and to the maximum extent permitted by UAE law we are not liable for losses arising from reliance on unverified AI output.</li>
+        </ul>
+        <p>If you spot a suspected AI error, please report it to <a href="mailto:info@hisabone.ae">info@hisabone.ae</a> so we can investigate.</p>
+        <h2>6. Acceptable use</h2>
         <p>You agree not to misuse the service — including attempting to access other accounts' data, uploading unlawful content, or using the platform to send spam.</p>
-        <h2>6. Service availability &amp; liability</h2>
-        <p>We work to keep HisabOne available and accurate, but the service is provided "as is" without warranties. To the maximum extent permitted by law, our liability is limited to the fees you paid in the twelve months before a claim. Nothing in these terms excludes liability that cannot be excluded under UAE law. Deadlines shown in HisabOne are aids, not guarantees — always verify statutory deadlines with the FTA or your adviser.</p>
-        <h2>7. Termination</h2>
+        <h2>7. Service availability &amp; liability</h2>
+        <p>We work to keep HisabOne available and accurate, but the service is provided “as is” without warranties. To the maximum extent permitted by law, our liability is limited to the fees you paid in the twelve months before a claim. Nothing in these terms excludes liability that cannot be excluded under UAE law. Deadlines shown in HisabOne are aids, not guarantees — always verify statutory deadlines with the FTA or your adviser.</p>
+        <h2>8. Termination</h2>
         <p>You may close your account at any time. We may suspend accounts that breach these terms. On closure, your data is deleted as described in the Privacy Policy.</p>
-        <h2>8. Governing law</h2>
+        <h2>9. Governing law</h2>
         <p>These terms are governed by the laws of the United Arab Emirates. Contact: <a href="mailto:info@hisabone.ae">info@hisabone.ae</a>.</p>
       </div>
       <div style="text-align:center;margin:18px 0"><span class="link" onclick="switchView('home')">&larr; Back to home</span></div>

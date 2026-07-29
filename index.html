@@ -139,6 +139,18 @@
   .navitem:hover{background:var(--panel);color:var(--text)}
   .navitem.active{background:var(--accent-bg);color:var(--accent);font-weight:600}
   .navitem .ic{width:18px;text-align:center}
+  .navgroup{position:relative}
+  .navcaret{margin-left:auto;color:var(--muted);font-size:14px;transition:transform .18s}
+  .navgroup:hover .navcaret{transform:rotate(90deg) translateX(1px);color:var(--accent)}
+  .navfly{display:none;position:absolute;left:calc(100% - 6px);top:-4px;z-index:60;min-width:172px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:7px;
+    box-shadow:0 14px 40px rgba(10,20,50,.16)}
+  .navgroup:hover .navfly{display:block;animation:flyin .14s ease}
+  @keyframes flyin{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
+  .navfly-head{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);padding:5px 9px 7px}
+  .navfly-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text);cursor:pointer}
+  .navfly-item:hover{background:var(--accent-bg);color:var(--accent-d)}
+  .navfly-item.on{background:var(--accent-bg);color:var(--accent-d);font-weight:600}
   .navitem .badge{margin-left:auto;background:var(--red);color:#1a0a0a;font-size:10px;
     font-weight:700;border-radius:10px;padding:1px 7px}
   .main{flex:1;min-width:0;padding:26px 32px;max-width:1100px}
@@ -918,7 +930,6 @@
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
       <button id="tabPenalty" class="ltab" onclick="switchView('penalty')">Penalty Check</button>
       <button id="tabSignin" class="ltab" onclick="switchView('signin')">Sign In</button>
-      <button id="tabSignup" class="ltab" onclick="switchView('signup')">Sign Up</button>
       <button id="tabPricing" class="ltab" onclick="switchView('pricing')">Pricing</button>
       <button id="tabSecurity" class="ltab" onclick="switchView('security')">Security</button>
       <button id="langBtn" class="ltab" onclick="toggleLang()" title="اللغة العربية" style="font-weight:700">عربي</button>
@@ -936,7 +947,7 @@
         <h1 class="hero-h1" id="heroH1">The compliance layer for the&nbsp;<span class="hgrad">UAE</span>.</h1>
         <p class="hero-p" id="heroSub">One secure workspace for businesses and their accountants — every VAT, corporate-tax and audit deadline tracked and chased by AI.</p>
         <div class="hero-cta">
-          <button class="lf-btn" id="ctaTrial" style="width:auto;padding:13px 30px" onclick="switchView('signup')">Start free trial &rarr;</button>
+          <button class="lf-btn" id="ctaTrial" style="width:auto;padding:13px 30px" onclick="startTrial()">Start free trial &rarr;</button>
           <button class="hero-ghost" id="ctaSignin" onclick="switchView('signin')">Sign in</button>
         </div>
         <div class="hero-note" id="heroNote">Beta &middot; 3-month free trial for early users &middot; built for the era of VAT, Corporate Tax &amp; e-invoicing</div>
@@ -1143,6 +1154,15 @@
         <button type="button" id="lmSignup" class="lmtab" role="tab" onclick="setLfMode('signup')">Create account</button>
       </div>
       <form id="loginFormEl" onsubmit="submitLoginForm();return false" autocomplete="on">
+      <div class="lfield" id="lfWhoWrap" style="display:none"><label class="flabel" for="lfWho">I am…</label>
+        <select id="lfWho" class="finput" onchange="lfWhoChanged()">
+          <option value="owner">Setting up a new account (owner)</option>
+          <option value="consultant">Joining my company's workspace — Team member</option>
+          <option value="manager">Joining my company's workspace — Manager (oversight)</option>
+        </select></div>
+      <div class="lfield" id="lfJoinWrap" style="display:none"><label class="flabel" for="lfJoinLink">Your invite link</label>
+        <input id="lfJoinLink" class="finput" placeholder="Paste the invite link you received">
+        <div class="muted" style="font-size:11.5px;margin-top:4px">The account owner creates invites on the Team tab. Your seat type (Team member or Manager) comes from the invite itself.</div></div>
       <div class="lfield" id="lfNameWrap" style="display:none"><label class="flabel" for="lfName" id="lfNameLabel">Company name</label><input id="lfName" class="finput" type="text" placeholder="e.g. Falcon Trading LLC" autocomplete="organization"></div>
       <div class="lfield"><label class="flabel" for="lfEmail">Email</label><input id="lfEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
       <div class="lfield"><label class="flabel">Password</label>
@@ -1164,44 +1184,7 @@
   </div><!-- /viewSignin -->
 
   <!-- ===== SIGN UP VIEW (dedicated page) ===== -->
-  <div id="viewSignup" class="lview">
-    <div class="llogo">
-      <div class="llogo-lockup">
-        <span class="llogo-mark" role="img" aria-label="HisabOne logo"></span>
-        <span class="llogo-word">Hisab<span class="llogo-one">One</span></span>
-      </div>
-      <div class="llogo-tag">Start free in under a minute</div>
-    </div>
-    <div style="width:100%;max-width:440px">
-      <div class="lportal-card" style="cursor:default">
-        <div class="lportal-label biz" id="suLabel">Business Portal</div>
-        <h2 style="margin-bottom:4px">Create your account</h2>
-        <p class="muted" style="font-size:13px;margin-bottom:15px">3-month free trial · no credit card · cancel anytime</p>
-        <div class="billtoggle" style="margin:0 0 16px">
-          <span class="seg" style="display:flex;width:100%">
-            <button type="button" id="suRoleBiz" class="on" style="flex:1" onclick="suSetRole('business')">I’m a business</button>
-            <button type="button" id="suRoleFirm" style="flex:1" onclick="suSetRole('firm')">I’m an accountant</button>
-          </span>
-        </div>
-        <form id="suFormEl" onsubmit="doSignupPage();return false" autocomplete="on">
-          <div class="lfield"><label class="flabel" for="suName" id="suNameLabel">Company name</label><input id="suName" class="finput" type="text" placeholder="e.g. Falcon Trading LLC" autocomplete="organization"></div>
-          <div class="lfield"><label class="flabel" for="suEmail">Email</label><input id="suEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
-          <div class="lfield"><label class="flabel" for="suPassword">Password</label>
-            <div class="pw-wrap">
-              <input id="suPassword" name="password" class="finput" type="password" placeholder="At least 8 characters" autocomplete="new-password">
-              <button type="button" class="pw-eye" onclick="togglePw(this,'suPassword')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
-            </div>
-          </div>
-          <div id="suErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
-          <div id="suNotice" style="color:var(--green);font-size:12.5px;margin-bottom:2px;display:none"></div>
-          <button type="submit" id="suSubmit" class="lf-btn">Start free 3-month trial →</button>
-          <div class="muted" style="text-align:center;font-size:11.5px;margin-top:9px">3-month free trial · No credit card needed · Cancel anytime</div>
-        </form>
-        <div style="text-align:center;margin-top:15px"><span class="muted" style="font-size:12.5px">Already have an account? </span><span class="link" onclick="switchView('signin')">Sign in →</span></div>
-        <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px;line-height:1.65">By creating an account you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and consent to your data being processed as described in our <span class="link" onclick="switchView('privacy')">Privacy Policy</span> — including secure storage in the EU (Frankfurt) and AI document processing. AI features can make mistakes — always verify before filing.</div>
-      </div>
-    </div>
-  </div><!-- /viewSignup -->
+  
 
 
   <!-- ===== ABOUT US VIEW ===== -->
@@ -1970,21 +1953,21 @@ function performUnlink(p){
 }
 function requestUnlinkFirm(){
   if(!bizGuard()) return;
-  if(confirm('Unlink your accountant? They will no longer see your requests and shared reports.')) performUnlink({type:'firm'});
+  openConfirm({title:'Unlink your accountant', confirmLabel:'Unlink', message:'Unlink your accountant? They will no longer see your requests and shared reports.', onYes:function(){ performUnlink({type:'firm'}); }});
 }
 function requestUnlinkClient(i){
   const n=clients[i];
-  if(confirm('Unlink '+n+'? They will no longer appear in your client list.')) performUnlink({type:'client',name:n});
+  openConfirm({title:'Unlink client', confirmLabel:'Unlink', message:'Unlink '+n+'? They will no longer appear in your client list.', onYes:function(){ performUnlink({type:'client',name:n}); }});
 }
 
 /* ---------- LOGIN top tabs (Sign In / Sign Up / Pricing) ---------- */
 function switchView(v){
-  ['Home','Penalty','Signin','Pricing','Security','Privacy','Terms','Signup'].forEach(n=>{
+  ['Home','Penalty','Signin','Pricing','Security','Privacy','Terms'].forEach(n=>{
     const view=document.getElementById('view'+n); if(view){ const on=(n.toLowerCase()===v); view.style.display=on?'flex':'none'; if(on) view.scrollTop=0; }
     const tab=document.getElementById('tab'+n); if(tab) tab.classList.toggle('on', n.toLowerCase()===v);
   });
   if(v==='pricing' && typeof setBilling==='function') setBilling(window._billing||'monthly');
-  if(v==='signup' && typeof trackEvent==='function') trackEvent('signup_view');
+  if(v==='signin' && window._pendingLfMode==='signup' && typeof trackEvent==='function') trackEvent('signup_view');
 }
 function setBilling(mode){
   window._billing=mode;
@@ -2061,13 +2044,16 @@ function backToPortals(){
 }
 function showLoginErr(msg){const e=document.getElementById('lfErr');e.textContent=msg;e.style.display='block';}
 let lfMode='signin';
-function startTrial(){ window._pendingLfMode=null; switchView('signin'); }
+function startTrial(){ window._pendingLfMode='signup'; switchView('signin'); }
 function setLfMode(m){
   lfMode=m;
   const su=(m==='signup');
   const g=id=>document.getElementById(id);
   g('lmSignin').classList.toggle('on',!su); g('lmSignup').classList.toggle('on',su);
   g('lfNameWrap').style.display=su?'block':'none';
+  var who=g('lfWhoWrap'); if(who) who.style.display=su?'block':'none';
+  if(!su){ var jw=g('lfJoinWrap'); if(jw) jw.style.display='none'; }
+  if(su && typeof lfWhoChanged==='function') lfWhoChanged();
   g('lfTrialNote').style.display=su?'block':'none';
   const rm=g('lfRememberWrap'); if(rm) rm.style.display=su?'none':'flex';
   g('lfErr').style.display='none'; g('lfNotice').style.display='none';
@@ -2092,6 +2078,19 @@ function setLfBusy(b){
   if(btn){ btn.disabled=b; btn.style.opacity=b?'.6':'1'; }
 }
 function submitLoginForm(){ if(lfMode==='signup') doSignup(); else doLogin(); }
+function lfWhoChanged(){
+  var who=(document.getElementById('lfWho')||{}).value||'owner';
+  var joining=(who!=='owner');
+  var jw=document.getElementById('lfJoinWrap'); if(jw) jw.style.display=joining?'block':'none';
+  var nl=document.getElementById('lfNameLabel');
+  var nm=document.getElementById('lfName');
+  if(nl&&nm){
+    if(joining){ nl.textContent='Your full name'; nm.placeholder='e.g. Sara Al Marri'; }
+    else { nl.textContent=(loginRole==='business')?'Company name':'Firm name'; nm.placeholder=(loginRole==='business')?'e.g. Falcon Trading LLC':'e.g. Summit Auditors'; }
+  }
+  var sub=document.getElementById('lfSubmit');
+  if(sub&&lfMode==='signup') sub.textContent=joining?'Create login & join workspace →':'Start free 3-month trial →';
+}
 async function doLogin(){
   const email=document.getElementById('lfEmail').value.trim();
   const pass=document.getElementById('lfPassword').value;
@@ -2124,6 +2123,13 @@ async function doSignup(){
   setLfBusy(true);
   try{
     const meta={name:name, role:loginRole};
+    var who=(document.getElementById('lfWho')||{}).value||'owner';
+    if(who!=='owner' && !window._joinToken){
+      var raw=((document.getElementById('lfJoinLink')||{}).value||'').trim();
+      var tk=(raw.match(/[?&]join=([A-Za-z0-9]+)/)||[])[1] || (/^[A-Za-z0-9]{16,}$/.test(raw)?raw:null);
+      if(!tk){ err('Paste the invite link the account owner sent you — it contains your seat.'); setLfBusy(false); return; }
+      window._joinToken=tk;
+    }
     if(window._joinToken){ meta.join_token=window._joinToken; }
 
     const {data,error}=await sb.auth.signUp({
@@ -2191,6 +2197,7 @@ async function enterFromSession(session, expectRole){
     return;
   }
   currentAccount={id:uid, role:prof.role, name:prof.name, email:prof.email,
+                  plan:prof.plan||'trial',
                   inviteCode:prof.invite_code||'', trialEndsAt:prof.trial_ends_at,
                   parentFirmId:prof.parent_firm_id||null, teamRole:null,
                   firmId: prof.role==='firm' ? (prof.parent_firm_id||uid) : uid,
@@ -2201,7 +2208,7 @@ async function enterFromSession(session, expectRole){
     try{ const {data}=await sb.from('team_members').select('team_role,digest_freq').eq('user_id',uid).maybeSingle(); tmRow=data; }catch(e){}
     currentAccount.teamRole=(tmRow&&tmRow.team_role)||'consultant';
     currentAccount.digestFreq=(tmRow&&tmRow.digest_freq)||'off';
-    try{ const {data:fp}=await sb.from('profiles').select('name,invite_code').eq('id',prof.parent_firm_id).maybeSingle(); if(fp){ currentAccount.firmName=fp.name; if(prof.role==='firm') currentAccount.inviteCode=fp.invite_code||''; if(prof.role==='business') currentAccount.companyName=fp.name; } }catch(e){}
+    try{ const {data:fp}=await sb.from('profiles').select('name,invite_code,plan').eq('id',prof.parent_firm_id).maybeSingle(); if(fp){ currentAccount.firmName=fp.name; currentAccount.plan=fp.plan||'trial'; if(prof.role==='firm') currentAccount.inviteCode=fp.invite_code||''; if(prof.role==='business') currentAccount.companyName=fp.name; } }catch(e){}
   } else { currentAccount.teamRole='owner'; }
   window._joinToken=null;
   await loadWorkspace();
@@ -2434,9 +2441,8 @@ const NAV = {
   business:[
     {id:'dash', ic:'home', label:'Dashboard'},
     {id:'guides', ic:'sparkles', label:'AI Assist'},
-    {id:'btax', ic:'file-text', label:'Tax Documents'},
-    {id:'baudit', ic:'clipboard', label:'Audit Documents'},
-    {id:'bvat', ic:'calc', label:'VAT Calculator'},
+    {group:'Documents', ic:'file-text', children:[{id:'btax',label:'Tax'},{id:'baudit',label:'Audit'}]},
+    {group:'Calculator', ic:'calc', children:[{id:'bvat',label:'VAT'}]},
     {id:'binv', ic:'inbox', label:'Invoices'},
     {id:'docs', ic:'folder', label:'Company Information'},
     {id:'calendar', ic:'calendar', label:'Compliance Calendar'},
@@ -2449,10 +2455,8 @@ const NAV = {
     {id:'fdash', ic:'home', label:'Accountant Dashboard'},
     {id:'fguides', ic:'sparkles', label:'AI Assist'},
     {id:'clients', ic:'users', label:'Clients'},
-    {id:'taxdocs', ic:'file-text', label:'Tax'},
-    {id:'auditdocs', ic:'clipboard', label:'Audit'},
-    {id:'vat', ic:'calc', label:'VAT Calculator'},
-    {id:'ct', ic:'building', label:'Corporate Tax'},
+    {group:'Documents', ic:'file-text', children:[{id:'taxdocs',label:'Tax'},{id:'auditdocs',label:'Audit'}]},
+    {group:'Calculator', ic:'calc', children:[{id:'vat',label:'VAT'},{id:'ct',label:'Corporate Tax'}]},
     {id:'reminders', ic:'mail', label:'Email Reminders'},
     {id:'freports', ic:'chart', label:'Reports'},
     {id:'fchat', ic:'chat', label:'Messages'},
@@ -2482,15 +2486,31 @@ function setRole(r){
         : ('Accounting firm · '+clients.length+' client'+(clients.length===1?'':'s')));
   renderNav(); renderPage();
 }
-function go(p){if(p!=='breports'&&p!=='freports')viewingReport=null;page=p;renderNav();renderPage();window.scrollTo(0,0);}
+function go(p){if(typeof gatePage==='function'&&!gatePage(p))return;if(p!=='breports'&&p!=='freports')viewingReport=null;page=p;renderNav();renderPage();window.scrollTo(0,0);}
 
 function renderNav(){
   const items = NAV[role];
   document.getElementById('sidebar').innerHTML =
     '<div class="navlabel">'+(role==='business'?'My company':'Practice')+'</div>'+
-    items.map(i=>{const b=navBadge(i.id);const act=(page===i.id)||(page==='clientprofile'&&i.id==='clients');return `<div class="navitem ${act?'active':''}" onclick="go('${i.id}')">
+    items.map(i=>{
+      if(i.group){
+        const act=i.children.some(c=>page===c.id);
+        const fly=i.children.map(c=>{
+          const b=navBadge(c.id);
+          return `<div class="navfly-item ${page===c.id?'on':''}" onclick="event.stopPropagation();go('${c.id}')">${c.label}${b?`<span class="badge">${b}</span>`:''}</div>`;
+        }).join('');
+        const tot=i.children.reduce((t,c)=>t+(navBadge(c.id)||0),0);
+        return `<div class="navitem navgroup ${act?'active':''}" onclick="go('${i.children[0].id}')">
+          <span class="ic">${svgIcon(i.ic)}</span><span class="txt">${i.group}</span>
+          ${tot?`<span class="badge">${tot}</span>`:''}<span class="navcaret">›</span>
+          <div class="navfly"><div class="navfly-head">${i.group}</div>${fly}</div></div>`;
+      }
+      const b=navBadge(i.id);const act=(page===i.id)||(page==='clientprofile'&&i.id==='clients');
+      const locked=(typeof PLAN_PAGE_GATES!=='undefined'&&PLAN_PAGE_GATES[i.id]&&!planAllows(PLAN_PAGE_GATES[i.id][0]));
+      return `<div class="navitem ${act?'active':''}" onclick="go('${i.id}')" ${locked?'style="opacity:.55"':''}>
       <span class="ic">${svgIcon(i.ic)}</span><span class="txt">${i.label}</span>
-      ${b?`<span class="badge">${b}</span>`:''}</div>`;}).join('');
+      ${locked?'<span class="navcaret">🔒</span>':''}${b?`<span class="badge">${b}</span>`:''}</div>`;
+    }).join('');
 }
 var _reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 function countUpStats(scope){
@@ -2894,7 +2914,7 @@ fdash:()=>{
 
 clients:()=>{
   const order={high:0,medium:1,low:2};
-  let rows=firmClients.slice().sort((a,b)=>order[a.risk]-order[b.risk]);
+  let rows=activeFirmClients().slice().sort((a,b)=>order[a.risk]-order[b.risk]);
   if(riskFilter!=='all') rows=rows.filter(c=>c.risk===riskFilter);
   if(urgFilter!=='all') rows=rows.filter(c=>c.urgency===urgFilter);
   return `
@@ -2909,7 +2929,7 @@ clients:()=>{
       <button class="btn ghost sm" onclick="genInvite()">New code</button>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:2px">
-      ${clients.map((c,i)=>`<span style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px">${c}<span style="cursor:pointer;opacity:.6" title="Unlink (needs verification)" onclick="requestUnlinkClient(${i})">✕</span></span>`).join('')}
+      ${clients.filter(c=>!isArchived(c)).map((c,i)=>`<span style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px">${c}<span style="cursor:pointer;opacity:.6" title="Unlink (needs verification)" onclick="requestUnlinkClient(${clients.indexOf(c)})">✕</span></span>`).join('')}
     </div>
   </div>
   <div style="display:flex;gap:22px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
@@ -2939,10 +2959,11 @@ clients:()=>{
   <div class="card" style="padding:0;overflow-x:auto">
     <table>
       <tr><th style="width:34px"><input type="checkbox" onclick="toggleAllClients(this.checked)" ${allClientsSelected()?'checked':''} title="Select all" style="width:16px;height:16px;cursor:pointer"></th>
-        <th>Client</th><th>Registered</th><th>Trial ends</th><th>Documents</th><th>Health</th><th>Penalty exposure</th><th>Risk</th><th>Urgency</th></tr>
-      ${rows.map(fClientRow).join('') || `<tr><td colspan="9" class="muted" style="text-align:center;padding:22px">${firmClients.length?'No clients match these filters.':'No clients yet — share your invite code above to link your first client.'}</td></tr>`}
+        <th>Client</th><th>Registered</th><th>Trial ends</th><th>Documents</th><th>Health</th><th>Penalty exposure</th><th>Risk</th><th>Urgency</th><th></th></tr>
+      ${rows.map(fClientRow).join('') || `<tr><td colspan="10" class="muted" style="text-align:center;padding:22px">${activeFirmClients().length?'No clients match these filters.':'No clients yet — share your invite code above to link your first client.'}</td></tr>`}
     </table>
   </div>
+  ${archivedClientsCardHTML()}
   <div class="note">Showing ${rows.length} of ${firmClients.length} clients · click a client's name to open their full profile</div>`;
 },
 
@@ -3018,7 +3039,7 @@ vat:()=>{
     <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)">
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
         <div><label class="flabel">Or import from a client's Invoice inbox</label>
-          <select id="impClient" class="finput" style="min-width:190px">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients</option>'}</select></div>
+          <select id="impClient" class="finput" style="min-width:190px">${activeMyClients().map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients</option>'}</select></div>
         <div><label class="flabel">Quarter (blank = all)</label><input id="impQuarter" class="finput" placeholder="e.g. Q3 2026" style="max-width:130px"></div>
         <button class="btn ghost" onclick="importClientInvoices()">${svgIcon('inbox',15)} Import client invoices</button>
       </div>
@@ -3134,9 +3155,9 @@ vat:()=>{
     <div id="shareVATPanel" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
       <div class="grid g3" style="margin-bottom:12px">
         <div><label class="flabel">Send to client / business</label>
-          <select id="shareClient" class="finput" onchange="prefillShareContact('vat')">${myClients.map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
+          <select id="shareClient" class="finput" onchange="prefillShareContact('vat')">${activeMyClients().map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
         <div><label class="flabel">Period label</label><input id="sharePeriod" class="finput" value="VAT Return Q2 2026"></div>
-        <div><label class="flabel">Business signatory (contact person)</label><input id="shareContact" class="finput" placeholder="e.g. Ahmed Al Mansoori" value="${ctEsc(shareContactFor((myClients[0]||{}).business_name))}"></div>
+        <div><label class="flabel">Business signatory (contact person)</label><input id="shareContact" class="finput" placeholder="e.g. Ahmed Al Mansoori" value="${ctEsc(shareContactFor((activeMyClients()[0]||{}).business_name))}"></div>
       </div>
       <p class="muted" style="font-size:12px;margin:-2px 0 10px">The draft return goes to the business for review — they can approve &amp; sign it or request changes, and every step is recorded on the audit trail.</p>
       <button class="btn" onclick="shareVATReturn()">${svgIcon('share',14)} Share draft return in-app</button>
@@ -3155,7 +3176,7 @@ ct:()=>`
       <div><label class="flabel">Prepare for client</label>
         <select id="ctClientSel" class="finput" onchange="ctSelectClient(this.value)">
           <option value="">— No client selected (manual entry) —</option>
-          ${myClients.map(c=>`<option value="${c.business_id}" ${ctClient===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')}
+          ${activeMyClients().map(c=>`<option value="${c.business_id}" ${ctClient===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')}
         </select></div>
       <div class="muted" id="ctTPsrcNote" style="font-size:12px;padding-bottom:9px">${ctTPsourceNote()}</div>
     </div>
@@ -3194,7 +3215,7 @@ ct:()=>`
     <div class="cardhead"><h3>${svgIcon('share',16)} Share draft return to Business</h3><span class="muted" style="font-size:12px">Send this return for review &amp; sign-off</span></div>
     <div class="grid g3" style="margin-bottom:10px">
       <div><label class="flabel">Send to client / business</label>
-        <select id="ctShareClient" class="finput" onchange="prefillShareContact('ct')">${myClients.map(c=>`<option value="${c.business_id}" ${ctClient===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
+        <select id="ctShareClient" class="finput" onchange="prefillShareContact('ct')">${activeMyClients().map(c=>`<option value="${c.business_id}" ${ctClient===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients yet</option>'}</select></div>
       <div><label class="flabel">Period label</label><input id="ctSharePeriod" class="finput" value="Corporate Tax FY2025"></div>
       <div><label class="flabel">Business signatory (contact person)</label><input id="ctShareContact" class="finput" placeholder="e.g. Ahmed Al Mansoori" value="${ctEsc(ctTP.cName||shareContactFor((myClients[0]||{}).business_name))}"></div>
     </div>
@@ -3272,7 +3293,7 @@ fchat:()=>`
     ? `<div class="card" style="max-width:760px">
         <div style="display:flex;gap:10px;align-items:end;margin-bottom:12px">
           <div style="flex:1;max-width:320px"><label class="flabel">Conversation with</label>
-            <select id="chatPeerSel" class="finput" onchange="chatSelectPeer(this.value)">${myClients.map(c=>`<option value="${c.business_id}" ${chatPeer===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')}</select></div>
+            <select id="chatPeerSel" class="finput" onchange="chatSelectPeer(this.value)">${activeMyClients().map(c=>`<option value="${c.business_id}" ${chatPeer===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')}</select></div>
         </div>
         ${chatThreadHTML('Page')}
       </div>`
@@ -4246,12 +4267,14 @@ function saveCtScenario(){
   if((inp.profit||0)===0 && (inp.revenue||0)===0){ toast('Enter revenue and profit first'); return; }
   const n=ctScenarios.length+1;
   const dflt=(inp.entity==='freezone'?'Free Zone':'Mainland')+(inp.sbr?' + SBR':'')+' '+n;
-  let label=dflt; try{ const p=prompt('Name this scenario:', dflt); if(p!==null) label=p; }catch(e){}
-  label=(label||dflt).slice(0,40);
-  ctScenarios.push(Object.assign({id:'sc_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), label:label}, inp));
-  saveAccountData();
-  const sb=document.getElementById('ctScenBody'); if(sb) sb.innerHTML=ctScenTable();
-  toast('Scenario saved — compare below');
+  openInput({title:'Save scenario', icon:'bar', label:'Scenario name', value:dflt, confirmLabel:'Save scenario',
+    onYes:function(label){
+      label=(label||dflt).slice(0,40);
+      ctScenarios.push(Object.assign({id:'sc_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), label:label}, inp));
+      saveAccountData();
+      const sb2=document.getElementById('ctScenBody'); if(sb2) sb2.innerHTML=ctScenTable();
+      toast('Scenario saved — compare below');
+    }});
 }
 function rmCtScenario(id){
   ctScenarios=ctScenarios.filter(s=>s.id!==id);
@@ -4830,6 +4853,37 @@ function waClient(){
   var p=clientProfiles[c.business_id]?(clientProfiles[c.business_id].cPhone||''):'';
   waOpen('Hello '+c.business_name+' — '+((currentAccount&&currentAccount.firmName)||'your accountant')+' here, via HisabOne. ', p);
 }
+/* ---- plan gating: trial & free unlock everything; paid plans gate per tier ---- */
+var PLAN_FEATURES={
+  starter:{ binv:false, bvat:false, baudit:false, bank:false, multiCo:false, approveReturns:false, seats:1 },
+  growth:{ binv:true, bvat:true, baudit:false, bank:true, multiCo:false, approveReturns:true, seats:3 },
+  pro:{ binv:true, bvat:true, baudit:true, bank:true, multiCo:true, approveReturns:true, seats:10 }
+};
+function bizPlan(){ return (currentAccount&&currentAccount.plan)||'trial'; }
+function planAllows(f){
+  if(!currentAccount||currentAccount.role!=='business') return true;
+  var p=bizPlan();
+  if(p==='trial'||p==='free'||!PLAN_FEATURES[p]) return true;
+  return PLAN_FEATURES[p][f]!==false;
+}
+function planSeats(){
+  var p=bizPlan();
+  if(p==='trial'||p==='free'||!PLAN_FEATURES[p]) return 10;
+  return PLAN_FEATURES[p].seats;
+}
+function planLabel(){ var p=bizPlan(); return p==='trial'?'Free trial':(p==='free'?'Free':p.charAt(0).toUpperCase()+p.slice(1)); }
+function planNeededFor(f){ return PLAN_FEATURES.growth[f]!==false ? 'Growth' : 'Business Pro'; }
+function upsell(f, featureName){
+  openConfirm({title:featureName+' is on the '+planNeededFor(f)+' plan', danger:false, confirmLabel:'See pricing',
+    message:'Your current plan ('+planLabel()+') doesn\u2019t include '+featureName+'. Upgrade to '+planNeededFor(f)+' to unlock it \u2014 or contact us and we\u2019ll sort it out.',
+    onYes:function(){ try{ window.open('https://hisabone.ae/#pricing','_blank'); }catch(e){} }});
+}
+var PLAN_PAGE_GATES={binv:['binv','the Invoice inbox'], bvat:['bvat','the VAT calculator'], baudit:['baudit','Audit processes']};
+function gatePage(id){
+  var g=PLAN_PAGE_GATES[id];
+  if(g && !planAllows(g[0])){ upsell(g[0], g[1]); return false; }
+  return true;
+}
 /* ---- business team (seats incl. the Manager oversight seat) ---- */
 function bizRoleLabel(tr){
   if(tr==='owner') return '<span class="pill p-teal" style="font-size:10px">Owner</span>';
@@ -4885,7 +4939,7 @@ function bizTeamPageHTML(){
     +'<p class="muted" style="font-size:12px;margin-top:10px">The Manager seat is a separate login that can open every page, report and message in this workspace but cannot upload, edit, approve or delete anything — oversight without risk. Team members work normally; only the owner manages the team and billing.</p></div>'
     +'</div>';
 }
-function bizSeatCap(){ return 11; } /* hard ceiling (Business Pro) until billing enforces per-plan */
+function bizSeatCap(){ return planSeats()+1; } /* members + the Manager seat */
 async function addBizMember(){
   if(!isBizOwner()){ toast('Only the account owner can invite members'); return; }
   var name=((document.getElementById('btmName')||{}).value||'').trim();
@@ -4893,7 +4947,8 @@ async function addBizMember(){
   var role=((document.getElementById('btmRole')||{}).value||'consultant');
   if(!name){ toast('Enter their name'); return; }
   if(role==='manager' && (teamMembers||[]).some(function(m){return m.team_role==='manager';})){ toast('Your plan includes one Manager seat — it is already taken.'); return; }
-  if((teamMembers||[]).length>=bizSeatCap()){ toast('Seat limit reached for this workspace.'); return; }
+  var nonMgr=(teamMembers||[]).filter(function(m){return m.team_role!=='manager'&&!m.is_owner;}).length;
+  if(role!=='manager' && nonMgr>=planSeats()){ toast('Your '+planLabel()+' plan includes '+planSeats()+' team member seat'+(planSeats()===1?'':'s')+' (plus the Manager). Upgrade to add more.'); return; }
   if(!sb||!currentAccount){ toast('Not signed in'); return; }
   var token=(crypto&&crypto.randomUUID)?crypto.randomUUID().replace(/-/g,''):('t'+Date.now().toString(36)+Math.random().toString(36).slice(2));
   try{
@@ -5183,6 +5238,7 @@ function bankStatementsCardHTML(){
 }
 function bankUpload(ym, label){
   if(!bizGuard()) return;
+  if(!planAllows('bank')){ upsell('bank','the Bank statement drop'); return; }
   openDocTruth(function(){
     var inp=document.getElementById('fileInput');
     inp.value=''; inp.accept='';
@@ -5213,14 +5269,19 @@ function switchCompany(id){
 }
 function addCompanyPrompt(){
   if(!bizGuard()) return;
-  var name=null;
-  try{ name=prompt('Name of the new company:'); }catch(e){}
+  if(!planAllows('multiCo')){ renderCompanySwitch(); upsell('multiCo','Multi-company'); return; }
   renderCompanySwitch();
-  if(!name||!name.trim()) return;
-  snapshotCompanies(cleanVaultCopy(vaultDocs));
-  var id='c'+Date.now().toString(36);
-  bizCompanies.push({id:id, name:name.trim(), profile:{}, vault:[], calendar:[], invoices:[], renewals:[]});
-  switchCompany(id);
+  openInput({title:'Add a company', icon:'building', label:'Company name',
+    placeholder:'e.g. Falcon Properties LLC',
+    message:'A fresh workspace for this company — its own profile, vault, calendar, invoices and renewals. Switch between companies any time from the top bar.',
+    confirmLabel:'Create company',
+    onYes:function(name){
+      if(!name){ return; }
+      snapshotCompanies(cleanVaultCopy(vaultDocs));
+      var id='c'+Date.now().toString(36);
+      bizCompanies.push({id:id, name:name, profile:{}, vault:[], calendar:[], invoices:[], renewals:[]});
+      switchCompany(id);
+    }});
 }
 function renderCompanySwitch(){
   var w=document.getElementById('coSwitchWrap'); if(!w) return;
@@ -5464,8 +5525,49 @@ function fClientRow(c){
     <td><span style="display:inline-flex;align-items:center;gap:7px;font-weight:700;color:${h.band.col};cursor:pointer" onclick="openClientProfile('${c.id}')"><span style="width:9px;height:9px;border-radius:50%;background:${h.band.col}"></span>${h.score}</span></td>
     <td>${h.exposure>0?`<b style="color:#c0392b">${fmtAED(h.exposure)}</b>`:'<span class="muted">—</span>'}</td>
     <td><span class="pill ${rp}">${c.risk[0].toUpperCase()+c.risk.slice(1)}</span></td>
-    <td><span class="pill ${u[0]}">${u[1]}</span></td></tr>`;}
+    <td><span class="pill ${u[0]}">${u[1]}</span></td>
+    <td onclick="event.stopPropagation()"><button class="iconbtn" title="Archive client" onclick="archiveClient('${c.id}')">${svgIcon('folder',14)}</button></td></tr>`;}
 
+function activeMyClients(){ return (myClients||[]).filter(function(c){return !isArchived(c.business_name);}); }
+/* ---- archive clients (keep history, hide from active work) ---- */
+function isArchived(name){ return !!(clientMeta[name]&&clientMeta[name].archived); }
+function activeFirmClients(){ return firmClients.filter(function(c){return !isArchived(c.name);}); }
+function archivedFirmClients(){ return firmClients.filter(function(c){return isArchived(c.name);}); }
+function archiveClient(id){
+  var c=firmClients.find(function(x){return x.id===id;}); if(!c) return;
+  openConfirm({title:'Archive client', confirmLabel:'Archive',
+    message:'Archive "'+c.name+'"? They move out of your active client list along with their history, and stop appearing in returns, reminders and share options. Their records are kept and you can restore them any time.',
+    onYes:function(){
+      clientMeta[c.name]=clientMeta[c.name]||{};
+      clientMeta[c.name].archived=new Date().toISOString();
+      delete _selClients[c.id];
+      saveAccountData(); logActivity('client_removed','Archived client '+c.name);
+      if(page==='clientprofile') page='clients';
+      renderPage();
+    }});
+}
+function restoreClient(id){
+  var c=firmClients.find(function(x){return x.id===id;}); if(!c) return;
+  if(clientMeta[c.name]) delete clientMeta[c.name].archived;
+  saveAccountData(); logActivity('client_linked','Restored client '+c.name);
+  renderPage();
+}
+function archivedClientsCardHTML(){
+  var arch=archivedFirmClients();
+  if(!arch.length) return '';
+  var rows=arch.map(function(c){
+    var when=clientMeta[c.name]&&clientMeta[c.name].archived?fmtRegDate(clientMeta[c.name].archived):'';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line)">'
+      +'<span style="display:inline-flex;color:var(--muted)">'+svgIcon('folder',16)+'</span>'
+      +'<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px;color:var(--muted)">'+ctEsc(c.name)+'</div>'
+      +'<div class="muted" style="font-size:11.5px">archived '+when+' · history preserved</div></div>'
+      +'<button class="btn sm ghost" onclick="openClientProfile(\''+c.id+'\')">View</button>'
+      +'<button class="btn sm" onclick="restoreClient(\''+c.id+'\')">Restore</button>'
+      +'</div>';
+  }).join('');
+  return '<div class="card mt18"><div class="cardhead"><h3>'+svgIcon('folder',16)+' Archived clients</h3><span class="pill p-gray">'+arch.length+'</span></div>'
+    +'<p class="muted" style="font-size:12px;margin:-2px 0 6px">No longer working together — kept out of your active lists but with every request, return and report preserved.</p>'+rows+'</div>';
+}
 /* ---- client profile page (firm) ---- */
 var _viewClientId=null;
 function openClientProfile(id){ _viewClientId=id; go('clientprofile'); }
@@ -5780,6 +5882,28 @@ function openConfirm(opts){
     +'</div>';
 }
 function closeConfirm(){ var h=document.getElementById('confirmModal'); if(h) h.style.display='none'; _confirmCb=null; }
+var _inputCb=null;
+function openInput(opts){
+  opts=opts||{};
+  var h=document.getElementById('inputModal');
+  if(!h){ h=document.createElement('div'); h.id='inputModal'; h.className='modal-overlay'; document.body.appendChild(h); h.addEventListener('click',function(e){ if(e.target===h) closeInput(); }); }
+  _inputCb=opts.onYes||null;
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3)">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><span style="color:var(--accent)">'+svgIcon(opts.icon||'plus',20)+'</span><h3 style="font-size:16px;margin:0">'+ctEsc(opts.title||'Enter a value')+'</h3></div>'
+    +(opts.message?('<p style="font-size:13.3px;color:var(--muted);line-height:1.6;margin:8px 0 12px">'+ctEsc(opts.message)+'</p>'):'<div style="height:10px"></div>')
+    +'<label class="flabel">'+ctEsc(opts.label||'')+'</label>'
+    +'<input id="inputModalField" class="finput" placeholder="'+ctEsc(opts.placeholder||'')+'" value="'+ctEsc(opts.value||'')+'" onkeydown="if(event.key===\'Enter\')inputProceed()">'
+    +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px"><button class="btn ghost" onclick="closeInput()">Cancel</button>'
+    +'<button class="btn" onclick="inputProceed()">'+ctEsc(opts.confirmLabel||'Save')+'</button></div>'
+    +'</div>';
+  setTimeout(function(){ var f=document.getElementById('inputModalField'); if(f){ f.focus(); f.select(); } },40);
+}
+function closeInput(){ var h=document.getElementById('inputModal'); if(h) h.style.display='none'; _inputCb=null; }
+function inputProceed(){
+  var v=((document.getElementById('inputModalField')||{}).value||'').trim();
+  var cb=_inputCb; closeInput(); if(typeof cb==='function') cb(v);
+}
 function confirmProceed(){ var cb=_confirmCb; closeConfirm(); if(typeof cb==='function') cb(); }
 
 /* ---- load returns + their audit events for the signed-in user ---- */
@@ -6028,6 +6152,7 @@ function attachChangeDoc(id){
 }
 async function doApproveReturn(id){
   if(!bizGuard()) return;
+  if(!planAllows('approveReturns')){ upsell('approveReturns','the return sign-off workflow'); return; }
   var rt=(returnsList||[]).find(function(r){return r.id===id;}); if(!rt) return;
   var sig=((document.getElementById('retSig')||{}).value||'').trim();
   if(!sig){ toast('Type your full name to sign this approval'); return; }
@@ -6864,11 +6989,12 @@ function admAdd(section){
   admSave(); admRender();
 }
 function admAssign(i){
-  var v=prompt('Assign this role to (name or email):', _admData.depts[i].person||'');
-  if(v===null) return;
-  _admData.depts[i].person=v.trim();
-  _admData.depts[i].st=v.trim()?'filled':'open';
-  admSave(); admRender();
+  openInput({title:'Assign role', icon:'users', label:'Assign to (name or email)', value:_admData.depts[i].person||'', confirmLabel:'Assign',
+    onYes:function(v){
+      _admData.depts[i].person=v;
+      _admData.depts[i].st=v?'filled':'open';
+      admSave(); admRender();
+    }});
 }
 function admUsageEst(){
   var em=(_admStats&&_admStats.events_month)||{};
@@ -7070,17 +7196,18 @@ function admTaskCycle(ti){
 function admTaskDel(ti){ _admData.depts[_admDept].tasks.splice(ti,1); admSave(); admRender(); }
 function admTaskAssign(ti){
   var k=_admData.depts[_admDept].tasks[ti]; if(!k) return;
-  var v=prompt('Assign this task to:', k.as||_admData.depts[_admDept].person||'');
-  if(v===null) return;
-  k.as=v.trim(); admSave(); admRender();
+  openInput({title:'Assign task', icon:'users', label:'Assign to', value:k.as||_admData.depts[_admDept].person||'', confirmLabel:'Assign',
+    onYes:function(v){ k.as=v; admSave(); admRender(); }});
 }
 function admTaskFU(ti){
   var k=_admData.depts[_admDept].tasks[ti]; if(!k) return;
-  var v=prompt('Follow-up note for "'+k.t+'":','');
-  if(!v||!v.trim()) return;
-  k.fu=k.fu||[];
-  k.fu.push({n:v.trim(), at:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})});
-  admSave(); admRender();
+  openInput({title:'Follow-up note', icon:'mail', label:'Note for "'+k.t+'"', placeholder:'e.g. blocked on DNS — check Friday', confirmLabel:'Add note',
+    onYes:function(v){
+      if(!v) return;
+      k.fu=k.fu||[];
+      k.fu.push({n:v, at:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})});
+      admSave(); admRender();
+    }});
 }
 function admSetRate(key,v){ _admData.rates=_admData.rates||{}; _admData.rates[key]=parseFloat(v)||0; admSave(); }
 /* ---- AI advertising strategist (per-platform playbooks) ---- */
@@ -7147,6 +7274,74 @@ function trackEvent(kind){
     heroNote:'نسخة تجريبية · تجربة مجانية لمدة ٣ أشهر للمستخدمين الأوائل · مبنيّة لعصر ضريبة القيمة المضافة وضريبة الشركات والفوترة الإلكترونية',
     in5Line:'<span style="font-weight:800;font-size:13px;letter-spacing:.5px;background:#0b1226;color:#fff;border-radius:8px;padding:4px 9px">in5</span><span>مدعومة من <b style="color:var(--text)">in5 tech</b> — حاضنة تيكوم للشركات التقنية الناشئة في دبي</span>'
   };
+  var AR_TEXT={
+    'Home':'الرئيسية','Penalty Check':'فحص الغرامات','Sign In':'تسجيل الدخول','Sign Up':'إنشاء حساب','Pricing':'الأسعار','Security':'الأمان',
+    'HisabOne · Accountant Dashboard':'هيساب ون · لوحة المحاسب',
+    'Active clients':'عملاء نشطون','Docs awaited':'مستندات بانتظار','Overdue':'متأخر',
+    'Q2 VAT return — Al Noor Trading':'إقرار ضريبة القيمة المضافة للربع الثاني — النور للتجارة',
+    'due in 6 days':'يستحق خلال ٦ أيام','June sales invoices — missing':'فواتير مبيعات يونيو — ناقصة',
+    'auto-chase sent':'تمت المتابعة تلقائيًا','CT registration — Falcon LLC':'تسجيل ضريبة الشركات — فالكون ذ.م.م',
+    'filed on time':'قُدّم في الموعد',
+    'HisabOne AI — tracking 9 deadlines, chasing 3 documents for you':'ذكاء هيساب ون — يتابع ٩ مواعيد ويلاحق ٣ مستندات نيابةً عنك',
+    'One workspace · two portals':'مساحة عمل واحدة · بوابتان',
+    'Built for both sides':'مصمم للطرفين معًا',
+    'Business Portal':'بوابة الأعمال','For businesses':'للشركات',
+    'Every filing, deadline and document in one live dashboard — with calculators and AI Assist for plain-language answers.':'كل إقرار وموعد ومستند في لوحة حية واحدة — مع الحاسبات ومساعد الذكاء الاصطناعي بإجابات واضحة.',
+    'Sign in →':'تسجيل الدخول ←','Sign in':'تسجيل الدخول',
+    'Accountant Portal':'بوابة المحاسب','For accountants':'للمحاسبين',
+    'Every client ranked by risk, every request in one place — with AI Auto-Chase that follows up until files arrive.':'كل عميل مصنّف حسب المخاطر وكل طلب في مكان واحد — مع متابعة آلية بالذكاء الاصطناعي حتى وصول الملفات.',
+    'How it works':'كيف يعمل',
+    'From scattered to filed — in four steps':'من التشتت إلى التقديم — في أربع خطوات',
+    'Connect':'الربط','Business and accountant share one secure workspace.':'الشركة والمحاسب يتشاركان مساحة عمل آمنة واحدة.',
+    'Secure link':'رابط آمن','Connected — one live record':'متصل — سجل حي واحد',
+    'AI chases':'الذكاء الاصطناعي يتابع','Deadlines tracked; missing documents requested automatically.':'تتبع المواعيد وطلب المستندات الناقصة تلقائيًا.',
+    'Deadlines':'المواعيد النهائية','Q2 VAT return':'إقرار الربع الثاني','6 days':'٦ أيام','June invoices':'فواتير يونيو','chasing':'قيد المتابعة',
+    'Auto-chased 3 documents':'تمت متابعة ٣ مستندات تلقائيًا',
+    'Know the number':'اعرف الرقم','VAT & corporate tax calculated as the numbers land.':'تُحتسب ضريبة القيمة المضافة وضريبة الشركات فور وصول الأرقام.',
+    'Corporate tax':'ضريبة الشركات','AED 11,250':'١١٬٢٥٠ درهم','9% above AED 375k · 2.25% effective':'٩٪ فوق ٣٧٥ ألف درهم · فعلي ٢٫٢٥٪',
+    'File on time':'قدّم في الموعد','Reviewed and filed from one workspace — penalty-free.':'مراجعة وتقديم من مساحة واحدة — بلا غرامات.',
+    'This quarter':'هذا الربع','Filed on time':'قُدّم في الموعد','0 overdue · full audit trail':'٠ متأخرات · سجل تدقيق كامل',
+    'Everything compliance needs':'كل ما يحتاجه الامتثال',
+    'One place for all of it':'مكان واحد لكل شيء',
+    'Compliance dashboard':'لوحة الامتثال','VAT, corporate tax, audits and expiries — one live cockpit.':'ضريبة القيمة المضافة وضريبة الشركات والتدقيق وتواريخ الانتهاء — قمرة قيادة حية واحدة.',
+    'AI Auto-Chase':'المتابعة الآلية بالذكاء الاصطناعي','Missing documents chased by email until they arrive.':'ملاحقة المستندات الناقصة بالبريد حتى تصل.',
+    'VAT & CT calculators':'حاسبات الضريبتين','Instant tax figures — upload invoices for AI OCR.':'أرقام ضريبية فورية — ارفع الفواتير لقراءتها بالذكاء الاصطناعي.',
+    'Document vault':'خزنة المستندات','Licences, TRNs and files secured — with expiry alerts.':'الرخص وأرقام التسجيل الضريبي والملفات بأمان — مع تنبيهات الانتهاء.',
+    'Audit preparation':'التحضير للتدقيق','Checklists and timelines tracked from ask to receipt.':'قوائم ومراحل تُتابع من الطلب حتى الاستلام.',
+    'Reports & reminders':'التقارير والتذكيرات','Exportable reports, shareable in-app, emailed on schedule.':'تقارير قابلة للتصدير والمشاركة داخل التطبيق وتُرسل بالبريد وفق جدول.',
+    'Built responsibly':'مبني بمسؤولية',
+    'Your data, handled properly':'بياناتك تُعامل باحترام',
+    'Encrypted & access-controlled':'مشفّرة ومضبوطة الوصول','TLS everywhere, row-level security — you see only your own records.':'تشفير كامل وأمان على مستوى الصفوف — لا ترى إلا سجلاتك.',
+    "AI that respects your documents":'ذكاء اصطناعي يحترم مستنداتك',"Runs on Anthropic's Claude — never used to train models.":'يعمل على كلود من أنثروبيك — ولا تُستخدم بياناتك للتدريب أبدًا.',
+    'Your data stays yours':'بياناتك تبقى ملكك','Export anytime; delete your account whenever you choose.':'صدّرها متى شئت واحذف حسابك وقتما تشاء.',
+    'Free tool':'أداة مجانية',
+    'What could a missed deadline cost you?':'كم قد يكلفك تفويت موعد نهائي؟',
+    'Check your UAE tax penalty exposure and get your Compliance Health Score in 60 seconds — free, and no sign-up required.':'افحص تعرضك لغرامات الضرائب الإماراتية واحصل على درجة صحة الامتثال خلال ٦٠ ثانية — مجانًا وبدون تسجيل.',
+    'Check your penalty exposure →':'افحص تعرضك للغرامات ←',
+    'Never be surprised by a penalty again.':'لا تتفاجأ بغرامة بعد اليوم.',
+    'One avoided AED 1,000 late-filing penalty covers five months of HisabOne.':'غرامة تأخير واحدة بقيمة ١٬٠٠٠ درهم تتجنبها تغطي خمسة أشهر من هيساب ون.',
+    'See pricing':'اطّلع على الأسعار',
+    'Private preview · access by invitation':'معاينة خاصة · الدخول بدعوة',
+    'Contact us':'تواصل معنا',
+    'HisabOne · Tax & Compliance, Simplified ·':'هيساب ون · الضرائب والامتثال ببساطة ·',
+    'Beta phase · Backed by':'مرحلة تجريبية · بدعم من',
+    ', Dubai (TECOM Group)':'، دبي (مجموعة تيكوم)',
+    'Security':'الأمان','Privacy Policy':'سياسة الخصوصية','Terms of Service':'شروط الاستخدام',
+    'Start free trial →':'ابدأ التجربة المجانية ←'
+  };
+  function walkI18n(root, toAr){
+    if(!root) return;
+    var w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var n;
+    while((n=w.nextNode())){
+      var t=n.nodeValue, trimmed=t.trim();
+      if(!trimmed) continue;
+      if(toAr){
+        var ar=AR_TEXT[trimmed];
+        if(ar){ if(n._en===undefined) n._en=t; n.nodeValue=t.replace(trimmed, ar); }
+      } else if(n._en!==undefined){ n.nodeValue=n._en; n._en=undefined; }
+    }
+  }
   var _landEN={};
   function applyLang(l){
     var login=document.getElementById('login'); if(!login) return;
@@ -7155,6 +7350,8 @@ function trackEvent(kind){
       if(!(id in _landEN)) _landEN[id]=el.innerHTML;
       el.innerHTML = (l==='ar') ? LAND_AR[id] : _landEN[id];
     }
+    walkI18n(document.getElementById('viewHome'), l==='ar');
+    walkI18n(document.querySelector('.ltopbar'), l==='ar');
     login.setAttribute('dir', l==='ar'?'rtl':'ltr');
     var b=document.getElementById('langBtn'); if(b) b.textContent = l==='ar' ? 'English' : 'عربي';
     try{ localStorage.setItem('h1_lang', l); }catch(e){}

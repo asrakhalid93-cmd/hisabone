@@ -131,7 +131,23 @@
     border-radius:8px;padding:7px 12px;cursor:pointer;font-size:12.5px;font-weight:600}
   .logout:hover{color:var(--text);border-color:var(--accent)}
   .shell{display:flex;min-height:calc(100vh - 58px)}
+  /* ---- section bar: top-level tabs; sub-pages drop into the left rail ---- */
+  .secbar{display:flex;align-items:stretch;gap:2px;padding:0 16px;background:var(--panel);
+    border-bottom:1px solid var(--line);position:sticky;top:58px;z-index:45;
+    overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
+  .secbar::-webkit-scrollbar{display:none}
+  .secitem{display:flex;align-items:center;gap:8px;padding:13px 14px 11px;font-size:13.5px;
+    font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;
+    border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s}
+  .secitem:hover{color:var(--text)}
+  .secitem.active{color:var(--accent-d);border-bottom-color:var(--accent)}
+  .secitem:focus-visible{outline:2px solid var(--accent);outline-offset:-3px;border-radius:6px}
+  .secitem .ic{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px}
+  .secitem .ic svg{width:17px;height:17px}
+  .secitem .badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;
+    border-radius:10px;padding:1px 7px;line-height:1.5}
   .sidebar{width:228px;border-right:1px solid var(--line);padding:16px 12px;flex-shrink:0}
+  .sidebar.empty{display:none}
   .navlabel{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);
     padding:10px 12px 6px;font-weight:700}
   .navitem{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;
@@ -240,7 +256,7 @@
   .pw-eye.on{opacity:1}
   .pw-eye svg{display:block}
   @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}
-    .sidebar{width:64px}.navitem span.txt,.navlabel{display:none}
+    .sidebar{width:184px;padding:14px 9px}
     .main{padding:22px 18px}}
   @media(max-width:640px){
     .topbar{padding:0 12px;gap:8px}
@@ -253,9 +269,8 @@
     .topbar span[role="img"]{display:none}
     .logout{padding:6px 9px;font-size:11.5px;white-space:nowrap;flex-shrink:0}
     .main{padding:16px 12px}
-    .sidebar{width:52px;padding:12px 4px}
-    .navitem{padding:10px 4px;justify-content:center;position:relative}
-    .navitem .badge{position:absolute;top:4px;right:2px}
+    .secbar{padding:0 8px}
+    .secitem{padding:11px 10px 9px;font-size:12.5px;gap:6px}
     .card{padding:14px}
     h1{font-size:19px}
     .banner{flex-wrap:wrap;padding:16px;gap:12px}
@@ -457,8 +472,11 @@
   /* responsive pass — app portals */
   @media(max-width:860px){
     .shell{flex-direction:column}
-    .sidebar{width:100%;display:flex;flex-direction:row;overflow-x:auto;
-      border-right:0;border-bottom:1px solid var(--line);padding:8px 10px;gap:4px}
+    .sidebar{width:100%;display:flex;flex-direction:row;overflow-x:auto;align-items:center;
+      border-right:0;border-bottom:1px solid var(--line);padding:8px 10px;gap:4px;
+      scrollbar-width:none;-ms-overflow-style:none}
+    .sidebar::-webkit-scrollbar{display:none}
+    .sidebar.empty{display:none}
     .sidebar .navitem{flex:0 0 auto;white-space:nowrap;margin-bottom:0}
     .sidebar .navlabel{display:none}
     .main{padding:16px 14px !important}
@@ -1595,8 +1613,9 @@
       <button class="logout" onclick="logout()">Log out</button>
     </div>
   </div>
+  <nav class="secbar" id="secbar" role="tablist" aria-label="Sections"></nav>
   <div class="shell">
-    <div class="sidebar" id="sidebar"></div>
+    <nav class="sidebar" id="sidebar" aria-label="Pages in this section"></nav>
     <div class="main" id="main"></div>
   </div>
 </div>
@@ -2582,33 +2601,56 @@ const IC = {
 function svgIcon(n,sz){ sz=sz||18; var p=IC[n]||IC._default;
   return '<svg viewBox="0 0 24 24" width="'+sz+'" height="'+sz+'" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'; }
 
-/* ---------- NAV CONFIG ---------- */
+/* ---------- NAV CONFIG ----------------------------------------------------
+   Two levels. Every entry below is a SECTION and shows as a tab along the top
+   of the app. A section with `children` drops those children into the left
+   rail when it is the active tab; a section without children is a page in its
+   own right and the rail is hidden entirely.
+   Section ids are namespaced (sec*) so they can never collide with a page id. */
 const NAV = {
   business:[
     {id:'dash', ic:'home', label:'Dashboard'},
-    {id:'guides', ic:'sparkles', label:'AI Assist'},
-    {group:'Documents', ic:'file-text', children:[{id:'btax',label:'Tax'},{id:'baudit',label:'Audit'}]},
-    {group:'Calculator', ic:'calc', children:[{id:'bvat',label:'VAT'}]},
-    {id:'binv', ic:'inbox', label:'Invoices'},
-    {id:'docs', ic:'folder', label:'Company Information'},
+    {id:'secAccounts', ic:'bank', label:'Accounts', children:[
+      {id:'books', ic:'bar',   label:'Bookkeeping'},
+      {id:'binv',  ic:'inbox', label:'Invoices'}]},
+    {id:'secReturns', ic:'fta', label:'Returns', children:[
+      {id:'bvat', ic:'calc', label:'VAT'},
+      {id:'bct',  ic:'calc', label:'Corporate Tax'}]},
+    {id:'secDocs', ic:'file-text', label:'Documents', children:[
+      {id:'btax',   ic:'file-text', label:'Tax'},
+      {id:'baudit', ic:'clipboard', label:'Audit'}]},
+    {id:'secCompany', ic:'building', label:'Company Information', children:[
+      {id:'docs',     ic:'folder', label:'Company Profile'},
+      {id:'breports', ic:'chart',  label:'Reports'},
+      {id:'bteam',    ic:'users',  label:'Team'}]},
     {id:'calendar', ic:'calendar', label:'Compliance Calendar'},
-    {id:'breports', ic:'chart', label:'Reports'},
+    {id:'guides', ic:'sparkles', label:'AI Assist'},
     {id:'bchat', ic:'chat', label:'Messages'},
-    {id:'bteam', ic:'users', label:'Team'},
     {id:'links', ic:'link', label:'Linked Firm'},
   ],
   firm:[
-    {id:'fdash', ic:'home', label:'Accountant Dashboard'},
-    {id:'fguides', ic:'sparkles', label:'AI Assist'},
+    {id:'fdash', ic:'home', label:'Dashboard'},
     {id:'clients', ic:'users', label:'Clients'},
-    {group:'Documents', ic:'file-text', children:[{id:'taxdocs',label:'Tax'},{id:'auditdocs',label:'Audit'}]},
-    {group:'Calculator', ic:'calc', children:[{id:'vat',label:'VAT'},{id:'ct',label:'Corporate Tax'}]},
-    {id:'reminders', ic:'mail', label:'Email Reminders'},
-    {id:'freports', ic:'chart', label:'Reports'},
+    {id:'secFdocs', ic:'file-text', label:'Documents', children:[
+      {id:'fdocs',      ic:'folder',    label:'Document Centre'},
+      {id:'taxdocs',    ic:'file-text', label:'Tax'},
+      {id:'auditdocs',  ic:'clipboard', label:'Audit'}]},
+    {id:'secFreturns', ic:'fta', label:'Returns', children:[
+      {id:'vat', ic:'calc', label:'VAT'},
+      {id:'ct',  ic:'calc', label:'Corporate Tax'}]},
+    {id:'secPractice', ic:'building', label:'Practice', children:[
+      {id:'freports',  ic:'chart', label:'Reports'},
+      {id:'team',      ic:'users', label:'Team'},
+      {id:'reminders', ic:'mail',  label:'Email Reminders'}]},
+    {id:'fguides', ic:'sparkles', label:'AI Assist'},
     {id:'fchat', ic:'chat', label:'Messages'},
-    {id:'team', ic:'users', label:'Team'},
   ]
 };
+/* Pages that are reachable but do not own a tab of their own — they light up
+   the section they conceptually belong to. Settings is deliberately absent:
+   it lights the gear in the header instead of any tab. */
+const NAV_ALIAS = { clientprofile:'clients', bvat201:'bvat' };
+function navPageId(p){ return NAV_ALIAS[p] || p; }
 let role='business', page='dash';
 
 function navBadge(id){
@@ -2634,29 +2676,70 @@ function setRole(r){
 }
 function go(p){if(typeof gatePage==='function'&&!gatePage(p))return;if(p!=='breports'&&p!=='freports')viewingReport=null;page=p;renderNav();renderPage();window.scrollTo(0,0);}
 
+function navLocked(id){
+  return (typeof PLAN_PAGE_GATES!=='undefined' && PLAN_PAGE_GATES[id]
+       && typeof planAllows==='function' && !planAllows(PLAN_PAGE_GATES[id][0]));
+}
+/* Total badge for a section — its own, or the sum across its children. */
+function navSectionBadge(s){
+  return s.children ? s.children.reduce(function(t,c){ return t+(navBadge(c.id)||0); }, 0)
+                    : (navBadge(s.id)||0);
+}
+/* Which section owns the page currently on screen. Returns null for pages that
+   sit outside the tab bar entirely, such as Settings. */
+function activeSection(sections){
+  var cur = navPageId(page);
+  sections = sections || ((typeof navItems==='function') ? navItems() : (NAV[role]||[]));
+  for(var i=0;i<sections.length;i++){
+    var s = sections[i];
+    if(s.children){ for(var j=0;j<s.children.length;j++){ if(s.children[j].id===cur) return s; } }
+    else if(s.id===cur) return s;
+  }
+  return null;
+}
+/* Clicking a section lands on its first child the user is actually allowed to
+   open, so a plan-locked first entry never becomes a dead tab. */
+function sectionTarget(s){
+  if(!s.children || !s.children.length) return s.id;
+  for(var i=0;i<s.children.length;i++){ if(!navLocked(s.children[i].id)) return s.children[i].id; }
+  return s.children[0].id;
+}
 function renderNav(){
-  const items = (typeof navItems==='function') ? navItems() : NAV[role];
-  document.getElementById('sidebar').innerHTML =
-    '<div class="navlabel">'+(role==='business'?'My company':'Practice')+'</div>'+
-    items.map(i=>{
-      if(i.group){
-        const act=i.children.some(c=>page===c.id);
-        const fly=i.children.map(c=>{
-          const b=navBadge(c.id);
-          return `<div class="navfly-item ${page===c.id?'on':''}" onclick="event.stopPropagation();go('${c.id}')">${c.label}${b?`<span class="badge">${b}</span>`:''}</div>`;
-        }).join('');
-        const tot=i.children.reduce((t,c)=>t+(navBadge(c.id)||0),0);
-        return `<div class="navitem navgroup ${act?'active':''}" onclick="go('${i.children[0].id}')">
-          <span class="ic">${svgIcon(i.ic)}</span><span class="txt">${i.group}</span>
-          ${tot?`<span class="badge">${tot}</span>`:''}<span class="navcaret">›</span>
-          <div class="navfly"><div class="navfly-head">${i.group}</div>${fly}</div></div>`;
-      }
-      const b=navBadge(i.id);const act=(page===i.id)||(page==='clientprofile'&&i.id==='clients');
-      const locked=(typeof PLAN_PAGE_GATES!=='undefined'&&PLAN_PAGE_GATES[i.id]&&!planAllows(PLAN_PAGE_GATES[i.id][0]));
-      return `<div class="navitem ${act?'active':''}" onclick="go('${i.id}')" ${locked?'style="opacity:.55"':''}>
-      <span class="ic">${svgIcon(i.ic)}</span><span class="txt">${i.label}</span>
-      ${locked?'<span class="navcaret">🔒</span>':''}${b?`<span class="badge">${b}</span>`:''}</div>`;
+  var sections = (typeof navItems==='function') ? navItems() : (NAV[role]||[]);
+  var cur = navPageId(page);
+  var active = activeSection(sections);
+
+  var bar = document.getElementById('secbar');
+  if(bar){
+    bar.innerHTML = sections.map(function(s){
+      var b = navSectionBadge(s), on = (active===s), t = sectionTarget(s);
+      return '<div class="secitem'+(on?' active':'')+'" role="tab" tabindex="0"'
+        + ' aria-selected="'+(on?'true':'false')+'"'
+        + ' onclick="go(\''+t+'\')"'
+        + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();go(\''+t+'\')}">'
+        + '<span class="ic">'+svgIcon(s.ic,17)+'</span><span class="txt">'+ctEsc(s.label)+'</span>'
+        + (b?'<span class="badge">'+b+'</span>':'')
+        + '</div>';
     }).join('');
+  }
+
+  var side = document.getElementById('sidebar');
+  if(!side) return;
+  if(!active || !active.children || !active.children.length){
+    /* Nothing to sub-navigate — hide the rail and give the page the full width. */
+    side.innerHTML = ''; side.classList.add('empty'); return;
+  }
+  side.classList.remove('empty');
+  side.innerHTML = '<div class="navlabel">'+ctEsc(active.label)+'</div>'
+    + active.children.map(function(c){
+        var b = navBadge(c.id), locked = navLocked(c.id);
+        return '<div class="navitem'+(cur===c.id?' active':'')+'" onclick="go(\''+c.id+'\')"'
+          + (locked?' style="opacity:.55"':'')+'>'
+          + '<span class="ic">'+svgIcon(c.ic||active.ic,18)+'</span><span class="txt">'+ctEsc(c.label)+'</span>'
+          + (locked?'<span class="navcaret">🔒</span>':'')
+          + (b?'<span class="badge">'+b+'</span>':'')
+          + '</div>';
+      }).join('');
 }
 var _reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 function countUpStats(scope){
@@ -2678,7 +2761,7 @@ function renderPage(){ var m=document.getElementById('main');
   m.innerHTML = (PAGES[page]||(()=>'<h1>Coming soon</h1>'))();
   m.classList.add('pagein');
   countUpStats(m);
-  if((page==='vat'||page==='bvat') && typeof recalcVAT==='function') recalcVAT();
+  if((page==='vat'||page==='bvat'||page==='bvat201') && typeof recalcVAT==='function') recalcVAT();
   if(page==='vat' && typeof recalcVat201==='function') recalcVat201();
   if(page==='ct' && typeof recalcCT==='function'){ recalcCT(); if(typeof qRecalc==='function') qRecalc(); }
   if(page==='guides' && typeof aiRenderLog==='function') aiRenderLog('business');
@@ -2706,7 +2789,6 @@ dash:()=>{
   return `
   <h1>Welcome back, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
-  ${modeChooserHTML()}
   ${businessHealthCard()}
   ${urgent.length ? `
   <div class="banner">
@@ -2878,7 +2960,7 @@ fguides:()=>`
     <div class="step"><div class="stepnum">1</div><div><h4>1. Ask in plain English</h4>
       <p>Ask any UAE VAT, corporate tax or audit question, or ask HisabOne to draft a document request for a specific client and process.</p></div></div>
     <div class="step"><div class="stepnum">2</div><div><h4>2. Turn answers into actions</h4>
-      <p>Send the drafted request straight to a client from the <span class="link" onclick="go('clients')">Clients</span> workspace, or open the <span class="link" onclick="go('vat')">VAT &amp; CT calculator</span>.</p></div></div>
+      <p>Send the drafted request straight to a client from the <span class="link" onclick="go('clients')">Clients</span> workspace, or open the <span class="link" onclick="go('vat')">VAT return</span>.</p></div></div>
     <div class="step"><div class="stepnum">3</div><div><h4>3. Let auto-chase do the follow-up</h4>
       <p>AI reminds each client until the missing document arrives, so nothing slips before a filing deadline. Manage cadence under <span class="link" onclick="go('reminders')">Email Reminders</span>.</p></div></div>
   </div>
@@ -2891,26 +2973,8 @@ fguides:()=>`
 btax:()=>bizDocPage('tax'),
 baudit:()=>bizDocPage('audit'),
 
-bvat:()=>`
-  <h1>VAT Calculator</h1>
-  <div class="sub">Work out the VAT on any amount at the UAE standard 5% rate.</div>
-  <div class="card mb14">
-    <div class="cardhead"><h3>${svgIcon('calc',16)} VAT calculator</h3></div>
-    <div class="grid g3" style="align-items:end">
-      <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>
-      <div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>
-      <div><label class="flabel">Mode</label><select id="qcMode" class="finput" oninput="recalcVAT()">
-        <option value="add">Add VAT (amount excludes VAT)</option>
-        <option value="extract">Extract VAT (amount includes VAT)</option></select></div>
-    </div>
-    <div class="grid g3 mt18">
-      <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Net (excl. VAT)</div><div id="qcNet" style="font-size:24px;font-weight:700">AED 0.00</div></div>
-      <div class="card" style="text-align:center;border-color:var(--accent)"><div class="muted" style="font-size:12px">VAT amount</div><div id="qcVat" style="font-size:24px;font-weight:700;color:var(--accent)">AED 0.00</div></div>
-      <div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Gross (incl. VAT)</div><div id="qcGross" style="font-size:24px;font-weight:700">AED 0.00</div></div>
-    </div>
-  </div>
-  <div class="ai"><div class="sparkle">${svgIcon('sparkles',22)}</div>
-    <div><h3>How it works</h3><p>Choose <b>Add VAT</b> when your figure is before VAT (HisabOne adds 5% on top), or <b>Extract VAT</b> when VAT is already included (HisabOne works out the VAT portion). Results update as you type.</p></div></div>`,
+/* bvat and bct are registered further down, next to the bookkeeping module
+   they are built from — see PAGES.bvat / PAGES.bct in PART D. */
 
 binv:()=>invPageHTML(),
 bteam:()=>bizTeamPageHTML(),
@@ -2921,8 +2985,8 @@ docs:()=>{
   const onFile=COMPANY_DOC_TYPES.filter(t=>vaultDocs.some(d=>d.typeId===t.id)).length;
   const otherDocs=vaultDocs.filter(d=>!d.typeId);
   return `
-  <h1>Company Information</h1>
-  <div class="sub">Your company profile and secure document vault. Fill in your details once — your accountant's Corporate Tax return picks them up automatically — and keep your core documents on file with dates read for you.</div>
+  <h1>Company Profile</h1>
+  <div class="sub">Your company details and secure document vault. Fill this in once — your VAT and Corporate Tax returns pick the details up automatically — and keep your core documents on file with the dates read for you.</div>
   ${companyProfileCardsHTML()}
   ${renewalsCardHTML()}
   ${bankStatementsCardHTML()}
@@ -3029,7 +3093,6 @@ fdash:()=>{
   return `
   <h1>Accountant Dashboard</h1>
   <div class="sub">${firmName} · ${firmClients.length} client${firmClients.length===1?'':'s'} · ${ctEsc(firmPlanObj().name)} plan</div>
-  ${modeChooserHTML()}
   ${onboardingHTML()}
   ${firmHealthCard()}
   <div class="grid g4 mb14">
@@ -3185,8 +3248,8 @@ reminders:()=>`
 vat:()=>{
   const N=5;
   return `
-  <h1>VAT Calculator</h1>
-  <div class="sub">Calculate VAT at the UAE standard 5% rate, and estimate a client's net VAT payable for the period.</div>
+  <h1>VAT</h1>
+  <div class="sub">Calculate VAT at the UAE standard 5% rate, build the client's VAT201 boxes and share the draft return for their sign-off.</div>
 
   <div class="card mb14" style="border-color:var(--accent)">
     <div class="cardhead"><h3>${svgIcon('sparkles',16)} Invoice upload — AI autofill</h3><span class="pill p-teal">OCR</span></div>
@@ -5066,7 +5129,12 @@ function upsell(f, featureName){
     message:'Your current plan ('+planLabel()+') doesn\u2019t include '+featureName+'. Upgrade to '+planNeededFor(f)+' to unlock it \u2014 or contact us and we\u2019ll sort it out.',
     onYes:function(){ try{ window.open('https://hisabone.ae/#pricing','_blank'); }catch(e){} }});
 }
-var PLAN_PAGE_GATES={binv:['binv','the Invoice inbox'], bvat:['bvat','the VAT calculator'], baudit:['baudit','Audit processes']};
+/* Returns — VAT and Corporate Tax — sit on the same plan feature, so the two
+   sub-tabs unlock together. Bookkeeping is deliberately ungated: every
+   business needs to be able to keep its records. */
+var PLAN_PAGE_GATES={binv:['binv','the Invoice inbox'], bvat:['bvat','VAT returns'],
+  bvat201:['bvat','VAT returns'], bct:['bvat','Corporate Tax returns'],
+  baudit:['baudit','Audit processes']};
 function gatePage(id){
   var g=PLAN_PAGE_GATES[id];
   if(g && !planAllows(g[0])){ upsell(g[0], g[1]); return false; }
@@ -6868,7 +6936,7 @@ function onboardingSteps(){
     {t:'Add your first client — share your invite code', done:(clients&&clients.length>0), pg:'clients', cta:'Clients'},
     {t:'Send your first document request', done:(((firmTaxReqs||[]).length+(firmAuditReqs||[]).length)>0), pg:'taxdocs', cta:'Tax'},
     {t:'Invite a team member', done:((teamMembers||[]).length>1), pg:'team', cta:'Team'},
-    {t:'Share a draft VAT or CT return for sign-off', done:((returnsList||[]).length>0), pg:'vat', cta:'VAT Calculator'}
+    {t:'Share a draft VAT or CT return for sign-off', done:((returnsList||[]).length>0), pg:'vat', cta:'VAT returns'}
   ];
 }
 function onboardingHTML(){
@@ -7909,24 +7977,22 @@ function navVisible(id){
   if(!isStandalone()) return true;
   return hasLiveLink();   /* never hide the way out of an existing link */
 }
+/* Build the visible section list. Sections whose every child is hidden drop out
+   altogether rather than leaving an empty tab behind.
+   Bookkeeping, Invoices and both returns are always present for a business: the
+   finance team keeps its own books whether it works alone or with a firm. What
+   changes on linking is who prepares and files the returns, not who can see or
+   record anything — that is handled inside the pages themselves. */
 function navItems(){
-  var items=(NAV[role]||[]).filter(function(i){ return i.group ? true : navVisible(i.id); });
-  if(role==='business'){
-    var idx=items.findIndex(function(i){ return i.id==='binv'; });
-    /* Bookkeeping and the VAT return belong to whoever keeps the books. A
-       standalone business keeps its own; a linked business has handed them to
-       its accountant, who works on them inside the client's profile. */
-    if(isStandalone()){
-      var books={id:'books', ic:'bar', label:'Bookkeeping'};
-      var vret={id:'bvat201', ic:'fta', label:'VAT Return'};
-      if(idx>=0) items.splice(idx+1, 0, books, vret); else items.push(books, vret);
-    }
-  } else {
-    var ci=items.findIndex(function(i){ return i.id==='clients'; });
-    var fd={id:'fdocs', ic:'folder', label:'Document Centre'};
-    if(ci>=0) items.splice(ci+1, 0, fd); else items.push(fd);
-  }
-  return items;
+  var out=[];
+  (NAV[role]||[]).forEach(function(s){
+    if(s.children){
+      var kids=s.children.filter(function(c){ return navVisible(c.id); });
+      if(!kids.length) return;
+      out.push(kids.length===s.children.length ? s : {id:s.id, ic:s.ic, label:s.label, children:kids});
+    } else if(navVisible(s.id)) out.push(s);
+  });
+  return out;
 }
 
 function switchWorkMode(m){
@@ -7950,7 +8016,7 @@ function workModeCardHTML(){
       +'<span class="pill '+(sa?'p-gray':'p-teal')+'">'+workModeLabel()+'</span></div>'
     +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">'
       +(biz
-        ? 'HisabOne works completely on its own — bookkeeping, VAT returns, Corporate Tax and your document vault are all yours. Linking an accountant is optional, and you can turn it on or off whenever you like.'
+        ? 'HisabOne works completely on its own — bookkeeping, invoices, VAT returns, Corporate Tax and your document vault are all yours, and they stay yours either way. Linking an accountant only changes who prepares and files the returns, and you can turn it on or off whenever you like.'
         : 'Run your practice entirely inside HisabOne — add clients yourself, manage their documents and produce their reports. Inviting clients onto their own portal is optional and never required.')
     +'</p>'
     +'<div class="grid g2" style="gap:12px">'
@@ -7965,10 +8031,10 @@ function workModeCardHTML(){
 function modeTileHTML(m, on, biz){
   var title = m==='standalone' ? 'Standalone' : 'Linked with the other portal';
   var body = m==='standalone'
-    ? (biz ? 'You do it all yourself. Bookkeeping, VAT returns, CT, calendar, documents and reports — no accountant needed.'
+    ? (biz ? 'You do it all yourself. Bookkeeping, invoices, VAT and Corporate Tax returns, calendar, documents and reports — no accountant needed.'
            : 'You manage every client yourself. Add them manually, hold their documents and issue their reports without them ever signing in.')
-    : (biz ? 'Connect your accounting or audit firm. They request documents, prepare returns and you approve and sign them off in-app.'
-           : 'Invite clients onto their own portal. They upload documents, message you and approve their own returns.');
+    : (biz ? 'Connect your accounting or audit firm. Your finance team still keeps the bookkeeping and invoices — the firm works from those same figures, prepares your VAT and Corporate Tax returns, and you review and sign them off.'
+           : 'Invite clients onto their own portal. They keep their own books and upload documents; you prepare and file their returns and they sign them off.');
   return '<div onclick="switchWorkMode(\''+m+'\')" style="cursor:pointer;border:2px solid '+(on?'var(--accent)':'var(--line)')+';background:'+(on?'var(--accent-bg)':'var(--panel2)')+';border-radius:12px;padding:14px 15px">'
     +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">'
       +'<span style="color:'+(on?'var(--accent)':'var(--muted)')+'">'+svgIcon(m==='standalone'?'building':'link',17)+'</span>'
@@ -7976,16 +8042,6 @@ function modeTileHTML(m, on, biz){
       +(on?'<span class="pill p-teal" style="margin-left:auto;font-size:10.5px">Current</span>':'')
     +'</div>'
     +'<div class="muted" style="font-size:12px;line-height:1.6">'+body+'</div></div>';
-}
-
-/* first-run chooser shown on the dashboard until a mode is picked */
-function modeChooserHTML(){
-  if(workModeChosen()) return '';
-  var biz = currentAccount && currentAccount.role==='business';
-  return '<div class="card mb14" style="border:2px solid var(--accent)">'
-    +'<div class="cardhead"><h3>'+svgIcon('sparkles',16)+' How would you like to work?</h3></div>'
-    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Pick either one — you can change it any time from Settings. Nothing is locked in.</p>'
-    +'<div class="grid g2" style="gap:12px">'+modeTileHTML('standalone',false,biz)+modeTileHTML('linked',false,biz)+'</div></div>';
 }
 
 /* Standalone / linked now lives in Settings — leave a signpost where it used to be. */
@@ -9134,7 +9190,12 @@ function bkLoadClient(name){
      stored copy at it so the two never drift apart. */
   firmBooksFor(bkClient).accounts = bkAccounts;
 }
+/* Put a borrowed set of client books back where it came from. When nothing is
+   borrowed this must do absolutely nothing: on the business side bkTx holds the
+   account's OWN bookkeeping, and clearing it here would wipe the ledger every
+   time the page re-rendered. */
 function bkUnloadClient(){
+  if(!bkClient) return;
   bkCommit();
   bkClient = null; bkTx = []; bkAccounts = []; bkPeriod = '';
 }
@@ -9621,33 +9682,54 @@ function bkAccountsCardHTML(){
     + '<div class="note">'+svgIcon('shield',13)+' Balances use the gross amount of every transaction recorded against the account. Bookkeeping totals feed the VAT return and Corporate Tax computation automatically.</div>'
   + '</div>';
 }
-/* The business only keeps its own books while it is working standalone. The
-   moment it links an accountant, the accountant owns the books and this page
-   explains where they have gone rather than showing an empty ledger. */
-function bkHandedOverHTML(){
-  return '<h1>Bookkeeping</h1>'
-    + '<div class="sub">Your books are kept by your accountant.</div>'
-    + '<div class="card" style="text-align:center;padding:34px">'
-      + '<div style="color:var(--accent);margin-bottom:10px">'+svgIcon('link',26)+'</div>'
-      + '<h3 style="font-size:16px;margin:0 0 6px">'+ctEsc(linkedFirm||'Your accountant')+' keeps your books</h3>'
-      + '<p class="muted" style="font-size:13px;max-width:520px;margin:0 auto 16px">You are working in linked mode, so bookkeeping sits with your firm — they record your transactions, prepare your VAT return and produce your reports. Everything you upload flows to them automatically.</p>'
-      + '<button class="btn ghost" onclick="go(\'settings\')">'+svgIcon('settings',14)+' Switch to standalone in Settings</button>'
-    + '</div>';
+/* ---------- Who owns which job once a firm is linked -----------------------
+   The finance team always keeps the books. They record every sale and every
+   cost, raise the invoices and watch the profit — standalone or linked, that
+   never changes and nothing they have entered ever becomes read-only.
+   What changes the moment an accountant is linked is who *prepares and files*
+   the returns: that becomes the firm's job, working from these very figures,
+   and the business reviews the draft and signs it off. */
+function linkedFirmName(){
+  return (typeof linkedFirm==='string' && linkedFirm) ? linkedFirm : 'Your accountant';
+}
+function returnsHandedOver(){
+  return !!(currentAccount && currentAccount.role==='business'
+            && typeof isStandalone==='function' && !isStandalone()
+            && typeof hasLiveLink==='function' && hasLiveLink());
+}
+/* where: 'books' | 'return' */
+function handoverBannerHTML(where){
+  if(!returnsHandedOver()) return '';
+  var firm = ctEsc(linkedFirmName());
+  var body = (where==='books')
+    ? '<b>'+firm+'</b> works from these same books. Keep recording your sales and costs exactly as you do now — every entry you save is visible to them, and they prepare your VAT and Corporate Tax returns from it. Nothing on this page is locked.'
+    : '<b>'+firm+'</b> prepares and files this return for you. The figures below are built from your own bookkeeping — review them, raise anything that looks wrong in Messages, and sign off when you are happy.';
+  return '<div class="card mb14" style="border-color:var(--accent);background:var(--accent-bg)">'
+    + '<div style="display:flex;gap:12px;align-items:flex-start">'
+      + '<div style="color:var(--accent);flex-shrink:0;margin-top:1px">'+svgIcon('link',18)+'</div>'
+      + '<div style="flex:1;min-width:0">'
+        + '<div style="font-weight:700;font-size:13.5px;margin-bottom:3px">Working with '+firm+'</div>'
+        + '<div style="font-size:12.5px;line-height:1.55">'+body+'</div>'
+      + '</div>'
+      + '<button class="btn ghost sm" onclick="go(\'bchat\')" style="flex-shrink:0">'+svgIcon('chat',13)+' Message</button>'
+    + '</div></div>';
 }
 function booksPageHTML(){
-  /* Guard: linked businesses do not keep their own ledger. */
-  if(currentAccount && currentAccount.role==='business' && typeof isStandalone==='function' && !isStandalone()) return bkHandedOverHTML();
   bkUnloadClient();   /* this page is always the account's own books */
   bkEnsureAccounts();
+  var _biz = !!(currentAccount && currentAccount.role==='business');
   return '<h1>Bookkeeping</h1>'
   + '<div class="sub">Record every sale and every cost once. HisabOne categorises it, applies the right VAT treatment, keeps a running profit &amp; loss, and carries the totals straight into your VAT return and Corporate Tax computation — no debits, no credits, no journals.</div>'
+
+  + handoverBannerHTML('books')
 
   + '<div class="card mb14" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;justify-content:space-between">'
     + bkPeriodPickerHTML()
     + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
       + '<button class="btn ghost" onclick="bkExportCSV()">'+svgIcon('download',14)+' Export CSV</button>'
       + '<button class="btn ghost" onclick="openPLReport()">'+svgIcon('file-text',14)+' P&amp;L report</button>'
-      + '<button class="btn" onclick="go(\'bvat201\')">'+svgIcon('fta',14)+' Go to VAT return</button>'
+      + (_biz ? '<button class="btn ghost" onclick="go(\'bvat\')">'+svgIcon('fta',14)+' VAT return</button>'
+              + '<button class="btn" onclick="go(\'bct\')">'+svgIcon('calc',14)+' Corporate Tax return</button>' : '')
     + '</div>'
   + '</div>'
 
@@ -9804,15 +9886,36 @@ function buildVatReturnReport(){
 function openVatReturnReport(){ viewFullReport(buildVatReturnReport()); }
 function downloadVatReturnReport(){ downloadFullPDF(buildVatReturnReport()); }
 
+/* The quick calculator that used to be a page of its own. It now sits at the
+   top of the VAT sub-tab, above the return it feeds into. */
+function vatCalcCardHTML(){
+  return '<div class="card mb14">'
+    + '<div class="cardhead"><h3>'+svgIcon('calc',16)+' Quick VAT calculator</h3>'
+      + '<span class="muted" style="font-size:12px">UAE standard rate 5%</span></div>'
+    + '<div class="grid g3" style="align-items:end">'
+      + '<div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>'
+      + '<div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>'
+      + '<div><label class="flabel">Mode</label><select id="qcMode" class="finput" oninput="recalcVAT()">'
+        + '<option value="add">Add VAT (amount excludes VAT)</option>'
+        + '<option value="extract">Extract VAT (amount includes VAT)</option></select></div>'
+    + '</div>'
+    + '<div class="grid g3 mt18">'
+      + '<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Net (excl. VAT)</div><div id="qcNet" style="font-size:24px;font-weight:700">AED 0.00</div></div>'
+      + '<div class="card" style="text-align:center;border-color:var(--accent)"><div class="muted" style="font-size:12px">VAT amount</div><div id="qcVat" style="font-size:24px;font-weight:700;color:var(--accent)">AED 0.00</div></div>'
+      + '<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Gross (incl. VAT)</div><div id="qcGross" style="font-size:24px;font-weight:700">AED 0.00</div></div>'
+    + '</div>'
+    + '<div class="note" style="text-align:left">'+svgIcon('shield',13)+' A scratch pad for checking a single figure. It does not touch your books or the return below — use <b>Add VAT</b> when your figure is before VAT and <b>Extract VAT</b> when VAT is already included.</div>'
+  + '</div>';
+}
 function bvat201PageHTML(){
-  /* Same rule as the books: a linked business's return is prepared by its
-     accountant, so the page points them there instead of showing empty boxes. */
-  if(currentAccount && currentAccount.role==='business' && typeof isStandalone==='function' && !isStandalone()) return bkHandedOverHTML();
   var T = bkTotals();
   var opts = bkPeriodOptions();
   var linked = (typeof hasLiveLink==='function') && hasLiveLink();
-  return '<h1>VAT Return</h1>'
-  + '<div class="sub">The official VAT201 structure, prepared from your own books. Fill it from your bookkeeping in one click, review every box, then transcribe it into EmaraTax — or download the full working paper as a PDF.</div>'
+  return '<h1>VAT</h1>'
+  + '<div class="sub">Your VAT calculator and your VAT201 return in one place. The return is built from the transactions in your bookkeeping — fill it in one click, review every box, then transcribe the final figures into EmaraTax.</div>'
+
+  + handoverBannerHTML('return')
+  + vatCalcCardHTML()
 
   + '<div class="card mb14" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;justify-content:space-between">'
     + '<div><label class="flabel">VAT period</label>'
@@ -9890,11 +9993,402 @@ function bvat201PageHTML(){
     + '<div style="display:flex;gap:10px;flex-wrap:wrap">'
       + '<button class="btn" onclick="downloadVatReturnReport()">'+svgIcon('download',15)+' Download full return (PDF)</button>'
       + '<button class="btn ghost" onclick="bkExportCSV()">'+svgIcon('file-text',15)+' Export the underlying transactions</button>'
-      + (linked ? '<button class="btn ghost" onclick="go(\'bchat\')">'+svgIcon('chat',15)+' Send it to my accountant</button>' : '')
+      + '<button class="btn ghost" onclick="go(\'books\')">'+svgIcon('bar',15)+' Back to bookkeeping</button>'
+      + (linked ? '<button class="btn ghost" onclick="go(\'bchat\')">'+svgIcon('chat',15)+' Message my accountant</button>' : '')
     + '</div>'
-    + (linked ? '' : '<p class="muted" style="font-size:12.5px;margin:12px 0 0">You are working standalone. If you would like an accountant to review this return before you file, you can link a firm from the Linked Firm page at any time.</p>')
+    + (returnsHandedOver()
+        ? '<p class="muted" style="font-size:12.5px;margin:12px 0 0">'+ctEsc(linkedFirmName())+' files this return on your behalf. Your job is to keep the bookkeeping complete and to sign off the draft they send you — check every box above against your own records before you do.</p>'
+        : (linked ? ''
+                  : '<p class="muted" style="font-size:12.5px;margin:12px 0 0">You are working standalone, so you prepare and file this return yourself. If you would like an accountant to review it first, you can link a firm from the Linked Firm page at any time.</p>'))
   + '</div>';
 }
+/* ================================================================
+   BUSINESS CORPORATE TAX RETURN — driven by the same books
+   ================================================================
+   UAE Corporate Tax, Federal Decree-Law No. 47 of 2022:
+     • 0% on the first AED 375,000 of taxable income (Art. 3)
+     • 9% on taxable income above AED 375,000 (Art. 3)
+     • Small Business Relief (Art. 21, Ministerial Decision 73 of 2023):
+       elective, available where revenue in the tax period and in every
+       previous tax period is AED 3,000,000 or less. Where elected, the
+       business is treated as having no taxable income for that period.
+   The computation starts at the accounting profit that bookkeeping already
+   produces, adds back the restrictions HisabOne can see from the expense
+   categories, and lets the finance team enter the adjustments that cannot be
+   read off a ledger. Nothing here is filed from HisabOne — the figures are
+   transcribed into EmaraTax. */
+var CT_NIL_BAND = 375000;
+var CT_RATE = 0.09;
+var CT_SBR_CAP = 3000000;
+
+/* Adjustments the finance team enters by hand. sign = +1 adds to taxable
+   income, -1 reduces it. */
+var BCT_ADJ = [
+  {id:'nonded',  sign: 1, label:'Other non-deductible expenditure',
+   help:'Costs not incurred wholly and exclusively for the business, or specifically disallowed, that your expense categories have not already picked up.'},
+  {id:'donate',  sign: 1, label:'Donations to non-approved recipients',
+   help:'Article 33 — only donations, grants and gifts to Cabinet-approved public benefit entities are deductible.'},
+  {id:'interest',sign: 1, label:'Interest disallowed under the general interest limitation',
+   help:'Article 30 — net interest expenditure above the greater of 30% of adjusted EBITDA or AED 12,000,000 is not deductible in the period.'},
+  {id:'related', sign: 1, label:'Transfer-pricing adjustment on related-party dealings',
+   help:'Articles 34–35 — transactions with related parties and connected persons must be priced at arm’s length.'},
+  {id:'otherAdd',sign: 1, label:'Other addition (explain in the notes)',
+   help:'Anything else that increases taxable income. Describe it in the notes so the figure can be supported.'},
+  {id:'exempt',  sign:-1, label:'Exempt income (dividends and qualifying participations)',
+   help:'Article 22 — UAE-sourced dividends and income from qualifying participations are excluded from taxable income.'},
+  {id:'foreign', sign:-1, label:'Foreign permanent-establishment income excluded',
+   help:'Article 24 — income of a foreign permanent establishment may be excluded where the election is made.'},
+  {id:'losses',  sign:-1, label:'Tax losses brought forward and used',
+   help:'Article 37 — carried-forward tax losses can offset up to 75% of taxable income in a period; the balance carries forward.'}
+];
+
+var bctState = { sbr:false, adj:{}, notes:'' };
+
+function bctVal(id){ var v = parseFloat(bctState.adj[id]); return isFinite(v) ? Math.abs(v) : 0; }
+function bctAdjDef(id){ for(var i=0;i<BCT_ADJ.length;i++){ if(BCT_ADJ[i].id===id) return BCT_ADJ[i]; } return null; }
+
+function bctCompute(){
+  var T = bkTotals();
+  var lines = [], manual = 0, i, a, v;
+  for(i=0;i<BCT_ADJ.length;i++){
+    a = BCT_ADJ[i]; v = bctVal(a.id);
+    if(!v) continue;
+    manual += a.sign * v;
+    lines.push({id:a.id, label:a.label, sign:a.sign, amount:v});
+  }
+  var accounting  = T.netProfit;
+  var autoAdd     = T.ctAdjust;
+  var beforeLoss  = accounting + autoAdd + manual + bctVal('losses');  /* pre loss-relief */
+  var taxable     = accounting + autoAdd + manual;
+  var sbrEligible = T.income <= CT_SBR_CAP;
+  var sbr         = !!bctState.sbr && sbrEligible;
+  var positive    = Math.max(0, taxable);
+  var nilBand     = Math.min(CT_NIL_BAND, positive);
+  var above       = Math.max(0, positive - CT_NIL_BAND);
+  var due         = sbr ? 0 : above * CT_RATE;
+  /* Article 37 caps loss relief at 75% of taxable income before that relief. */
+  var lossCap     = Math.max(0, beforeLoss) * 0.75;
+  var lossOver    = bctVal('losses') > lossCap + 0.005;
+  return { T:T, accounting:accounting, autoAdd:autoAdd, manual:manual, lines:lines,
+           taxable:taxable, loss:(taxable<0?Math.abs(taxable):0),
+           sbrEligible:sbrEligible, sbr:sbr, nilBand:nilBand, above:above, due:due,
+           lossUsed:bctVal('losses'), lossCap:lossCap, lossOver:lossOver };
+}
+
+/* ---------- Input handlers ---------- */
+function bctSetAdj(id, v){
+  var n = parseFloat(v);
+  bctState.adj[id] = isFinite(n) ? Math.abs(n) : 0;
+  saveAccountData();
+  bctRefresh();
+}
+function bctSetNotes(v){ bctState.notes = String(v||''); saveAccountData(); }
+function bctToggleSbr(on){
+  var C = bctCompute();
+  if(on && !C.sbrEligible){
+    toast('Revenue of '+moneyAED(C.T.income)+' is above the AED 3,000,000 Small Business Relief threshold');
+    var cb = document.getElementById('bctSbr'); if(cb) cb.checked = false;
+    return;
+  }
+  bctState.sbr = !!on;
+  saveAccountData();
+  renderPage();
+}
+function bctClearAdj(){
+  openConfirm({title:'Clear all manual adjustments?',
+    message:'Every adjustment figure you have typed will be set back to zero. Your bookkeeping and the automatic add-backs are not affected.',
+    confirmLabel:'Clear adjustments', danger:true, onYes:function(){
+      bctState.adj = {}; saveAccountData(); renderPage(); toast('Manual adjustments cleared');
+    }});
+}
+/* Update the live figures without re-rendering, so the field keeps focus. */
+function bctRefresh(){
+  var C = bctCompute(), el;
+  var set = function(id,v){ el = document.getElementById(id); if(el) el.textContent = v; };
+  set('bctManual', (C.manual<0?'− ':'') + moneyAED(Math.abs(C.manual)));
+  set('bctTaxable', moneyAED(C.taxable));
+  set('bctBand', moneyAED(C.nilBand));
+  set('bctAbove', moneyAED(C.above));
+  set('bctDue', moneyAED(C.due));
+  set('bctDueHero', moneyAED(C.due));
+  set('bctTaxableHero', moneyAED(C.taxable));
+  el = document.getElementById('bctLossWarn');
+  if(el) el.style.display = C.lossOver ? '' : 'none';
+  el = document.getElementById('bctLossCap');
+  if(el) el.textContent = moneyAED(C.lossCap);
+}
+
+/* ---------- Quick calculator (top of the page) ---------- */
+function bctQuickCalc(){
+  var inc = parseFloat((document.getElementById('ctqInc')||{}).value)||0;
+  var sbr = !!(document.getElementById('ctqSbr')||{}).checked;
+  var band = Math.min(CT_NIL_BAND, Math.max(0,inc));
+  var above = Math.max(0, inc - CT_NIL_BAND);
+  var due = sbr ? 0 : above * CT_RATE;
+  var eff = inc > 0 ? (due/inc*100) : 0;
+  var set = function(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; };
+  set('ctqBand', moneyAED(band));
+  set('ctqAbove', moneyAED(above));
+  set('ctqDue', moneyAED(due));
+  set('ctqEff', (Math.round(eff*10)/10).toFixed(1)+'%');
+  var w = document.getElementById('ctqSbrWarn');
+  if(w) w.style.display = (sbr && inc > CT_SBR_CAP) ? '' : 'none';
+}
+function bctQuickFromBooks(){
+  var C = bctCompute();
+  var e = document.getElementById('ctqInc');
+  if(e){ e.value = (Math.round(C.taxable*100)/100); bctQuickCalc(); toast('Taxable income pulled from your books'); }
+}
+function bctQuickCalcCardHTML(){
+  return '<div class="card mb14">'
+    + '<div class="cardhead"><h3>'+svgIcon('calc',16)+' Quick Corporate Tax calculator</h3>'
+      + '<span class="muted" style="font-size:12px">0% to AED 375,000 · 9% above</span></div>'
+    + '<div class="grid g3" style="align-items:end">'
+      + '<div><label class="flabel">Taxable income (AED)</label>'
+        + '<input id="ctqInc" class="finput" type="number" placeholder="0.00" style="text-align:right" oninput="bctQuickCalc()"></div>'
+      + '<div><label class="flabel">Small Business Relief</label>'
+        + '<label style="display:flex;align-items:center;gap:8px;height:38px;font-size:13px">'
+          + '<input id="ctqSbr" type="checkbox" onchange="bctQuickCalc()"> Treat as elected</label></div>'
+      + '<div><label class="flabel">&nbsp;</label>'
+        + '<button class="btn ghost" style="width:100%" onclick="bctQuickFromBooks()">'+svgIcon('sparkles',14)+' Use my books</button></div>'
+    + '</div>'
+    + '<div class="grid g4 mt18">'
+      + '<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxed at 0%</div><div id="ctqBand" style="font-size:21px;font-weight:700">AED 0.00</div></div>'
+      + '<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Taxed at 9%</div><div id="ctqAbove" style="font-size:21px;font-weight:700">AED 0.00</div></div>'
+      + '<div class="card" style="text-align:center;border-color:var(--accent)"><div class="muted" style="font-size:12px">Corporate Tax</div><div id="ctqDue" style="font-size:21px;font-weight:700;color:var(--accent)">AED 0.00</div></div>'
+      + '<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Effective rate</div><div id="ctqEff" style="font-size:21px;font-weight:700">0.0%</div></div>'
+    + '</div>'
+    + '<div id="ctqSbrWarn" class="note" style="display:none;text-align:left">'+svgIcon('warn',13)+' Small Business Relief is only available where revenue is AED 3,000,000 or less. This figure is above that threshold.</div>'
+    + '<div class="note" style="text-align:left">'+svgIcon('shield',13)+' A scratch pad for testing a figure. It does not change your books or the return below.</div>'
+  + '</div>';
+}
+
+/* ---------- The return itself ---------- */
+function bctComputationCardHTML(){
+  var C = bctCompute();
+  var disKeys = Object.keys(C.T.ctDisallowed);
+  var row = function(l, v, opt){
+    opt = opt || {};
+    return '<div style="display:flex;justify-content:space-between;gap:14px;padding:8px 0'
+      + (opt.top?';border-top:1px solid var(--line)':'')
+      + (opt.bold?';font-weight:700':'')
+      + (opt.strong?';border-top:2px solid var(--accent);margin-top:4px;font-weight:700':'')+'">'
+      + '<span'+(opt.bold||opt.strong?'':' class="muted"')+' style="font-size:13px">'+l+'</span>'
+      + '<span style="font-variant-numeric:tabular-nums;font-size:13.5px'+(opt.color?';color:'+opt.color:'')+'">'+v+'</span></div>';
+  };
+  return '<div class="card mb14" style="border-color:var(--accent)">'
+    + '<div class="cardhead"><h3>'+svgIcon('file-text',16)+' Corporate Tax computation</h3>'
+      + '<span class="pill p-teal">'+ctEsc(bkPeriodLabel())+'</span></div>'
+    + '<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Every line below is built from the transactions in your bookkeeping, except the manual adjustments you enter in the next card.</p>'
+    + row('Accounting profit for the period', moneyAED(C.accounting), {bold:true})
+    + (disKeys.length
+        ? disKeys.map(function(k){
+            var allow = BK_CT_TREATMENT[k];
+            return row('Add back — '+ctEsc(k)+' <span class="muted" style="font-size:11.5px">('
+              + (allow===0 ? 'not deductible' : Math.round((1-allow)*100)+'% restricted') + ')</span>',
+              moneyAED(C.T.ctDisallowed[k]), {top:true});
+          }).join('')
+        : '<div class="muted" style="font-size:12.5px;padding:8px 0;border-top:1px solid var(--line)">No restricted expenditure found in your categories — nothing to add back automatically.</div>')
+    + row('Manual adjustments (net)', '<span id="bctManual">'+((C.manual<0?'− ':'')+moneyAED(Math.abs(C.manual)))+'</span>', {top:true})
+    + row('Taxable income', '<span id="bctTaxable">'+moneyAED(C.taxable)+'</span>', {bold:true, top:true})
+    + row('First AED 375,000 at 0%', '<span id="bctBand">'+moneyAED(C.nilBand)+'</span>')
+    + row('Balance at 9%', '<span id="bctAbove">'+moneyAED(C.above)+'</span>')
+    + row(C.sbr ? 'Corporate Tax payable — Small Business Relief elected' : 'Corporate Tax payable',
+          '<span id="bctDue">'+moneyAED(C.due)+'</span>', {strong:true, color:'var(--accent)'})
+    + (C.loss > 0
+        ? '<div class="note" style="text-align:left">'+svgIcon('warn',13)+' The period shows a tax loss of '+moneyAED(C.loss)
+          +'. No Corporate Tax is payable, and the loss may be carried forward to offset up to 75% of taxable income in future periods.</div>'
+        : '')
+    + '<div class="note" style="text-align:left">'+svgIcon('shield',13)+' Entertainment is restricted to 50% deductibility (Art. 32) and fines and penalties are not deductible (Art. 33). This computation is prepared from your own records and is not a substitute for professional advice.</div>'
+  + '</div>';
+}
+function bctSbrCardHTML(){
+  var C = bctCompute();
+  return '<div class="card mb14">'
+    + '<div class="cardhead"><h3>'+svgIcon('shield',16)+' Small Business Relief</h3>'
+      + (C.sbrEligible ? '<span class="pill p-green">Revenue within the threshold</span>'
+                       : '<span class="pill p-amber">Revenue above the threshold</span>')+'</div>'
+    + '<p class="muted" style="font-size:12.5px;margin:-2px 0 10px">Article 21 of the Corporate Tax Law lets a business with revenue of AED 3,000,000 or less elect to be treated as having no taxable income for the period. The election is made in the tax return — it is not automatic — and it must be claimed for each period separately.</p>'
+    + '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line)">'
+      + '<span class="muted" style="font-size:13px">Revenue recorded in '+ctEsc(bkPeriodLabel())+'</span>'
+      + '<span style="font-variant-numeric:tabular-nums;font-size:13.5px">'+moneyAED(C.T.income)+'</span></div>'
+    + '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line)">'
+      + '<span class="muted" style="font-size:13px">Threshold</span>'
+      + '<span style="font-variant-numeric:tabular-nums;font-size:13.5px">'+moneyAED(CT_SBR_CAP)+'</span></div>'
+    + '<label style="display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px;cursor:'+(C.sbrEligible?'pointer':'not-allowed')+';opacity:'+(C.sbrEligible?'1':'.6')+'">'
+      + '<input id="bctSbr" type="checkbox"'+(C.sbr?' checked':'')+(C.sbrEligible?'':' disabled')+' onchange="bctToggleSbr(this.checked)" style="margin-top:2px">'
+      + '<span><b style="font-size:13px">Elect Small Business Relief for this tax period</b>'
+        + '<div class="muted" style="font-size:12px;margin-top:3px">Electing sets the Corporate Tax payable to nil. You must still file a return, you cannot carry forward a tax loss for the period, and the election is only valid if revenue in this and every previous tax period is within the threshold.</div></span></label>'
+    + (C.sbrEligible ? '' : '<div class="note" style="text-align:left">'+svgIcon('warn',13)+' Revenue of '+moneyAED(C.T.income)+' in '+ctEsc(bkPeriodLabel())+' is above AED 3,000,000, so the relief cannot be elected for this period.</div>')
+  + '</div>';
+}
+function bctAdjustmentsCardHTML(){
+  var C = bctCompute();
+  var field = function(a){
+    var v = bctVal(a.id);
+    return '<div style="padding:12px 0;border-top:1px solid var(--line)">'
+      + '<div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">'
+        + '<div style="flex:1;min-width:230px">'
+          + '<div style="font-size:13px;font-weight:600">'
+            + '<span class="pill '+(a.sign>0?'p-amber':'p-green')+'" style="margin-right:7px">'+(a.sign>0?'Add':'Deduct')+'</span>'
+            + ctEsc(a.label)+'</div>'
+          + '<div class="muted" style="font-size:11.8px;margin-top:3px;line-height:1.5">'+ctEsc(a.help)+'</div>'
+        + '</div>'
+        + '<input id="bct_'+a.id+'" class="finput" type="number" min="0" step="0.01" style="width:180px;text-align:right"'
+          + ' value="'+(v?v:'')+'" placeholder="0.00" onchange="bctSetAdj(\''+a.id+'\',this.value)" oninput="bctSetAdj(\''+a.id+'\',this.value)">'
+      + '</div>'
+      + (a.id==='losses'
+          ? '<div id="bctLossWarn" class="note" style="text-align:left;display:'+(C.lossOver?'':'none')+'">'+svgIcon('warn',13)
+            + ' Loss relief is capped at 75% of taxable income before relief — <span id="bctLossCap">'+moneyAED(C.lossCap)+'</span> for this period.</div>'
+          : '')
+    + '</div>';
+  };
+  return '<div class="card mb14">'
+    + '<div class="cardhead"><h3>'+svgIcon('sliders',16)+' Manual adjustments</h3>'
+      + '<button class="btn sm ghost" onclick="bctClearAdj()">'+svgIcon('refresh',13)+' Clear all</button></div>'
+    + '<p class="muted" style="font-size:12.5px;margin:-2px 0 4px">Enter each figure as a positive number — HisabOne adds or deducts it according to the label. These are the items a ledger cannot work out on its own, so keep the supporting workings with your records.</p>'
+    + BCT_ADJ.map(field).join('')
+    + '<div style="padding-top:14px;border-top:1px solid var(--line)">'
+      + '<label class="flabel">Notes to support these adjustments</label>'
+      + '<textarea class="finput" rows="3" placeholder="e.g. AED 40,000 of the interest charge relates to a shareholder loan and has been restricted under Article 30." oninput="bctSetNotes(this.value)">'+ctEsc(bctState.notes||'')+'</textarea>'
+    + '</div>'
+  + '</div>';
+}
+function buildBizCTReport(){
+  var C = bctCompute(), T = C.T;
+  var co = (typeof bizCompany==='object' && bizCompany) ? bizCompany : {};
+  var name = co.legalName || co.name || (currentAccount ? currentAccount.name : 'Your business');
+  var disRows = Object.keys(T.ctDisallowed).map(function(k){
+    var allow = BK_CT_TREATMENT[k];
+    return [k, moneyAED(T.ctDisallowed[k]), allow===0 ? 'Fully non-deductible' : (Math.round(allow*100)+'% deductible')];
+  });
+  var manRows = C.lines.map(function(l){
+    return [l.label, (l.sign>0?'Addition':'Deduction'), moneyAED(l.amount)];
+  });
+  var compRows = [
+    ['Accounting profit for the period', moneyAED(C.accounting)],
+    ['Add: expenditure restricted by category', moneyAED(C.autoAdd)],
+    ['Manual adjustments (net)', (C.manual<0?'(':'')+moneyAED(Math.abs(C.manual))+(C.manual<0?')':'')],
+    ['Taxable income', moneyAED(C.taxable)],
+    ['First AED 375,000 at 0%', moneyAED(C.nilBand)],
+    ['Balance at 9%', moneyAED(C.above)],
+    ['Corporate Tax payable', moneyAED(C.due)]
+  ];
+  return {
+    id: repId('CT'),
+    accent: '#7a5af8',
+    kicker: 'Corporate Tax',
+    title: 'Corporate Tax Return — working paper',
+    subtitle: bkPeriodLabel(),
+    forName: name,
+    from: 'HisabOne',
+    date: repDate(),
+    summary: [
+      ['Tax period', bkPeriodLabel()],
+      ['Revenue', moneyAED(T.income)],
+      ['Accounting profit', moneyAED(C.accounting)],
+      ['Taxable income', moneyAED(C.taxable)],
+      ['Corporate Tax payable', moneyAED(C.due)],
+      ['Small Business Relief', C.sbr ? 'Elected' : (C.sbrEligible ? 'Available, not elected' : 'Not available')]
+    ],
+    intro: 'This working paper sets out the UAE Corporate Tax position of '+name+' for '+bkPeriodLabel()+
+           '. It begins with the accounting profit produced by the bookkeeping records held in HisabOne, applies the '+
+           'adjustments required by Federal Decree-Law No. 47 of 2022, and arrives at the taxable income and the tax payable. '+
+           'It is prepared for review and transcription into EmaraTax; it is not itself a filing.',
+    sections: [
+      { title:'Trading result', lead:'The accounting result the computation starts from.',
+        stats:[['Revenue', moneyAED(T.income)], ['Expenses', moneyAED(T.expense)],
+               [C.accounting>=0?'Accounting profit':'Accounting loss', moneyAED(Math.abs(C.accounting))]],
+        fields:[['Total revenue recognised', moneyAED(T.income)],
+                ['Total expenditure recorded', moneyAED(T.expense)],
+                [C.accounting>=0?'Accounting profit for the period':'Accounting loss for the period', moneyAED(Math.abs(C.accounting))],
+                ['Transactions supporting these figures', String(bkRows().length)]],
+        note:'Drawn from the bookkeeping records in this account for '+bkPeriodLabel()+'.' },
+      { title:'Adjustments read from the books', lead:'Expenditure the Corporate Tax Law restricts, identified from the category each cost was recorded under.',
+        stats:[['Added back', moneyAED(C.autoAdd)], ['Categories affected', String(disRows.length)]],
+        tables: disRows.length ? [{title:'Restricted expenditure', headers:['Category','Added back','Treatment'], rows:disRows}] : [],
+        body: disRows.length ? '' : 'No expenditure in a restricted category was recorded for this period.',
+        note:'Entertainment expenditure is restricted to 50% under Article 32; fines and penalties are not deductible under Article 33.' },
+      { title:'Manual adjustments', lead:'Adjustments entered by the business that cannot be derived from the ledger.',
+        stats:[['Net effect', (C.manual<0?'−':'')+moneyAED(Math.abs(C.manual))], ['Items entered', String(manRows.length)]],
+        tables: manRows.length ? [{title:'Adjustments', headers:['Adjustment','Direction','Amount'], rows:manRows}] : [],
+        body: (manRows.length ? '' : 'No manual adjustments were entered for this period.')
+              + (bctState.notes ? (manRows.length?'\n\n':'')+'Notes: '+bctState.notes : ''),
+        note:'Supporting workings for each adjustment should be retained with the accounting records for seven years.' },
+      { title:'Small Business Relief', lead:'Article 21 relief for businesses within the revenue threshold.',
+        stats:[['Revenue', moneyAED(T.income)], ['Threshold', moneyAED(CT_SBR_CAP)],
+               ['Status', C.sbr ? 'Elected' : (C.sbrEligible ? 'Available' : 'Not available')]],
+        body: C.sbr
+          ? 'Small Business Relief has been elected for this tax period. The business is treated as having no taxable income, so no Corporate Tax is payable. A return must still be filed, and no tax loss arising in the period may be carried forward.'
+          : (C.sbrEligible
+              ? 'Revenue is within the AED 3,000,000 threshold, so the relief could be elected for this period. It has not been elected in this working paper, so tax has been computed at the standard rates. The election must also hold for every previous tax period.'
+              : 'Revenue exceeds the AED 3,000,000 threshold, so Small Business Relief is not available for this period and the standard rates apply.'),
+        note:'Ministerial Decision No. 73 of 2023 sets the revenue threshold and the conditions for the relief.' },
+      { title:'Corporate Tax computation', lead:'From accounting profit to the tax payable for the period.',
+        stats:[['Taxable income', moneyAED(C.taxable)], ['Taxed at 9%', moneyAED(C.above)], ['Tax payable', moneyAED(C.due)]],
+        fields: compRows,
+        body: C.loss > 0
+          ? 'The period shows a tax loss of '+moneyAED(C.loss)+'. No Corporate Tax is payable. Subject to the conditions in Article 37, the loss may be carried forward and used against up to 75% of taxable income in later periods.'
+          : '',
+        note:'Corporate Tax returns are filed on EmaraTax within nine months of the end of the tax period.' }
+    ],
+    declaration: 'This working paper is compiled from the records entered into HisabOne by the business and has not been independently verified or audited. It is not tax advice and it is not a filing. Responsibility for the accuracy and completeness of the underlying records, for the adjustments entered, and for what is ultimately submitted to the Federal Tax Authority rests with the business and its authorised signatory.'
+  };
+}
+function openBizCTReport(){ viewFullReport(buildBizCTReport()); }
+function downloadBizCTReport(){ downloadFullPDF(buildBizCTReport()); }
+
+function bctPageHTML(){
+  var C = bctCompute();
+  var linked = (typeof hasLiveLink==='function') && hasLiveLink();
+  var opts = bkPeriodOptions();
+  return '<h1>Corporate Tax</h1>'
+  + '<div class="sub">Your Corporate Tax calculator and your full return in one place. The computation starts at the profit your bookkeeping has already worked out, applies the adjustments the law requires, and produces a print-ready working paper for review and sign-off.</div>'
+
+  + handoverBannerHTML('return')
+
+  + bctQuickCalcCardHTML()
+
+  + '<div class="card mb14" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;justify-content:space-between">'
+    + '<div><label class="flabel">Tax period</label>'
+      + '<select class="finput" style="min-width:190px" onchange="bkSetPeriod(this.value)">'
+        + '<option value=""'+(bkPeriod?'':' selected')+'>All time</option>'
+        + opts.map(function(o){ return '<option value="'+o.v+'"'+(bkPeriod===o.v?' selected':'')+'>'+o.l+'</option>'; }).join('')
+      + '</select></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      + '<button class="btn ghost" onclick="go(\'books\')">'+svgIcon('bar',14)+' Bookkeeping</button>'
+      + '<button class="btn ghost" onclick="openBizCTReport()">'+svgIcon('eye',14)+' Preview return</button>'
+      + '<button class="btn" onclick="downloadBizCTReport()">'+svgIcon('download',14)+' Download PDF</button>'
+    + '</div>'
+  + '</div>'
+
+  + '<div class="grid g4 mb14">'
+    + '<div class="card stat"><div class="ic">'+svgIcon('bar',18)+'</div><div class="num">'+moneyAED(C.T.income)+'</div><div class="lbl">Revenue — '+ctEsc(bkPeriodLabel())+'</div></div>'
+    + '<div class="card stat"><div class="ic'+(C.accounting<0?' ic-red':'')+'">'+svgIcon('activity',18)+'</div><div class="num">'+moneyAED(Math.abs(C.accounting))+'</div><div class="lbl">'+(C.accounting>=0?'Accounting profit':'Accounting loss')+'</div></div>'
+    + '<div class="card stat"><div class="ic">'+svgIcon('calc',18)+'</div><div class="num" id="bctTaxableHero">'+moneyAED(C.taxable)+'</div><div class="lbl">Taxable income</div></div>'
+    + '<div class="card stat"><div class="ic ic-amber">'+svgIcon('fta',18)+'</div><div class="num" id="bctDueHero">'+moneyAED(C.due)+'</div><div class="lbl">Corporate Tax payable</div></div>'
+  + '</div>'
+
+  + bctComputationCardHTML()
+  + bctSbrCardHTML()
+  + bctAdjustmentsCardHTML()
+
+  + (returnsHandedOver() && typeof returnsPanelHTML==='function' ? returnsPanelHTML('business') : '')
+
+  + '<div class="card mt18">'
+    + '<div class="cardhead"><h3>Next steps</h3><span class="muted" style="font-size:12px">Due within 9 months of the tax period end</span></div>'
+    + '<div style="display:flex;gap:10px;flex-wrap:wrap">'
+      + '<button class="btn" onclick="downloadBizCTReport()">'+svgIcon('download',15)+' Download full working paper (PDF)</button>'
+      + '<button class="btn ghost" onclick="downloadPLReport()">'+svgIcon('file-text',15)+' Download the profit &amp; loss</button>'
+      + '<button class="btn ghost" onclick="bkExportCSV()">'+svgIcon('clipboard',15)+' Export the underlying transactions</button>'
+      + (linked ? '<button class="btn ghost" onclick="go(\'bchat\')">'+svgIcon('chat',15)+' Message my accountant</button>' : '')
+    + '</div>'
+    + (returnsHandedOver()
+        ? '<p class="muted" style="font-size:12.5px;margin:12px 0 0">'+ctEsc(linkedFirmName())+' prepares and files this return. Keep your bookkeeping and the adjustments above complete and current — the draft they send you for sign-off is built from exactly these figures.</p>'
+        : '<p class="muted" style="font-size:12.5px;margin:12px 0 0">You are working standalone, so you file this return yourself on EmaraTax. Nothing is submitted from HisabOne — transcribe the final figures, and keep this working paper with your records.</p>')
+  + '</div>';
+}
+
 /* ================================================================
    PART D — WIRING: page registration, persistence, reset
    ================================================================ */
@@ -9902,7 +10396,11 @@ function bvat201PageHTML(){
 /* ---------- Register the new pages on the existing PAGES map ---------- */
 PAGES.settings = function(){ return settingsPageHTML(); };
 PAGES.books    = function(){ return booksPageHTML(); };
+/* The VAT sub-tab is the calculator and the VAT201 return on one page.
+   'bvat201' is kept as an alias so every existing link still lands correctly. */
+PAGES.bvat     = function(){ return bvat201PageHTML(); };
 PAGES.bvat201  = function(){ return bvat201PageHTML(); };
+PAGES.bct      = function(){ return bctPageHTML(); };
 PAGES.fdocs    = function(){ return fdocsPageHTML(); };
 
 /* ---------- Persistence: pack / unpack the v2 state ---------- */
@@ -9911,7 +10409,8 @@ function bizV2Pack(){
     workMode: workModeVal,
     bkAccounts: bkAccounts,
     bkTx: bkTx,
-    bkPeriod: bkPeriod
+    bkPeriod: bkPeriod,
+    bctState: bctState
   };
 }
 function bizV2Unpack(d){
@@ -9920,6 +10419,10 @@ function bizV2Unpack(d){
   bkAccounts  = Array.isArray(d.bkAccounts) ? d.bkAccounts : [];
   bkTx        = Array.isArray(d.bkTx) ? d.bkTx : [];
   bkPeriod    = d.bkPeriod || '';
+  var c = (d.bctState && typeof d.bctState==='object') ? d.bctState : {};
+  bctState = { sbr: !!c.sbr,
+               adj: (c.adj && typeof c.adj==='object') ? c.adj : {},
+               notes: typeof c.notes==='string' ? c.notes : '' };
 }
 function firmV2Pack(){
   /* Whichever client's books are live sit in the shared globals — write them
@@ -9952,6 +10455,7 @@ function resetV2State(){
   bkAccounts = [];
   bkTx = [];
   bkPeriod = '';
+  bctState = { sbr:false, adj:{}, notes:'' };
   firmBooks = {};
   bkClient = null;
   _cpBooksOpen = false;
@@ -9962,7 +10466,8 @@ function resetV2State(){
 
 /* ---------- After-render hooks for the new pages ---------- */
 function v2AfterRender(p){
-  if(p==='bvat201' && typeof recalcVat201==='function') recalcVat201();
+  if((p==='bvat' || p==='bvat201') && typeof recalcVat201==='function') recalcVat201();
+  if(p==='bct' && typeof bctQuickCalc==='function') bctQuickCalc();
   if((p==='books' || p==='clientprofile') && typeof bkAutoVat==='function' && document.getElementById('bkAmt')) bkAutoVat();
 }
 

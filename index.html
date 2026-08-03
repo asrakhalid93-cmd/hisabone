@@ -1287,16 +1287,52 @@
       <div class="muted" style="text-align:center;font-size:12px;margin:-16px 0 26px">Every plan includes one dedicated <b>Manager seat</b> — a separate login that oversees and observes the whole workspace (every page, report and message) without being able to edit anything. Invite yours from the Team tab.</div>
 
       <div class="lsectlabel" style="text-align:center">For Accountants &amp; Audit Firms</div>
-      <div class="card" style="cursor:default;margin-bottom:10px">
-        <div style="display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:space-between">
-          <div style="flex:1;min-width:240px">
-            <h3 style="font-size:16px;margin-bottom:2px">Partner Programme</h3>
-            <p class="muted" style="font-size:12.5px;margin-bottom:12px">For accounting &amp; audit firms</p>
-            <div style="font-size:13px;color:var(--muted);line-height:1.65">Manage all your clients' tax and compliance work from one purpose-built portal — team logins &amp; roles, document requests, AI auto-chase, calculators and reporting included. Get in touch and we'll set your firm up.</div>
-          </div>
-          <div style="flex:0 0 auto;min-width:200px;text-align:center">
-            <a class="btn" href="mailto:info@hisabone.ae?subject=Partner%20Programme" style="display:inline-block;text-decoration:none">Contact us to become a partner</a>
-          </div>
+      <div class="muted" style="text-align:center;font-size:12.5px;margin:-10px 0 18px">Priced purely on the number of active clients on your portal — nothing else. <b>Your first 30 clients are free, forever.</b> Archived clients keep their full history and never count towards your total.</div>
+      <div class="grid g4" style="margin-bottom:24px;align-items:stretch">
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Practice Starter</div>
+          <div class="psub">Free forever</div>
+          <div class="priceblk" style="margin-bottom:10px"><span class="price-amt">Free</span><div class="price-note">up to 30 clients</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">30 active clients</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Add clients yourself — no waiting for them to sign up</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Document Centre — request, receive, review &amp; sign off</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT &amp; Corporate Tax calculators with FTA return forms</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full-length downloadable client dossiers &amp; practice reports</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free</button>
+        </div>
+        <div class="card pcard" style="cursor:default;border:2px solid var(--accent);position:relative">
+          <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
+          <div class="ptitle">Practice</div>
+          <div class="psub">Growing practices</div>
+          <div class="priceblk" data-monthly="299" data-cap="up to 75 clients" style="margin-bottom:10px"><span class="price-amt">AED 299</span> <span class="price-per">/mo</span><div class="price-note">up to 75 clients</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">75 active clients</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Practice Starter</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Team logins &amp; roles — owner, manager, consultant</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI auto-chase &amp; scheduled email reminders</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Draft-return review &amp; client e-signature workflow</span></div>
+          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
+        </div>
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Practice Plus</div>
+          <div class="psub">Established firms</div>
+          <div class="priceblk" data-monthly="699" data-cap="up to 200 clients" style="margin-bottom:10px"><span class="price-amt">AED 699</span> <span class="price-per">/mo</span><div class="price-note">up to 200 clients</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">200 active clients</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Practice</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; engagement management</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Unlimited AI document reading &amp; AI Assist (fair use)</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
+        </div>
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Enterprise</div>
+          <div class="psub">Unlimited clients</div>
+          <div class="priceblk" data-monthly="1499" data-cap="no client limit" style="margin-bottom:10px"><span class="price-amt">AED 1,499</span> <span class="price-per">/mo</span><div class="price-note">no client limit</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">Unlimited clients</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Practice Plus, with no cap on clients</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Multi-office &amp; multi-branch practice structure</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Onboarding &amp; migration assistance from our team</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Named account manager</span></div>
+          <a class="btn ghost" href="mailto:info@hisabone.ae?subject=HisabOne%20Enterprise" style="width:100%;margin-top:auto;text-decoration:none;text-align:center">Talk to us</a>
         </div>
       </div>
       <div class="muted" style="text-align:center;font-size:12px;padding:6px 0 10px">Prices exclude 5% VAT. Annual plans are billed yearly at the equivalent of nine months — three months free. A single avoided AED 1,000 late-filing penalty covers five months of the Starter plan.</div>
@@ -1608,6 +1644,13 @@ async function flushAccountData(){
     ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, companyProfile:bizCompany,
        invoiceInbox:invoiceInbox, renewals:bizRenewals, companies:snapshotCompanies(cleanVault), activeCompany:bizActiveCo, signoffPin:signoffPin}
     : {firmReminders, clientMeta, ctScenarios, ctDrafts, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
+  /* v2: working mode, bookkeeping, firm plan, manual clients, document register */
+  try{
+    var v2 = currentAccount.role==='business'
+      ? (typeof bizV2Pack==='function' ? bizV2Pack() : null)
+      : (typeof firmV2Pack==='function' ? firmV2Pack() : null);
+    if(v2){ for(var vk in v2){ if(Object.prototype.hasOwnProperty.call(v2,vk)) data[vk]=v2[vk]; } }
+  }catch(e){}
   try{ await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()}); }catch(e){}
 }
 
@@ -1621,9 +1664,40 @@ function rebuildFirmClients(){
     return {name:c.business_name, id:c.business_id, email:c.business_email||'',
             registered:c.registered_at||null, trialEnds:c.trial_ends_at||null,
             trn:meta.trn||'—', deadline:meta.deadline||'Onboarding',
-            docs:done+'/'+mine.length, risk:meta.risk||'medium', urgency:meta.urgency||'soon'};
+            docs:done+'/'+mine.length, risk:meta.risk||'medium', urgency:meta.urgency||'soon',
+            linked:true};
   });
+  /* v2: clients the firm added by hand sit alongside the ones who linked in */
+  if(typeof manualClients!=='undefined' && Array.isArray(manualClients)){
+    var linkedNames={}; firmClients.forEach(function(c){ linkedNames[c.name]=1; });
+    manualClients.forEach(function(m){
+      if(linkedNames[m.name]) return;                     /* linked record wins */
+      var meta=clientMeta[m.name]||{};
+      var mine=all.filter(function(r){ return r.client===m.name; });
+      var done=mine.filter(function(r){ return r.st==='Received ✓'; }).length;
+      var reg=(typeof docsFor==='function') ? docsFor(m.name) : [];
+      var regDone=reg.filter(function(d){ return d.status==='received'||d.status==='reviewed'||d.status==='signed'; }).length;
+      firmClients.push({name:m.name, id:m.id, email:m.email||'',
+        registered:m.createdAt||null, trialEnds:null,
+        trn:m.trn||meta.trn||'—', deadline:meta.deadline||m.deadline||'Onboarding',
+        docs:(done+regDone)+'/'+(mine.length+reg.length),
+        risk:meta.risk||m.risk||'medium', urgency:meta.urgency||'soon',
+        linked:false, manual:true});
+    });
+  }
   clients = firmClients.map(c=>c.name);
+  refreshRoleChip();
+}
+/* The topbar chip is written once by setRole(), before any client data has
+   loaded — re-derive it whenever the client list changes. */
+function refreshRoleChip(){
+  try{
+    var el=document.getElementById('urole');
+    if(!el) return;
+    if(!currentAccount || currentAccount.role!=='firm') return;
+    if(currentAccount.teamRole && currentAccount.teamRole!=='owner') return;
+    el.textContent='Accounting firm · '+clients.length+' client'+(clients.length===1?'':'s');
+  }catch(e){}
 }
 /* trial status helper: label + pill class from trial_ends_at */
 function trialBadge(iso){
@@ -1661,6 +1735,7 @@ async function loadWorkspace(){
       bizRevenueBand=d.bizRevenueBand||null;
       bizCompany=d.companyProfile||{};
       signoffPin=d.signoffPin||null;
+      if(typeof bizV2Unpack==='function') bizV2Unpack(d);
       invoiceInbox=d.invoiceInbox||[]; bizRenewals=d.renewals||[];
       bizCompanies=d.companies||null; bizActiveCo=d.activeCompany||'c1';
       if(!bizCompanies) bizCompanies=[{id:bizActiveCo, name:(currentAccount.companyName||currentAccount.name)||'My company'}];
@@ -1683,6 +1758,7 @@ async function loadWorkspace(){
     } else {
       firmReminders=d.firmReminders||[]; clientMeta=d.clientMeta||{}; ctScenarios=d.ctScenarios||[]; ctDrafts=d.ctDrafts||{}; notifSeen=d.notifSeen||[];
       if(currentAccount.teamRole==='owner') currentAccount.digestFreq=d.ownerDigest||'off';
+      if(typeof firmV2Unpack==='function') firmV2Unpack(d);
       inviteCode=currentAccount.inviteCode||'';
       const [{data:cls},{data:reqs},{data:profs}] = await Promise.all([
         sb.rpc('my_clients'),
@@ -2017,18 +2093,22 @@ function setBilling(mode){
   window._billing=mode;
   var blks=document.querySelectorAll('.priceblk');
   for(var i=0;i<blks.length;i++){
-    var el=blks[i], m=parseFloat(el.getAttribute('data-monthly'))||0;
+    var el=blks[i];
+    /* Free / fixed-price cards carry no data-monthly — leave them exactly as written. */
+    if(!el.hasAttribute('data-monthly')) continue;
+    var m=parseFloat(el.getAttribute('data-monthly'))||0;
+    var cap=el.getAttribute('data-cap')||'';
     var amt=el.querySelector('.price-amt'), per=el.querySelector('.price-per'), note=el.querySelector('.price-note');
     if(!amt) continue;
     if(mode==='annual'){
       var perMo=Math.round(m*0.75), annual=m*9;
       amt.textContent='AED '+perMo.toLocaleString('en-US');
-      per.textContent='/mo';
-      if(note) note.textContent='AED '+annual.toLocaleString('en-US')+' billed yearly · 3 months free';
+      if(per) per.textContent='/mo';
+      if(note) note.textContent='AED '+annual.toLocaleString('en-US')+' billed yearly · 3 months free'+(cap?' · '+cap:'');
     } else {
       amt.textContent='AED '+m.toLocaleString('en-US');
-      per.textContent='/mo';
-      if(note) note.textContent='billed monthly';
+      if(per) per.textContent='/mo';
+      if(note) note.textContent=cap||'billed monthly';
     }
   }
   var mb=document.getElementById('billMonthly'), ab=document.getElementById('billAnnual');
@@ -2273,6 +2353,7 @@ function logout(){
   bizTaxDocs=[]; bizAuditDocs=[]; vaultDocs=[]; sharedReports=[];
   returnsList=[]; returnEvents={}; viewingReturn=null; _accessLogged={}; _pendingChangeDoc=null;
   signoffPin=null; _retPage=0; _retSeen={}; _retPages=[];
+  if(typeof resetV2State==='function') resetV2State();
   onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null; bizRevenueBand=null;
   bizCompany={}; clientProfiles={}; ctR={}; ctDrafts={};
@@ -2534,7 +2615,7 @@ function setRole(r){
 function go(p){if(typeof gatePage==='function'&&!gatePage(p))return;if(p!=='breports'&&p!=='freports')viewingReport=null;page=p;renderNav();renderPage();window.scrollTo(0,0);}
 
 function renderNav(){
-  const items = NAV[role];
+  const items = (typeof navItems==='function') ? navItems() : NAV[role];
   document.getElementById('sidebar').innerHTML =
     '<div class="navlabel">'+(role==='business'?'My company':'Practice')+'</div>'+
     items.map(i=>{
@@ -2583,8 +2664,10 @@ function renderPage(){ var m=document.getElementById('main');
   if(page==='guides' && typeof aiRenderLog==='function') aiRenderLog('business');
   if(page==='fguides' && typeof aiRenderLog==='function') aiRenderLog('firm');
   if((page==='bchat'||page==='fchat') && typeof chatAfterRender==='function') chatAfterRender();
+  if(typeof v2AfterRender==='function') v2AfterRender(page);
   if(typeof updateBell==='function') updateBell();
   if(typeof renderCompanySwitch==='function') renderCompanySwitch();
+  if(typeof refreshRoleChip==='function') refreshRoleChip();
   saveAccountData(); }
 
 /* ---------- PAGES ---------- */
@@ -2602,6 +2685,7 @@ dash:()=>{
   return `
   <h1>Welcome back, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
+  ${modeChooserHTML()}
   ${businessHealthCard()}
   ${urgent.length ? `
   <div class="banner">
@@ -2886,7 +2970,8 @@ breports:()=>{
 
 links:()=>`
   <h1>Linked Firm &amp; Accounts</h1>
-  <div class="sub">Link one accounting / audit firm. They request documents from you per process — no email or WhatsApp.</div>
+  <div class="sub">HisabOne works perfectly well on its own. Linking an accounting or audit firm is optional — turn it on when you want a professional working alongside you, and turn it off whenever you like.</div>
+  ${workModeCardHTML()}
   ${linkedFirm ? `
   <div class="card mb14" style="border-color:var(--accent)">
     <div style="display:flex;align-items:center;gap:14px">
@@ -2922,7 +3007,8 @@ fdash:()=>{
   const attention = firmClients.filter(c=>c.urgency==='overdue'||c.urgency==='soon');
   return `
   <h1>Accountant Dashboard</h1>
-  <div class="sub">${firmName} · ${clients.length} linked client${clients.length===1?'':'s'}</div>
+  <div class="sub">${firmName} · ${firmClients.length} client${firmClients.length===1?'':'s'} · ${ctEsc(firmPlanObj().name)} plan</div>
+  ${modeChooserHTML()}
   ${onboardingHTML()}
   ${firmHealthCard()}
   <div class="grid g4 mb14">
@@ -2966,7 +3052,15 @@ clients:()=>{
   if(urgFilter!=='all') rows=rows.filter(c=>c.urgency===urgFilter);
   return `
   <h1>Client Database</h1>
-  <div class="sub">Organised by risk — highest first. Filter by risk or urgency to focus where it matters.</div>
+  <div class="sub">Every client you manage, whether you added them yourself or they linked their own portal to you. Organised by risk — highest first.</div>
+  ${firmUsageCardHTML()}
+  ${workModeCardHTML()}
+  <div class="card mb14">
+    <div class="cardhead"><h3>${svgIcon('plus',16)} Add a client yourself</h3><span class="pill ${firmAtCap()?'p-red':'p-teal'}">${firmSeatsLeft()===Infinity?'Unlimited places':(firmAtCap()?'No places left':firmSeatsLeft()+' place'+(firmSeatsLeft()===1?'':'s')+' left')}</span></div>
+    <p class="muted" style="font-size:12.5px;margin-bottom:13px">Add and manage a client from start to finish without waiting for them to sign up — capture their registration details, build their document pack, chase what's outstanding and produce their reports. If they later create their own HisabOne portal you can link the two together.</p>
+    <button class="btn" onclick="openAddClient()">${svgIcon('plus',15)} Add client</button>
+    <button class="btn ghost" style="margin-left:8px" onclick="openFirmPricing()">${svgIcon('users',15)} View plans</button>
+  </div>
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('link',16)} Link a new client</h3></div>
     <p class="muted" style="font-size:12.5px;margin-bottom:13px">Share your firm's invite code — when a business enters it on their Linked Firm page, they're linked to you automatically.</p>
@@ -3303,8 +3397,18 @@ freports:()=>{
   const open=[...firmTaxReqs,...firmAuditReqs].filter(r=>!/Received/.test(r.st)).length;
   return `
   <h1>Reports</h1>
-  <div class="sub">Generate, download and share polished audit-trail reporting with your clients — all inside HisabOne.</div>
+  <div class="sub">Generate, download and share polished reporting with your clients — all inside HisabOne.</div>
   ${reportsRoleBanner()}
+  <div class="card mb14" style="border-color:var(--accent)">
+    <div class="cardhead"><h3>${svgIcon('file-text',16)} Full-length reports</h3><span class="pill p-teal">Print-ready PDF</span></div>
+    <p class="muted" style="font-size:13px;margin-bottom:12px">Multi-page branded reports with a cover page, contents, findings and a declaration — the kind you can put your name on and send to a client or a bank. Produced from your live practice data and downloadable as a PDF.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="openPracticeReport()">${svgIcon('eye',15)} Practice report</button>
+      <button class="btn ghost" onclick="downloadPracticeReport()">${svgIcon('download',15)} Download practice report</button>
+      <button class="btn ghost" onclick="go('clients')">${svgIcon('users',15)} Client dossiers</button>
+    </div>
+    <p class="muted" style="font-size:12px;margin:12px 0 0">A dossier for an individual client is generated from their profile page — open any client and use “Client dossier”.</p>
+  </div>
   ${digestCardHTML()}
   ${returnsPanelHTML('firm')}
   <div class="grid g2 mb14">
@@ -5646,13 +5750,23 @@ function clientProfileHTML(){
       <div class="avatar" style="width:52px;height:52px;font-size:22px;background:var(--accent-bg);color:var(--accent)">${ctEsc(c.name[0]||'C')}</div>
       <div style="flex:1;min-width:220px">
         <h1 style="font-size:21px;margin:0">${ctEsc(c.name)}</h1>
-        <div class="muted" style="font-size:12.5px;margin-top:3px">Registered ${fmtRegDate(c.registered)} · Free trial: <span class="pill ${tb.cls}" style="font-size:10px">${tb.label}</span></div>
+        <div class="muted" style="font-size:12.5px;margin-top:3px">${c.manual?'Added by your firm':'Registered'} ${fmtRegDate(c.registered)}${c.manual?'':' · Free trial: <span class="pill '+tb.cls+'" style="font-size:10px">'+tb.label+'</span>'}
+          · <span class="pill ${c.manual?'p-gray':'p-teal'}" style="font-size:10px">${c.manual?'Managed by you':'Linked portal'}</span></div>
       </div>
       ${scoreGauge(h.score, h.band.col, 84)}
       <div style="min-width:150px"><div style="font-weight:700;color:${h.band.col}">${h.band.label}</div>
         <div class="muted" style="font-size:12px">${h.exposure>0?('Penalty exposure '+fmtAED(h.exposure)):'No penalty exposure'}</div></div>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
+      <button class="btn sm" onclick="openClientDossier('${c.id}')">${svgIcon('file-text',14)} Client dossier</button>
+      <button class="btn ghost sm" onclick="downloadClientDossier('${c.id}')">${svgIcon('download',14)} Download PDF</button>
+      <button class="btn ghost sm" onclick="openAddDoc('${jsq(c.name)}')">${svgIcon('paperclip',14)} Request a document</button>
+      ${c.manual?`<button class="btn ghost sm" onclick="editManualClient('${c.id}')">${svgIcon('clipboard',14)} Edit details</button>
+      <button class="btn ghost sm" onclick="deleteManualClient('${c.id}')">${svgIcon('trash',14)} Remove</button>`:''}
+    </div>
   </div>
+  ${clientStageBarHTML(c.name)}
+  ${clientDocCardHTML(c.name)}
   <div class="grid g4 mb14">
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic">${svgIcon('inbox',20)}</div><div class="num">${openReqs.length}</div><div class="lbl">Open requests</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic">${svgIcon('check',20)}</div><div class="num">${reqs.length-openReqs.length}</div><div class="lbl">Documents received</div></div>
@@ -7676,6 +7790,1707 @@ function trackEvent(kind){
     sessionStorage.setItem(k, String(n+1));
     sb.from('site_events').insert({kind:kind}).then(function(){},function(){});
   }catch(e){}
+}
+
+
+/* ================================================================================
+   HISABONE v2 — standalone/linked working mode, firm pricing & client management,
+   document centre, full-length reports, bookkeeping and the business VAT return.
+   ================================================================================ */
+
+/* ==================================================================
+   HISABONE — STANDALONE / LINKED WORKING MODE
+   Every portal works on its own. Linking the other portal is optional
+   and can be turned on or off at any time without losing any data.
+   ================================================================== */
+var workModeVal=null;   /* null = not chosen yet · 'standalone' | 'linked' */
+
+function workMode(){ return workModeVal==='standalone' ? 'standalone' : 'linked'; }
+function workModeChosen(){ return workModeVal==='standalone' || workModeVal==='linked'; }
+function isStandalone(){ return workMode()==='standalone'; }
+function hasLiveLink(){
+  if(!currentAccount) return false;
+  if(currentAccount.role==='business') return !!(linkedFirmId||linkedFirm);
+  return !!(myClients && myClients.some(function(c){ return c && c.business_id; }));
+}
+function workModeLabel(){ return isStandalone() ? 'Standalone' : 'Linked'; }
+
+function setWorkMode(m, quiet){
+  workModeVal = (m==='standalone') ? 'standalone' : 'linked';
+  saveAccountData(); flushAccountData();
+  if(typeof logActivity==='function'){
+    try{ logActivity('mode_changed','Switched to '+workModeVal+' working mode'); }catch(e){}
+  }
+  if(!quiet) toast(workModeVal==='standalone'
+    ? 'Standalone mode on — you are running everything yourself.'
+    : 'Linked mode on — collaboration features are available again.');
+  if(typeof renderNav==='function') renderNav();
+  if(typeof renderPage==='function') renderPage();
+}
+
+/* nav items that only make sense when the two portals are linked */
+var LINK_ONLY_NAV={links:1, bchat:1, fchat:1};
+function navVisible(id){
+  if(!LINK_ONLY_NAV[id]) return true;
+  if(!isStandalone()) return true;
+  return hasLiveLink();   /* never hide the way out of an existing link */
+}
+function navItems(){
+  var items=(NAV[role]||[]).filter(function(i){ return i.group ? true : navVisible(i.id); });
+  if(role==='business'){
+    var idx=items.findIndex(function(i){ return i.id==='binv'; });
+    var books={id:'books', ic:'bar', label:'Bookkeeping'};
+    var vret={id:'bvat201', ic:'fta', label:'VAT Return'};
+    if(idx>=0) items.splice(idx+1, 0, books, vret); else items.push(books, vret);
+  } else {
+    var ci=items.findIndex(function(i){ return i.id==='clients'; });
+    var fd={id:'fdocs', ic:'folder', label:'Document Centre'};
+    if(ci>=0) items.splice(ci+1, 0, fd); else items.push(fd);
+  }
+  return items;
+}
+
+function switchWorkMode(m){
+  if(m===workMode()) return;
+  if(m==='standalone' && hasLiveLink()){
+    var msg = currentAccount && currentAccount.role==='business'
+      ? 'Switch to standalone? You keep every document, return and record you own, and you carry on filing on your own. '+(linkedFirm?ctEsc(linkedFirm):'Your firm')+' stays connected until you unlink them on the Linked Firm page — standalone simply stops HisabOne from putting collaboration front and centre.'
+      : 'Switch to standalone? You keep every client, document and report. Clients already linked to your portal stay linked until you archive or unlink them — standalone simply means you run the practice without depending on client portals.';
+    openConfirm({title:'Switch to standalone working', confirmLabel:'Switch to standalone', danger:false, message:msg,
+      onYes:function(){ setWorkMode('standalone'); }});
+    return;
+  }
+  setWorkMode(m);
+}
+
+function workModeCardHTML(){
+  var biz = currentAccount && currentAccount.role==='business';
+  var sa = isStandalone();
+  return '<div class="card mb14" id="workModeCard">'
+    +'<div class="cardhead"><h3>'+svgIcon('link',16)+' How you work</h3>'
+      +'<span class="pill '+(sa?'p-gray':'p-teal')+'">'+workModeLabel()+'</span></div>'
+    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">'
+      +(biz
+        ? 'HisabOne works completely on its own — bookkeeping, VAT returns, Corporate Tax and your document vault are all yours. Linking an accountant is optional, and you can turn it on or off whenever you like.'
+        : 'Run your practice entirely inside HisabOne — add clients yourself, manage their documents and produce their reports. Inviting clients onto their own portal is optional and never required.')
+    +'</p>'
+    +'<div class="grid g2" style="gap:12px">'
+      +modeTileHTML('standalone', sa, biz)
+      +modeTileHTML('linked', !sa, biz)
+    +'</div>'
+    +(sa && hasLiveLink()
+      ? '<div class="note" style="margin-top:12px">'+svgIcon('warn',13)+' You are in standalone mode but '+(biz?'a firm is still linked to you':'clients are still linked to your portal')+'. Nothing is shared automatically — '+(biz?'unlink from the Linked Firm page':'archive or unlink from the Clients page')+' if you want the connection removed entirely.</div>'
+      : '')
+    +'</div>';
+}
+function modeTileHTML(m, on, biz){
+  var title = m==='standalone' ? 'Standalone' : 'Linked with the other portal';
+  var body = m==='standalone'
+    ? (biz ? 'You do it all yourself. Bookkeeping, VAT returns, CT, calendar, documents and reports — no accountant needed.'
+           : 'You manage every client yourself. Add them manually, hold their documents and issue their reports without them ever signing in.')
+    : (biz ? 'Connect your accounting or audit firm. They request documents, prepare returns and you approve and sign them off in-app.'
+           : 'Invite clients onto their own portal. They upload documents, message you and approve their own returns.');
+  return '<div onclick="switchWorkMode(\''+m+'\')" style="cursor:pointer;border:2px solid '+(on?'var(--accent)':'var(--line)')+';background:'+(on?'var(--accent-bg)':'var(--panel2)')+';border-radius:12px;padding:14px 15px">'
+    +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">'
+      +'<span style="color:'+(on?'var(--accent)':'var(--muted)')+'">'+svgIcon(m==='standalone'?'building':'link',17)+'</span>'
+      +'<b style="font-size:13.5px">'+title+'</b>'
+      +(on?'<span class="pill p-teal" style="margin-left:auto;font-size:10.5px">Current</span>':'')
+    +'</div>'
+    +'<div class="muted" style="font-size:12px;line-height:1.6">'+body+'</div></div>';
+}
+
+/* first-run chooser shown on the dashboard until a mode is picked */
+function modeChooserHTML(){
+  if(workModeChosen()) return '';
+  var biz = currentAccount && currentAccount.role==='business';
+  return '<div class="card mb14" style="border:2px solid var(--accent)">'
+    +'<div class="cardhead"><h3>'+svgIcon('sparkles',16)+' How would you like to work?</h3></div>'
+    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Pick either one — you can change it any time from '+(biz?'Linked Firm':'the Clients page')+'. Nothing is locked in.</p>'
+    +'<div class="grid g2" style="gap:12px">'+modeTileHTML('standalone',false,biz)+modeTileHTML('linked',false,biz)+'</div></div>';
+}
+
+/* ==================================================================
+   ACCOUNTANT PRICING — free to 30 clients, tiered above
+   ================================================================== */
+var FIRM_PLANS=[
+  {id:'firm_free',      name:'Practice Starter', cap:30,   price:0,    sub:'Free forever'},
+  {id:'firm_practice',  name:'Practice',         cap:75,   price:299,  sub:'Growing practices'},
+  {id:'firm_plus',      name:'Practice Plus',    cap:200,  price:699,  sub:'Established firms'},
+  {id:'firm_enterprise',name:'Enterprise',       cap:0,    price:1499, sub:'Unlimited clients'}
+];
+var firmPlanVal=null;
+function firmPlanId(){
+  if(firmPlanVal && FIRM_PLANS.some(function(p){return p.id===firmPlanVal;})) return firmPlanVal;
+  var p=currentAccount&&currentAccount.plan;
+  if(p && FIRM_PLANS.some(function(x){return x.id===p;})) return p;
+  return 'firm_free';
+}
+function firmPlanObj(){ var id=firmPlanId(); return FIRM_PLANS.find(function(p){return p.id===id;})||FIRM_PLANS[0]; }
+function firmClientCap(){ var c=firmPlanObj().cap; return c>0?c:Infinity; }
+function firmClientCount(){ return (typeof activeFirmClients==='function'?activeFirmClients():[]).length; }
+function firmSeatsLeft(){ var c=firmClientCap(); return c===Infinity?Infinity:Math.max(0, c-firmClientCount()); }
+function firmAtCap(){ return firmSeatsLeft()<=0; }
+function firmPlanNeededFor(n){
+  for(var i=0;i<FIRM_PLANS.length;i++){ var c=FIRM_PLANS[i].cap; if(c===0||n<=c) return FIRM_PLANS[i]; }
+  return FIRM_PLANS[FIRM_PLANS.length-1];
+}
+function firmCapLabel(){ var c=firmClientCap(); return c===Infinity?'Unlimited':String(c); }
+function firmUpsell(){
+  var need=firmPlanNeededFor(firmClientCount()+1);
+  openConfirm({
+    title:'You have reached '+firmCapLabel()+' clients',
+    danger:false, confirmLabel:'See practice pricing',
+    message:'Your '+firmPlanObj().name+' plan covers '+firmCapLabel()+' active clients. Move to '+need.name+' — AED '+need.price+'/month for '+(need.cap===0?'unlimited':'up to '+need.cap)+' clients — to keep adding. Archiving a client you no longer work with also frees a place immediately.',
+    onYes:function(){ window.open('https://hisabone.ae/#pricing','_blank'); }
+  });
+}
+function firmUsageCardHTML(){
+  var used=firmClientCount(), cap=firmClientCap(), plan=firmPlanObj();
+  var pct = cap===Infinity ? 8 : Math.min(100, Math.round(used/cap*100));
+  var col = cap===Infinity ? 'var(--green)' : (pct>=100?'var(--red)':(pct>=80?'var(--amber)':'var(--accent)'));
+  var next = FIRM_PLANS[FIRM_PLANS.indexOf(plan)+1];
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('users',16)+' Client capacity</h3>'
+      +'<span class="pill '+(pct>=100?'p-red':(pct>=80?'p-amber':'p-teal'))+'">'+plan.name+(plan.price?' · AED '+plan.price+'/mo':' · Free')+'</span></div>'
+    +'<div style="display:flex;align-items:baseline;gap:8px;margin:-2px 0 8px">'
+      +'<span style="font-size:26px;font-weight:800;color:'+col+'">'+used+'</span>'
+      +'<span class="muted" style="font-size:13px">of '+firmCapLabel()+' active clients</span></div>'
+    +'<div style="height:9px;border-radius:99px;background:var(--panel2);overflow:hidden;border:1px solid var(--line)">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:99px;transition:width .4s"></div></div>'
+    +'<div class="muted" style="font-size:12px;margin-top:9px">'
+      +(cap===Infinity
+        ? 'Unlimited clients on Enterprise. Archived clients keep their full history and never count against you.'
+        : (firmAtCap()
+          ? 'You are at capacity. Archive a client you no longer work with, or move to '+(next?next.name+' (AED '+next.price+'/mo, '+(next.cap===0?'unlimited':'up to '+next.cap)+' clients)':'a larger plan')+'.'
+          : firmSeatsLeft()+' more client'+(firmSeatsLeft()===1?'':'s')+' on this plan. Archived clients keep their history and do not count.'))
+    +'</div>'
+    +(cap!==Infinity && next ? '<button class="btn ghost sm" style="margin-top:11px" onclick="openFirmPricing()">'+svgIcon('chart',13)+' Compare practice plans</button>' : '')
+    +'</div>';
+}
+function openFirmPricing(){
+  var used=firmClientCount(), cur=firmPlanId();
+  var cards=FIRM_PLANS.map(function(p){
+    var on=p.id===cur, fits=(p.cap===0||used<=p.cap);
+    return '<div style="border:2px solid '+(on?'var(--accent)':'var(--line)')+';background:'+(on?'var(--accent-bg)':'#fff')+';border-radius:12px;padding:14px">'
+      +'<div style="display:flex;align-items:center;gap:8px"><b style="font-size:14px">'+p.name+'</b>'
+        +(on?'<span class="pill p-teal" style="font-size:10px">Your plan</span>':'')+'</div>'
+      +'<div style="font-size:22px;font-weight:800;margin:6px 0 2px">'+(p.price?'AED '+p.price:'Free')+(p.price?'<span class="muted" style="font-size:12px;font-weight:500"> /mo</span>':'')+'</div>'
+      +'<div class="muted" style="font-size:12px">'+(p.cap===0?'Unlimited clients':'Up to '+p.cap+' clients')+' · '+p.sub+'</div>'
+      +(fits?'':'<div style="font-size:11.5px;color:var(--red);margin-top:6px">Below your current '+used+' clients</div>')
+      +'</div>';
+  }).join('');
+  var h=document.getElementById('firmPricingModal');
+  if(!h){ h=document.createElement('div'); h.id='firmPricingModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:760px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3);max-height:88vh;overflow:auto">'
+    +'<h3 style="font-size:17px;margin:0 0 4px">Practice plans</h3>'
+    +'<p style="font-size:13px;color:var(--muted);margin:0 0 16px">Priced on the number of active clients on your portal. Your first 30 clients are free, forever — archived clients never count.</p>'
+    +'<div class="grid g2" style="gap:12px">'+cards+'</div>'
+    +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:18px">'
+      +'<button class="btn ghost" onclick="document.getElementById(\'firmPricingModal\').style.display=\'none\'">Close</button>'
+      +'<a class="btn" href="mailto:info@hisabone.ae?subject=HisabOne%20practice%20plan" style="text-decoration:none">Talk to us about upgrading</a>'
+    +'</div></div>';
+}
+
+/* ==================================================================
+   MANUALLY ADDED CLIENTS — a firm can run a client end to end without
+   that client ever signing in to their own portal.
+   ================================================================== */
+var manualClients=[];   /* [{id,name,email,phone,contact,trn,ctTrn,license,authority,entityType,fyEnd,notes,createdAt}] */
+var CLIENT_STAGES=[
+  {id:'onboarding', label:'Onboarding',   hint:'KYC, engagement letter and opening documents'},
+  {id:'active',     label:'Active',       hint:'Regular bookkeeping, VAT and CT work'},
+  {id:'review',     label:'In review',    hint:'Return or accounts drafted, awaiting sign-off'},
+  {id:'filed',      label:'Filed',        hint:'Submitted to the FTA for the current period'}
+];
+var ENTITY_TYPES=['LLC (Mainland)','Free Zone company','Sole establishment','Branch of a foreign company','Civil company','Partnership','Public/Private joint stock','Other'];
+var EMIRATE_AUTHORITIES=['DED Dubai','DED Abu Dhabi','DED Sharjah','DED Ajman','DED RAK','DED Fujairah','DED UAQ','DMCC','JAFZA','DAFZA','ADGM','DIFC','Meydan Free Zone','IFZA','SHAMS','RAKEZ','Other free zone'];
+
+function manualClientId(){ return 'mc_'+Math.random().toString(36).slice(2,10); }
+function isManualClient(id){ return typeof id==='string' && id.indexOf('mc_')===0; }
+function findManualClient(id){ return manualClients.find(function(c){ return c.id===id; })||null; }
+
+function openAddClient(){
+  if(!canManage()){ toast('Only an owner or manager can add clients.'); return; }
+  if(firmAtCap()){ firmUpsell(); return; }
+  var h=document.getElementById('addClientModal');
+  if(!h){ h=document.createElement('div'); h.id='addClientModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) closeAddClient(); }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:640px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3);max-height:88vh;overflow:auto">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:3px"><span style="color:var(--accent)">'+svgIcon('users',20)+'</span>'
+      +'<h3 style="font-size:17px;margin:0">Add a client</h3></div>'
+    +'<p style="font-size:12.8px;color:var(--muted);line-height:1.6;margin:6px 0 15px">Add the client yourself — they do not need to sign in anywhere. You can invite them onto their own portal later if you ever want to.</p>'
+    +'<div class="grid g2" style="gap:11px">'
+      +acFld('acName','Client / company name *','e.g. Falcon Trading LLC')
+      +acFld('acContact','Main contact','e.g. Ahmed Al Marzouqi')
+      +acFld('acEmail','Email','name@company.ae')
+      +acFld('acPhone','Phone','+971 50 000 0000')
+      +acSel('acEntity','Entity type', ENTITY_TYPES)
+      +acSel('acAuth','Licensing authority', EMIRATE_AUTHORITIES)
+      +acFld('acLicense','Trade licence number','e.g. 1043912')
+      +acFld('acTrn','VAT TRN','15 digits')
+      +acFld('acCtTrn','Corporate Tax TRN','15 digits')
+      +acFld('acFy','Financial year end','e.g. 31 December')
+      +acSel('acRisk','Risk rating',['medium','high','low'])
+      +acSel('acStage','Stage', CLIENT_STAGES.map(function(s){return s.label;}))
+    +'</div>'
+    +'<div style="margin-top:11px"><label class="flabel">Notes</label>'
+      +'<textarea id="acNotes" class="finput" rows="2" placeholder="Anything your team should know about this client"></textarea></div>'
+    +'<div id="acErr" style="color:var(--red);font-size:12.5px;margin-top:9px;display:none"></div>'
+    +'<div class="note" style="margin-top:12px">'+svgIcon('users',13)+' '+firmClientCount()+' of '+firmCapLabel()+' client places used on your '+firmPlanObj().name+' plan.</div>'
+    +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">'
+      +'<button class="btn ghost" onclick="closeAddClient()">Cancel</button>'
+      +'<button class="btn" onclick="submitAddClient()">Add client</button></div>'
+    +'</div>';
+  setTimeout(function(){ var f=document.getElementById('acName'); if(f) f.focus(); },50);
+}
+function acFld(id,label,ph){ return '<div><label class="flabel">'+label+'</label><input id="'+id+'" class="finput" placeholder="'+ph+'"></div>'; }
+function acSel(id,label,opts){ return '<div><label class="flabel">'+label+'</label><select id="'+id+'" class="finput">'+opts.map(function(o){return '<option>'+o+'</option>';}).join('')+'</select></div>'; }
+function closeAddClient(){ var h=document.getElementById('addClientModal'); if(h) h.style.display='none'; }
+function acVal(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+
+function submitAddClient(){
+  var name=acVal('acName');
+  var err=document.getElementById('acErr');
+  var fail=function(m){ if(err){ err.textContent=m; err.style.display='block'; } };
+  if(!name){ fail('Enter the client’s name.'); return; }
+  var clash=(firmClients||[]).some(function(c){ return c.name.toLowerCase()===name.toLowerCase(); });
+  if(clash){ fail('You already have a client with that name.'); return; }
+  if(firmAtCap()){ closeAddClient(); firmUpsell(); return; }
+  var stageLbl=acVal('acStage');
+  var stage=(CLIENT_STAGES.find(function(s){return s.label===stageLbl;})||CLIENT_STAGES[0]).id;
+  var c={ id:manualClientId(), name:name, contact:acVal('acContact'), email:acVal('acEmail'), phone:acVal('acPhone'),
+          entityType:acVal('acEntity'), authority:acVal('acAuth'), license:acVal('acLicense'),
+          trn:acVal('acTrn'), ctTrn:acVal('acCtTrn'), fyEnd:acVal('acFy'), notes:acVal('acNotes'),
+          createdAt:new Date().toISOString() };
+  manualClients.push(c);
+  clientMeta[name]=clientMeta[name]||{};
+  clientMeta[name].trn=c.trn||'—';
+  clientMeta[name].risk=acVal('acRisk')||'medium';
+  clientMeta[name].urgency='soon';
+  clientMeta[name].stage=stage;
+  clientMeta[name].manual=true;
+  saveAccountData(); flushAccountData();
+  rebuildFirmClients();
+  if(typeof logActivity==='function'){ try{ logActivity('client_linked','Added client '+name+' manually'); }catch(e){} }
+  closeAddClient();
+  toast(name+' added — open their profile to build their document pack.');
+  renderNav(); renderPage();
+}
+
+function editManualClient(id){
+  var c=findManualClient(id);
+  if(!c){ toast('Only manually added clients can be edited here.'); return; }
+  var h=document.getElementById('addClientModal');
+  openAddClient();
+  setTimeout(function(){
+    var set=function(f,v){ var e=document.getElementById(f); if(e) e.value=v||''; };
+    set('acName',c.name); set('acContact',c.contact); set('acEmail',c.email); set('acPhone',c.phone);
+    set('acEntity',c.entityType); set('acAuth',c.authority); set('acLicense',c.license);
+    set('acTrn',c.trn); set('acCtTrn',c.ctTrn); set('acFy',c.fyEnd); set('acNotes',c.notes);
+    var meta=clientMeta[c.name]||{};
+    set('acRisk',meta.risk||'medium');
+    var st=CLIENT_STAGES.find(function(s){return s.id===(meta.stage||'onboarding');});
+    set('acStage',st?st.label:'Onboarding');
+    var btn=h&&h.querySelector('.btn:not(.ghost)');
+    if(btn){ btn.textContent='Save changes'; btn.setAttribute('onclick','saveManualClient(\''+id+'\')'); }
+    var head=h&&h.querySelector('h3'); if(head) head.textContent='Edit client';
+  },60);
+}
+function saveManualClient(id){
+  var c=findManualClient(id); if(!c) return;
+  var name=acVal('acName');
+  var err=document.getElementById('acErr');
+  if(!name){ if(err){ err.textContent='Enter the client’s name.'; err.style.display='block'; } return; }
+  var oldName=c.name;
+  if(name!==oldName && (firmClients||[]).some(function(x){ return x.name.toLowerCase()===name.toLowerCase() && x.id!==id; })){
+    if(err){ err.textContent='You already have a client with that name.'; err.style.display='block'; } return;
+  }
+  c.name=name; c.contact=acVal('acContact'); c.email=acVal('acEmail'); c.phone=acVal('acPhone');
+  c.entityType=acVal('acEntity'); c.authority=acVal('acAuth'); c.license=acVal('acLicense');
+  c.trn=acVal('acTrn'); c.ctTrn=acVal('acCtTrn'); c.fyEnd=acVal('acFy'); c.notes=acVal('acNotes');
+  if(name!==oldName){
+    clientMeta[name]=clientMeta[oldName]||{};
+    if(clientMeta[oldName]) delete clientMeta[oldName];
+    if(clientDocs[oldName]){ clientDocs[name]=clientDocs[oldName]; delete clientDocs[oldName]; }
+  }
+  clientMeta[name]=clientMeta[name]||{};
+  clientMeta[name].trn=c.trn||'—';
+  clientMeta[name].risk=acVal('acRisk')||'medium';
+  clientMeta[name].manual=true;
+  var stageLbl=acVal('acStage');
+  clientMeta[name].stage=(CLIENT_STAGES.find(function(s){return s.label===stageLbl;})||CLIENT_STAGES[0]).id;
+  saveAccountData(); flushAccountData(); rebuildFirmClients();
+  closeAddClient(); toast('Client details saved.'); renderPage();
+}
+function deleteManualClient(id){
+  var c=findManualClient(id); if(!c) return;
+  openConfirm({title:'Remove client', confirmLabel:'Remove',
+    message:'Remove "'+c.name+'" and everything filed under them, including their document register? Archiving instead keeps the full history. This cannot be undone.',
+    onYes:function(){
+      manualClients=manualClients.filter(function(x){ return x.id!==id; });
+      delete clientMeta[c.name]; delete clientDocs[c.name];
+      saveAccountData(); flushAccountData(); rebuildFirmClients();
+      if(page==='clientprofile') page='clients';
+      if(typeof logActivity==='function'){ try{ logActivity('client_removed','Removed client '+c.name); }catch(e){} }
+      toast(c.name+' removed.'); renderNav(); renderPage();
+    }});
+}
+
+/* client lifecycle stage */
+function clientStage(name){ return (clientMeta[name]&&clientMeta[name].stage)||'onboarding'; }
+function setClientStage(name, stage){
+  clientMeta[name]=clientMeta[name]||{};
+  clientMeta[name].stage=stage;
+  saveAccountData();
+  if(typeof logActivity==='function'){ try{ logActivity('client_stage','Moved '+name+' to '+stage); }catch(e){} }
+  renderPage();
+}
+function clientStageBarHTML(name){
+  var cur=clientStage(name);
+  var ci=CLIENT_STAGES.findIndex(function(s){return s.id===cur;}); if(ci<0) ci=0;
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('activity',16)+' Engagement stage</h3>'
+    +'<span class="pill p-teal">'+CLIENT_STAGES[ci].label+'</span></div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +CLIENT_STAGES.map(function(s,i){
+      var done=i<ci, on=i===ci;
+      return '<div onclick="setClientStage(\''+ctEsc(name).replace(/'/g,"\\'")+'\',\''+s.id+'\')" style="cursor:pointer;flex:1;min-width:130px;border:2px solid '+(on?'var(--accent)':(done?'var(--green)':'var(--line)'))+';background:'+(on?'var(--accent-bg)':'var(--panel2)')+';border-radius:10px;padding:10px 12px">'
+        +'<div style="display:flex;align-items:center;gap:7px"><span style="color:'+(on?'var(--accent)':(done?'var(--green)':'var(--muted)'))+'">'+svgIcon(done?'check':(on?'activity':'clock'),15)+'</span>'
+        +'<b style="font-size:12.5px">'+s.label+'</b></div>'
+        +'<div class="muted" style="font-size:11px;margin-top:3px;line-height:1.5">'+s.hint+'</div></div>';
+    }).join('')
+    +'</div><div class="muted" style="font-size:11.5px;margin-top:9px">Click a stage to move this engagement along — it shows on your Clients list and in every report.</div></div>';
+}
+
+/* ==================================================================
+   FIRM DOCUMENT CENTRE — the practice's document management system
+   ================================================================== */
+var clientDocs={};   /* {clientName:[{id,name,category,period,status,due,addedAt,expiry,note,storagePath,fileName,size}]} */
+var DOC_CATEGORIES=[
+  'Trade licence','Memorandum & Articles','Establishment card','Emirates ID / Passport',
+  'VAT registration certificate','Corporate Tax registration','Bank statements','Sales invoices',
+  'Purchase invoices','Payroll records','Lease agreement','Financial statements','Audit report',
+  'FTA correspondence','Engagement letter','KYC / due diligence','Other'
+];
+var DOC_STATUSES=[
+  {id:'requested', label:'Requested', pill:'p-amber'},
+  {id:'received',  label:'Received',  pill:'p-teal'},
+  {id:'reviewed',  label:'Reviewed',  pill:'p-green'},
+  {id:'signed',    label:'Signed off',pill:'p-green'}
+];
+var DOC_PACKS={
+  'Client onboarding (KYC)':['Trade licence','Memorandum & Articles','Establishment card','Emirates ID / Passport','Engagement letter','KYC / due diligence'],
+  'VAT return pack':['Sales invoices','Purchase invoices','Bank statements','VAT registration certificate'],
+  'Corporate Tax pack':['Financial statements','Corporate Tax registration','Trade licence','Bank statements','Payroll records'],
+  'Audit pack':['Financial statements','Bank statements','Sales invoices','Purchase invoices','Lease agreement','Payroll records']
+};
+function docStatusObj(id){ return DOC_STATUSES.find(function(s){return s.id===id;})||DOC_STATUSES[0]; }
+function docsFor(name){ return clientDocs[name]||[]; }
+function allClientDocs(){
+  var out=[];
+  (firmClients||[]).forEach(function(c){ docsFor(c.name).forEach(function(d){ out.push({c:c, d:d}); }); });
+  return out;
+}
+function docId(){ return 'cd_'+Math.random().toString(36).slice(2,10); }
+function addClientDoc(name, fields){
+  clientDocs[name]=clientDocs[name]||[];
+  var d={ id:docId(), name:fields.name||'Untitled document', category:fields.category||'Other',
+          period:fields.period||'', status:fields.status||'requested', due:fields.due||'',
+          note:fields.note||'', addedAt:new Date().toISOString(), expiry:fields.expiry||'' };
+  clientDocs[name].push(d); saveAccountData();
+  return d;
+}
+function setDocStatus(name, id, status){
+  var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
+  d.status=status;
+  if(status==='received'&&!d.receivedAt) d.receivedAt=new Date().toISOString();
+  if(status==='reviewed') d.reviewedAt=new Date().toISOString();
+  if(status==='signed') d.signedAt=new Date().toISOString();
+  saveAccountData();
+  if(typeof logActivity==='function'){ try{ logActivity('doc_status', name+' — '+d.name+' marked '+docStatusObj(status).label.toLowerCase()); }catch(e){} }
+  renderPage();
+}
+function removeClientDoc(name, id){
+  var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
+  openConfirm({title:'Remove document', confirmLabel:'Remove',
+    message:'Remove "'+d.name+'" from '+name+'’s register? The entry and any file you attached are removed from this client’s record.',
+    onYes:function(){ clientDocs[name]=docsFor(name).filter(function(x){return x.id!==id;}); saveAccountData(); toast('Document removed.'); renderPage(); }});
+}
+function applyDocPack(name, packName){
+  var items=DOC_PACKS[packName]||[];
+  var have=docsFor(name).map(function(d){return d.category+'|'+d.name;});
+  var added=0;
+  items.forEach(function(cat){
+    if(have.indexOf(cat+'|'+cat)>-1) return;
+    addClientDoc(name,{name:cat, category:cat, status:'requested', note:'From the '+packName});
+    added++;
+  });
+  flushAccountData();
+  toast(added? added+' item'+(added===1?'':'s')+' added to '+name+'’s register.' : 'Every item in that pack is already on the register.');
+  renderPage();
+}
+
+/* ---- attach a real file to a document register entry ---- */
+var _docUploadTarget=null;
+function attachClientDoc(name, id){
+  _docUploadTarget={name:name, id:id};
+  var inp=document.getElementById('cdFileInput');
+  if(!inp){
+    inp=document.createElement('input'); inp.type='file'; inp.id='cdFileInput'; inp.style.display='none';
+    inp.addEventListener('change',function(){ handleClientDocFile(this); });
+    document.body.appendChild(inp);
+  }
+  inp.value=''; inp.click();
+}
+function handleClientDocFile(inp){
+  var f=inp.files&&inp.files[0]; if(!f||!_docUploadTarget) return;
+  var t=_docUploadTarget; _docUploadTarget=null;
+  var d=docsFor(t.name).find(function(x){return x.id===t.id;}); if(!d) return;
+  d.fileName=f.name; d.size=f.size; d.uploading=true; d.uploadError=false;
+  if(d.status==='requested') d.status='received';
+  if(!d.receivedAt) d.receivedAt=new Date().toISOString();
+  renderPage();
+  if(!sb||!currentAccount){ d.uploading=false; d.uploadError=true; saveAccountData(); renderPage(); return; }
+  try{
+    sb.storage.from('vault').upload(blobId()+'/client_'+Date.now()+'_'+f.name, f)
+      .then(function(r){
+        d.uploading=false;
+        if(r&&!r.error&&r.data){ d.storagePath=r.data.path; }
+        else { d.uploadError=true; }
+        saveAccountData(); flushAccountData();
+        if(page==='fdocs'||page==='clientprofile') renderPage();
+      })
+      .catch(function(){ d.uploading=false; d.uploadError=true; renderPage(); });
+  }catch(e){ d.uploading=false; d.uploadError=true; renderPage(); }
+}
+async function openClientDocFile(name, id){
+  var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
+  if(!d.storagePath){ toast(d.uploading?'Still uploading — give it a moment.':'No file attached to this entry yet.'); return; }
+  try{
+    var su=await sb.storage.from('vault').createSignedUrl(d.storagePath, 60*60);
+    if(su&&su.data&&su.data.signedUrl){ window.open(su.data.signedUrl,'_blank','noopener'); return; }
+  }catch(e){}
+  toast('Could not open that file — please try again in a moment.');
+}
+
+/* ---- document register rows ---- */
+function clientDocRow(name, d, showClient){
+  var st=docStatusObj(d.status);
+  var sub=[];
+  if(showClient) sub.push(ctEsc(name));
+  sub.push(d.category);
+  if(d.period) sub.push(d.period);
+  if(d.fileName) sub.push(ctEsc(d.fileName));
+  if(d.due) sub.push('due '+d.due);
+  return '<div class="drow"><div class="dbar" style="background:'+(d.status==='requested'?'var(--amber)':(d.status==='received'?'var(--accent)':'var(--green)'))+'"></div>'
+    +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(d.name)+'</div>'
+      +'<div class="dmeta">'+sub.join(' · ')+(d.uploading?' · uploading…':'')+(d.uploadError?' · upload failed':'')+'</div></div>'
+    +'<span class="pill '+st.pill+'" style="flex:0 0 auto">'+st.label+'</span>'
+    +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'
+      +(d.storagePath?'<button class="btn sm ghost" onclick="openClientDocFile(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('eye',13)+' Open</button>':'')
+      +'<button class="btn sm ghost" onclick="attachClientDoc(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('paperclip',13)+' '+(d.storagePath?'Replace':'Attach')+'</button>'
+      +'<select class="finput" style="width:auto;padding:6px 9px;font-size:12px" onchange="setDocStatus(\''+jsq(name)+'\',\''+d.id+'\',this.value)">'
+        +DOC_STATUSES.map(function(s){ return '<option value="'+s.id+'" '+(s.id===d.status?'selected':'')+'>'+s.label+'</option>'; }).join('')
+      +'</select>'
+      +'<button class="btn sm ghost" title="Remove" onclick="removeClientDoc(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('trash',13)+'</button>'
+    +'</div></div>';
+}
+function jsq(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+
+/* ---- add-document modal ---- */
+function openAddDoc(preName){
+  var names=(activeFirmClients()||[]).map(function(c){return c.name;});
+  if(!names.length){ toast('Add a client first — documents are filed against a client.'); return; }
+  var h=document.getElementById('addDocModal');
+  if(!h){ h=document.createElement('div'); h.id='addDocModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:560px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3);max-height:88vh;overflow:auto">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span style="color:var(--accent)">'+svgIcon('file-text',20)+'</span>'
+      +'<h3 style="font-size:17px;margin:0">Add a document</h3></div>'
+    +'<div class="grid g2" style="gap:11px">'
+      +'<div><label class="flabel">Client</label><select id="adClient" class="finput">'
+        +names.map(function(n){ return '<option '+(n===preName?'selected':'')+'>'+ctEsc(n)+'</option>'; }).join('')+'</select></div>'
+      +'<div><label class="flabel">Category</label><select id="adCat" class="finput" onchange="var n=document.getElementById(\'adName\'); if(n&&!n.value) n.value=this.value;">'
+        +DOC_CATEGORIES.map(function(c){ return '<option>'+c+'</option>'; }).join('')+'</select></div>'
+      +'<div><label class="flabel">Document name</label><input id="adName" class="finput" placeholder="e.g. Trade licence 2026"></div>'
+      +'<div><label class="flabel">Period / year</label><input id="adPeriod" class="finput" placeholder="e.g. Q1 2026"></div>'
+      +'<div><label class="flabel">Status</label><select id="adStatus" class="finput">'
+        +DOC_STATUSES.map(function(s){ return '<option value="'+s.id+'">'+s.label+'</option>'; }).join('')+'</select></div>'
+      +'<div><label class="flabel">Due date</label><input id="adDue" class="finput" placeholder="e.g. 28 Feb 2026"></div>'
+      +'<div><label class="flabel">Expiry (if any)</label><input id="adExpiry" class="finput" placeholder="e.g. 14 Nov 2026"></div>'
+      +'<div><label class="flabel">Note</label><input id="adNote" class="finput" placeholder="Optional"></div>'
+    +'</div>'
+    +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">'
+      +'<button class="btn ghost" onclick="document.getElementById(\'addDocModal\').style.display=\'none\'">Cancel</button>'
+      +'<button class="btn" onclick="submitAddDoc()">Add to register</button></div></div>';
+}
+function submitAddDoc(){
+  var g=function(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; };
+  var client=g('adClient'); if(!client) return;
+  var cat=g('adCat');
+  addClientDoc(client,{ name:g('adName')||cat, category:cat, period:g('adPeriod'),
+                        status:g('adStatus')||'requested', due:g('adDue'), expiry:g('adExpiry'), note:g('adNote') });
+  flushAccountData();
+  var h=document.getElementById('addDocModal'); if(h) h.style.display='none';
+  toast('Added to '+client+'’s document register.');
+  renderPage();
+}
+
+/* ---- Document Centre page ---- */
+var fdocClient='all', fdocCat='all', fdocStatus='all', fdocSearch='';
+function setFdoc(k,v){ if(k==='client')fdocClient=v; if(k==='cat')fdocCat=v; if(k==='status')fdocStatus=v; renderPage(); }
+function setFdocSearch(v){ fdocSearch=v; var w=document.getElementById('fdocRows'); if(!w) return; w.innerHTML=fdocRowsHTML(); }
+function fdocFiltered(){
+  return allClientDocs().filter(function(x){
+    if(isArchived(x.c.name)) return false;
+    if(fdocClient!=='all' && x.c.name!==fdocClient) return false;
+    if(fdocCat!=='all' && x.d.category!==fdocCat) return false;
+    if(fdocStatus!=='all' && x.d.status!==fdocStatus) return false;
+    if(fdocSearch){
+      var q=fdocSearch.toLowerCase();
+      var hay=(x.d.name+' '+x.d.category+' '+x.c.name+' '+(x.d.period||'')+' '+(x.d.fileName||'')).toLowerCase();
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+}
+function fdocRowsHTML(){
+  var rows=fdocFiltered();
+  if(!rows.length) return '<div class="muted" style="text-align:center;padding:26px;font-size:13px">'
+    +(allClientDocs().length?'No documents match these filters.':'No documents yet — add one above, or open a client and apply a document pack to build their checklist in one click.')+'</div>';
+  return rows.map(function(x){ return clientDocRow(x.c.name, x.d, true); }).join('');
+}
+function fdocsPageHTML(){
+  var all=allClientDocs().filter(function(x){ return !isArchived(x.c.name); });
+  var req=all.filter(function(x){return x.d.status==='requested';}).length;
+  var rec=all.filter(function(x){return x.d.status==='received';}).length;
+  var done=all.filter(function(x){return x.d.status==='reviewed'||x.d.status==='signed';}).length;
+  var withFile=all.filter(function(x){return !!x.d.storagePath;}).length;
+  var names=(activeFirmClients()||[]).map(function(c){return c.name;});
+  return '<h1>Document Centre</h1>'
+    +'<div class="sub">Every client document your practice holds, in one register — what you have asked for, what has arrived, what you have reviewed and signed off.</div>'
+    +'<div class="grid g4 mb14">'
+      +'<div class="card stat"><div class="ic ic-teal">'+svgIcon('folder',20)+'</div><div class="num">'+all.length+'</div><div class="lbl">Documents tracked</div></div>'
+      +'<div class="card stat"><div class="ic ic-amber">'+svgIcon('clock',20)+'</div><div class="num">'+req+'</div><div class="lbl">Awaiting the client</div></div>'
+      +'<div class="card stat"><div class="ic ic-teal">'+svgIcon('inbox',20)+'</div><div class="num">'+rec+'</div><div class="lbl">Received, to review</div></div>'
+      +'<div class="card stat"><div class="ic ic-green">'+svgIcon('check',20)+'</div><div class="num">'+done+'</div><div class="lbl">Reviewed or signed off</div></div>'
+    +'</div>'
+    +'<div class="card mb14">'
+      +'<div class="cardhead"><h3>'+svgIcon('doc-new',16)+' Build a client’s pack</h3>'
+        +'<button class="btn sm" onclick="openAddDoc()">+ Add document</button></div>'
+      +'<p class="muted" style="font-size:12.5px;margin:-2px 0 11px">Apply a ready-made checklist to a client and every item lands on their register as "requested" — then attach files as they come in.</p>'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">'
+        +'<div style="min-width:190px"><label class="flabel">Client</label><select id="packClient" class="finput">'
+          +(names.map(function(n){ return '<option>'+ctEsc(n)+'</option>'; }).join('')||'<option value="">No clients yet</option>')+'</select></div>'
+        +'<div style="min-width:190px"><label class="flabel">Document pack</label><select id="packName" class="finput">'
+          +Object.keys(DOC_PACKS).map(function(p){ return '<option>'+p+'</option>'; }).join('')+'</select></div>'
+        +'<button class="btn ghost" onclick="applyPackFromForm()">'+svgIcon('plus',15)+' Apply pack</button>'
+      +'</div></div>'
+    +'<div class="card mb14"><div style="display:flex;gap:12px;flex-wrap:wrap;align-items:end">'
+      +'<div style="flex:1;min-width:180px"><label class="flabel">Search</label><input class="finput" placeholder="Document, client or file name" value="'+ctEsc(fdocSearch)+'" oninput="setFdocSearch(this.value)"></div>'
+      +'<div><label class="flabel">Client</label><select class="finput" onchange="setFdoc(\'client\',this.value)">'
+        +'<option value="all">All clients</option>'+names.map(function(n){ return '<option '+(n===fdocClient?'selected':'')+'>'+ctEsc(n)+'</option>'; }).join('')+'</select></div>'
+      +'<div><label class="flabel">Category</label><select class="finput" onchange="setFdoc(\'cat\',this.value)">'
+        +'<option value="all">All categories</option>'+DOC_CATEGORIES.map(function(c){ return '<option '+(c===fdocCat?'selected':'')+'>'+c+'</option>'; }).join('')+'</select></div>'
+      +'<div><label class="flabel">Status</label><select class="finput" onchange="setFdoc(\'status\',this.value)">'
+        +'<option value="all">Any status</option>'+DOC_STATUSES.map(function(s){ return '<option value="'+s.id+'" '+(s.id===fdocStatus?'selected':'')+'>'+s.label+'</option>'; }).join('')+'</select></div>'
+    +'</div></div>'
+    +'<div class="card" id="fdocRegister"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' Document register</h3>'
+      +'<span class="pill p-gray">'+withFile+' file'+(withFile===1?'':'s')+' attached</span></div>'
+      +'<div id="fdocRows">'+fdocRowsHTML()+'</div></div>'
+    +'<div class="note">Documents are stored privately against your practice. Only your team can open them.</div>';
+}
+function applyPackFromForm(){
+  var c=(document.getElementById('packClient')||{}).value;
+  var p=(document.getElementById('packName')||{}).value;
+  if(!c){ toast('Add a client first.'); return; }
+  applyDocPack(c,p);
+}
+
+/* per-client document card, shown inside the client profile */
+function clientDocCardHTML(name){
+  var ds=docsFor(name);
+  var req=ds.filter(function(d){return d.status==='requested';}).length;
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('folder',16)+' Document register</h3>'
+    +'<div style="display:flex;gap:7px;align-items:center">'
+      +(req?'<span class="pill p-amber">'+req+' outstanding</span>':'<span class="pill p-green">Nothing outstanding</span>')
+      +'<button class="btn sm" onclick="openAddDoc(\''+jsq(name)+'\')">+ Add</button></div></div>'
+    +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin:-2px 0 12px">'
+      +Object.keys(DOC_PACKS).map(function(p){
+        return '<button class="btn ghost sm" onclick="applyDocPack(\''+jsq(name)+'\',\''+jsq(p)+'\')">'+svgIcon('plus',12)+' '+p+'</button>';
+      }).join('')
+    +'</div>'
+    +(ds.length ? ds.map(function(d){ return clientDocRow(name,d,false); }).join('')
+                : '<div class="muted" style="text-align:center;padding:22px;font-size:13px">Nothing on this client’s register yet — apply a pack above to create their checklist in one click.</div>')
+    +'</div>';
+}
+
+/* ==================================================================
+   FULL-LENGTH REPORTS — multi-section, print-ready PDF
+   ================================================================== */
+function fullDocHTML(rep){
+  var A=rep.accent||'#0073fc';
+  var pageStyle='background:#fff;padding:30px 34px 34px;box-sizing:border-box;';
+  var cover='<div class="pgbrk" style="'+pageStyle+'min-height:1050px;display:flex;flex-direction:column">'
+    +'<div style="background:'+A+';color:#fff;margin:-30px -34px 0;padding:34px;border-radius:0">'
+      +'<div style="font-size:26px;font-weight:800;letter-spacing:.2px">HisabOne</div>'
+      +'<div style="font-size:12px;opacity:.85;margin-top:3px">UAE Tax &amp; Compliance · hisabone.ae</div></div>'
+    +'<div style="height:5px;background:linear-gradient(90deg,'+A+',#fff);margin:0 -34px"></div>'
+    +'<div style="margin-top:110px">'
+      +'<div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1.4px">'+(rep.kicker||'Compliance report')+'</div>'
+      +'<div style="font-size:38px;font-weight:800;line-height:1.15;color:#0d1b24;margin-top:10px">'+rep.title+'</div>'
+      +(rep.subtitle?'<div style="font-size:15px;color:#4b6272;margin-top:12px;line-height:1.6">'+rep.subtitle+'</div>':'')
+    +'</div>'
+    +'<div style="margin-top:60px;display:flex;flex-wrap:wrap;gap:26px">'
+      +coverField('Prepared for', rep.forName)
+      +coverField('Prepared by', rep.from)
+      +coverField('Report date', rep.date)
+      +coverField('Report reference', rep.id)
+    +'</div>'
+    +(rep.summary&&rep.summary.length?'<div style="margin-top:44px;display:flex;gap:10px;flex-wrap:wrap">'
+      +rep.summary.map(function(s){ return '<div style="flex:1;min-width:150px;background:#f6fafc;border:1px solid #e5ecf1;border-radius:10px;padding:14px 16px">'
+        +'<div style="font-size:10.5px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">'+s[0]+'</div>'
+        +'<div style="font-size:21px;font-weight:800;color:#0d1b24;margin-top:4px;word-break:break-word">'+s[1]+'</div></div>'; }).join('')
+      +'</div>':'')
+    +'<div style="margin-top:auto;padding-top:34px;font-size:10.5px;color:#8aa0ae;border-top:1px solid #e8eef3">Confidential — prepared for the addressee named above. Generated by HisabOne.</div>'
+    +'</div>';
+
+  var contents='<div class="pgbrk" style="'+pageStyle+'">'
+    +sectHead(A,'Contents')
+    +'<div style="font-size:13px;color:#22313d;line-height:2.1">'
+      +(rep.sections||[]).map(function(s,i){ return '<div style="display:flex;justify-content:space-between;border-bottom:1px dotted #d9e3ea;padding-bottom:3px"><span>'+(i+1)+'. '+s.title+'</span><span style="color:#8aa0ae">Section '+(i+1)+'</span></div>'; }).join('')
+    +'</div>'
+    +(rep.intro?'<div style="margin-top:26px;font-size:12.8px;color:#4b6272;line-height:1.8">'+rep.intro+'</div>':'')
+    +'</div>';
+
+  var body=(rep.sections||[]).map(function(s,i){
+    return '<div class="pgbrk" style="'+pageStyle+'">'
+      +sectHead(A,(i+1)+'. '+s.title)
+      +(s.lead?'<div style="font-size:12.8px;color:#4b6272;line-height:1.8;margin-bottom:16px">'+s.lead+'</div>':'')
+      +(s.stats&&s.stats.length?'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">'
+        +s.stats.map(function(t){ return '<div style="flex:1;min-width:130px;background:#f6fafc;border:1px solid #e5ecf1;border-radius:9px;padding:11px 13px">'
+          +'<div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">'+t[0]+'</div>'
+          +'<div style="font-size:17px;font-weight:700;color:#0d1b24;margin-top:3px">'+t[1]+'</div></div>'; }).join('')+'</div>':'')
+      +(s.fields&&s.fields.length?'<table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:16px">'
+        +s.fields.map(function(f,fi){ return '<tr><td style="padding:8px 10px;width:38%;color:#64748b;background:'+(fi%2?'#f8fbfd':'#fff')+';border-bottom:1px solid #e8eef3">'+f[0]+'</td>'
+          +'<td style="padding:8px 10px;color:#0d1b24;font-weight:600;background:'+(fi%2?'#f8fbfd':'#fff')+';border-bottom:1px solid #e8eef3">'+(f[1]==null||f[1]===''?'—':f[1])+'</td></tr>'; }).join('')
+        +'</table>':'')
+      +(s.tables||[]).map(function(t){ return fullTableHTML(A,t); }).join('')
+      +(s.body?'<div style="font-size:12.8px;color:#22313d;line-height:1.85;margin-top:6px">'+s.body+'</div>':'')
+      +(s.note?'<div style="margin-top:18px;background:#f6fafc;border-left:3px solid '+A+';border-radius:0 8px 8px 0;padding:11px 14px;font-size:11.5px;color:#4b6272;line-height:1.7">'+s.note+'</div>':'')
+      +'</div>';
+  }).join('');
+
+  var end='<div style="'+pageStyle+'">'
+    +sectHead(A,'Declaration')
+    +'<div style="font-size:12.8px;color:#22313d;line-height:1.9">'+(rep.declaration||'This report was produced from the records held in HisabOne on the date shown. It is prepared for the addressee’s internal use and does not constitute an audit opinion or tax advice.')+'</div>'
+    +'<div style="margin-top:44px;display:flex;gap:40px;flex-wrap:wrap">'
+      +'<div style="flex:1;min-width:210px"><div style="border-bottom:1px solid #0d1b24;height:44px"></div>'
+        +'<div style="font-size:11.5px;color:#64748b;margin-top:6px">Signed for and on behalf of '+rep.from+'</div></div>'
+      +'<div style="flex:1;min-width:210px"><div style="border-bottom:1px solid #0d1b24;height:44px"></div>'
+        +'<div style="font-size:11.5px;color:#64748b;margin-top:6px">Date</div></div>'
+    +'</div>'
+    +'<div style="margin-top:46px;padding-top:13px;border-top:1px solid #e8eef3;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:10.5px;color:#8aa0ae">'
+      +'<span>Generated by HisabOne — '+rep.id+'</span><span>Confidential</span></div>'
+    +'</div>';
+
+  return '<div style="background:#fff;color:#0d1b24;font-family:Inter,system-ui,-apple-system,sans-serif;width:794px;max-width:100%">'
+    +cover+contents+body+end+'</div>';
+}
+function coverField(l,v){
+  return '<div style="min-width:150px"><div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.8px">'+l+'</div>'
+    +'<div style="font-size:14px;font-weight:700;margin-top:4px;color:#0d1b24">'+(v||'—')+'</div></div>';
+}
+function sectHead(A,t){
+  return '<div style="border-bottom:2px solid '+A+';padding-bottom:8px;margin-bottom:18px">'
+    +'<div style="font-size:17px;font-weight:800;color:'+A+'">'+t+'</div></div>';
+}
+function fullTableHTML(A,t){
+  return '<div style="margin-bottom:18px">'
+    +(t.title?'<div style="font-size:12px;font-weight:700;color:'+A+';text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px">'+t.title+'</div>':'')
+    +'<table style="width:100%;border-collapse:collapse;font-size:12px">'
+    +'<tr>'+t.headers.map(function(h){ return '<th style="text-align:left;background:'+A+';color:#fff;padding:7px 9px;font-weight:600">'+h+'</th>'; }).join('')+'</tr>'
+    +(t.rows.length
+      ? t.rows.map(function(r,ri){ return '<tr>'+r.map(function(c){ return '<td style="padding:7px 9px;border-bottom:1px solid #e8eef3;color:#22313d;background:'+(ri%2?'#f8fbfd':'#fff')+'">'+(c==null||c===''?'—':c)+'</td>'; }).join('')+'</tr>'; }).join('')
+      : '<tr><td colspan="'+t.headers.length+'" style="padding:13px;color:#8aa0ae;text-align:center;border-bottom:1px solid #e8eef3">No records for this section</td></tr>')
+    +'</table></div>';
+}
+
+var _fullRep=null;
+function viewFullReport(rep){
+  _fullRep=rep;
+  var h=document.getElementById('fullRepModal');
+  if(!h){ h=document.createElement('div'); h.id='fullRepModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) closeFullReport(); }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#eef3f6;border-radius:16px;max-width:900px;width:100%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(8,20,40,.3)">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 17px;background:#fff;border-bottom:1px solid var(--line)">'
+      +'<h3 style="font-size:15px;margin:0">'+svgIcon('file-text',15)+' '+rep.title+'</h3>'
+      +'<div style="display:flex;gap:8px"><button class="btn sm" onclick="downloadFullPDF()">'+svgIcon('download',13)+' Download PDF</button>'
+      +'<button class="btn sm ghost" onclick="closeFullReport()">Close</button></div></div>'
+    +'<div style="overflow:auto;padding:16px"><div style="max-width:794px;margin:0 auto;box-shadow:0 8px 26px rgba(13,27,36,.14)">'+fullDocHTML(rep)+'</div></div>'
+    +'</div>';
+}
+function closeFullReport(){ var h=document.getElementById('fullRepModal'); if(h) h.style.display='none'; }
+function downloadFullPDF(rep){
+  rep = rep || _fullRep;
+  if(!rep){ toast('Open a report first'); return; }
+  toast('Preparing your PDF — this can take a few seconds…');
+  ensureHtml2Pdf().then(function(){
+    var holder=document.createElement('div');
+    holder.style.cssText='position:fixed;left:-10000px;top:0;width:794px;background:#fff;z-index:-1';
+    holder.innerHTML='<style>.pgbrk{page-break-after:always;break-after:page}</style>'+fullDocHTML(rep);
+    document.body.appendChild(holder);
+    return window.html2pdf().set({
+      margin:0,
+      filename:'HisabOne-'+String(rep.title).replace(/[^A-Za-z0-9]+/g,'-')+'-'+rep.id+'.pdf',
+      image:{type:'jpeg',quality:0.96},
+      html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['css','legacy'],before:'.pgbrk'}
+    }).from(holder).save().then(function(){ holder.remove(); toast('Report downloaded.'); });
+  }).catch(function(){ printFullReportFallback(rep); });
+}
+function printFullReportFallback(rep){
+  var w=window.open('','_blank');
+  if(!w){ toast('Pop-up blocked — allow pop-ups to download the report'); return; }
+  w.document.write('<!DOCTYPE html><html><head><title>'+rep.title+' — HisabOne</title><meta charset="utf-8">'
+    +'<style>@page{size:A4;margin:0}body{margin:0;background:#fff}.pgbrk{page-break-after:always}</style></head>'
+    +'<body>'+fullDocHTML(rep)+'<scr'+'ipt>window.onload=function(){setTimeout(function(){window.print();},400);};</scr'+'ipt></body></html>');
+  w.document.close();
+  toast('Print dialog opened — choose "Save as PDF"');
+}
+
+function repDate(){ return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}); }
+function repId(p){ return p+'-'+Date.now().toString(36).toUpperCase(); }
+
+/* ---- full client dossier ---- */
+function buildClientDossier(clientId){
+  var c=(firmClients||[]).find(function(x){return x.id===clientId;});
+  if(!c) return null;
+  var mc=findManualClient(clientId)||{};
+  var meta=clientMeta[c.name]||{};
+  var ds=docsFor(c.name);
+  var reqs=[].concat(
+    (firmTaxReqs||[]).filter(function(r){return r.client===c.name;}).map(function(r){ return [r.doc, 'Tax', r.app||'—', r.due||'—', r.st]; }),
+    (firmAuditReqs||[]).filter(function(r){return r.client===c.name;}).map(function(r){ return [r.doc, 'Audit', r.app||'—', r.due||'—', r.st]; })
+  );
+  var rets=(returnsList||[]).filter(function(r){return r.business_id===c.id;})
+    .map(function(r){ return [r.kind==='vat'?'VAT201':'Corporate Tax', r.period||'—', r.status||'—', (r.figures&&r.figures.payable!=null)?moneyAED(r.figures.payable):'—']; });
+  var rems=(firmReminders||[]).filter(function(r){return r.client===c.name;})
+    .map(function(r){ return [r.doc, r.last||'—', r.next||'—', r.auto==='green'?'On':'Off']; });
+  var h=(typeof clientHealth==='function')?clientHealth(c):null;
+  var stage=CLIENT_STAGES.find(function(s){return s.id===clientStage(c.name);})||CLIENT_STAGES[0];
+  var outstanding=ds.filter(function(d){return d.status==='requested';});
+  var held=ds.filter(function(d){return d.status!=='requested';});
+  var firm=(currentAccount&&(currentAccount.firmName||currentAccount.name))||'Your firm';
+
+  return {
+    id:repId('CD'), accent:'#0073fc',
+    kicker:'Client compliance dossier',
+    title:c.name,
+    subtitle:'A complete record of the compliance position, documents held and work performed for this client, prepared by '+firm+'.',
+    forName:c.name, from:firm, date:repDate(),
+    summary:[
+      ['Engagement stage', stage.label],
+      ['Documents held', String(held.length)],
+      ['Outstanding items', String(outstanding.length)],
+      ['Compliance health', h&&h.score!=null ? h.score+'%' : '—']
+    ],
+    intro:'This dossier brings together everything '+firm+' holds for '+c.name+' as at '+repDate()+': the client’s registration details, their engagement stage, the full document register, every document request and reminder issued, the returns prepared, and the outstanding items that still require attention. It is intended as a complete hand-over and audit record for the engagement.',
+    sections:[
+      { title:'Client and registration details',
+        lead:'Identifying and registration information held for this client.',
+        fields:[
+          ['Client name', ctEsc(c.name)],
+          ['Main contact', ctEsc(mc.contact||'—')],
+          ['Email', ctEsc(mc.email||c.email||'—')],
+          ['Phone', ctEsc(mc.phone||'—')],
+          ['Entity type', ctEsc(mc.entityType||'—')],
+          ['Licensing authority', ctEsc(mc.authority||'—')],
+          ['Trade licence number', ctEsc(mc.license||'—')],
+          ['VAT TRN', ctEsc(mc.trn||meta.trn||'—')],
+          ['Corporate Tax TRN', ctEsc(mc.ctTrn||'—')],
+          ['Financial year end', ctEsc(mc.fyEnd||'—')],
+          ['On HisabOne portal', isManualClient(c.id)?'No — managed by the firm':'Yes — client has their own portal'],
+          ['Client since', fmtRegDate(mc.createdAt||c.registered)]
+        ],
+        note: mc.notes ? 'Practice note: '+ctEsc(mc.notes) : '' },
+      { title:'Engagement status',
+        lead:'Where this engagement currently stands and how the client is rated for risk and urgency.',
+        stats:[['Stage',stage.label],['Risk rating',(meta.risk||'medium').replace(/^./,function(m){return m.toUpperCase();})],['Next deadline',ctEsc(c.deadline||'—')],['Health score', h&&h.score!=null ? h.score+'%' : '—']],
+        body:'<b>'+stage.label+'</b> — '+stage.hint+'. '+(h&&h.score!=null
+          ? 'The compliance health score of '+h.score+'% reflects documents received against documents requested, together with the client’s upcoming deadlines.'
+          : 'A health score will appear once document requests have been issued for this client.') },
+      { title:'Document register',
+        lead:'Every document tracked for this client, with its current status.',
+        stats:[['Total tracked',String(ds.length)],['Held on file',String(held.length)],['With a file attached',String(ds.filter(function(d){return !!d.storagePath;}).length)],['Outstanding',String(outstanding.length)]],
+        tables:[{ title:'Documents held', headers:['Document','Category','Period','Status','File'],
+                  rows:held.map(function(d){ return [ctEsc(d.name), d.category, d.period||'—', docStatusObj(d.status).label, d.fileName?ctEsc(d.fileName):'Not attached']; }) },
+                { title:'Outstanding from the client', headers:['Document','Category','Requested for','Due'],
+                  rows:outstanding.map(function(d){ return [ctEsc(d.name), d.category, d.period||'—', d.due||'—']; }) }] },
+      { title:'Document requests and chasing',
+        lead:'Requests issued to the client through the portal, and the reminder schedule behind them.',
+        tables:[{ title:'Requests issued', headers:['Document','Type','Application','Deadline','Status'], rows:reqs },
+                { title:'Reminders', headers:['Document','Last sent','Next reminder','Auto-chase'], rows:rems }] },
+      { title:'Returns prepared',
+        lead:'VAT and Corporate Tax returns prepared for this client inside HisabOne.',
+        tables:[{ title:'Returns', headers:['Return','Period','Status','Payable'], rows:rets }],
+        note:'Returns marked "approved" were signed off by the client using their four-digit sign-off PIN and full name, after reviewing every page of the draft.' },
+      { title:'Points requiring attention',
+        lead:'What still needs to happen on this engagement.',
+        body: (outstanding.length||reqs.filter(function(r){return !/Received/.test(r[4]);}).length)
+          ? '<ul style="margin:0;padding-left:18px;line-height:1.9">'
+            +outstanding.map(function(d){ return '<li>'+ctEsc(d.name)+' ('+d.category+') has been requested but not yet received'+(d.due?' — due '+d.due:'')+'.</li>'; }).join('')
+            +reqs.filter(function(r){return !/Received/.test(r[4]);}).map(function(r){ return '<li>Portal request for '+r[0]+' is still '+String(r[4]).toLowerCase()+'.</li>'; }).join('')
+            +'</ul>'
+          : 'There are no outstanding documents or open requests for this client. The engagement is up to date as at '+repDate()+'.' }
+    ],
+    declaration:'This dossier has been produced by '+firm+' from the records held in HisabOne as at '+repDate()+'. It records the documents held and the work performed for '+c.name+' and is provided for the client’s and the firm’s own records. It does not constitute an audit opinion, an assurance engagement, or tax advice, and no third party should rely on it for those purposes.'
+  };
+}
+function openClientDossier(clientId){
+  var r=buildClientDossier(clientId);
+  if(!r){ toast('Client not found.'); return; }
+  viewFullReport(r);
+}
+function downloadClientDossier(clientId){
+  var r=buildClientDossier(clientId);
+  if(!r){ toast('Client not found.'); return; }
+  downloadFullPDF(r);
+}
+
+/* ---- full practice report ---- */
+function buildPracticeReport(){
+  var firm=(currentAccount&&(currentAccount.firmName||currentAccount.name))||'Your firm';
+  var acts=activeFirmClients();
+  var docs=allClientDocs().filter(function(x){ return !isArchived(x.c.name); });
+  var byStatus={};
+  DOC_STATUSES.forEach(function(s){ byStatus[s.id]=docs.filter(function(x){return x.d.status===s.id;}).length; });
+  var reqs=(firmTaxReqs||[]).concat(firmAuditReqs||[]);
+  var openReq=reqs.filter(function(r){return !/Received/.test(r.st);}).length;
+  var plan=firmPlanObj();
+  var stageRows=CLIENT_STAGES.map(function(s){
+    var n=acts.filter(function(c){ return clientStage(c.name)===s.id; }).length;
+    return [s.label, String(n), acts.length?Math.round(n/acts.length*100)+'%':'0%'];
+  });
+  return {
+    id:repId('PR'), accent:'#7a5af8',
+    kicker:'Practice management report',
+    title:'Practice Report',
+    subtitle:'A complete view of the client portfolio, document position and outstanding work across '+firm+'.',
+    forName:firm, from:firm, date:repDate(),
+    summary:[['Active clients',String(acts.length)],['Documents tracked',String(docs.length)],['Outstanding items',String(byStatus.requested||0)],['Open portal requests',String(openReq)]],
+    intro:'This report summarises the position of '+firm+' as at '+repDate()+'. It covers the client portfolio and where each engagement stands, the document register across every client, the requests issued through the client portal, and the items still outstanding. It is produced directly from live practice data held in HisabOne.',
+    sections:[
+      { title:'Portfolio overview',
+        lead:'The shape of the practice’s client base.',
+        stats:[['Active clients',String(acts.length)],['Archived',String(archivedFirmClients().length)],['On their own portal',String(acts.filter(function(c){return !isManualClient(c.id);}).length)],['Managed by the firm',String(acts.filter(function(c){return isManualClient(c.id);}).length)]],
+        tables:[{ title:'Clients by engagement stage', headers:['Stage','Clients','Share'], rows:stageRows }],
+        body:'The practice is on the <b>'+plan.name+'</b> plan, which covers '+(plan.cap===0?'an unlimited number of':'up to '+plan.cap)+' active clients. '+acts.length+' place'+(acts.length===1?' is':'s are')+' currently in use. Archived clients keep their full history and do not count towards the plan.' },
+      { title:'Client register',
+        lead:'Every active client, their risk rating and their current position.',
+        tables:[{ title:'Active clients', headers:['Client','Stage','Risk','Next deadline','Documents','Portal'],
+          rows:acts.map(function(c){ return [ctEsc(c.name),
+            (CLIENT_STAGES.find(function(s){return s.id===clientStage(c.name);})||CLIENT_STAGES[0]).label,
+            (c.risk||'medium').replace(/^./,function(m){return m.toUpperCase();}),
+            ctEsc(c.deadline||'—'),
+            String(docsFor(c.name).length),
+            isManualClient(c.id)?'Firm-managed':'Client portal']; }) }] },
+      { title:'Document position',
+        lead:'What the practice holds and what it is still waiting for.',
+        stats:DOC_STATUSES.map(function(s){ return [s.label, String(byStatus[s.id]||0)]; }),
+        tables:[{ title:'Outstanding documents', headers:['Client','Document','Category','Due'],
+          rows:docs.filter(function(x){return x.d.status==='requested';}).map(function(x){ return [ctEsc(x.c.name), ctEsc(x.d.name), x.d.category, x.d.due||'—']; }) }] },
+      { title:'Portal requests and reminders',
+        lead:'Document requests issued to clients who use their own portal, and the automated chasing behind them.',
+        stats:[['Requests issued',String(reqs.length)],['Still open',String(openReq)],['Reminders scheduled',String((firmReminders||[]).length)]],
+        tables:[{ title:'Requests', headers:['Client','Document','Application','Deadline','Status'],
+          rows:reqs.map(function(r){ return [ctEsc(r.client), ctEsc(r.doc), r.app||'—', r.due||'—', r.st]; }) }] },
+      { title:'Returns and filings',
+        lead:'Returns prepared through HisabOne across the portfolio.',
+        tables:[{ title:'Returns', headers:['Client','Return','Period','Status'],
+          rows:(returnsList||[]).map(function(r){
+            var c=(firmClients||[]).find(function(x){return x.id===r.business_id;});
+            return [c?ctEsc(c.name):'—', r.kind==='vat'?'VAT201':'Corporate Tax', r.period||'—', r.status||'—'];
+          }) }] }
+    ],
+    declaration:'This practice report was produced from the live records held in HisabOne as at '+repDate()+' and is for the internal management use of '+firm+'. It is not an audit report and does not constitute assurance over the underlying client records.'
+  };
+}
+function openPracticeReport(){ viewFullReport(buildPracticeReport()); }
+function downloadPracticeReport(){ downloadFullPDF(buildPracticeReport()); }
+/* ================================================================
+   PART C — BOOKKEEPING (business side) + STANDALONE VAT RETURN
+   ================================================================ */
+
+/* ---------- Chart of categories (plain-English, no debits/credits) ---------- */
+var BK_INCOME_CATS = [
+  'Sales — goods',
+  'Sales — services',
+  'Consulting fees',
+  'Rental income',
+  'Commission income',
+  'Interest income',
+  'Other income'
+];
+var BK_EXPENSE_CATS = [
+  'Cost of goods sold',
+  'Salaries & wages',
+  'Staff visas & sponsorship',
+  'Rent & office',
+  'Utilities & telecom',
+  'Professional services',
+  'Marketing & advertising',
+  'Travel & transport',
+  'Entertainment',
+  'Equipment & IT',
+  'Software & subscriptions',
+  'Insurance',
+  'Bank & finance charges',
+  'Government & licence fees',
+  'Fines & penalties',
+  'Depreciation',
+  'Other expenses'
+];
+/* Corporate Tax treatment of each expense category.
+   allow = fraction deductible for CT purposes (UAE CT Law) */
+var BK_CT_TREATMENT = {
+  'Entertainment': 0.5,          /* Art. 32 — 50% of entertainment expenditure */
+  'Fines & penalties': 0,        /* Art. 33 — non-deductible */
+  'Depreciation': 1
+};
+/* VAT treatment options per line */
+var BK_VAT_TREATMENTS = [
+  {id:'std',    label:'Standard 5%',      rate:5},
+  {id:'zero',   label:'Zero-rated 0%',    rate:0},
+  {id:'exempt', label:'Exempt',           rate:0},
+  {id:'oos',    label:'Out of scope',     rate:0},
+  {id:'rc',     label:'Reverse charge',   rate:5},
+  {id:'import', label:'Import (customs)', rate:5}
+];
+function bkTreatment(id){
+  for(var i=0;i<BK_VAT_TREATMENTS.length;i++){ if(BK_VAT_TREATMENTS[i].id===id) return BK_VAT_TREATMENTS[i]; }
+  return BK_VAT_TREATMENTS[0];
+}
+
+var BK_ACCOUNT_TYPES = ['Bank', 'Cash', 'Credit card', 'Owner / director'];
+
+/* ---------- State ---------- */
+var bkAccounts = [];   /* {id,name,type,opening,currency} */
+var bkTx = [];         /* {id,date,kind:'income'|'expense',desc,party,cat,amt,vt,vat,acct,ref,recon} */
+var bkPeriod = '';     /* '' = all, else 'YYYY-Qn' or 'YYYY' */
+
+function bkId(p){ return (p||'bk_') + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4); }
+
+function bkEnsureAccounts(){
+  if(bkAccounts.length) return;
+  bkAccounts = [
+    {id:bkId('ac_'), name:'Main business account', type:'Bank', opening:0},
+    {id:bkId('ac_'), name:'Petty cash',            type:'Cash', opening:0}
+  ];
+}
+function bkAccountName(id){
+  for(var i=0;i<bkAccounts.length;i++){ if(bkAccounts[i].id===id) return bkAccounts[i].name; }
+  return '—';
+}
+
+/* ---------- Period handling ---------- */
+function bkPeriodOptions(){
+  var years = {}, i;
+  for(i=0;i<bkTx.length;i++){ var y=String(bkTx[i].date||'').slice(0,4); if(y) years[y]=1; }
+  var nowY = new Date().getFullYear(); years[String(nowY)] = 1;
+  var out = [], ks = Object.keys(years).sort().reverse();
+  for(i=0;i<ks.length;i++){
+    out.push({v:ks[i], l:'Year '+ks[i]});
+    for(var q=4;q>=1;q--) out.push({v:ks[i]+'-Q'+q, l:'Q'+q+' '+ks[i]});
+  }
+  return out;
+}
+function bkInPeriod(t){
+  if(!bkPeriod) return true;
+  var d = String(t.date||''); if(!d) return false;
+  if(bkPeriod.indexOf('-Q')>0){
+    var y = bkPeriod.slice(0,4), q = parseInt(bkPeriod.slice(-1),10);
+    if(d.slice(0,4)!==y) return false;
+    var m = parseInt(d.slice(5,7),10) || 0;
+    return m >= (q-1)*3+1 && m <= q*3;
+  }
+  return d.slice(0,4) === bkPeriod;
+}
+function bkPeriodLabel(){
+  if(!bkPeriod) return 'All time';
+  return bkPeriod.indexOf('-Q')>0 ? ('Q'+bkPeriod.slice(-1)+' '+bkPeriod.slice(0,4)) : ('Year '+bkPeriod);
+}
+function bkRows(){
+  var out = bkTx.filter(bkInPeriod);
+  out.sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')); });
+  return out;
+}
+
+/* ---------- Totals ---------- */
+function bkTotals(){
+  var rows = bkRows(), i, t;
+  var r = { income:0, expense:0, outputVat:0, inputVat:0,
+            stdSales:0, stdSalesVat:0, zeroSales:0, exemptSales:0,
+            rcAmt:0, rcVat:0, importAmt:0, importVat:0,
+            stdExp:0, stdExpVat:0,
+            incomeBy:{}, expenseBy:{}, ctAdjust:0, ctDisallowed:{} };
+  for(i=0;i<rows.length;i++){
+    t = rows[i];
+    var amt = parseFloat(t.amt)||0;
+    var vat = parseFloat(t.vat)||0;
+    if(t.kind==='income'){
+      r.income += amt;
+      r.incomeBy[t.cat||'Other income'] = (r.incomeBy[t.cat||'Other income']||0) + amt;
+      if(t.vt==='std'){ r.stdSales += amt; r.stdSalesVat += vat; r.outputVat += vat; }
+      else if(t.vt==='zero') r.zeroSales += amt;
+      else if(t.vt==='exempt') r.exemptSales += amt;
+    } else {
+      r.expense += amt;
+      r.expenseBy[t.cat||'Other expenses'] = (r.expenseBy[t.cat||'Other expenses']||0) + amt;
+      if(t.vt==='std'){ r.stdExp += amt; r.stdExpVat += vat; r.inputVat += vat; }
+      else if(t.vt==='rc'){ r.rcAmt += amt; r.rcVat += vat; r.outputVat += vat; r.inputVat += vat; }
+      else if(t.vt==='import'){ r.importAmt += amt; r.importVat += vat; r.outputVat += vat; r.inputVat += vat; }
+      /* CT disallowables */
+      var allow = BK_CT_TREATMENT.hasOwnProperty(t.cat) ? BK_CT_TREATMENT[t.cat] : 1;
+      if(allow < 1){
+        var dis = amt * (1-allow);
+        r.ctAdjust += dis;
+        r.ctDisallowed[t.cat] = (r.ctDisallowed[t.cat]||0) + dis;
+      }
+    }
+  }
+  r.netProfit = r.income - r.expense;
+  r.taxableIncome = r.netProfit + r.ctAdjust;
+  r.netVat = r.outputVat - r.inputVat;
+  return r;
+}
+function bkAccountBalances(){
+  var bal = {}, i;
+  for(i=0;i<bkAccounts.length;i++) bal[bkAccounts[i].id] = parseFloat(bkAccounts[i].opening)||0;
+  for(i=0;i<bkTx.length;i++){
+    var t = bkTx[i]; if(!bal.hasOwnProperty(t.acct)) continue;
+    var gross = (parseFloat(t.amt)||0) + (t.vt==='std' ? (parseFloat(t.vat)||0) : 0);
+    bal[t.acct] += (t.kind==='income' ? gross : -gross);
+  }
+  return bal;
+}
+
+/* ---------- Transaction CRUD ---------- */
+function bkAutoVat(){
+  var kind = (document.getElementById('bkKind')||{}).value;
+  var amt  = parseFloat((document.getElementById('bkAmt')||{}).value)||0;
+  var vt   = (document.getElementById('bkVt')||{}).value || 'std';
+  var vEl  = document.getElementById('bkVat'); if(!vEl) return;
+  var tr = bkTreatment(vt);
+  vEl.value = amt && tr.rate ? (amt*tr.rate/100).toFixed(2) : (amt?'0.00':'');
+  var hint = document.getElementById('bkVatHint');
+  if(hint){
+    if(vt==='rc') hint.textContent = 'Reverse charge — the same amount appears as output VAT and recoverable input VAT.';
+    else if(vt==='import') hint.textContent = 'Import — declared under box 6 and recovered under box 10 where recoverable.';
+    else if(vt==='exempt') hint.textContent = 'Exempt supply — no VAT charged and no input VAT recovery.';
+    else if(vt==='oos') hint.textContent = 'Outside the scope of UAE VAT — excluded from the return.';
+    else if(vt==='zero') hint.textContent = 'Zero-rated — reported in box 4 at 0%.';
+    else hint.textContent = 'Standard 5% — VAT is calculated for you but you can override it.';
+  }
+  /* keep the category list matched to the direction */
+  bkSyncCats(kind);
+}
+function bkSyncCats(kind){
+  var sel = document.getElementById('bkCat'); if(!sel) return;
+  var want = kind==='income' ? BK_INCOME_CATS : BK_EXPENSE_CATS;
+  if(sel.getAttribute('data-kind')===kind) return;
+  sel.setAttribute('data-kind', kind);
+  sel.innerHTML = want.map(function(c){ return '<option value="'+ctEsc(c)+'">'+ctEsc(c)+'</option>'; }).join('');
+}
+function bkKindChange(){
+  var kind = (document.getElementById('bkKind')||{}).value || 'income';
+  bkSyncCats(kind); bkAutoVat();
+}
+function bkAddTx(){
+  bkEnsureAccounts();
+  var g = function(id){ var e=document.getElementById(id); return e?String(e.value||'').trim():''; };
+  var date = g('bkDate'), desc = g('bkDesc'), amt = parseFloat(g('bkAmt'))||0;
+  if(!date){ toast('Pick a date for the transaction.'); return; }
+  if(!desc){ toast('Add a short description.'); return; }
+  if(!(amt>0)){ toast('Enter an amount greater than zero.'); return; }
+  var kind = g('bkKind')||'income';
+  var vt = g('bkVt')||'std';
+  var t = {
+    id: bkId('tx_'), date: date, kind: kind, desc: desc, party: g('bkParty'),
+    cat: g('bkCat') || (kind==='income'?'Other income':'Other expenses'),
+    amt: amt, vt: vt, vat: parseFloat(g('bkVat'))||0,
+    acct: g('bkAcct') || (bkAccounts[0]||{}).id, ref: g('bkRef'), recon:false
+  };
+  bkTx.push(t);
+  saveAccountData();
+  ['bkDesc','bkParty','bkAmt','bkVat','bkRef'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+  renderPage();
+  toast((kind==='income'?'Income':'Expense')+' recorded — '+moneyAED(amt));
+}
+function bkDeleteTx(id){
+  var t = null; for(var i=0;i<bkTx.length;i++){ if(bkTx[i].id===id) t=bkTx[i]; }
+  if(!t) return;
+  openConfirm({ title:'Delete this transaction?',
+    message:'"'+(t.desc||'Untitled')+'" for '+moneyAED(parseFloat(t.amt)||0)+' will be removed from your books. Totals, the VAT return and the CT computation will all update.',
+    confirmLabel:'Delete',
+    onYes:function(){ bkTx = bkTx.filter(function(x){ return x.id!==id; }); saveAccountData(); renderPage(); toast('Transaction deleted.'); }
+  });
+}
+function bkToggleRecon(id){
+  for(var i=0;i<bkTx.length;i++){ if(bkTx[i].id===id) bkTx[i].recon = !bkTx[i].recon; }
+  saveAccountData(); renderPage();
+}
+function bkAddAccount(){
+  openInput({ title:'Add an account', message:'Bank accounts, cash tills and company cards all live here — every transaction is recorded against one of them so your balances stay right.',
+    label:'Account name', placeholder:'e.g. Emirates NBD — current', icon:'bank', confirmLabel:'Add account',
+    onYes:function(v){
+      v = String(v||'').trim(); if(!v) return;
+      bkAccounts.push({id:bkId('ac_'), name:v, type:'Bank', opening:0});
+      saveAccountData(); renderPage(); toast('Account added.');
+    }});
+}
+function bkSetOpening(id, val){
+  for(var i=0;i<bkAccounts.length;i++){ if(bkAccounts[i].id===id) bkAccounts[i].opening = parseFloat(val)||0; }
+  saveAccountData();
+  var el = document.getElementById('bkBalances'); if(el) el.innerHTML = bkBalanceRowsHTML();
+}
+function bkSetAccountType(id, val){
+  for(var i=0;i<bkAccounts.length;i++){ if(bkAccounts[i].id===id) bkAccounts[i].type = val; }
+  saveAccountData();
+}
+function bkRemoveAccount(id){
+  var used = bkTx.filter(function(t){ return t.acct===id; }).length;
+  if(used){ toast('That account has '+used+' transaction'+(used===1?'':'s')+' against it — reassign them first.'); return; }
+  if(bkAccounts.length<=1){ toast('Keep at least one account.'); return; }
+  bkAccounts = bkAccounts.filter(function(a){ return a.id!==id; });
+  saveAccountData(); renderPage(); toast('Account removed.');
+}
+function bkSetPeriod(v){ bkPeriod = v||''; renderPage(); }
+
+/* ---------- CSV export ---------- */
+function bkExportCSV(){
+  var rows = bkRows();
+  if(!rows.length){ toast('Nothing to export for '+bkPeriodLabel()+'.'); return; }
+  var esc = function(s){ return '"'+String(s==null?'':s).replace(/"/g,'""')+'"'; };
+  var out = [['Date','Type','Description','Counterparty','Category','Account','Net (AED)','VAT treatment','VAT (AED)','Gross (AED)','Reference','Reconciled'].join(',')];
+  rows.forEach(function(t){
+    var net = parseFloat(t.amt)||0, vat = parseFloat(t.vat)||0;
+    var gross = net + (t.vt==='std'?vat:0);
+    out.push([esc(t.date), esc(t.kind==='income'?'Income':'Expense'), esc(t.desc), esc(t.party),
+      esc(t.cat), esc(bkAccountName(t.acct)), net.toFixed(2), esc(bkTreatment(t.vt).label),
+      vat.toFixed(2), gross.toFixed(2), esc(t.ref), t.recon?'Yes':'No'].join(','));
+  });
+  var blob = new Blob([out.join('\n')], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'HisabOne-Bookkeeping-'+bkPeriodLabel().replace(/\s+/g,'-')+'.csv';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  toast('Bookkeeping exported — '+rows.length+' transaction'+(rows.length===1?'':'s')+'.');
+}
+
+/* ---------- Profit & loss report (full-length PDF) ---------- */
+function buildPLReport(){
+  var T = bkTotals();
+  var co = (typeof bizCompany==='object' && bizCompany) ? bizCompany : {};
+  var name = co.legalName || co.name || (currentAccount ? currentAccount.name : 'Your business');
+  var incRows = Object.keys(T.incomeBy).sort(function(a,b){ return T.incomeBy[b]-T.incomeBy[a]; })
+    .map(function(k){ return [k, moneyAED(T.incomeBy[k]), T.income? (Math.round(T.incomeBy[k]/T.income*1000)/10)+'%' : '—']; });
+  var expRows = Object.keys(T.expenseBy).sort(function(a,b){ return T.expenseBy[b]-T.expenseBy[a]; })
+    .map(function(k){ return [k, moneyAED(T.expenseBy[k]), T.expense? (Math.round(T.expenseBy[k]/T.expense*1000)/10)+'%' : '—']; });
+  var disRows = Object.keys(T.ctDisallowed).map(function(k){
+    var allow = BK_CT_TREATMENT[k];
+    return [k, moneyAED(T.ctDisallowed[k]), allow===0 ? 'Fully non-deductible' : (Math.round(allow*100)+'% deductible')];
+  });
+  var txRows = bkRows().slice(0,120).map(function(t){
+    return [t.date, t.kind==='income'?'Income':'Expense', t.desc||'—', t.cat||'—',
+            bkTreatment(t.vt).label, moneyAED(parseFloat(t.amt)||0), moneyAED(parseFloat(t.vat)||0)];
+  });
+  var bal = bkAccountBalances();
+  var balRows = bkAccounts.map(function(a){ return [a.name, a.type, moneyAED(parseFloat(a.opening)||0), moneyAED(bal[a.id]||0)]; });
+
+  var small = T.taxableIncome <= 3000000;
+  var ctDue = Math.max(0, (T.taxableIncome - 375000)) * 0.09;
+
+  return {
+    id: repId('PL'),
+    accent: '#0F766E',
+    kicker: 'Financial statements',
+    title: 'Profit & Loss and Tax Summary',
+    subtitle: bkPeriodLabel(),
+    forName: name,
+    from: 'HisabOne',
+    date: repDate(),
+    summary: [
+      ['Period', bkPeriodLabel()],
+      ['Total income', moneyAED(T.income)],
+      ['Total expenses', moneyAED(T.expense)],
+      ['Net profit', moneyAED(T.netProfit)],
+      ['Transactions recorded', String(bkRows().length)]
+    ],
+    intro: 'This report summarises the income and expenditure recorded in HisabOne for '+name+' over '+bkPeriodLabel()+
+           '. It sets out the profit and loss position by category, the VAT position arising from those same transactions, '+
+           'and an indicative UAE Corporate Tax computation. Figures are drawn directly from the bookkeeping records held in the account '+
+           'and have not been independently audited.',
+    sections: [
+      { title:'Income', lead:'Revenue recognised in the period, analysed by category.',
+        stats:[['Total income', moneyAED(T.income)], ['Categories used', String(Object.keys(T.incomeBy).length)]],
+        tables: incRows.length ? [{title:'Income by category', headers:['Category','Amount','Share'], rows:incRows}] : [],
+        body: incRows.length ? '' : 'No income has been recorded for this period.' },
+      { title:'Expenses', lead:'Costs recorded in the period, analysed by category.',
+        stats:[['Total expenses', moneyAED(T.expense)], ['Categories used', String(Object.keys(T.expenseBy).length)]],
+        tables: expRows.length ? [{title:'Expenses by category', headers:['Category','Amount','Share'], rows:expRows}] : [],
+        body: expRows.length ? '' : 'No expenses have been recorded for this period.' },
+      { title:'Profit & loss', lead:'The net result for the period.',
+        stats:[['Income', moneyAED(T.income)], ['Expenses', moneyAED(T.expense)],
+               [T.netProfit>=0?'Net profit':'Net loss', moneyAED(Math.abs(T.netProfit))]],
+        fields:[['Total income', moneyAED(T.income)], ['Total expenses', moneyAED(T.expense)],
+                [T.netProfit>=0?'Net profit for the period':'Net loss for the period', moneyAED(Math.abs(T.netProfit))]],
+        note:'Accounting profit before any tax adjustments.' },
+      { title:'VAT position', lead:'The VAT arising from the same transactions, ready to carry into the VAT201 return.',
+        stats:[['Output VAT', moneyAED(T.outputVat)], ['Input VAT', moneyAED(T.inputVat)],
+               [T.netVat>=0?'Net VAT payable':'Net VAT refundable', moneyAED(Math.abs(T.netVat))]],
+        tables:[{title:'VAT analysis', headers:['Description','Amount','VAT'], rows:[
+          ['Standard-rated supplies', moneyAED(T.stdSales), moneyAED(T.stdSalesVat)],
+          ['Zero-rated supplies', moneyAED(T.zeroSales), moneyAED(0)],
+          ['Exempt supplies', moneyAED(T.exemptSales), '—'],
+          ['Reverse-charge purchases', moneyAED(T.rcAmt), moneyAED(T.rcVat)],
+          ['Imports', moneyAED(T.importAmt), moneyAED(T.importVat)],
+          ['Standard-rated expenses (recoverable)', moneyAED(T.stdExp), moneyAED(T.stdExpVat)]
+        ]}],
+        note:'VAT returns are filed on EmaraTax within 28 days of the period end.' },
+      { title:'Corporate Tax computation (indicative)', lead:'Accounting profit adjusted for expenditure that UAE Corporate Tax law restricts.',
+        stats:[['Accounting profit', moneyAED(T.netProfit)], ['Add back — disallowed', moneyAED(T.ctAdjust)],
+               ['Taxable income', moneyAED(T.taxableIncome)]],
+        tables: disRows.length ? [{title:'Disallowed expenditure', headers:['Category','Added back','Treatment'], rows:disRows}] : [],
+        fields:[['Accounting profit', moneyAED(T.netProfit)],
+                ['Add back: disallowed expenditure', moneyAED(T.ctAdjust)],
+                ['Taxable income', moneyAED(T.taxableIncome)],
+                ['0% band (first AED 375,000)', moneyAED(Math.min(375000, Math.max(0,T.taxableIncome)))],
+                ['Taxed at 9%', moneyAED(Math.max(0, T.taxableIncome-375000))],
+                ['Indicative Corporate Tax', moneyAED(ctDue)]],
+        body: small
+          ? 'Taxable income is at or below AED 3,000,000, so Small Business Relief may be available for the relevant tax periods — which would reduce the liability to nil if elected and if the conditions are met. This report shows the position before any such election.'
+          : 'Taxable income exceeds the AED 3,000,000 Small Business Relief threshold, so the standard 9% rate applies above the AED 375,000 nil band.',
+        note:'Indicative only. Entertainment is restricted to 50% deductibility and fines and penalties are not deductible; other adjustments (interest limitation, related-party transactions, exempt income) may also apply.' },
+      { title:'Accounts & balances', lead:'Cash and bank positions derived from recorded transactions.',
+        tables: balRows.length ? [{title:'Account balances', headers:['Account','Type','Opening','Balance'], rows:balRows}] : [],
+        note:'Balances are calculated from the opening balance plus every gross transaction recorded against the account.' },
+      { title:'Transaction listing', lead:'The underlying records supporting this report'+(bkRows().length>120?' (first 120 of '+bkRows().length+')':'')+'.',
+        tables: txRows.length ? [{title:'Transactions', headers:['Date','Type','Description','Category','VAT treatment','Net','VAT'], rows:txRows}] : [],
+        body: txRows.length ? '' : 'No transactions recorded for this period.' }
+    ],
+    declaration: 'The figures in this report are compiled from the records entered into HisabOne by the business and have not been independently verified or audited. The Corporate Tax computation is indicative and does not constitute tax advice. Responsibility for the accuracy and completeness of the underlying records, and for what is ultimately filed with the Federal Tax Authority, rests with the business.'
+  };
+}
+function openPLReport(){ viewFullReport(buildPLReport()); }
+function downloadPLReport(){ downloadFullPDF(buildPLReport()); }
+
+/* ---------- Bookkeeping page ---------- */
+function bkStatCardsHTML(){
+  var T = bkTotals();
+  return '<div class="grid g4 mb14">'
+    + '<div class="card stat"><div class="ic">'+svgIcon('bar',18)+'</div><div class="num">'+moneyAED(T.income)+'</div><div class="lbl">Income — '+ctEsc(bkPeriodLabel())+'</div></div>'
+    + '<div class="card stat"><div class="ic ic-amber">'+svgIcon('refund',18)+'</div><div class="num">'+moneyAED(T.expense)+'</div><div class="lbl">Expenses — '+ctEsc(bkPeriodLabel())+'</div></div>'
+    + '<div class="card stat"><div class="ic'+(T.netProfit<0?' ic-red':'')+'">'+svgIcon('activity',18)+'</div><div class="num">'+moneyAED(Math.abs(T.netProfit))+'</div><div class="lbl">'+(T.netProfit>=0?'Net profit':'Net loss')+'</div></div>'
+    + '<div class="card stat"><div class="ic">'+svgIcon('fta',18)+'</div><div class="num">'+moneyAED(Math.abs(T.netVat))+'</div><div class="lbl">'+(T.netVat>=0?'Net VAT payable':'Net VAT refundable')+'</div></div>'
+    + '</div>';
+}
+function bkBalanceRowsHTML(){
+  bkEnsureAccounts();
+  var bal = bkAccountBalances();
+  return bkAccounts.map(function(a){
+    return '<tr>'
+      + '<td style="font-weight:600">'+ctEsc(a.name)+'</td>'
+      + '<td><select class="finput" style="min-width:130px" onchange="bkSetAccountType(\''+a.id+'\',this.value)">'
+        + BK_ACCOUNT_TYPES.map(function(t){ return '<option'+(a.type===t?' selected':'')+'>'+t+'</option>'; }).join('')
+        + '</select></td>'
+      + '<td><input class="finput" type="number" style="text-align:right;max-width:150px" placeholder="0.00" value="'+(a.opening?ctEsc(a.opening):'')+'" onchange="bkSetOpening(\''+a.id+'\',this.value)"></td>'
+      + '<td style="text-align:right;font-weight:700;'+((bal[a.id]||0)<0?'color:var(--red)':'')+'">'+moneyAED(bal[a.id]||0)+'</td>'
+      + '<td style="text-align:right"><button class="btn ghost sm" onclick="bkRemoveAccount(\''+a.id+'\')">'+svgIcon('trash',13)+'</button></td>'
+      + '</tr>';
+  }).join('');
+}
+function bkTxRowsHTML(){
+  var rows = bkRows();
+  if(!rows.length){
+    return '<tr><td colspan="8" class="muted" style="padding:26px;text-align:center">No transactions for '+ctEsc(bkPeriodLabel())+' yet — add your first one above.</td></tr>';
+  }
+  return rows.map(function(t){
+    var net = parseFloat(t.amt)||0, vat = parseFloat(t.vat)||0;
+    var inc = t.kind==='income';
+    return '<tr>'
+      + '<td style="white-space:nowrap">'+ctEsc(t.date)+'</td>'
+      + '<td><span class="pill '+(inc?'p-green':'p-amber')+'" style="font-size:10px">'+(inc?'Income':'Expense')+'</span></td>'
+      + '<td><div style="font-weight:600">'+ctEsc(t.desc||'—')+'</div>'+(t.party?'<div class="muted" style="font-size:11.5px">'+ctEsc(t.party)+'</div>':'')+'</td>'
+      + '<td class="muted" style="font-size:12px">'+ctEsc(t.cat||'—')+'</td>'
+      + '<td class="muted" style="font-size:12px">'+ctEsc(bkTreatment(t.vt).label)+'</td>'
+      + '<td style="text-align:right;font-weight:600;'+(inc?'color:var(--green)':'')+'">'+moneyAED(net)+'</td>'
+      + '<td style="text-align:right">'+moneyAED(vat)+'</td>'
+      + '<td style="text-align:right;white-space:nowrap">'
+        + '<button class="btn ghost sm" title="'+(t.recon?'Marked as reconciled':'Mark as reconciled')+'" onclick="bkToggleRecon(\''+t.id+'\')">'+svgIcon(t.recon?'success':'check',13)+'</button> '
+        + '<button class="btn ghost sm" onclick="bkDeleteTx(\''+t.id+'\')">'+svgIcon('trash',13)+'</button>'
+      + '</td></tr>';
+  }).join('');
+}
+function bkPLHTML(){
+  var T = bkTotals();
+  var line = function(l, v, bold, color){
+    return '<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;'
+      + (bold?'border-top:1px solid var(--line);font-weight:700;':'')+'">'
+      + '<span'+(bold?'':' class="muted"')+' style="font-size:13px">'+ctEsc(l)+'</span>'
+      + '<span style="font-variant-numeric:tabular-nums;font-size:13.5px'+(color?';color:'+color:'')+'">'+v+'</span></div>';
+  };
+  var incKeys = Object.keys(T.incomeBy).sort(function(a,b){ return T.incomeBy[b]-T.incomeBy[a]; });
+  var expKeys = Object.keys(T.expenseBy).sort(function(a,b){ return T.expenseBy[b]-T.expenseBy[a]; });
+  return '<div class="grid g2">'
+    + '<div><h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px">Income</h4>'
+      + (incKeys.length ? incKeys.map(function(k){ return line(k, moneyAED(T.incomeBy[k])); }).join('') : '<div class="muted" style="font-size:12.5px;padding:8px 0">Nothing recorded yet.</div>')
+      + line('Total income', moneyAED(T.income), true) + '</div>'
+    + '<div><h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px">Expenses</h4>'
+      + (expKeys.length ? expKeys.map(function(k){ return line(k, moneyAED(T.expenseBy[k])); }).join('') : '<div class="muted" style="font-size:12.5px;padding:8px 0">Nothing recorded yet.</div>')
+      + line('Total expenses', moneyAED(T.expense), true) + '</div>'
+    + '</div>'
+    + '<div style="margin-top:16px;border-top:2px solid var(--accent);padding-top:10px">'
+      + line(T.netProfit>=0?'Net profit for '+bkPeriodLabel():'Net loss for '+bkPeriodLabel(),
+             moneyAED(Math.abs(T.netProfit)), true, T.netProfit>=0?'var(--green)':'var(--red)')
+    + '</div>';
+}
+function bkCTHTML(){
+  var T = bkTotals();
+  var ctDue = Math.max(0, T.taxableIncome-375000)*0.09;
+  var disKeys = Object.keys(T.ctDisallowed);
+  var row = function(l,v,bold){
+    return '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0'+(bold?';border-top:1px solid var(--line);font-weight:700':'')+'">'
+      + '<span'+(bold?'':' class="muted"')+' style="font-size:13px">'+ctEsc(l)+'</span><span style="font-variant-numeric:tabular-nums;font-size:13.5px">'+v+'</span></div>';
+  };
+  return row('Accounting profit', moneyAED(T.netProfit))
+    + (disKeys.length ? disKeys.map(function(k){
+        var allow = BK_CT_TREATMENT[k];
+        return row('Add back — '+k+' ('+(allow===0?'not deductible':Math.round((1-allow)*100)+'% restricted')+')', moneyAED(T.ctDisallowed[k]));
+      }).join('') : '<div class="muted" style="font-size:12.5px;padding:7px 0">No disallowed expenditure recorded.</div>')
+    + row('Taxable income', moneyAED(T.taxableIncome), true)
+    + row('0% on the first AED 375,000', moneyAED(0))
+    + row('9% on the excess', moneyAED(ctDue))
+    + row('Indicative Corporate Tax', moneyAED(ctDue), true)
+    + '<div class="note" style="text-align:left;padding:12px 0 0">'+svgIcon('shield',13)
+      + ' Indicative only. Entertainment is restricted to 50% deductibility and fines and penalties are not deductible under the UAE Corporate Tax Law. '
+      + (T.taxableIncome<=3000000 ? 'Taxable income is within the AED 3,000,000 Small Business Relief threshold, so relief may be available if elected.' : 'Taxable income exceeds the AED 3,000,000 Small Business Relief threshold.')
+      + '</div>';
+}
+function booksPageHTML(){
+  bkEnsureAccounts();
+  var today = new Date().toISOString().slice(0,10);
+  var opts = bkPeriodOptions();
+  var T = bkTotals();
+  return '<h1>Bookkeeping</h1>'
+  + '<div class="sub">Record every sale and every cost once. HisabOne categorises it, applies the right VAT treatment, keeps a running profit &amp; loss, and carries the totals straight into your VAT return and Corporate Tax computation — no debits, no credits, no journals.</div>'
+
+  + '<div class="card mb14" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;justify-content:space-between">'
+    + '<div><label class="flabel">Period</label>'
+      + '<select class="finput" style="min-width:190px" onchange="bkSetPeriod(this.value)">'
+        + '<option value=""'+(bkPeriod?'':' selected')+'>All time</option>'
+        + opts.map(function(o){ return '<option value="'+o.v+'"'+(bkPeriod===o.v?' selected':'')+'>'+o.l+'</option>'; }).join('')
+      + '</select></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      + '<button class="btn ghost" onclick="bkExportCSV()">'+svgIcon('download',14)+' Export CSV</button>'
+      + '<button class="btn ghost" onclick="openPLReport()">'+svgIcon('file-text',14)+' P&amp;L report</button>'
+      + '<button class="btn" onclick="go(\'bvat201\')">'+svgIcon('fta',14)+' Go to VAT return</button>'
+    + '</div>'
+  + '</div>'
+
+  + bkStatCardsHTML()
+
+  + '<div class="card mb14">'
+    + '<div class="cardhead"><h3>'+svgIcon('plus',16)+' Record a transaction</h3><span class="pill p-teal">VAT applied automatically</span></div>'
+    + '<div class="grid g4" style="gap:12px">'
+      + '<div><label class="flabel">Date</label><input id="bkDate" class="finput" type="date" value="'+today+'"></div>'
+      + '<div><label class="flabel">Type</label><select id="bkKind" class="finput" onchange="bkKindChange()">'
+        + '<option value="income">Money in — income</option><option value="expense">Money out — expense</option></select></div>'
+      + '<div><label class="flabel">Description</label><input id="bkDesc" class="finput" placeholder="e.g. Invoice 1042 — Al Noor Trading"></div>'
+      + '<div><label class="flabel">Customer / supplier</label><input id="bkParty" class="finput" placeholder="Optional"></div>'
+    + '</div>'
+    + '<div class="grid g4" style="gap:12px;margin-top:12px">'
+      + '<div><label class="flabel">Category</label><select id="bkCat" class="finput" data-kind="income">'
+        + BK_INCOME_CATS.map(function(c){ return '<option value="'+ctEsc(c)+'">'+ctEsc(c)+'</option>'; }).join('')+'</select></div>'
+      + '<div><label class="flabel">Net amount (AED)</label><input id="bkAmt" class="finput" type="number" min="0" step="0.01" placeholder="0.00" style="text-align:right" oninput="bkAutoVat()"></div>'
+      + '<div><label class="flabel">VAT treatment</label><select id="bkVt" class="finput" onchange="bkAutoVat()">'
+        + BK_VAT_TREATMENTS.map(function(v){ return '<option value="'+v.id+'">'+v.label+'</option>'; }).join('')+'</select></div>'
+      + '<div><label class="flabel">VAT (AED)</label><input id="bkVat" class="finput" type="number" min="0" step="0.01" placeholder="0.00" style="text-align:right"></div>'
+    + '</div>'
+    + '<div class="grid g3" style="gap:12px;margin-top:12px">'
+      + '<div><label class="flabel">Account</label><select id="bkAcct" class="finput">'
+        + bkAccounts.map(function(a){ return '<option value="'+a.id+'">'+ctEsc(a.name)+'</option>'; }).join('')+'</select></div>'
+      + '<div><label class="flabel">Reference</label><input id="bkRef" class="finput" placeholder="Invoice / receipt no."></div>'
+      + '<div style="display:flex;align-items:end"><button class="btn" style="width:100%" onclick="bkAddTx()">'+svgIcon('plus',15)+' Record transaction</button></div>'
+    + '</div>'
+    + '<p id="bkVatHint" class="muted" style="font-size:12px;margin:12px 0 0">Standard 5% — VAT is calculated for you but you can override it.</p>'
+  + '</div>'
+
+  + '<div class="card mb14" style="padding:0;overflow-x:auto">'
+    + '<div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">'
+      + '<h3 style="font-size:15px">Transactions — '+ctEsc(bkPeriodLabel())+'</h3>'
+      + '<span class="muted" style="font-size:12px">'+bkRows().length+' record'+(bkRows().length===1?'':'s')+'</span></div>'
+    + '<div style="padding:0 6px"><table>'
+      + '<thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Category</th><th>VAT treatment</th>'
+        + '<th style="text-align:right">Net</th><th style="text-align:right">VAT</th><th></th></tr></thead>'
+      + '<tbody>'+bkTxRowsHTML()+'</tbody>'
+    + '</table></div>'
+  + '</div>'
+
+  + '<div class="grid g2 mb14">'
+    + '<div class="card"><div class="cardhead"><h3>Profit &amp; loss</h3><span class="pill p-teal">'+ctEsc(bkPeriodLabel())+'</span></div>'+bkPLHTML()+'</div>'
+    + '<div class="card"><div class="cardhead"><h3>Corporate Tax computation</h3><span class="pill p-gray">Indicative</span></div>'+bkCTHTML()+'</div>'
+  + '</div>'
+
+  + '<div class="card" style="padding:0;overflow-x:auto">'
+    + '<div style="padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px">'
+      + '<h3 style="font-size:15px">'+svgIcon('bank',15)+' Accounts &amp; balances</h3>'
+      + '<button class="btn ghost sm" onclick="bkAddAccount()">'+svgIcon('plus',13)+' Add account</button></div>'
+    + '<div style="padding:0 6px"><table>'
+      + '<thead><tr><th>Account</th><th>Type</th><th style="text-align:right">Opening balance</th><th style="text-align:right">Current balance</th><th></th></tr></thead>'
+      + '<tbody id="bkBalances">'+bkBalanceRowsHTML()+'</tbody>'
+    + '</table></div>'
+    + '<div class="note">'+svgIcon('shield',13)+' Balances use the gross amount of every transaction recorded against the account. Bookkeeping totals feed your VAT return and Corporate Tax computation automatically.</div>'
+  + '</div>';
+}
+
+/* ---------- Business VAT return (VAT201) ---------- */
+function bkFillVat201(){
+  var T = bkTotals();
+  var em = parseInt((document.getElementById('v2Emirate')||{}).value||'1', 10);
+  for(var k=0;k<7;k++){ v2set('v2e'+k+'a', k===em?T.stdSales:0); v2set('v2e'+k+'v', k===em?T.stdSalesVat:0); }
+  v2set('v2zr4a', T.zeroSales);
+  v2set('v2ex5a', T.exemptSales);
+  v2set('v2rc3a', T.rcAmt);   v2set('v2rc3v', T.rcVat);
+  v2set('v2im6a', T.importAmt); v2set('v2im6v', T.importVat);
+  v2set('v2ex9a', T.stdExp);  v2set('v2ex9v', T.stdExpVat);
+  /* Box 10 carries the recoverable side of both reverse-charge supplies and imports —
+     boxes 3 and 6 declare the output side of the same amounts. */
+  v2set('v2rc10a', T.rcAmt + T.importAmt);  v2set('v2rc10v', T.rcVat + T.importVat);
+  recalcVat201();
+  var any = T.stdSales||T.zeroSales||T.exemptSales||T.rcAmt||T.importAmt||T.stdExp;
+  toast(any ? 'VAT201 filled from your books — check every box before filing.'
+            : 'No bookkeeping figures for '+bkPeriodLabel()+' yet — record transactions first.');
+}
+function buildVatReturnReport(){
+  var o = collectVat201() || {};
+  var T = bkTotals();
+  var co = (typeof bizCompany==='object' && bizCompany) ? bizCompany : {};
+  var name = co.legalName || co.name || (currentAccount ? currentAccount.name : 'Your business');
+  var em = (o.emirates||[]).filter(function(x){ return x.a||x.v; })
+    .map(function(x){ return [x.e, moneyAED(x.a), moneyAED(x.v)]; });
+  var net = o.net || T.netVat;
+  return {
+    id: repId('VAT'),
+    accent:'#0F766E',
+    kicker:'VAT return',
+    title:'VAT201 — Value Added Tax Return',
+    subtitle: bkPeriodLabel(),
+    forName: name,
+    from:'HisabOne',
+    date: repDate(),
+    summary:[
+      ['Period', bkPeriodLabel()],
+      ['TRN', co.trn || '—'],
+      ['Output VAT', moneyAED(o.due!=null?o.due:T.outputVat)],
+      ['Recoverable VAT', moneyAED(o.recoverable!=null?o.recoverable:T.inputVat)],
+      [net>=0?'Payable to the FTA':'Refundable from the FTA', moneyAED(Math.abs(net))]
+    ],
+    intro:'This is the VAT201 return prepared for '+name+' covering '+bkPeriodLabel()+
+          '. The boxes below follow the Federal Tax Authority VAT201 structure. Filing takes place on the EmaraTax portal within 28 days of the period end; this document is the working paper supporting that filing.',
+    sections:[
+      { title:'Taxpayer details', lead:'Registration details used for this return.',
+        fields:[['Legal name', name], ['Trade licence', co.licenceNo||co.licence||'—'],
+                ['TRN', co.trn||'—'], ['Emirate', co.emirate||'—'],
+                ['VAT period', bkPeriodLabel()], ['Prepared on', repDate()]] },
+      { title:'Outputs — supplies made', lead:'Standard-rated, zero-rated and exempt supplies for the period.',
+        tables: em.length ? [{title:'Standard-rated supplies by emirate', headers:['Emirate','Amount','VAT'], rows:em}] : [],
+        fields:[['Box 2 — tourist refunds', moneyAED(o.tourist||0)],
+                ['Box 3 — reverse-charge supplies', moneyAED(o.rc3a||0)+' / VAT '+moneyAED(o.rc3v||0)],
+                ['Box 4 — zero-rated supplies', moneyAED(o.zr4!=null?o.zr4:T.zeroSales)],
+                ['Box 5 — exempt supplies', moneyAED(o.ex5!=null?o.ex5:T.exemptSales)],
+                ['Box 6 — goods imported', moneyAED(o.im6a||0)+' / VAT '+moneyAED(o.im6v||0)],
+                ['Box 7 — import adjustments', moneyAED(o.ad7a||0)+' / VAT '+moneyAED(o.ad7v||0)],
+                ['Box 8 — total output VAT', moneyAED(o.due!=null?o.due:T.outputVat)]] },
+      { title:'Inputs — supplies received', lead:'Recoverable input VAT for the period.',
+        fields:[['Box 9 — standard-rated expenses', moneyAED(o.ex9a!=null?o.ex9a:T.stdExp)+' / VAT '+moneyAED(o.ex9v!=null?o.ex9v:T.stdExpVat)],
+                ['Box 10 — reverse charge recoverable', moneyAED(o.rc10a||0)+' / VAT '+moneyAED(o.rc10v||0)],
+                ['Box 11 — total recoverable VAT', moneyAED(o.recoverable!=null?o.recoverable:T.inputVat)]] },
+      { title:'Net position', lead:'The amount due to, or from, the Federal Tax Authority.',
+        stats:[['Output VAT', moneyAED(o.due!=null?o.due:T.outputVat)],
+               ['Recoverable VAT', moneyAED(o.recoverable!=null?o.recoverable:T.inputVat)],
+               [net>=0?'Payable':'Refundable', moneyAED(Math.abs(net))]],
+        fields:[['Box 12 — total due tax', moneyAED(o.due!=null?o.due:T.outputVat)],
+                ['Box 13 — total recoverable tax', moneyAED(o.recoverable!=null?o.recoverable:T.inputVat)],
+                ['Box 14 — '+(net>=0?'payable tax for the period':'refundable tax for the period'), moneyAED(Math.abs(net))]],
+        note:'Payment is due to the FTA by the same 28-day deadline as the return itself.' },
+      { title:'Supporting bookkeeping totals', lead:'Where these figures come from in your books.',
+        tables:[{title:'Bookkeeping analysis — '+bkPeriodLabel(), headers:['Description','Net','VAT'], rows:[
+          ['Standard-rated supplies', moneyAED(T.stdSales), moneyAED(T.stdSalesVat)],
+          ['Zero-rated supplies', moneyAED(T.zeroSales), moneyAED(0)],
+          ['Exempt supplies', moneyAED(T.exemptSales), '—'],
+          ['Reverse-charge purchases', moneyAED(T.rcAmt), moneyAED(T.rcVat)],
+          ['Imports', moneyAED(T.importAmt), moneyAED(T.importVat)],
+          ['Standard-rated expenses', moneyAED(T.stdExp), moneyAED(T.stdExpVat)]
+        ]}],
+        note:'Recorded transactions in the period: '+bkRows().length+'.' }
+    ],
+    declaration:'The person signing the VAT201 on EmaraTax declares that the information given is true, correct and complete. This working paper is compiled from records entered into HisabOne and has not been independently audited. Verify every box against source documents before submitting to the Federal Tax Authority.'
+  };
+}
+function openVatReturnReport(){ viewFullReport(buildVatReturnReport()); }
+function downloadVatReturnReport(){ downloadFullPDF(buildVatReturnReport()); }
+
+function bvat201PageHTML(){
+  var T = bkTotals();
+  var opts = bkPeriodOptions();
+  var linked = (typeof hasLiveLink==='function') && hasLiveLink();
+  return '<h1>VAT Return</h1>'
+  + '<div class="sub">The official VAT201 structure, prepared from your own books. Fill it from your bookkeeping in one click, review every box, then transcribe it into EmaraTax — or download the full working paper as a PDF.</div>'
+
+  + '<div class="card mb14" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;justify-content:space-between">'
+    + '<div><label class="flabel">VAT period</label>'
+      + '<select class="finput" style="min-width:190px" onchange="bkSetPeriod(this.value)">'
+        + '<option value=""'+(bkPeriod?'':' selected')+'>All time</option>'
+        + opts.map(function(o){ return '<option value="'+o.v+'"'+(bkPeriod===o.v?' selected':'')+'>'+o.l+'</option>'; }).join('')
+      + '</select></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      + '<button class="btn ghost" onclick="go(\'books\')">'+svgIcon('bar',14)+' Bookkeeping</button>'
+      + '<button class="btn ghost" onclick="openVatReturnReport()">'+svgIcon('eye',14)+' Preview return</button>'
+      + '<button class="btn" onclick="downloadVatReturnReport()">'+svgIcon('download',14)+' Download PDF</button>'
+    + '</div>'
+  + '</div>'
+
+  + '<div class="grid g4 mb14">'
+    + '<div class="card stat"><div class="ic">'+svgIcon('bar',18)+'</div><div class="num">'+moneyAED(T.outputVat)+'</div><div class="lbl">Output VAT in your books</div></div>'
+    + '<div class="card stat"><div class="ic">'+svgIcon('refund',18)+'</div><div class="num">'+moneyAED(T.inputVat)+'</div><div class="lbl">Recoverable input VAT</div></div>'
+    + '<div class="card stat"><div class="ic'+(T.netVat>=0?' ic-amber':'')+'">'+svgIcon('fta',18)+'</div><div class="num">'+moneyAED(Math.abs(T.netVat))+'</div><div class="lbl">'+(T.netVat>=0?'Net payable':'Net refundable')+'</div></div>'
+    + '<div class="card stat"><div class="ic">'+svgIcon('clipboard',18)+'</div><div class="num">'+bkRows().length+'</div><div class="lbl">Transactions in '+ctEsc(bkPeriodLabel())+'</div></div>'
+  + '</div>'
+
+  + '<div class="card mt18 v201" style="border-color:var(--accent)">'
+    + '<div class="cardhead"><h3>'+svgIcon('file-text',16)+' VAT201 — FTA boxes</h3><span class="pill p-teal">EmaraTax-ready</span></div>'
+    + '<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Fill it from your bookkeeping, or type each box by hand. Nothing is submitted from HisabOne — you transcribe the final figures into EmaraTax yourself.</p>'
+    + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px">'
+      + '<div><label class="flabel">Allocate standard-rated sales to</label>'
+        + '<select id="v2Emirate" class="finput" style="min-width:190px">'
+          + '<option value="1">Dubai</option><option value="0">Abu Dhabi</option><option value="2">Sharjah</option>'
+          + '<option value="3">Ajman</option><option value="4">Umm Al Quwain</option><option value="5">Ras Al Khaimah</option><option value="6">Fujairah</option>'
+        + '</select></div>'
+      + '<button class="btn ghost" onclick="bkFillVat201()">'+svgIcon('sparkles',14)+' Fill from my books</button>'
+    + '</div>'
+    + '<div style="overflow-x:auto"><table>'
+      + '<thead><tr><th style="width:52px">Box</th><th>Description</th><th style="text-align:right;width:170px">Amount (AED)</th><th style="text-align:right;width:150px">VAT (AED)</th></tr></thead>'
+      + '<tbody>'
+      + V2_EMIRATES.map(function(em,i){
+          return '<tr><td class="boxno">1'+'abcdefg'[i]+'</td><td>Standard-rated supplies — '+em+'</td>'
+            + '<td><input id="v2e'+i+'a" class="finput" type="number" min="0" placeholder="0.00" oninput="vat201Auto('+i+');recalcVat201()"></td>'
+            + '<td><input id="v2e'+i+'v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>';
+        }).join('')
+      + '<tr><td class="boxno">2</td><td>Tax refunds provided to tourists (deduction)</td><td></td>'
+        + '<td><input id="v2t2v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>'
+      + '<tr><td class="boxno">3</td><td>Supplies subject to reverse charge</td>'
+        + '<td><input id="v2rc3a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>'
+        + '<td><input id="v2rc3v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>'
+      + '<tr><td class="boxno">4</td><td>Zero-rated supplies</td>'
+        + '<td><input id="v2zr4a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td><td class="muted" style="text-align:right">0.00</td></tr>'
+      + '<tr><td class="boxno">5</td><td>Exempt supplies</td>'
+        + '<td><input id="v2ex5a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td><td class="muted" style="text-align:right">—</td></tr>'
+      + '<tr><td class="boxno">6</td><td>Goods imported into the UAE (customs)</td>'
+        + '<td><input id="v2im6a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>'
+        + '<td><input id="v2im6v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>'
+      + '<tr><td class="boxno">7</td><td>Adjustments to goods imported</td>'
+        + '<td><input id="v2ad7a" class="finput" type="number" placeholder="0.00" oninput="recalcVat201()"></td>'
+        + '<td><input id="v2ad7v" class="finput" type="number" placeholder="0.00" oninput="recalcVat201()"></td></tr>'
+      + '<tr class="total"><td class="boxno">8</td><td>Totals — outputs</td>'
+        + '<td style="text-align:right" id="v2t8a">AED 0.00</td><td style="text-align:right" id="v2t8v">AED 0.00</td></tr>'
+      + '<tr><td class="boxno">9</td><td>Standard-rated expenses (recoverable)</td>'
+        + '<td><input id="v2ex9a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>'
+        + '<td><input id="v2ex9v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>'
+      + '<tr><td class="boxno">10</td><td>Reverse-charge supplies &amp; imports (recoverable)</td>'
+        + '<td><input id="v2rc10a" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td>'
+        + '<td><input id="v2rc10v" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVat201()"></td></tr>'
+      + '<tr class="total"><td class="boxno">11</td><td>Totals — inputs</td>'
+        + '<td style="text-align:right" id="v2t11a">AED 0.00</td><td style="text-align:right" id="v2t11v">AED 0.00</td></tr>'
+      + '<tr class="total"><td class="boxno">12</td><td>Total value of due tax for the period</td><td></td><td style="text-align:right" id="v2t12">AED 0.00</td></tr>'
+      + '<tr class="total"><td class="boxno">13</td><td>Total value of recoverable tax for the period</td><td></td><td style="text-align:right" id="v2t13">AED 0.00</td></tr>'
+      + '<tr class="total" style="border-top:2px solid var(--accent)"><td class="boxno">14</td><td id="v2t14lbl"><b>Payable tax for the period</b></td><td></td><td style="text-align:right;color:var(--accent)"><b id="v2t14">AED 0.00</b></td></tr>'
+      + '</tbody></table></div>'
+    + '<div class="note">'+svgIcon('shield',13)+' HisabOne prepares the return; filing happens on the FTA’s EmaraTax portal. Verify every box against source records before submitting.</div>'
+  + '</div>'
+
+  + '<div class="card mt18">'
+    + '<div class="cardhead"><h3>Next steps</h3><span class="muted" style="font-size:12px">Due within 28 days of the period end</span></div>'
+    + '<div style="display:flex;gap:10px;flex-wrap:wrap">'
+      + '<button class="btn" onclick="downloadVatReturnReport()">'+svgIcon('download',15)+' Download full return (PDF)</button>'
+      + '<button class="btn ghost" onclick="bkExportCSV()">'+svgIcon('file-text',15)+' Export the underlying transactions</button>'
+      + (linked ? '<button class="btn ghost" onclick="go(\'bchat\')">'+svgIcon('chat',15)+' Send it to my accountant</button>' : '')
+    + '</div>'
+    + (linked ? '' : '<p class="muted" style="font-size:12.5px;margin:12px 0 0">You are working standalone. If you would like an accountant to review this return before you file, you can link a firm from the Linked Firm page at any time.</p>')
+  + '</div>';
+}
+/* ================================================================
+   PART D — WIRING: page registration, persistence, reset
+   ================================================================ */
+
+/* ---------- Register the new pages on the existing PAGES map ---------- */
+PAGES.books    = function(){ return booksPageHTML(); };
+PAGES.bvat201  = function(){ return bvat201PageHTML(); };
+PAGES.fdocs    = function(){ return fdocsPageHTML(); };
+
+/* ---------- Persistence: pack / unpack the v2 state ---------- */
+function bizV2Pack(){
+  return {
+    workMode: workModeVal,
+    bkAccounts: bkAccounts,
+    bkTx: bkTx,
+    bkPeriod: bkPeriod
+  };
+}
+function bizV2Unpack(d){
+  d = d || {};
+  workModeVal = d.workMode || null;
+  bkAccounts  = Array.isArray(d.bkAccounts) ? d.bkAccounts : [];
+  bkTx        = Array.isArray(d.bkTx) ? d.bkTx : [];
+  bkPeriod    = d.bkPeriod || '';
+}
+function firmV2Pack(){
+  return {
+    workMode: workModeVal,
+    firmPlan: firmPlanVal,
+    manualClients: manualClients,
+    clientDocs: clientDocs
+  };
+}
+function firmV2Unpack(d){
+  d = d || {};
+  workModeVal   = d.workMode || null;
+  firmPlanVal   = d.firmPlan || null;
+  manualClients = Array.isArray(d.manualClients) ? d.manualClients : [];
+  clientDocs    = (d.clientDocs && typeof d.clientDocs==='object') ? d.clientDocs : {};
+}
+function resetV2State(){
+  workModeVal = null;
+  firmPlanVal = null;
+  manualClients = [];
+  clientDocs = {};
+  bkAccounts = [];
+  bkTx = [];
+  bkPeriod = '';
+  _fullRep = null;
+  _viewClientId = null;
+  fdocClient = 'all'; fdocCat = 'all'; fdocStatus = 'all'; fdocSearch = '';
+}
+
+/* ---------- After-render hooks for the new pages ---------- */
+function v2AfterRender(p){
+  if(p==='bvat201' && typeof recalcVat201==='function') recalcVat201();
+  if(p==='books' && typeof bkAutoVat==='function') bkAutoVat();
 }
 
 /* ---------- SESSION RESUME (server-backed) ---------- */

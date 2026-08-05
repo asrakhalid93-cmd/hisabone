@@ -214,6 +214,52 @@
   .btn.sm{padding:6px 12px;font-size:12px}
   .bar{height:8px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}
   .bar > div{height:100%;background:var(--accent);border-radius:6px}
+  /* --- workflow surfaces: activation states, roll-up filter tabs, density --- */
+  .abub{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
+  .ftabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .ftab{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel2);
+    color:var(--text);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;
+    font-family:inherit;line-height:1.2;transition:border-color .16s ease,background .16s ease,color .16s ease}
+  .ftab:hover{border-color:var(--accent)}
+  .ftab.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+  .ftab .n{font-weight:800;font-variant-numeric:tabular-nums}
+  .minibar{height:5px;border-radius:99px;background:var(--line);overflow:hidden;display:inline-block;vertical-align:middle}
+  .minibar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+  .frac{font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .tbsep{width:1px;height:22px;background:var(--line);flex:0 0 auto}
+  .codechip{font-family:ui-monospace,Menlo,monospace;font-size:14px;font-weight:700;letter-spacing:1.6px;
+    background:var(--panel2);border:1px dashed var(--line);border-radius:9px;padding:8px 13px;color:var(--accent)}
+  table.dense th{padding:7px 10px}
+  table.dense td{padding:7px 10px;font-size:12.5px}
+  .drow.dense{padding:7px 0}
+  .drow.dense .dbar{height:26px}
+  .focusrow{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+  .focusrow:last-child{border-bottom:0}
+  .focusrow .fx{flex:0 0 auto;margin-top:1px}
+    /* a settings page is a filing cabinet; label the drawers */
+    .sechead{display:flex;align-items:center;gap:12px;margin:24px 0 11px;font-size:11px;font-weight:800;
+      letter-spacing:1.3px;text-transform:uppercase;color:var(--muted)}
+    .sechead i{flex:1;height:1px;background:var(--line);display:block}
+    .sechead:first-of-type{margin-top:6px}
+  /* A nine-column table on a phone is a table nobody reads — it becomes a
+     sideways scroll with the client's name pinned off-screen. Below the
+     breakpoint each row folds into its own card, label on the left and value
+     on the right, so the whole client is legible without moving anything. */
+  @media(max-width:620px){
+    table.ctbl, table.ctbl tbody, table.ctbl tr, table.ctbl td{display:block;width:auto}
+    table.ctbl tr:first-child{display:none}
+    table.ctbl tr{border:1px solid var(--line);border-radius:12px;margin:11px;padding:11px 13px;background:var(--panel)}
+    table.ctbl td{border:0;padding:5px 0;display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:12.5px}
+    table.ctbl td:before{content:attr(data-l);color:var(--muted);font-size:10.5px;font-weight:700;
+      text-transform:uppercase;letter-spacing:.5px;flex:0 0 auto}
+    table.ctbl td.cname{display:block;padding:0 0 9px;border-bottom:1px solid var(--line);margin-bottom:5px}
+    table.ctbl td.cname:before{content:none}
+    table.ctbl td.csel{display:none}
+    table.ctbl td.cact{justify-content:flex-end;padding-top:9px}
+    table.ctbl td.cempty{display:block;text-align:center}
+    table.ctbl td.cempty:before{content:none}
+  }
   .step{display:flex;gap:14px;padding:16px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
   .stepnum{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#06122a;
     font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -703,6 +749,29 @@
   .certtop{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text)}
   .lfremember{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:-2px 0 12px;cursor:pointer;user-select:none}
   .lfremember input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;margin:0}
+  /* --- sign-up: validation, password strength, working-mode choice --- */
+  .lfhint{font-size:11.5px;margin-top:6px;line-height:1.5;color:var(--muted)}
+  .lfhint.bad{color:var(--red)}
+  .lfhint.ok{color:var(--green)}
+  .finput.bad{border-color:var(--red) !important;box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+  .pwmeter{margin-top:9px}
+  .pwbar{height:4px;border-radius:99px;background:var(--line);overflow:hidden}
+  .pwbar i{display:block;height:100%;width:0;border-radius:99px;background:var(--red);transition:width .3s ease,background .3s ease}
+  .pwlabel{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .lfmode{display:grid;gap:8px}
+  .lfmode-tile{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;font-family:inherit;cursor:pointer;color:inherit;
+    border:2px solid var(--line);background:var(--panel2);border-radius:12px;padding:11px 12px;
+    transition:border-color .16s ease,background .16s ease}
+  .lfmode-tile:hover{border-color:var(--accent)}
+  .lfmode-tile.on{border-color:var(--accent);background:var(--accent-bg)}
+  .lfmode-tile .ic{flex:0 0 auto;color:var(--muted);margin-top:1px}
+  .lfmode-tile.on .ic{color:var(--accent)}
+  .lfmode-tile .t{display:block;font-size:13px;font-weight:700;margin-bottom:2px}
+  .lfmode-tile .d{display:block;font-size:11.5px;color:var(--muted);line-height:1.55}
+  .lf-btn[disabled]{cursor:progress}
+  .lf-spin{display:inline-block;width:13px;height:13px;margin-right:8px;vertical-align:-2px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.42);border-top-color:#fff;animation:lfspin .7s linear infinite}
+  @keyframes lfspin{to{transform:rotate(360deg)}}
 
   /* ================= UI POLISH v3 — motion, depth & flow (landing + portals) ================= */
   :root{ --ease:cubic-bezier(.22,.72,.2,1); }
@@ -975,7 +1044,7 @@
 
 <!-- ================= LOGIN (full-page gradient portal selector) ================= -->
 <div id="login">
-  <div id="betaStrip" style="background:linear-gradient(90deg,#008efe,#0059f9 55%,#7a2ff0);color:#fff;text-align:center;font-size:12px;font-weight:600;letter-spacing:.3px;padding:7px 14px">HisabOne is in beta — new features ship weekly &middot; 3-month free trial for early users</div>
+  <div id="betaStrip" style="background:linear-gradient(90deg,#008efe,#0059f9 55%,#7a2ff0);color:#fff;text-align:center;font-size:12px;font-weight:600;letter-spacing:.3px;padding:7px 14px">HisabOne is in beta — new features ship weekly &middot; free for accounting firms up to 30 clients</div>
   <div class="ltopbar">
     <div class="ltopbar-logo">
       <span class="mk" role="img" aria-label="HisabOne logo"></span>
@@ -1003,14 +1072,14 @@
         <h1 class="hero-h1" id="heroH1">The compliance layer for the&nbsp;<span class="hgrad">UAE</span>.</h1>
         <p class="hero-p" id="heroSub">One secure workspace for businesses and their accountants — documents collected and chased, every deadline tracked, and VAT and corporate-tax returns drafted ready to file.</p>
         <div class="hero-cta">
-          <button class="lf-btn" id="ctaTrial" style="width:auto;padding:13px 30px" onclick="startTrial()">Start free trial &rarr;</button>
+          <button class="lf-btn" id="ctaTrial" style="width:auto;padding:13px 30px" onclick="startTrial()">Create your account &rarr;</button>
           <button class="hero-ghost" id="ctaDemo" onclick="openDemoChooser()">Demo preview</button>
           <button class="hero-ghost" id="heroInstall" onclick="installApp()" data-show="inline-flex" style="display:none;gap:7px;align-items:center">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 20h16"/></svg>
             <span id="heroInstallTxt">Download desktop app</span>
           </button>
         </div>
-        <div class="hero-note" id="heroNote">Beta &middot; 3-month free trial for early users &middot; built for the era of VAT, Corporate Tax &amp; e-invoicing</div>
+        <div class="hero-note" id="heroNote">Beta &middot; free for accounting firms up to 30 clients &middot; built for the era of VAT, Corporate Tax &amp; e-invoicing</div>
         <div id="in5Line" style="display:flex;align-items:center;gap:9px;margin-top:16px;font-size:12.5px;color:var(--muted)">
           <span style="font-weight:800;font-size:13px;letter-spacing:.5px;background:#0b1226;color:#fff;border-radius:8px;padding:4px 9px">in5</span>
           <span>Backed by <b style="color:var(--text)">in5 tech</b> — Dubai's technology startup incubator (TECOM Group)</span>
@@ -1223,26 +1292,45 @@
       <div class="lfield" id="lfJoinWrap" style="display:none"><label class="flabel" for="lfJoinLink">Your invite link</label>
         <input id="lfJoinLink" class="finput" placeholder="Paste the invite link you received">
         <div class="muted" style="font-size:11.5px;margin-top:4px">The account owner creates invites on the Team tab. Your seat type (Team member or Manager) comes from the invite itself.</div></div>
-      <div class="lfield" id="lfNameWrap" style="display:none"><label class="flabel" for="lfName" id="lfNameLabel">Company name</label><input id="lfName" class="finput" type="text" placeholder="e.g. Falcon Trading LLC" autocomplete="organization"></div>
-      <div class="lfield"><label class="flabel" for="lfEmail">Email</label><input id="lfEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username"></div>
-      <div class="lfield"><label class="flabel">Password</label>
+      <div class="lfield" id="lfNameWrap" style="display:none"><label class="flabel" for="lfName" id="lfNameLabel">Company name</label><input id="lfName" class="finput" type="text" placeholder="e.g. Falcon Trading LLC" autocomplete="organization" oninput="lfUnflag(this)"></div>
+      <div class="lfield"><label class="flabel" for="lfEmail">Email</label><input id="lfEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username" oninput="lfUnflag(this)"></div>
+      <div class="lfield"><label class="flabel" for="lfPassword">Password</label>
         <div class="pw-wrap">
-          <input id="lfPassword" name="password" class="finput" type="password" placeholder="Your password" autocomplete="current-password">
+          <input id="lfPassword" name="password" class="finput" type="password" placeholder="Your password" autocomplete="current-password" oninput="lfPwCheck()">
           <button type="button" class="pw-eye" onclick="togglePw(this,'lfPassword')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
+        <div class="pwmeter" id="lfPwMeter" style="display:none">
+          <div class="pwbar"><i id="lfPwFill"></i></div>
+          <div class="pwlabel" id="lfPwLabel">Use at least 8 characters, with a capital letter, a number or a symbol.</div>
+        </div>
+      </div>
+      <div class="lfield" id="lfConfirmWrap" style="display:none"><label class="flabel" for="lfConfirm">Confirm password</label>
+        <div class="pw-wrap">
+          <input id="lfConfirm" class="finput" type="password" placeholder="Type it once more" autocomplete="new-password" oninput="lfConfirmCheck()">
+          <button type="button" class="pw-eye" onclick="togglePw(this,'lfConfirm')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="lfhint" id="lfConfirmHint" style="display:none"></div>
+      </div>
+      <div class="lfield" id="lfWorkWrap" style="display:none"><label class="flabel">How would you like to work?</label>
+        <div class="lfmode" id="lfWorkTiles"></div>
+        <div class="lfhint">You can change this at any time from Settings — nothing is locked in.</div>
       </div>
       <label class="lfremember" id="lfRememberWrap"><input type="checkbox" id="lfRemember"><span>Remember me on this device</span></label>
+      <div id="lfTermsWrap" style="display:none">
+        <label class="lfremember" style="align-items:flex-start;margin-bottom:5px"><input type="checkbox" id="lfTerms" style="margin-top:2px"><span>I agree to the HisabOne Terms of Use and Privacy Policy, including the AI &amp; data-processing disclosures.</span></label>
+        <div class="muted" style="font-size:11.5px;margin:0 0 12px;padding-left:23px"><span class="link" onclick="switchView('terms')">Read the Terms</span> &middot; <span class="link" onclick="switchView('privacy')">Read the Privacy Policy</span></div>
+      </div>
       <div id="lfErr" style="color:var(--red);font-size:12.5px;margin-bottom:2px;display:none"></div>
       <div id="lfNotice" style="color:var(--green);font-size:12.5px;margin-bottom:2px;display:none"></div>
       <button type="submit" id="lfSubmit" class="lf-btn">Sign in →</button>
-      <div class="muted" id="lfTrialNote" style="display:none;text-align:center;font-size:11.5px;margin-top:9px">3-month free trial · No credit card needed · Cancel anytime</div>
+      <div class="muted" id="lfTrialNote" style="display:none;text-align:center;font-size:11.5px;margin-top:9px">No credit card needed · Nothing expires · Change plan any time</div>
       </form>
       <div class="muted" id="lfSwapLine" style="text-align:center;font-size:12.5px;margin-top:13px">
         <span id="lfSwapText">New to HisabOne?</span>
         <span class="link" id="lfSwapLink" onclick="setLfMode(lfMode==='signup'?'signin':'signup')">Create an account</span>
       </div>
       <div style="text-align:center;margin-top:9px"><span class="link" onclick="backToPortals()">← Choose a different portal</span></div>
-      <div class="muted" style="text-align:center;font-size:11.5px;margin-top:7px">By continuing you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span> (including AI &amp; data-processing disclosures).</div>
+      <div class="muted" id="lfConsentLine" style="text-align:center;font-size:11.5px;margin-top:7px">By continuing you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span> (including AI &amp; data-processing disclosures).</div>
     </div>
   </div>
   </div><!-- /viewSignin -->
@@ -1280,7 +1368,7 @@
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link your accountant · requests &amp; in-app messages</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI Assist (fair use) &amp; AI invoice reading — 25/mo</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>E-invoicing readiness, TRN &amp; penalty checks</span></div>
-          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
         </div>
         <div class="card pcard" style="cursor:default;border:2px solid var(--accent);position:relative">
           <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
@@ -1294,7 +1382,7 @@
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Corporate Tax return drafting — computation, adjustments &amp; Small Business Relief</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Draft-return review &amp; e-signature workflow</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Bank statement drop · reports &amp; audit trail</span></div>
-          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
+          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
         </div>
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Business Pro</div>
@@ -1306,13 +1394,13 @@
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; external auditor link</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Unlimited AI invoice reading &amp; AI Assist (fair use)</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
-          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
         </div>
       </div>
       <div class="muted" style="text-align:center;font-size:12px;margin:-16px 0 26px">Every plan includes one dedicated <b>Manager seat</b> — a separate login that oversees and observes the whole workspace (every page, report and message) without being able to edit anything. Invite yours from the Team tab.</div>
 
       <div class="lsectlabel" style="text-align:center">For Accountants &amp; Audit Firms</div>
-      <div class="muted" style="text-align:center;font-size:12.5px;margin:-10px 0 18px">Priced purely on the number of active clients on your portal — nothing else. <b>Your first 30 clients are free, forever.</b> Archived clients keep their full history and never count towards your total.</div>
+      <div class="muted" style="text-align:center;font-size:12.5px;margin:-10px 0 18px">Priced on the number of active clients on your portal. <b>Your first 30 clients are free, forever.</b> Archived clients keep their full history and never count towards your total.</div>
       <div class="grid g4" style="margin-bottom:24px;align-items:stretch">
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Practice Starter</div>
@@ -1335,7 +1423,7 @@
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Team logins &amp; roles — owner, manager, consultant</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI auto-chase &amp; scheduled email reminders</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Draft-return review &amp; client e-signature workflow</span></div>
-          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
+          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
         </div>
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Practice Plus</div>
@@ -1346,7 +1434,7 @@
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; engagement management</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Unlimited AI document reading &amp; AI Assist (fair use)</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
-          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free trial</button>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
         </div>
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Enterprise</div>
@@ -1473,8 +1561,8 @@
         <p>HisabOne is a workspace that helps UAE businesses and their accountants organise tax and compliance work — registrations, filings, audits, documents and deadlines. HisabOne is a software tool: it does not provide tax, legal or audit advice, and it does not file returns with the Federal Tax Authority on your behalf. Decisions and filings remain the responsibility of you and your professional advisers.</p>
         <h2>2. Your account</h2>
         <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
-        <h2>3. Free trial &amp; billing</h2>
-        <p>New accounts start with a 3-month free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
+        <h2>3. Plans &amp; billing</h2>
+        <p>Accounts start on the entry plan for their portal and stay there until you choose to move — nothing expires and no credit card is required to begin. Accounting firms carry up to 30 active clients free of charge, permanently. Moving to a higher plan takes effect immediately and is invoiced separately; prices exclude 5% VAT unless stated otherwise. You can change or reduce your plan at any time from Settings.</p>
         <h2>4. Your data &amp; consent</h2>
         <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
         <h2>5. AI features — accuracy disclaimer</h2>
@@ -1548,8 +1636,8 @@
         <p>HisabOne is a workspace that helps UAE businesses and their accountants organise tax and compliance work — registrations, filings, audits, documents and deadlines. HisabOne is a software tool: it does not provide tax, legal or audit advice, and it does not file returns with the Federal Tax Authority on your behalf. Decisions and filings remain the responsibility of you and your professional advisers.</p>
         <h2>2. Your account</h2>
         <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
-        <h2>3. Free trial &amp; billing</h2>
-        <p>New accounts start with a 3-month free trial — no credit card required. After the trial, continued use requires a paid plan as described on our pricing page. Prices exclude 5% VAT unless stated otherwise.</p>
+        <h2>3. Plans &amp; billing</h2>
+        <p>Accounts start on the entry plan for their portal and stay there until you choose to move — nothing expires and no credit card is required to begin. Accounting firms carry up to 30 active clients free of charge, permanently. Moving to a higher plan takes effect immediately and is invoiced separately; prices exclude 5% VAT unless stated otherwise. You can change or reduce your plan at any time from Settings.</p>
         <h2>4. Your data &amp; consent</h2>
         <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
         <h2>5. AI features — accuracy disclaimer</h2>
@@ -1627,26 +1715,29 @@
 /* ---------- BACKEND — Supabase (real authentication + database with row-level security) ---------- */
 const SB_URL='https://phpbzlrvdnollbzrqrhh.supabase.co';
 const SB_KEY='sb_publishable_ZoNeyNsawL0dEP-B19v90Q_HVLkrqbj';
-window.PRIVATE_MODE=true; /* invite-only preview: hides trial countdown; public signup disabled */ /* publishable key — safe to expose; access is enforced by RLS */
+window.PRIVATE_MODE=true; /* invite-only preview: public signup disabled */ /* publishable key — safe to expose; access is enforced by RLS */
 let sb=null;
 try{ sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SB_URL, SB_KEY) : null; }catch(e){ sb=null; }
 let currentAccount=null;   /* {id, role, name, email, inviteCode, trialEndsAt} */
 let myClients=[];          /* firm: [{business_id, business_name, business_email}] */
 let clientMeta={};         /* firm: per-client display meta (trn, deadline, risk, urgency) */
 
-function trialDaysLeft(){
-  if(!currentAccount||!currentAccount.trialEndsAt) return null;
-  return Math.ceil((new Date(currentAccount.trialEndsAt).getTime()-Date.now())/86400000);
-}
-function updateTrialPill(){
+/* No countdown any more — the pill states which plan you are on and opens the
+   picker, which is where Karbon and Liscio both put it. */
+function updatePlanPill(){
   const el=document.getElementById('trialPill'); if(!el) return;
-  if(window.PRIVATE_MODE){ el.style.display='none'; return; }
-  const d=trialDaysLeft();
-  if(d===null){ el.style.display='none'; return; }
+  if(!currentAccount){ el.style.display='none'; return; }
+  const firm=currentAccount.role==='firm';
+  const p=firm?firmPlanObj():bizPlanObj();
+  const atCap=firm && typeof firmAtCap==='function' && firmAtCap();
   el.style.display='inline-flex';
-  if(d>0){ el.textContent='Free trial · '+d+' day'+(d===1?'':'s')+' left'; el.className='trial-pill'; }
-  else { el.textContent='Trial ended — contact us to continue'; el.className='trial-pill over'; }
+  el.textContent=p.name+(firm?(' · '+firmClientCount()+'/'+firmCapLabel()+' clients'):'');
+  el.className='trial-pill'+(atCap?' over':'');
+  el.style.cursor='pointer';
+  el.title='View and change your plan';
+  el.onclick=function(){ if(typeof openPlanPicker==='function') openPlanPicker(); };
 }
+function updateTrialPill(){ updatePlanPill(); }
 
 /* per-user private state → account_data.data (debounced write-through; cross-user data lives in real tables) */
 let _saveT=null, _blobDirty=false;
@@ -1667,6 +1758,19 @@ function snapshotCompanies(cleanVault){
   if(co){ co.profile=bizCompany; co.vault=cleanVault||cleanVaultCopy(vaultDocs); co.calendar=calendarEvents; co.vatCert=vatCertMeta; co.ctCert=ctCertMeta; co.revBand=bizRevenueBand; co.invoices=invoiceInbox; co.renewals=bizRenewals; }
   return bizCompanies;
 }
+/* Warn once, then hold your tongue. Somebody working offline should be told
+   their changes are not reaching the server — they should not be told it
+   thirty times while they keep typing. */
+var _dbWarnAt=0;
+function dbWarn(msg){
+  var now=Date.now();
+  if(now-_dbWarnAt < 20000) return;
+  _dbWarnAt=now;
+  if(typeof toast==='function') toast(msg);
+}
+/* A write that failed is still pending work, not finished work. */
+function dbFailed(res){ return !!(res && res.error); }
+
 async function flushAccountData(){
   if(!currentAccount||!sb||!_blobDirty||_sampleMode) return; _blobDirty=false;
   const cleanVault=(vaultDocs||[]).map(function(d){ var o={}; for(var k in d){ if(k!=='_up'&&k!=='uploading'&&k!=='uploadError'&&Object.prototype.hasOwnProperty.call(d,k)) o[k]=d[k]; } return o; });
@@ -1681,7 +1785,15 @@ async function flushAccountData(){
       : (typeof firmV2Pack==='function' ? firmV2Pack() : null);
     if(v2){ for(var vk in v2){ if(Object.prototype.hasOwnProperty.call(v2,vk)) data[vk]=v2[vk]; } }
   }catch(e){}
-  try{ await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()}); }catch(e){}
+  try{
+    var res=await sb.from('account_data').upsert({user_id:blobId(), data:data, updated_at:new Date().toISOString()});
+    if(dbFailed(res)) throw res.error;
+  }catch(e){
+    /* Put the work back on the pile so the next save carries it, and say so —
+       silently dropping somebody's afternoon is the worst thing this app could do. */
+    _blobDirty=true;
+    dbWarn('Your latest changes have not saved yet — check your connection. Nothing has been lost on this device.');
+  }
 }
 
 /* derive the firm's client cards from linked clients + request history */
@@ -1691,7 +1803,7 @@ function rebuildFirmClients(){
     const meta=clientMeta[c.business_name]||{};
     const mine=all.filter(r=>r.client===c.business_name);
     const done=mine.filter(r=>r.st==='Received ✓').length;
-    return {name:c.business_name, id:c.business_id, email:c.business_email||'',
+    return {name:c.business_name, id:c.business_id, email:c.business_email||meta.email||'',
             registered:c.registered_at||null, trialEnds:c.trial_ends_at||null,
             trn:meta.trn||'—', deadline:meta.deadline||'Onboarding',
             docs:done+'/'+mine.length, risk:meta.risk||'medium', urgency:meta.urgency||'soon',
@@ -1707,7 +1819,7 @@ function rebuildFirmClients(){
       var done=mine.filter(function(r){ return r.st==='Received ✓'; }).length;
       var reg=(typeof docsFor==='function') ? docsFor(m.name) : [];
       var regDone=reg.filter(function(d){ return d.status==='received'||d.status==='reviewed'||d.status==='signed'; }).length;
-      firmClients.push({name:m.name, id:m.id, email:m.email||'',
+      firmClients.push({name:m.name, id:m.id, email:m.email||meta.email||'',
         registered:m.createdAt||null, trialEnds:null,
         trn:m.trn||meta.trn||'—', deadline:meta.deadline||m.deadline||'Onboarding',
         docs:(done+regDone)+'/'+(mine.length+reg.length),
@@ -1830,13 +1942,40 @@ function setUrg(v){urgFilter=v;renderPage();}
 
 /* firm: invite-code linking */
 let inviteCode='';
+/* Invite codes let anyone holding one attach to a practice, so they are minted
+   from the platform CSPRNG rather than Math.random(). The alphabet drops the
+   characters people misread aloud (0/O, 1/I/L) — 31 symbols, ~39 bits over the
+   eight characters we issue, and no support tickets about a code "not working". */
+const CODE_ALPHABET='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+function randCode(n){
+  var out='', need=n;
+  /* Rejection sampling keeps every symbol equally likely; 248 = 8 x 31. */
+  while(need>0){
+    var buf=new Uint8Array(need*2);
+    (window.crypto||window.msCrypto).getRandomValues(buf);
+    for(var i=0;i<buf.length&&need>0;i++){
+      if(buf[i]>=248) continue;
+      out+=CODE_ALPHABET.charAt(buf[i]%31); need--;
+    }
+  }
+  return out;
+}
 async function genInvite(){
   /* A team member's profile row is not the firm's — regenerating from their seat
      would stamp the code on the wrong row and clients would link to a person. */
   if(!isOwnerRole()){ toast('Only the practice owner can issue a new invite code.'); return; }
-  const r=()=>Math.random().toString(36).slice(2,6).toUpperCase();
-  const c='HSB-'+r()+'-'+r();
-  if(sb&&currentAccount){ try{ await sb.from('profiles').update({invite_code:c}).eq('id',currentAccount.id); }catch(e){ return; } }
+  const c='HSB-'+randCode(4)+'-'+randCode(4);
+  if(sb&&currentAccount){
+    try{
+      var res=await sb.from('profiles').update({invite_code:c}).eq('id',currentAccount.id);
+      if(dbFailed(res)) throw res.error;
+    }catch(e){
+      /* The old code is still the live one. Showing the new code here would hand
+         out an invite that links nobody to anything. */
+      toast('Could not issue a new invite code — your existing code still works. Try again in a moment.');
+      return;
+    }
+  }
   inviteCode=c; if(currentAccount) currentAccount.inviteCode=c;
   renderPage();
 }
@@ -1847,9 +1986,21 @@ function copyInvite(){try{navigator.clipboard&&navigator.clipboard.writeText(inv
 function rmClientInApp(i){
   const n=clients[i];
   const mc=myClients.find(c=>c.business_name===n);
-  if(mc&&sb){ try{ sb.from('links').delete().eq('business_id',mc.business_id).then(()=>{}); }catch(e){} }
+  if(mc&&sb){ deleteLinkRow(mc.business_id, n); }
   myClients=myClients.filter(c=>c.business_name!==n);
   rebuildFirmClients(); renderPage();
+}
+/* A link that survives the delete comes back on the next reload, and the person
+   who thought they had unlinked finds the client sitting there again. */
+function deleteLinkRow(bizId, label){
+  if(!sb||!bizId) return;
+  try{
+    sb.from('links').delete().eq('business_id',bizId).then(function(res){
+      if(dbFailed(res)) dbWarn('Could not unlink '+(label||'that account')+' on the server — it may reappear when you reload. Please try again.');
+    }, function(){
+      dbWarn('Could not unlink '+(label||'that account')+' on the server — it may reappear when you reload. Please try again.');
+    });
+  }catch(e){ dbWarn('Could not unlink '+(label||'that account')+' on the server — please try again.'); }
 }
 
 /* business: link a firm using their invite code (looked up across registered firm accounts) */
@@ -1882,14 +2033,19 @@ async function submitReq(kind){
     ? {id:myClients.find(c=>c.business_name===obj.client).business_id, email:myClients.find(c=>c.business_name===obj.client).business_email}
     : null;
   /* persist to the shared database — the client sees it in their own portal instantly */
+  var reqSaved=false;
   if(sb&&currentAccount){
     try{
       const {data,error}=await sb.from('doc_requests').insert({
         firm_id:currentAccount.id, business_id:bizAcc?bizAcc.id:null, client_name:obj.client,
         kind:kind, doc:obj.doc, app:obj.app, due:obj.due, urgency:obj.urg, risk:obj.risk, state:'req'
       }).select('id').single();
-      if(!error&&data) obj.id=data.id;
+      if(!error&&data){ obj.id=data.id; reqSaved=true; }
     }catch(e){}
+    /* A request that never reached the database is a request the client's portal
+       will never show. The firm has to know that before they stop chasing. */
+    if(!reqSaved){ obj.st='Not sent'; obj.cls='p-red';
+      toast('Saved on this device only — the request did not reach the server, so '+obj.client+' cannot see it yet.'); }
   }
   (kind==='tax'?firmTaxReqs:firmAuditReqs).unshift(obj);
   rebuildFirmClients();
@@ -2092,13 +2248,13 @@ function deleteReqDoc(kind,i){
 function performUnlink(p){
   if(!p) return;
   if(p.type==='firm'){
-    if(sb&&currentAccount){ try{ sb.from('links').delete().eq('business_id',bizWorkspaceId()).then(()=>{}); }catch(e){} }
+    if(sb&&currentAccount){ deleteLinkRow(bizWorkspaceId(), 'your accountant'); }
     linkedFirm=''; linkedFirmId='';
   }
   else if(p.type==='client'){
     const n=p.name;
     const mc=myClients.find(c=>c.business_name===n);
-    if(mc&&sb){ try{ sb.from('links').delete().eq('business_id',mc.business_id).then(()=>{}); }catch(e){} }
+    if(mc&&sb){ deleteLinkRow(mc.business_id, n); }
     myClients=myClients.filter(c=>c.business_name!==n);
     rebuildFirmClients();
   }
@@ -2184,23 +2340,134 @@ function loadRememberedLogin(r){
   let saved=null; try{ saved=JSON.parse(localStorage.getItem(rememberKey(r))||'null'); }catch(e){}
   if(saved && saved.email){
     document.getElementById('lfEmail').value=saved.email;
-    if(saved.pass) document.getElementById('lfPassword').value=saved.pass;
+    /* A password was stored in cleartext by an older build. Strip it on sight
+       so the browser never keeps a live credential on disk. */
+    if(saved.pass){ try{ localStorage.setItem(rememberKey(r), JSON.stringify({email:saved.email})); }catch(e){} }
     cb.checked=true;
   } else { cb.checked=false; }
 }
-function saveRememberedLogin(r,email,pass){
+/* We remember the email address only. Passwords belong in the browser's own
+   password manager, never in localStorage where any script on the page can read them. */
+function saveRememberedLogin(r,email){
   try{
     const cb=document.getElementById('lfRemember');
-    if(cb && cb.checked){ localStorage.setItem(rememberKey(r), JSON.stringify({email:email,pass:pass})); }
+    if(cb && cb.checked){ localStorage.setItem(rememberKey(r), JSON.stringify({email:email})); }
     else { localStorage.removeItem(rememberKey(r)); }
   }catch(e){}
+}
+/* Wipe every remembered login — used on sign-out so a shared machine keeps nothing. */
+function clearRememberedLogins(){
+  try{ ['business','firm'].forEach(function(r){ localStorage.removeItem('hisab_remember_'+r); }); }catch(e){}
 }
 function backToPortals(){
   document.getElementById('loginForm').style.display='none';
   document.getElementById('portalSelect').style.display='block';
 }
-function showLoginErr(msg){const e=document.getElementById('lfErr');e.textContent=msg;e.style.display='block';}
+/* An error people can act on: say what is wrong, then put the cursor on the
+   field that is wrong. A red sentence at the bottom of a form nobody scrolls
+   back up from is not an error message, it is an obstacle. */
+function showLoginErr(msg, fieldId){
+  const e=document.getElementById('lfErr'); if(e){ e.textContent=msg; e.style.display='block'; }
+  lfClearBad();
+  if(fieldId){ const f=document.getElementById(fieldId); if(f){ f.classList.add('bad'); try{ f.focus(); }catch(_e){} } }
+}
+const LF_FIELDS=['lfName','lfEmail','lfPassword','lfConfirm','lfJoinLink'];
+function lfClearBad(){ LF_FIELDS.forEach(function(id){ var f=document.getElementById(id); if(f) f.classList.remove('bad'); }); }
+function lfUnflag(el){ if(el) el.classList.remove('bad'); }
+
+/* Deliberately permissive: something, one @, something, a dot, something.
+   Anything stricter starts refusing addresses that genuinely deliver, and the
+   confirmation email is the real check anyway. */
+const EMAIL_RE=/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+function validEmail(v){ return EMAIL_RE.test(String(v||'').trim()); }
+
+/* Strength as a count of good habits rather than a formula nobody can predict.
+   The floor matters more than the ceiling — we block the guessable, we do not
+   insist on punctuation for its own sake. */
+function pwScore(p){
+  p=String(p||'');
+  var s=0;
+  if(p.length>=8) s++;
+  if(p.length>=12) s++;
+  if(/[a-z]/.test(p) && /[A-Z]/.test(p)) s++;
+  if(/\d/.test(p)) s++;
+  if(/[^A-Za-z0-9]/.test(p)) s++;
+  if(p.length<8) s=Math.min(s,1);
+  if(/^(?:password|passw0rd|123456|12345678|qwerty|welcome|letmein|hisabone|abc123)/i.test(p)) s=Math.min(s,1);
+  var bands=[{l:'',c:'var(--line)',p:0},
+             {l:'Too weak',c:'var(--red)',p:20},
+             {l:'Weak',c:'#f59e0b',p:42},
+             {l:'Good',c:'#f59e0b',p:66},
+             {l:'Strong',c:'var(--green)',p:86},
+             {l:'Very strong',c:'var(--green)',p:100}];
+  var b=bands[Math.max(0,Math.min(5,s))];
+  return {score:s, label:b.l, pct:b.p, colour:b.c};
+}
+function pwAdvice(p){
+  if(p.length<8) return 'at least 8 characters, please.';
+  var miss=[];
+  if(!/[A-Z]/.test(p)) miss.push('a capital letter');
+  if(!/\d/.test(p)) miss.push('a number');
+  if(!/[^A-Za-z0-9]/.test(p)) miss.push('a symbol');
+  if(!miss.length) return 'that will do nicely.';
+  if(p.length>=14) return 'long enough that the rest is optional.';
+  return 'add '+miss.slice(0,2).join(' or ')+' to strengthen it.';
+}
+function lfPwCheck(){
+  var pw=document.getElementById('lfPassword'),
+      fill=document.getElementById('lfPwFill'),
+      lab=document.getElementById('lfPwLabel');
+  if(pw) pw.classList.remove('bad');
+  if(!pw||!fill||!lab) return;
+  var v=pw.value, r=pwScore(v);
+  fill.style.width=r.pct+'%'; fill.style.background=r.colour;
+  lab.textContent = v ? (r.label+' \u2014 '+pwAdvice(v))
+                      : 'Use at least 8 characters, with a capital letter, a number or a symbol.';
+  lab.style.color = (v && r.score<2) ? 'var(--red)' : 'var(--muted)';
+  lfConfirmCheck();
+}
+function lfConfirmCheck(){
+  var pw=document.getElementById('lfPassword'),
+      cf=document.getElementById('lfConfirm'),
+      h=document.getElementById('lfConfirmHint');
+  if(!pw||!cf||!h) return;
+  if(lfMode!=='signup' || !cf.value){ h.style.display='none'; cf.classList.remove('bad'); return; }
+  var ok=(cf.value===pw.value);
+  h.style.display='block';
+  h.className='lfhint '+(ok?'ok':'bad');
+  h.textContent = ok ? 'Passwords match.' : 'These two do not match yet.';
+  cf.classList.toggle('bad', !ok);
+}
+
+/* Standalone or linked used to be decided silently — every new account woke up
+   linked whether or not that was true. It is a question now, asked once, on the
+   only screen where the answer is still cheap to change. */
+var _lfWork='linked';
+function lfWorkOptions(){
+  var biz=(loginRole==='business');
+  return [
+    {id:'linked', ic:'link',
+     t: biz?'With my accountant':'With my clients on their own portal',
+     d: biz?'Your firm works from the same documents and figures you enter, prepares your VAT and Corporate Tax returns, and you review and sign them off.'
+           :'Clients sign in, upload their own documents and enter their figures. You prepare and file; they sign off.'},
+    {id:'standalone', ic:'building',
+     t: biz?'On my own':'Just my practice',
+     d: biz?'You run all of it yourself \u2014 documents, calendar, invoices and your own VAT and Corporate Tax drafts. No accountant needed.'
+           :'You add and manage every client yourself. They never need to sign in.'}
+  ];
+}
+function lfRenderWork(){
+  var w=document.getElementById('lfWorkTiles'); if(!w) return;
+  w.innerHTML=lfWorkOptions().map(function(o){
+    var on=(o.id===_lfWork);
+    return '<button type="button" class="lfmode-tile'+(on?' on':'')+'" aria-pressed="'+on+'" onclick="lfPickWork(\''+o.id+'\')">'
+      +'<span class="ic">'+svgIcon(o.ic,17)+'</span>'
+      +'<span><span class="t">'+o.t+'</span><span class="d">'+o.d+'</span></span></button>';
+  }).join('');
+}
+function lfPickWork(m){ _lfWork=(m==='standalone')?'standalone':'linked'; lfRenderWork(); }
 let lfMode='signin';
+/* Historic name; there is no trial any more — this simply opens the sign-up form. */
 function startTrial(){ window._pendingLfMode='signup'; switchView('signin'); }
 function setLfMode(m){
   lfMode=m;
@@ -2213,8 +2480,17 @@ function setLfMode(m){
   if(su && typeof lfWhoChanged==='function') lfWhoChanged();
   g('lfTrialNote').style.display=su?'block':'none';
   const rm=g('lfRememberWrap'); if(rm) rm.style.display=su?'none':'flex';
+  var cw=g('lfConfirmWrap'); if(cw) cw.style.display=su?'block':'none';
+  var pmr=g('lfPwMeter');    if(pmr) pmr.style.display=su?'block':'none';
+  var tw=g('lfTermsWrap');   if(tw) tw.style.display=su?'block':'none';
+  var cl=g('lfConsentLine'); if(cl) cl.style.display=su?'none':'block';
+  var ww=g('lfWorkWrap');    if(ww && !su) ww.style.display='none';
+  var cf=g('lfConfirm');     if(cf) cf.value='';
+  var ch=g('lfConfirmHint'); if(ch) ch.style.display='none';
+  var tc=g('lfTerms');       if(tc) tc.checked=false;
+  lfClearBad();
   g('lfErr').style.display='none'; g('lfNotice').style.display='none';
-  g('lfSubmit').textContent=su?'Start free 3-month trial →':'Sign in →';
+  g('lfSubmit').textContent=su?'Create account →':'Sign in →';
   g('lfTitle').textContent=(loginRole==='business')
     ? (su?'Create your business account':'Business sign in')
     : (su?'Create your firm account':'Accountant sign in');
@@ -2224,18 +2500,29 @@ function setLfMode(m){
   const st=g('lfSwapText'), sl=g('lfSwapLink');
   if(st) st.textContent = su ? 'Already have an account?' : 'New to HisabOne?';
   if(sl) sl.textContent = su ? 'Sign in instead' : 'Create an account';
+  if(su){ lfRenderWork(); lfPwCheck(); }
 }
 function friendlyAuthError(err){
   const m=(err&&err.message)||'Something went wrong — please try again.';
   if(/invalid login credentials/i.test(m)) return 'Incorrect email or password.';
   if(/already registered/i.test(m)) return 'That email is already registered — sign in instead.';
   if(/rate limit|too many/i.test(m)) return 'Too many attempts — please wait a minute and try again.';
+  if(/email not confirmed|not confirmed/i.test(m)) return 'Check your inbox and click the confirmation link first, then sign in here.';
+  if(/failed to fetch|network/i.test(m)) return 'Could not reach the server — check your connection and try again.';
   if(/password/i.test(m)) return m;
   return m;
 }
-function setLfBusy(b){
+function setLfBusy(b, label){
   const btn=document.getElementById('lfSubmit');
-  if(btn){ btn.disabled=b; btn.style.opacity=b?'.6':'1'; }
+  if(!btn) return;
+  if(b){
+    if(btn._lfLabel===undefined) btn._lfLabel=btn.textContent;
+    btn.disabled=true; btn.style.opacity='.78';
+    btn.innerHTML='<span class="lf-spin"></span>'+(label||'Just a moment\u2026');
+  } else {
+    btn.disabled=false; btn.style.opacity='1';
+    if(btn._lfLabel!==undefined){ btn.textContent=btn._lfLabel; btn._lfLabel=undefined; }
+  }
 }
 function submitLoginForm(){ if(lfMode==='signup') doSignup(); else doLogin(); }
 function lfWhoChanged(){
@@ -2248,49 +2535,75 @@ function lfWhoChanged(){
     if(joining){ nl.textContent='Your full name'; nm.placeholder='e.g. Sara Al Marri'; }
     else { nl.textContent=(loginRole==='business')?'Company name':'Firm name'; nm.placeholder=(loginRole==='business')?'e.g. Falcon Trading LLC':'e.g. Summit Auditors'; }
   }
+  /* Someone joining an existing workspace inherits its mode; they are not
+     being asked to decide on behalf of the account owner. */
+  var ww=document.getElementById('lfWorkWrap');
+  if(ww) ww.style.display=(lfMode==='signup' && !joining)?'block':'none';
+  if(lfMode==='signup' && !joining) lfRenderWork();
   var sub=document.getElementById('lfSubmit');
-  if(sub&&lfMode==='signup') sub.textContent=joining?'Create login & join workspace →':'Start free 3-month trial →';
+  if(sub&&lfMode==='signup') sub.textContent=joining?'Create login & join workspace →':'Create account →';
 }
 async function doLogin(){
   const email=document.getElementById('lfEmail').value.trim();
   const pass=document.getElementById('lfPassword').value;
   document.getElementById('lfErr').style.display='none';
   document.getElementById('lfNotice').style.display='none';
-  if(!email||!pass){showLoginErr('Enter your email and password.');return;}
+  lfClearBad();
+  if(!email){showLoginErr('Enter your email address.','lfEmail');return;}
+  if(!validEmail(email)){showLoginErr('That does not look like a valid email address.','lfEmail');return;}
+  if(!pass){showLoginErr('Enter your password.','lfPassword');return;}
   if(!sb){showLoginErr('Cannot reach the server — check your connection and reload.');return;}
-  setLfBusy(true);
+  setLfBusy(true,'Signing you in\u2026');
   try{
     const {data,error}=await sb.auth.signInWithPassword({email:email,password:pass});
     if(error){ showLoginErr(friendlyAuthError(error)); return; }
-    saveRememberedLogin(loginRole, email, pass);
+    saveRememberedLogin(loginRole, email);
     await enterFromSession(data.session, loginRole);
   }catch(e){ showLoginErr('Could not sign in — please try again.'); }
   finally{ setLfBusy(false); }
 }
 
-/* ---------- SIGN UP (3-month free trial, no credit card) ---------- */
+/* ---------- SIGN UP (free entry plan, no credit card, nothing expires) ---------- */
 async function doSignup(){
-  const name=document.getElementById('lfName').value.trim();
-  const email=document.getElementById('lfEmail').value.trim();
-  const pass=document.getElementById('lfPassword').value;
-  const err=id=>{showLoginErr(id);};
+  const gv=id=>((document.getElementById(id)||{}).value||'');
+  const name=gv('lfName').trim();
+  const email=gv('lfEmail').trim();
+  const pass=gv('lfPassword');
+  const conf=gv('lfConfirm');
+  var who=(document.getElementById('lfWho')||{}).value||'owner';
+  var joining=(who!=='owner');
   document.getElementById('lfErr').style.display='none';
   document.getElementById('lfNotice').style.display='none';
-  if(!name){err(loginRole==='business'?'Enter your company name.':'Enter your firm name.');return;}
-  if(!email){err('Enter your email address.');return;}
-  if(!pass||pass.length<8){err('Choose a password of at least 8 characters.');return;}
-  if(!sb){err('Cannot reach the server — check your connection and reload.');return;}
-  setLfBusy(true);
+  lfClearBad();
+  /* Everything below is checked here rather than at the server so the person
+     never spends a network round trip to learn they mistyped their password. */
+  if(!name){ showLoginErr(joining?'Enter your full name.':(loginRole==='business'?'Enter your company name.':'Enter your firm name.'),'lfName'); return; }
+  if(name.length<2){ showLoginErr('That name looks too short — please write it out in full.','lfName'); return; }
+  if(!email){ showLoginErr('Enter your email address.','lfEmail'); return; }
+  if(!validEmail(email)){ showLoginErr('That does not look like a valid email address.','lfEmail'); return; }
+  if(!pass){ showLoginErr('Choose a password.','lfPassword'); return; }
+  if(pass.length<8){ showLoginErr('Choose a password of at least 8 characters.','lfPassword'); return; }
+  if(pwScore(pass).score<2){ showLoginErr('That password is too easy to guess — add a capital letter, a number or a symbol.','lfPassword'); return; }
+  if(conf!==pass){ showLoginErr('The two passwords do not match.','lfConfirm'); return; }
+  var tc=document.getElementById('lfTerms');
+  if(tc && !tc.checked){ showLoginErr('Please accept the Terms of Use and Privacy Policy to continue.'); try{tc.focus();}catch(_e){} return; }
+  if(!sb){ showLoginErr('Cannot reach the server — check your connection and reload.'); return; }
+  setLfBusy(true,'Creating your account\u2026');
   try{
     const meta={name:name, role:loginRole};
-    var who=(document.getElementById('lfWho')||{}).value||'owner';
     if(who!=='owner' && !window._joinToken){
       var raw=((document.getElementById('lfJoinLink')||{}).value||'').trim();
       var tk=(raw.match(/[?&]join=([A-Za-z0-9]+)/)||[])[1] || (/^[A-Za-z0-9]{16,}$/.test(raw)?raw:null);
-      if(!tk){ err('Paste the invite link the account owner sent you — it contains your seat.'); setLfBusy(false); return; }
+      if(!tk){ showLoginErr('Paste the invite link the account owner sent you — it contains your seat.','lfJoinLink'); setLfBusy(false); return; }
       window._joinToken=tk;
     }
     if(window._joinToken){ meta.join_token=window._joinToken; }
+    /* The mode chosen on this form has to survive the round trip through the
+       confirmation email, so it is written down before we hand off to Supabase. */
+    if(!joining){
+      window._pendingWorkMode=_lfWork;
+      try{ localStorage.setItem('hisab_pending_mode', _lfWork); }catch(_e){}
+    }
 
     const {data,error}=await sb.auth.signUp({
       email:email, password:pass,
@@ -2303,61 +2616,35 @@ async function doSignup(){
       n.textContent='Almost there — we\u2019ve emailed you a confirmation link. Click it, then sign in here.';
       n.style.display='block';
       setLfMode('signin');
+      var em=document.getElementById('lfEmail'); if(em) em.value=email;
     }
   }catch(e){ showLoginErr('Could not create the account — please try again.'); }
   finally{ setLfBusy(false); }
 }
 
-/* ---------- SIGN UP (dedicated page) ---------- */
-var _suRole='business';
-function suSetRole(r){
-  _suRole=r;
-  var b=document.getElementById('suRoleBiz'), f=document.getElementById('suRoleFirm');
-  if(b) b.classList.toggle('on', r==='business'); if(f) f.classList.toggle('on', r==='firm');
-  var lbl=document.getElementById('suLabel'); if(lbl){ lbl.textContent=(r==='business'?'Business Portal':'Accountant Portal'); lbl.className='lportal-label '+(r==='business'?'biz':'firm'); }
-  var nl=document.getElementById('suNameLabel'); if(nl) nl.textContent=(r==='business'?'Company name':'Firm name');
-  var ni=document.getElementById('suName'); if(ni) ni.placeholder=(r==='business'?'e.g. Falcon Trading LLC':'e.g. Summit Auditors');
-}
-function suShowErr(m){ var e=document.getElementById('suErr'); if(e){ e.textContent=m; e.style.display='block'; } }
-async function doSignupPage(){
-  var name=(document.getElementById('suName').value||'').trim();
-  var email=(document.getElementById('suEmail').value||'').trim();
-  var pass=document.getElementById('suPassword').value||'';
-  var errEl=document.getElementById('suErr'), noticeEl=document.getElementById('suNotice');
-  if(errEl) errEl.style.display='none'; if(noticeEl) noticeEl.style.display='none';
-  if(!name){ suShowErr(_suRole==='business'?'Enter your company name.':'Enter your firm name.'); return; }
-  if(!email){ suShowErr('Enter your email address.'); return; }
-  if(!pass||pass.length<8){ suShowErr('Choose a password of at least 8 characters.'); return; }
-  if(!sb){ suShowErr('Cannot reach the server — check your connection and reload.'); return; }
-  var btn=document.getElementById('suSubmit'); if(btn){ btn.disabled=true; btn.style.opacity='.6'; }
-  try{
-    var meta={name:name, role:_suRole};
-    if(window._joinToken){ meta.join_token=window._joinToken; }
-    var res=await sb.auth.signUp({ email:email, password:pass, options:{ data:meta, emailRedirectTo:'https://hisabone.ae' } });
-    if(res.error){ suShowErr(friendlyAuthError(res.error)); return; }
-    loginRole=_suRole;
-    if(res.data && res.data.session){ window._joinToken=null; await enterFromSession(res.data.session, _suRole); }
-    else if(noticeEl){
-      noticeEl.textContent='Almost there — we’ve emailed you a confirmation link. Click it, then sign in.';
-      noticeEl.style.display='block';
-    }
-  }catch(e){ suShowErr('Could not create the account — please try again.'); }
-  finally{ if(btn){ btn.disabled=false; btn.style.opacity='1'; } }
-}
-
 /* ---------- SESSION ---------- */
+/* On a resume there is no form on screen, so a red line inside a hidden card is
+   the same as saying nothing at all. Route the message to wherever the person
+   is actually looking. */
+function authFail(msg){
+  var lf=document.getElementById('loginForm');
+  if(lf && lf.offsetParent!==null){ showLoginErr(msg); }
+  else if(typeof toast==='function'){ toast(msg); }
+}
 async function enterFromSession(session, expectRole){
-  if(!session||!session.user){ showLoginErr('Sign-in failed — please try again.'); return; }
+  if(!session||!session.user){ authFail('Sign-in failed — please try again.'); return; }
   const uid=session.user.id;
-  const {data:prof,error}=await sb.from('profiles').select('*').eq('id',uid).maybeSingle();
-  if(error||!prof){ showLoginErr('Could not load your account profile — please try again.'); try{await sb.auth.signOut();}catch(e){} return; }
+  let prof=null, error=null;
+  try{ const r=await sb.from('profiles').select('*').eq('id',uid).maybeSingle(); prof=r.data; error=r.error; }
+  catch(e){ error=e; }
+  if(error||!prof){ authFail('Could not load your account profile — please sign in again.'); try{await sb.auth.signOut();}catch(e){} return; }
   if(expectRole && prof.role!==expectRole){
-    showLoginErr('This email is registered on the '+(prof.role==='firm'?'Accountant':'Business')+' portal — switch portals to sign in.');
+    authFail('This email is registered on the '+(prof.role==='firm'?'Accountant':'Business')+' portal — switch portals to sign in.');
     try{await sb.auth.signOut();}catch(e){}
     return;
   }
   currentAccount={id:uid, role:prof.role, name:prof.name, email:prof.email,
-                  plan:prof.plan||'trial',
+                  plan:normalisePlan(prof.role, prof.plan).id,
                   inviteCode:prof.invite_code||'', trialEndsAt:prof.trial_ends_at,
                   parentFirmId:prof.parent_firm_id||null, teamRole:null,
                   firmId: prof.role==='firm' ? (prof.parent_firm_id||uid) : uid,
@@ -2368,10 +2655,19 @@ async function enterFromSession(session, expectRole){
     try{ const {data}=await sb.from('team_members').select('team_role,digest_freq').eq('user_id',uid).maybeSingle(); tmRow=data; }catch(e){}
     currentAccount.teamRole=(tmRow&&tmRow.team_role)||'consultant';
     currentAccount.digestFreq=(tmRow&&tmRow.digest_freq)||'off';
-    try{ const {data:fp}=await sb.from('profiles').select('name,invite_code,plan').eq('id',prof.parent_firm_id).maybeSingle(); if(fp){ currentAccount.firmName=fp.name; currentAccount.plan=fp.plan||'trial'; if(prof.role==='firm') currentAccount.inviteCode=fp.invite_code||''; if(prof.role==='business') currentAccount.companyName=fp.name; } }catch(e){}
+    try{ const {data:fp}=await sb.from('profiles').select('name,invite_code,plan').eq('id',prof.parent_firm_id).maybeSingle(); if(fp){ currentAccount.firmName=fp.name; currentAccount.plan=normalisePlan(prof.role, fp.plan).id; if(prof.role==='firm') currentAccount.inviteCode=fp.invite_code||''; if(prof.role==='business') currentAccount.companyName=fp.name; } }catch(e){}
   } else { currentAccount.teamRole='owner'; }
   window._joinToken=null;
   await loadWorkspace();
+  /* A brand-new account has nothing saved yet, so this is where the sign-up
+     choice lands. An existing account has already answered and is left alone. */
+  if(typeof workModeChosen==='function' && !workModeChosen()){
+    var pmode=window._pendingWorkMode||'';
+    if(!pmode){ try{ pmode=localStorage.getItem('hisab_pending_mode')||''; }catch(_e){} }
+    if(pmode==='standalone'||pmode==='linked'){ workModeVal=pmode; saveAccountData(); }
+  }
+  window._pendingWorkMode=null;
+  try{ localStorage.removeItem('hisab_pending_mode'); }catch(_e){}
   enterApp(prof.role);
 }
 function enterApp(r){
@@ -2395,7 +2691,8 @@ function logout(){
   bizCompany={}; clientProfiles={}; ctR={}; ctDrafts={};
   invoiceInbox=[]; bizRenewals=[]; bizCompanies=null; bizActiveCo='c1';
   ctSBRon=false; ctMNEon=false; ctStep=0; ctClient=''; ctTP={}; ctTPsource='';
-  linkedFirm=''; linkedFirmId=''; inviteCode='';
+  linkedFirm=''; linkedFirmId=''; inviteCode=''; firmPlanVal=null;
+  clearRememberedLogins();
   if(typeof chatTeardown==='function') chatTeardown();
   document.getElementById('app').classList.add('hidden');
   document.getElementById('login').classList.remove('hidden');
@@ -2758,6 +3055,10 @@ function countUpStats(scope){
   });
 }
 function renderPage(){ var m=document.getElementById('main');
+  /* A plan change can pull the ground out from under whatever is on screen.
+     Rather than paint a page the account no longer carries, fall back to the
+     dashboard quietly — go() already handles the deliberate click. */
+  if(typeof pageAllowed==='function' && !pageAllowed(page)) page=homePageFor();
   m.classList.remove('pagein'); void m.offsetWidth;
   m.innerHTML = (PAGES[page]||(()=>'<h1>Coming soon</h1>'))();
   m.classList.add('pagein');
@@ -2773,6 +3074,8 @@ function renderPage(){ var m=document.getElementById('main');
   if(typeof renderCompanySwitch==='function') renderCompanySwitch();
   if(typeof refreshRoleChip==='function') refreshRoleChip();
   var _gear=document.getElementById('settingsBtn'); if(_gear) _gear.classList.toggle('on', page==='settings');
+  /* the client count in the header pill moves whenever the list moves */
+  if(typeof updatePlanPill==='function') updatePlanPill();
   saveAccountData(); }
 
 /* ---------- PAGES ---------- */
@@ -3134,33 +3437,44 @@ fdash:()=>{
 
 clients:()=>{
   const order={high:0,medium:1,low:2};
-  let rows=activeFirmClients().slice().sort((a,b)=>order[a.risk]-order[b.risk]);
+  /* Sorted by what needs a person, not by alphabet: stalled first, then
+     waiting, and only then by how much damage a mistake would do. */
+  let rows=activeFirmClients().slice().sort(function(a,b){
+    var d=ACT_RANK[clientActivation(a)]-ACT_RANK[clientActivation(b)];
+    if(d) return d;
+    return order[a.risk]-order[b.risk];
+  });
+  if(actFilter!=='all') rows=rows.filter(c=>clientActivation(c)===actFilter);
   if(riskFilter!=='all') rows=rows.filter(c=>c.risk===riskFilter);
   if(urgFilter!=='all') rows=rows.filter(c=>c.urgency===urgFilter);
+  const n=actCounts();
+  const tab=(id,label)=>{
+    const o=id==='all'?null:actObj(id);
+    return `<button class="ftab ${actFilter===id?'on':''}" onclick="setActFilter('${id}')" ${o?`title="${o.hint}"`:''}>`
+      +(o?`<span class="abub" style="background:${o.col}"></span>`:'')
+      +`${label}<span class="n">${n[id]}</span></button>`;
+  };
+  const seats=firmSeatsLeft()===Infinity?'Unlimited places':(firmAtCap()?'No places left':firmSeatsLeft()+' place'+(firmSeatsLeft()===1?'':'s')+' left');
   return `
   <h1>Client Database</h1>
-  <div class="sub">Every client you manage, whether you added them yourself or they linked their own portal to you. Organised by risk — highest first.</div>
-  ${firmUsageCardHTML()}
-  ${workModeNoteHTML()}
-  <div class="card mb14">
-    <div class="cardhead"><h3>${svgIcon('plus',16)} Add a client yourself</h3><span class="pill ${firmAtCap()?'p-red':'p-teal'}">${firmSeatsLeft()===Infinity?'Unlimited places':(firmAtCap()?'No places left':firmSeatsLeft()+' place'+(firmSeatsLeft()===1?'':'s')+' left')}</span></div>
-    <p class="muted" style="font-size:12.5px;margin-bottom:13px">Add and manage a client from start to finish without waiting for them to sign up — capture their registration details, build their document pack, chase what's outstanding and produce their reports. If they later create their own HisabOne portal you can link the two together.</p>
+  <div class="sub">Every client you manage, whether you added them yourself or they linked their own portal to you. Sorted by who needs you first.</div>
+  <div class="toolbar">
     <button class="btn" onclick="openAddClient()">${svgIcon('plus',15)} Add client</button>
-    <button class="btn ghost" style="margin-left:8px" onclick="openFirmPricing()">${svgIcon('users',15)} View plans</button>
+    <button class="btn ghost" onclick="openAddDoc()">${svgIcon('paperclip',15)} Request a document</button>
+    <span class="tbsep"></span>
+    <span class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px">Invite code</span>
+    <span class="codechip">${ctEsc(inviteCode||'not issued yet')}</span>
+    <button class="btn sm ghost" id="copyBtn" onclick="copyInvite()">Copy</button>
+    <button class="btn sm ghost" onclick="genInvite()">New code</button>
+    <span style="flex:1"></span>
+    <span class="pill ${firmAtCap()?'p-red':'p-teal'}">${seats}</span>
+    <button class="btn ghost sm" onclick="openFirmPricing()">${svgIcon('chart',14)} Plans</button>
   </div>
-  <div class="card mb14">
-    <div class="cardhead"><h3>${svgIcon('link',16)} Link a new client</h3></div>
-    <p class="muted" style="font-size:12.5px;margin-bottom:13px">Share your firm's invite code — when a business enters it on their Linked Firm page, they're linked to you automatically.</p>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
-      <div style="font-family:ui-monospace,Menlo,monospace;font-size:18px;font-weight:700;letter-spacing:2px;background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:11px 18px;color:var(--accent)">${inviteCode}</div>
-      <button class="btn sm" id="copyBtn" onclick="copyInvite()">Copy invite</button>
-      <button class="btn ghost sm" onclick="genInvite()">New code</button>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:2px">
-      ${clients.filter(c=>!isArchived(c)).map((c,i)=>`<span style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px">${c}<span style="cursor:pointer;opacity:.6" title="Unlink (needs verification)" onclick="requestUnlinkClient(${clients.indexOf(c)})">✕</span></span>`).join('')}
-    </div>
+  ${(firmClientCap()!==Infinity && firmClientCount()/firmClientCap()>=0.8) ? firmUsageCardHTML() : ''}
+  <div class="ftabs">
+    ${tab('all','All clients')}${tab('stalled','Stalled')}${tab('waiting','Waiting on client')}${tab('active','Active')}${tab('offline','No portal')}
   </div>
-  <div style="display:flex;gap:22px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
+  <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px;align-items:center">
     <div><span class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-right:9px">Risk</span>
       <span class="seg">
         <button class="${riskFilter==='all'?'on':''}" onclick="setRiskFilter('all')">All</button>
@@ -3175,24 +3489,27 @@ clients:()=>{
         <button class="${urgFilter==='soon'?'on':''}" onclick="setUrg('soon')">Due soon</button>
         <button class="${urgFilter==='ok'?'on':''}" onclick="setUrg('ok')">On track</button>
       </span></div>
+    <span style="flex:1"></span>
+    ${densityToggleHTML()}
   </div>
   ${selClientCount()?`
   <div class="banner" style="border-color:var(--accent)">
     <div style="color:var(--accent)">${svgIcon('mail',26)}</div>
     <div style="flex:1"><div class="big">${selClientCount()} client${selClientCount()===1?'':'s'} selected</div>
-      <div style="opacity:.7;font-size:13px">Send a professional upgrade reminder — delivered by email and into their in-app Messages.</div></div>
-    <button class="btn" onclick="sendPlanReminders()">${svgIcon('share',15)} Send purchase reminder</button>
+      <div style="opacity:.7;font-size:13px">Send a professional plan reminder — delivered by email and into their in-app Messages.</div></div>
+    <button class="btn" onclick="sendPlanReminders()">${svgIcon('share',15)} Send plan reminder</button>
     <button class="btn ghost" onclick="clearClientSel()">Clear</button>
   </div>`:''}
   <div class="card" style="padding:0;overflow-x:auto">
-    <table>
+    <table class="ctbl${isDense()?' dense':''}">
       <tr><th style="width:34px"><input type="checkbox" onclick="toggleAllClients(this.checked)" ${allClientsSelected()?'checked':''} title="Select all" style="width:16px;height:16px;cursor:pointer"></th>
-        <th>Client</th><th>Registered</th><th>Trial ends</th><th>Documents</th><th>Health</th><th>Penalty exposure</th><th>Risk</th><th>Urgency</th><th></th></tr>
-      ${rows.map(fClientRow).join('') || `<tr><td colspan="10" class="muted" style="text-align:center;padding:22px">${activeFirmClients().length?'No clients match these filters.':'No clients yet — share your invite code above to link your first client.'}</td></tr>`}
+        <th>Client</th><th>Status</th><th>Documents</th><th>Health</th><th>Penalty exposure</th><th>Risk</th><th>Urgency</th><th></th></tr>
+      ${rows.map(fClientRow).join('') || `<tr><td colspan="9" class="muted cempty" style="text-align:center;padding:22px">${activeFirmClients().length?'No clients match these filters — <span class="link" onclick="clearClientFilters()">clear the filters</span>.':'No clients yet — add one above, or share your invite code so a business can link their own portal to you.'}</td></tr>`}
     </table>
   </div>
+  ${linkedPortalsCardHTML()}
   ${archivedClientsCardHTML()}
-  <div class="note">Showing ${rows.length} of ${firmClients.length} clients · click a client's name to open their full profile</div>`;
+  <div class="note">Showing ${rows.length} of ${activeFirmClients().length} active clients · click a client's name to open their full profile</div>`;
 },
 
 clientprofile:()=>clientProfileHTML(),
@@ -5107,30 +5424,88 @@ function waClient(){
   var p=clientProfiles[c.business_id]?(clientProfiles[c.business_id].cPhone||''):'';
   waOpen('Hello '+c.business_name+' — '+((currentAccount&&currentAccount.firmName)||'your accountant')+' here, via HisabOne. ', p);
 }
-/* ---- plan gating: trial & free unlock everything; paid plans gate per tier ---- */
-var PLAN_FEATURES={
-  starter:{ binv:false, bvat:false, baudit:false, bank:false, multiCo:false, approveReturns:false, seats:1 },
-  growth:{ binv:true, bvat:true, baudit:false, bank:true, multiCo:false, approveReturns:true, seats:3 },
-  pro:{ binv:true, bvat:true, baudit:true, bank:true, multiCo:true, approveReturns:true, seats:10 }
+/* ==================================================================
+   PLANS \u2014 the single source of truth for both portals.
+   ------------------------------------------------------------------
+   profiles.plan stores one of these ids. Business ids gate features;
+   practice ids gate how many active clients a firm may carry.
+
+   There is no trial. An account that has never picked a plan sits on
+   its portal's entry tier and stays there indefinitely \u2014 nothing
+   expires, nothing locks the account out. People upgrade when they
+   reach a wall, from Settings \u203a Plan & billing.
+
+   Older rows written before this change carry plan='trial' (or
+   occasionally 'free'); normalisePlan() folds any unknown value back
+   to the entry tier, so no migration of the database is required.
+   ================================================================== */
+var PLANS={
+  business:[
+    {id:'starter', name:'Starter',      sub:'Stay compliant',  price:199, seats:1,
+     blurb:'Dashboard, compliance calendar, document vault and your accountant link.',
+     features:{ binv:false, bvat:false, baudit:false, bank:false, multiCo:false, approveReturns:false }},
+    {id:'growth',  name:'Growth',       sub:'Do your filings', price:299, seats:3,
+     blurb:'Everything in Starter, plus the invoice inbox, VAT & Corporate Tax return drafting and sign-off.',
+     features:{ binv:true,  bvat:true,  baudit:false, bank:true,  multiCo:false, approveReturns:true }},
+    {id:'pro',     name:'Business Pro', sub:'Groups & teams',  price:499, seats:10,
+     blurb:'Everything in Growth, plus multi-company, full audit processes and priority support.',
+     features:{ binv:true,  bvat:true,  baudit:true,  bank:true,  multiCo:true,  approveReturns:true }}
+  ],
+  firm:[
+    {id:'firm_free',       name:'Practice Starter', sub:'Free forever',       price:0,    cap:30,
+     blurb:'Add clients yourself, run the document centre and draft VAT & CT returns.'},
+    {id:'firm_practice',   name:'Practice',         sub:'Growing practices',  price:299,  cap:75,
+     blurb:'Everything in Practice Starter, plus team logins, roles and scheduled reminders.'},
+    {id:'firm_plus',       name:'Practice Plus',    sub:'Established firms',  price:699,  cap:200,
+     blurb:'Everything in Practice, plus audit processes and unlimited AI document reading.'},
+    {id:'firm_enterprise', name:'Enterprise',       sub:'Unlimited clients',  price:1499, cap:0,
+     blurb:'No client limit, priority same-day support and onboarding help.'}
+  ]
 };
-function bizPlan(){ return (currentAccount&&currentAccount.plan)||'trial'; }
+var PLAN_ENTRY={ business:'starter', firm:'firm_free' };
+function planRoleKey(role){ return (role==='firm')?'firm':'business'; }
+function planList(role){ return PLANS[planRoleKey(role)]; }
+function planById(role,id){
+  var l=planList(role);
+  for(var i=0;i<l.length;i++){ if(l[i].id===id) return l[i]; }
+  return null;
+}
+/* Any id we do not recognise \u2014 'trial', 'free', null, or a business id sitting
+   on a firm row \u2014 resolves to that portal's entry tier. */
+function normalisePlan(role,id){
+  return planById(role,id) || planById(role, PLAN_ENTRY[planRoleKey(role)]);
+}
+/* Derived from PLANS so there is still only one place to edit a feature flag. */
+var PLAN_FEATURES=(function(){
+  var o={};
+  PLANS.business.forEach(function(p){
+    var f={seats:p.seats};
+    for(var k in p.features) f[k]=p.features[k];
+    o[p.id]=f;
+  });
+  return o;
+})();
+function bizPlanObj(){ return normalisePlan('business', currentAccount&&currentAccount.plan); }
+function bizPlan(){ return bizPlanObj().id; }
 function planAllows(f){
   if(!currentAccount||currentAccount.role!=='business') return true;
-  var p=bizPlan();
-  if(p==='trial'||p==='free'||!PLAN_FEATURES[p]) return true;
-  return PLAN_FEATURES[p][f]!==false;
+  var fe=bizPlanObj().features;
+  return fe[f]!==false;
 }
-function planSeats(){
-  var p=bizPlan();
-  if(p==='trial'||p==='free'||!PLAN_FEATURES[p]) return 10;
-  return PLAN_FEATURES[p].seats;
+function planSeats(){ return bizPlanObj().seats; }
+function planLabel(){ return bizPlanObj().name; }
+/* The cheapest business plan that actually carries the feature being asked for. */
+function planNeededObjFor(f){
+  var l=PLANS.business;
+  for(var i=0;i<l.length;i++){ if(l[i].features[f]!==false) return l[i]; }
+  return l[l.length-1];
 }
-function planLabel(){ var p=bizPlan(); return p==='trial'?'Free trial':(p==='free'?'Free':p.charAt(0).toUpperCase()+p.slice(1)); }
-function planNeededFor(f){ return PLAN_FEATURES.growth[f]!==false ? 'Growth' : 'Business Pro'; }
+function planNeededFor(f){ return planNeededObjFor(f).name; }
 function upsell(f, featureName){
-  openConfirm({title:featureName+' is on the '+planNeededFor(f)+' plan', danger:false, confirmLabel:'See pricing',
-    message:'Your current plan ('+planLabel()+') doesn\u2019t include '+featureName+'. Upgrade to '+planNeededFor(f)+' to unlock it \u2014 or contact us and we\u2019ll sort it out.',
-    onYes:function(){ try{ window.open('https://hisabone.ae/#pricing','_blank'); }catch(e){} }});
+  var need=planNeededObjFor(f);
+  openConfirm({title:featureName+' is on the '+need.name+' plan', danger:false, confirmLabel:'Change plan',
+    message:'You are on '+planLabel()+', which doesn\u2019t include '+featureName+'. '+need.name+' \u2014 AED '+nfmt(need.price)+'/month \u2014 unlocks it, and the switch takes effect straight away.',
+    onYes:function(){ openPlanPicker(); }});
 }
 /* Returns — VAT and Corporate Tax — sit on the same plan feature, so the two
    sub-tabs unlock together. */
@@ -5142,6 +5517,15 @@ function gatePage(id){
   if(g && !planAllows(g[0])){ upsell(g[0], g[1]); return false; }
   return true;
 }
+/* The silent half of the same question. gatePage() opens an upsell, which is
+   right when somebody clicks a locked tab and wrong when we are simply about
+   to repaint — after a downgrade, or after a code path that set `page`
+   directly instead of going through go(). */
+function pageAllowed(id){
+  var g=PLAN_PAGE_GATES[id];
+  return !g || planAllows(g[0]);
+}
+function homePageFor(){ return (currentAccount&&currentAccount.role==='firm')?'fdash':'dash'; }
 /* ---- business team (seats incl. the Manager oversight seat) ---- */
 function bizRoleLabel(tr){
   if(tr==='owner') return '<span class="pill p-teal" style="font-size:10px">Owner</span>';
@@ -5736,6 +6120,137 @@ function bizDocPage(kind){
   <div class="ai mt18"><div class="sparkle">${svgIcon('sparkles',22)}</div>
     <div><h3>HisabOne AI is collecting these for you</h3>
       <p>Documents marked submitted were pulled automatically from your linked software and bank. The rest need your upload — your ${tax?'accountant':'auditor'} sees them the moment you do.</p></div></div>`;}
+/* ==================================================================
+   CLIENT ACTIVATION STATUS
+   One axis, and only one: is this client actually moving? Risk asks how
+   much damage an error would do, urgency asks how close the deadline is;
+   neither answers "have they gone quiet on me", which is the question a
+   practice manager opens the list to ask.
+   The order below is the decision order. A client can satisfy several of
+   these at once, and the most alarming true statement is the one worth
+   showing on the row.
+   ================================================================== */
+var CLIENT_ACT=[
+  {id:'stalled', label:'Stalled',   col:'var(--red)',   pill:'p-red',   hint:'Something is past its deadline — chase today'},
+  {id:'offline', label:'No portal', col:'var(--muted)', pill:'p-gray',  hint:'You manage this one by hand; they have no portal of their own'},
+  {id:'waiting', label:'Waiting',   col:'var(--amber)', pill:'p-amber', hint:'You have asked for something and nothing has come back'},
+  {id:'active',  label:'Active',    col:'var(--green)', pill:'p-green', hint:'Linked, and nothing is outstanding'}
+];
+function actObj(id){
+  for(var i=0;i<CLIENT_ACT.length;i++){ if(CLIENT_ACT[i].id===id) return CLIENT_ACT[i]; }
+  return CLIENT_ACT[CLIENT_ACT.length-1];
+}
+/* Outstanding work, counted the way the client experiences it — a request is a
+   request whether it came from the tax list, the audit list or the register. */
+function clientOpenDocs(name){
+  return (typeof docsFor==='function'?docsFor(name):[]).filter(function(d){return d.status==='requested';}).length;
+}
+/* A document can be asked for from the register and from the tax or audit
+   request list at the same time — two records, one promise to one client.
+   Everything that reports "how many are we waiting on" runs through here, so
+   the profile header, the In focus panel and the stat card cannot disagree. */
+function askKey(nm){ return String(nm||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
+function clientOutstandingAsks(name){
+  var seen={}, out=[];
+  (typeof docsFor==='function'?docsFor(name):[]).forEach(function(d){
+    if(d.status!=='requested') return;
+    var k=askKey(d.name); if(!k||seen[k]) return;
+    seen[k]=1; out.push({src:'register', name:d.name, due:d.due||'', category:d.category||'', doc:d});
+  });
+  (firmTaxReqs||[]).concat(firmAuditReqs||[]).forEach(function(r){
+    if(r.client!==name || /Received/.test(r.st||'')) return;
+    var k=askKey(r.doc); if(!k||seen[k]) return;
+    seen[k]=1; out.push({src:'list', name:r.doc||'Document', due:r.due||'', app:r.app||'', req:r});
+  });
+  return out;
+}
+function clientOpenReqs(name){ return clientOutstandingAsks(name).length; }
+function clientActivation(c){
+  if(!c) return 'active';
+  if(c.urgency==='overdue') return 'stalled';
+  if(!c.linked) return 'offline';
+  if(clientOpenReqs(c.name)>0) return 'waiting';
+  return 'active';
+}
+function actCounts(){
+  var out={all:0,stalled:0,offline:0,waiting:0,active:0};
+  activeFirmClients().forEach(function(c){ out.all++; out[clientActivation(c)]++; });
+  return out;
+}
+var ACT_RANK={stalled:0,waiting:1,offline:2,active:3};
+
+/* --- density: the same list, tighter, for people who live in it all day --- */
+var _dense=null;
+function isDense(){
+  if(_dense===null){ try{ _dense=(localStorage.getItem('hisab_dense')==='1'); }catch(e){ _dense=false; } }
+  return !!_dense;
+}
+function setDense(on){
+  _dense=!!on;
+  try{ localStorage.setItem('hisab_dense', _dense?'1':'0'); }catch(e){}
+  renderPage();
+}
+function densityToggleHTML(){
+  return '<span class="seg" title="How tightly the lists are packed">'
+    +'<button class="'+(isDense()?'':'on')+'" onclick="setDense(false)">Comfortable</button>'
+    +'<button class="'+(isDense()?'on':'')+'" onclick="setDense(true)">Compact</button></span>';
+}
+
+/* --- progress as a fraction, not a percentage ---------------------
+   "9 / 14" tells you how much is left to chase. "64%" does not. --- */
+function docProgress(name){
+  var ds=(typeof docsFor==='function'?docsFor(name):[]);
+  var total=ds.length;
+  var got=ds.filter(function(d){return d.status!=='requested';}).length;
+  return {total:total, done:got, pct: total?Math.round(got/total*100):0};
+}
+function docProgressHTML(name, width){
+  var p=docProgress(name);
+  if(!p.total) return '<span class="muted" style="font-size:11.5px">Nothing requested</span>';
+  var col = p.pct===100 ? 'var(--green)' : (p.pct===0 ? 'var(--amber)' : 'var(--accent)');
+  return '<span style="display:inline-flex;align-items:center;gap:8px">'
+    +'<span class="minibar" style="width:'+(width||80)+'px"><i style="width:'+p.pct+'%;background:'+col+'"></i></span>'
+    +'<span class="frac">'+p.done+' / '+p.total+'</span></span>';
+}
+
+/* --- auto-tagging what arrives ------------------------------------
+   Nobody categorises their own upload. The filename usually says it
+   anyway, so read it. First match wins, so the specific rules come
+   before the general ones. --- */
+var DOC_TAG_RULES=[
+  [/engagement\s*letter|\beng\s*letter/i,'Engagement letter'],
+  [/trade\s*licen[cs]e|\blicen[cs]e\b/i,'Trade licence'],
+  [/\bmoa\b|\baoa\b|memorandum|articles\s*of\s*assoc/i,'Memorandum & Articles'],
+  [/establishment\s*card|\best\.?\s*card/i,'Establishment card'],
+  [/emirates\s*id|\beid\b|passport/i,'Emirates ID / Passport'],
+  [/vat\s*(registration|reg\b|certificate|cert\b)|trn\s*cert/i,'VAT registration certificate'],
+  [/(corporate\s*tax|\bct\b)\s*(registration|reg\b|certificate|cert\b)/i,'Corporate Tax registration'],
+  [/audit(ed)?\s*report|auditor|audit\s*file/i,'Audit report'],
+  [/financial\s*statement|balance\s*sheet|trial\s*balance|\bp&l\b|\bfs[_\-\s]/i,'Financial statements'],
+  [/bank\s*(statement|stmt)|\bstmt\b|account\s*statement/i,'Bank statements'],
+  [/sales?\s*(invoice|inv\b)|outward|revenue\s*ledger/i,'Sales invoices'],
+  [/purchase|supplier|vendor|inward|expense\s*(invoice|ledger)/i,'Purchase invoices'],
+  [/payroll|\bwps\b|salar(y|ies)|gratuity/i,'Payroll records'],
+  [/lease|tenancy|\bejari\b|rental\s*agreement/i,'Lease agreement'],
+  [/\bfta\b|clarification|assessment\s*notice|penalt/i,'FTA correspondence'],
+  [/\bkyc\b|due\s*diligence|\baml\b/i,'KYC / due diligence']
+];
+function guessDocCategory(fileName){
+  var n=String(fileName||'').replace(/[_]+/g,' ');
+  for(var i=0;i<DOC_TAG_RULES.length;i++){ if(DOC_TAG_RULES[i][0].test(n)) return DOC_TAG_RULES[i][1]; }
+  return '';
+}
+
+/* --- who reviews it once it lands ---------------------------------
+   Liscio's point, and it is a good one: a client finishing their half of
+   the job is not the job finishing. Received work routes to a named
+   person's queue; it does not quietly close. --- */
+function docReviewer(name){ return (clientMeta[name]&&clientMeta[name].assignee)||''; }
+function pendingReviewDocs(){
+  return (typeof allClientDocs==='function'?allClientDocs():[])
+    .filter(function(x){ return !isArchived(x.c.name) && x.d.status==='received'; });
+}
+
 /* firm: risk/urgency pill + client database row + tax request form */
 function lvlPill(v){const m={High:'p-red',Urgent:'p-red',Medium:'p-amber',Low:'p-green'};return `<span class="pill ${m[v]||'p-gray'}">${v}</span>`;}
 /* ---- client selection + trial purchase reminders ---- */
@@ -5753,9 +6268,7 @@ async function sendPlanReminders(){
   var sent=0;
   for(var i=0;i<sel.length;i++){
     var c=sel[i];
-    var tb=trialBadge(c.trialEnds);
-    var when = tb.days==null ? 'soon' : (tb.days<0 ? 'already ended' : ('on '+fmtRegDate(c.trialEnds)));
-    var msg='Hello '+c.name+' — a quick note from '+firmName+'. Your HisabOne free trial '+(tb.days!=null&&tb.days<0?'has ended':'ends '+when)+'. To keep your compliance workspace, document vault and our shared workflow running without interruption, please choose a plan at hisabone.ae (Pricing). Happy to help you pick the right one.';
+    var msg='Hello '+c.name+' — a quick note from '+firmName+'. Your HisabOne workspace is on the entry plan, which stays free for as long as you need it. If you are starting to feel its limits — more users, more storage, the fuller compliance toolkit — a higher plan unlocks them immediately from Settings, and we are happy to talk you through which one actually fits. Nothing expires and nothing switches off in the meantime.';
     /* in-app chat message from the firm */
     try{
       var r=await sb.from('messages').insert({business_id:c.id, firm_id:effFirmId(), sender_id:currentAccount.id,
@@ -5763,31 +6276,52 @@ async function sendPlanReminders(){
       if(!r.error) sent++;
     }catch(e){}
     /* email reminder */
-    try{ if(c.email) sendAppEmail(c.email, 'Your HisabOne free trial — choose your plan', msg); }catch(e){}
+    try{ if(c.email) sendAppEmail(c.email, 'Your HisabOne plan — a quick note from '+firmName, msg); }catch(e){}
   }
   logActivity('plan_reminder','Sent plan purchase reminder to '+sel.length+' client'+(sel.length===1?'':'s'));
   clearClientSel();
-  toast('Reminder sent to '+sent+' client'+(sent===1?'':'s')+' — in-app now, email'+(sent===1?'':'s')+' on the way.');
+  toast('Plan note sent to '+sent+' client'+(sent===1?'':'s')+' — in-app now, email'+(sent===1?'':'s')+' on the way.');
   if(typeof loadChat==='function') loadChat(true);
 }
 function fClientRow(c){
   const rp={high:'p-red',medium:'p-amber',low:'p-green'}[c.risk];
   const u={overdue:['p-red','Overdue'],soon:['p-amber','Due soon'],ok:['p-green','On track']}[c.urgency];
   const h=clientHealth(c);
-  const tb=trialBadge(c.trialEnds);
+  const a=actObj(clientActivation(c));
+  const meta=clientMeta[c.name]||{};
+  const who=meta.assignee?ctEsc(meta.assignee):'Unassigned';
+  const sub=[c.trn&&c.trn!=='—'?ctEsc(c.trn):'No TRN yet', who, c.registered?fmtRegDate(c.registered):''].filter(Boolean).join(' · ');
   return `<tr>
-    <td onclick="event.stopPropagation()"><input type="checkbox" ${_selClients[c.id]?'checked':''} onclick="toggleClientSel('${c.id}')" style="width:16px;height:16px;cursor:pointer"></td>
-    <td><span class="link" style="font-weight:700" onclick="openClientProfile('${c.id}')">${ctEsc(c.name)}</span><div class="muted" style="font-size:11px">${ctEsc(c.trn)}</div></td>
-    <td class="muted">${fmtRegDate(c.registered)}</td>
-    <td><span class="pill ${tb.cls}">${tb.label}</span></td>
-    <td>${c.docs}</td>
-    <td><span style="display:inline-flex;align-items:center;gap:7px;font-weight:700;color:${h.band.col};cursor:pointer" onclick="openClientProfile('${c.id}')"><span style="width:9px;height:9px;border-radius:50%;background:${h.band.col}"></span>${h.score}</span></td>
-    <td>${h.exposure>0?`<b style="color:#c0392b">${fmtAED(h.exposure)}</b>`:'<span class="muted">—</span>'}</td>
-    <td><span class="pill ${rp}">${c.risk[0].toUpperCase()+c.risk.slice(1)}</span></td>
-    <td><span class="pill ${u[0]}">${u[1]}</span></td>
-    <td onclick="event.stopPropagation()"><button class="iconbtn" title="Archive client" onclick="archiveClient('${c.id}')">${svgIcon('folder',14)}</button></td></tr>`;}
+    <td class="csel" onclick="event.stopPropagation()"><input type="checkbox" ${_selClients[c.id]?'checked':''} onclick="toggleClientSel('${c.id}')" style="width:16px;height:16px;cursor:pointer"></td>
+    <td class="cname"><span class="link" style="font-weight:700" onclick="openClientProfile('${c.id}')">${ctEsc(c.name)}</span><div class="muted" style="font-size:11px">${sub}</div></td>
+    <td data-l="Status"><span style="display:inline-flex;align-items:center;gap:7px;white-space:nowrap" title="${a.hint}"><span class="abub" style="background:${a.col}"></span>${a.label}</span></td>
+    <td data-l="Documents">${docProgressHTML(c.name,72)}</td>
+    <td data-l="Health"><span style="display:inline-flex;align-items:center;gap:7px;font-weight:700;color:${h.band.col};cursor:pointer" onclick="openClientProfile('${c.id}')"><span class="abub" style="background:${h.band.col}"></span>${h.score}</span></td>
+    <td data-l="Penalty exposure">${h.exposure>0?`<b style="color:#c0392b">${fmtAED(h.exposure)}</b>`:'<span class="muted">—</span>'}</td>
+    <td data-l="Risk"><span class="pill ${rp}">${c.risk[0].toUpperCase()+c.risk.slice(1)}</span></td>
+    <td data-l="Urgency"><span class="pill ${u[0]}">${u[1]}</span></td>
+    <td class="cact" onclick="event.stopPropagation()"><button class="iconbtn" title="Archive client" onclick="archiveClient('${c.id}')">${svgIcon('folder',14)}</button></td></tr>`;}
 
 function activeMyClients(){ return (myClients||[]).filter(function(c){return !isArchived(c.business_name);}); }
+/* the activation filter stacks on top of risk and urgency rather than
+   replacing them — three questions, three independent answers */
+var actFilter='all';
+function setActFilter(v){ actFilter=v; renderPage(); }
+function clearClientFilters(){ actFilter='all'; riskFilter='all'; urgFilter='all'; renderPage(); }
+/* the businesses that linked their own portal to this firm, with the
+   unlink control kept out of the main working area */
+function linkedPortalsCardHTML(){
+  var live=(clients||[]).filter(function(c){ return !isArchived(c); });
+  if(!live.length) return '';
+  var chips=live.map(function(c){
+    return '<span style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px">'
+      +ctEsc(c)+'<span style="cursor:pointer;opacity:.6" title="Unlink (needs verification)" onclick="requestUnlinkClient('+clients.indexOf(c)+')">&#10005;</span></span>';
+  }).join('');
+  return '<div class="card mt18"><div class="cardhead"><h3>'+svgIcon('link',16)+' Linked portals</h3>'
+    +'<span class="pill p-teal">'+live.length+'</span></div>'
+    +'<p class="muted" style="font-size:12px;margin:-2px 0 10px">These businesses run their own HisabOne portal and have linked it to your practice. Unlinking needs verification from both sides.</p>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:8px">'+chips+'</div></div>';
+}
 /* ---- archive clients (keep history, hide from active work) ---- */
 function isArchived(name){ return !!(clientMeta[name]&&clientMeta[name].archived); }
 function activeFirmClients(){ return firmClients.filter(function(c){return !isArchived(c.name);}); }
@@ -5827,6 +6361,58 @@ function archivedClientsCardHTML(){
   return '<div class="card mt18"><div class="cardhead"><h3>'+svgIcon('folder',16)+' Archived clients</h3><span class="pill p-gray">'+arch.length+'</span></div>'
     +'<p class="muted" style="font-size:12px;margin:-2px 0 6px">No longer working together — kept out of your active lists but with every request, return and report preserved.</p>'+rows+'</div>';
 }
+/* --- "In focus": what actually needs a person on this client ---------
+   Liscio's per-client focus tab, and the reason it earns its place: a
+   profile page full of history is a record. This is the part that is work.
+   Everything here is derived, so it cannot drift out of date. --- */
+function clientFocusCardHTML(c){
+  var items=[];
+  var meta=clientMeta[c.name]||{};
+  var ds=(typeof docsFor==='function'?docsFor(c.name):[]);
+  ds.filter(function(d){ return d.status==='received'; }).forEach(function(d){
+    items.push({col:'var(--accent)', icon:'inbox',
+      title:'Ready for your review — '+ctEsc(d.name),
+      meta:'Arrived from the client'+(d.reviewer?' · with '+ctEsc(d.reviewer):' · nobody assigned yet'),
+      btn:'<button class="btn sm" onclick="setDocStatus(\''+jsq(c.name)+'\',\''+d.id+'\',\'reviewed\')">Mark reviewed</button>'});
+  });
+  /* one promise to the client is one line here, however many places we filed
+     it in — clientOutstandingAsks does the reconciling for every surface */
+  clientOutstandingAsks(c.name).forEach(function(a){
+    items.push({col:'var(--amber)', icon:'clock',
+      title:'Waiting on the client — '+ctEsc(a.name),
+      meta:(a.src==='register'
+              ? (a.due?'due '+ctEsc(a.due):'no due date set')+(a.category?' · '+ctEsc(a.category):'')
+              : [(a.app?ctEsc(a.app):''),(a.due?'due '+ctEsc(a.due):'')].filter(Boolean).join(' · ')||'requested'),
+      btn:(a.src==='register'
+             ? (c.manual?'':'<button class="btn sm ghost" onclick="chatSelectPeer(\''+c.id+'\');go(\'fchat\')">Chase</button>')
+             : '<button class="btn sm ghost" onclick="go(\'taxdocs\')">Open</button>')});
+  });
+  (returnsList||[]).filter(function(r){ return r.business_id===c.id && r.status!=='approved'; }).forEach(function(r){
+    items.push({col:'#7a5af8', icon:'clipboard',
+      title:(r.status==='changes_requested'?'Changes requested — ':'Awaiting client approval — ')+ctEsc(r.title||'Return'),
+      meta:ctEsc(r.period||'Draft shared with the client'),
+      btn:'<button class="btn sm ghost" onclick="viewReturn(\''+r.id+'\')">Open</button>'});
+  });
+  var _trn=meta.trn||c.trn||'';
+  if(!_trn||_trn==='—') items.push({col:'var(--muted)', icon:'warn',
+    title:'No TRN on file', meta:'Returns and reports print without a tax registration number until this is filled in', btn:''});
+  if(!meta.assignee) items.push({col:'var(--muted)', icon:'users',
+    title:'Nobody owns this client', meta:'Assign a team member below, so anything that arrives lands in a named queue', btn:''});
+  var shown=items.slice(0,7);
+  return '<div class="card mb14" style="border-left:3px solid var(--accent)">'
+    +'<div class="cardhead"><h3>'+svgIcon('activity',16)+' In focus</h3>'
+      +(items.length?'<span class="pill '+(items.length>4?'p-amber':'p-teal')+'">'+items.length+' open</span>'
+                    :'<span class="pill p-green">Clear</span>')+'</div>'
+    +(shown.length
+      ? shown.map(function(it){
+          return '<div class="focusrow"><span class="fx" style="color:'+it.col+'">'+svgIcon(it.icon,15)+'</span>'
+            +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">'+it.title+'</div>'
+            +'<div class="muted" style="font-size:11.5px">'+it.meta+'</div></div>'+it.btn+'</div>';
+        }).join('')
+        +(items.length>shown.length?'<div class="muted" style="font-size:11.5px;padding-top:9px">and '+(items.length-shown.length)+' more on the register below</div>':'')
+      : '<div class="muted" style="text-align:center;padding:20px;font-size:13px">Nothing needs you on this client right now — every request is in, reviewed and signed off.</div>')
+    +'</div>';
+}
 /* ---- client profile page (firm) ---- */
 var _viewClientId=null;
 /* Look a client up by id, falling back to the name. Records that pre-date the
@@ -5853,14 +6439,14 @@ function clientProfileHTML(){
   if(!c) return '<h1>Client profile</h1><div class="card muted" style="text-align:center;padding:30px">Client not found — <span class="link" onclick="go(\'clients\')">back to Client Database</span>.</div>';
   var meta=clientMeta[c.name]||{};
   var h=clientHealth(c);
-  var tb=trialBadge(c.trialEnds);
+  var act=actObj(clientActivation(c));
   var reqs=[...firmTaxReqs.map(r=>({...r,kind:'Tax'})), ...firmAuditReqs.map(r=>({...r,kind:'Audit'}))].filter(function(r){return r.client===c.name;});
   var openReqs=reqs.filter(function(r){return !/Received/.test(r.st);});
   /* the document register counts towards the same two numbers — a client does
      not care whether a file was asked for from the tax list or the register */
   var regDocs=docsFor(c.name);
   var regOpen=regDocs.filter(function(d){return d.status==='requested';});
-  var openCount=openReqs.length+regOpen.length;
+  var openCount=clientOpenReqs(c.name);
   var inCount=(reqs.length-openReqs.length)+(regDocs.length-regOpen.length);
   var rets=(returnsList||[]).filter(function(r){return r.business_id===c.id;});
   var msgs=(chatMsgs||[]).filter(function(m){return m.business_id===c.id;});
@@ -5875,8 +6461,10 @@ function clientProfileHTML(){
       <div class="avatar" style="width:52px;height:52px;font-size:22px;background:var(--accent-bg);color:var(--accent)">${ctEsc(c.name[0]||'C')}</div>
       <div style="flex:1;min-width:220px">
         <h1 style="font-size:21px;margin:0">${ctEsc(c.name)}</h1>
-        <div class="muted" style="font-size:12.5px;margin-top:3px">${c.manual?'Added by your firm':'Registered'} ${fmtRegDate(c.registered)}${c.manual?'':' · Free trial: <span class="pill '+tb.cls+'" style="font-size:10px">'+tb.label+'</span>'}
-          · <span class="pill ${c.manual?'p-gray':'p-teal'}" style="font-size:10px">${c.manual?'Managed by you':'Linked portal'}</span></div>
+        <div class="muted" style="font-size:12.5px;margin-top:4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <span>${c.registered ? `${c.manual?'Added by your firm':'Registered'} ${fmtRegDate(c.registered)}` : (c.manual?'Added by your firm':'Linked to your practice')}</span>
+          <span class="pill ${c.manual?'p-gray':'p-teal'}" style="font-size:10px">${c.manual?'Managed by you':'Linked portal'}</span>
+          <span class="pill ${act.pill}" style="font-size:10px" title="${act.hint}">${act.label}</span></div>
       </div>
       ${scoreGauge(h.score, h.band.col, 84)}
       <div style="min-width:150px"><div style="font-weight:700;color:${h.band.col}">${h.band.label}</div>
@@ -5890,6 +6478,7 @@ function clientProfileHTML(){
       <button class="btn ghost sm" onclick="deleteManualClient('${c.id}')">${svgIcon('trash',14)} Remove</button>`:''}
     </div>
   </div>
+  ${clientFocusCardHTML(c)}
   ${clientStageBarHTML(c.name)}
   ${clientDocCardHTML(c.name)}
   <div class="grid g4 mb14">
@@ -5903,7 +6492,14 @@ function clientProfileHTML(){
       <div class="cardhead"><h3>${svgIcon('users',16)} Account &amp; contact</h3></div>
       <div class="drow"><span class="muted" style="min-width:140px">Contact person</span>
         <input class="finput" style="max-width:230px" value="${ctEsc(meta.contact||'')}" placeholder="e.g. Ahmed (Finance)" onchange="saveClientMeta('contact',this.value)"></div>
-      <div class="drow"><span class="muted" style="min-width:140px">Email</span><span style="word-break:break-all">${ctEsc(c.email||'—')}</span></div>
+      <div class="drow"><span class="muted" style="min-width:140px">Email</span>${
+        /* an address the client's own portal gave us is theirs, not ours to edit;
+           without one we let the firm type it, because a document request with
+           nowhere to send it is not a request */
+        c.email && !meta.email
+          ? `<span style="word-break:break-all">${ctEsc(c.email)}</span>`
+          : `<input class="finput" style="max-width:230px" type="email" value="${ctEsc(meta.email||'')}" placeholder="where document requests should go" onchange="saveClientMeta('email',this.value.trim())">`
+      }</div>
       <div class="drow"><span class="muted" style="min-width:140px">TRN</span>
         <input class="finput" style="max-width:230px" value="${meta.trn&&meta.trn!=='—'?ctEsc(meta.trn):''}" placeholder="100 XXXX XXXX XXXX" onchange="saveClientMeta('trn',this.value)"></div>
       <div class="drow"><span class="muted" style="min-width:140px">Team member assigned</span>
@@ -6972,7 +7568,7 @@ function showSampleBanner(show){
       el.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:350;background:#132033;color:#fff;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:13px;box-shadow:0 -6px 22px rgba(0,0,0,.22);flex-wrap:wrap'; }
     el.innerHTML = _demoMode
       ? '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Demo — sample data</b> — you\'re exploring a read-only preview of HisabOne. Nothing is saved and no account is created.</span>'
-        +'<span style="display:inline-flex;gap:9px"><button class="btn sm" style="background:#0073fc;color:#fff;border:0;font-weight:700" onclick="demoStartTrial()">Start free trial &rarr;</button>'
+        +'<span style="display:inline-flex;gap:9px"><button class="btn sm" style="background:#0073fc;color:#fff;border:0;font-weight:700" onclick="demoStartTrial()">Create your account &rarr;</button>'
         +'<button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="exitDemo()">Exit demo</button></span>'
       : '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Sample data</b> — this is a preview. Nothing here is saved to your account.</span><button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="clearSampleData()">Exit preview</button>';
     el.style.display='flex';
@@ -7008,10 +7604,40 @@ function loadSampleData(){
        the per-client document register all key off them, and a missing id makes every row
        open the same client. */
     firmClients=[
-      {name:'Al Noor Trading LLC',id:'sb0',linked:true,trn:'100 3456 78900003',deadline:'28 Jul 2026',docs:'2/3',risk:'high',urgency:'overdue'},
-      {name:'Falcon Logistics',id:'sb1',linked:true,trn:'100 9921 45500003',deadline:'30 Sep 2026',docs:'3/3',risk:'medium',urgency:'soon'},
-      {name:'Zenith Consulting',id:'sb2',linked:true,trn:'100 7788 11200003',deadline:'—',docs:'1/2',risk:'low',urgency:'ok'}
+      {name:'Al Noor Trading LLC',id:'sb0',linked:true,trn:'100 3456 78900003',deadline:'28 Jul 2026',docs:'2/3',risk:'high',urgency:'overdue',registered:'2025-03-12'},
+      {name:'Falcon Logistics',id:'sb1',linked:true,trn:'100 9921 45500003',deadline:'30 Sep 2026',docs:'3/3',risk:'medium',urgency:'soon',registered:'2025-08-04'},
+      {name:'Zenith Consulting',id:'sb2',linked:true,trn:'—',deadline:'—',docs:'1/2',risk:'low',urgency:'ok',registered:'2026-01-19'}
     ];
+    /* Who owns each client. Zenith is deliberately left unowned so the demo
+       shows what an unassigned client looks like and why that matters. */
+    clientMeta={
+      'Al Noor Trading LLC':{trn:'100 3456 78900003',assignee:'Omar Aziz',risk:'high',urgency:'overdue',stage:'review',deadline:'28 Jul 2026'},
+      'Falcon Logistics':{trn:'100 9921 45500003',assignee:'Layla Hassan',risk:'medium',urgency:'soon',stage:'active',deadline:'30 Sep 2026'},
+      'Zenith Consulting':{risk:'low',urgency:'ok',stage:'onboarding'}
+    };
+    var _t=function(h){ return new Date(Date.now()-h*3600000).toISOString(); };
+    clientDocs={
+      'Al Noor Trading LLC':[
+        {id:'dd01',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',addedAt:_t(720),receivedAt:_t(700),reviewedAt:_t(690),signedAt:_t(688),reviewer:'Omar Aziz'},
+        {id:'dd02',name:'Emirates ID — Mr Al Noor.pdf',category:'Emirates ID / Passport',period:'',status:'reviewed',due:'',note:'',addedAt:_t(715),receivedAt:_t(698),reviewedAt:_t(680),reviewer:'Omar Aziz',autoTagged:true},
+        {id:'dd03',name:'June sales invoices',category:'Sales invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
+        {id:'dd04',name:'Bank statements — Apr to Jun',category:'Bank statements',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
+        {id:'dd05',name:'Purchase invoices — Q2',category:'Purchase invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)}
+      ],
+      'Falcon Logistics':[
+        {id:'dd06',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',addedAt:_t(600),receivedAt:_t(590),reviewedAt:_t(585),signedAt:_t(584),reviewer:'Layla Hassan'},
+        {id:'dd07',name:'MOA and AOA.pdf',category:'Memorandum & Articles',period:'',status:'reviewed',due:'',note:'',addedAt:_t(598),receivedAt:_t(588),reviewedAt:_t(560),reviewer:'Layla Hassan',autoTagged:true},
+        {id:'dd08',name:'ENBD bank statement Apr-Jun.pdf',category:'Bank statements',period:'Q2 2026',status:'received',due:'28 Jul 2026',note:'',addedAt:_t(120),receivedAt:_t(20),reviewer:'Layla Hassan',autoTagged:true},
+        {id:'dd09',name:'Ejari tenancy contract.pdf',category:'Lease agreement',period:'',status:'received',due:'',note:'',addedAt:_t(140),receivedAt:_t(9),reviewer:'Layla Hassan',autoTagged:true},
+        {id:'dd10',name:'Sales invoices — Q2',category:'Sales invoices',period:'Q2 2026',status:'reviewed',due:'28 Jul 2026',note:'',addedAt:_t(150),receivedAt:_t(60),reviewedAt:_t(40),reviewer:'Layla Hassan'},
+        {id:'dd11',name:'Payroll WPS — June',category:'Payroll records',period:'Jun 2026',status:'requested',due:'31 Jul 2026',note:'',addedAt:_t(72)}
+      ],
+      'Zenith Consulting':[
+        {id:'dd12',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',addedAt:_t(400),receivedAt:_t(390),reviewedAt:_t(380),signedAt:_t(379),reviewer:''},
+        {id:'dd13',name:'VAT certificate.pdf',category:'VAT registration certificate',period:'',status:'reviewed',due:'',note:'',addedAt:_t(398),receivedAt:_t(388),reviewedAt:_t(370),reviewer:'',autoTagged:true},
+        {id:'dd14',name:'audit_report_2025_final.pdf',category:'Audit report',period:'FY2025',status:'received',due:'',note:'',addedAt:_t(60),receivedAt:_t(4),reviewer:'',autoTagged:true}
+      ]
+    };
     firmTaxReqs=[
       {id:'t1',client:'Al Noor Trading LLC',doc:'June sales invoices',app:'VAT Return Q2 2026',due:'28 Jul 2026',urg:'High',risk:'Medium',st:'Just sent',cls:'p-teal'},
       {id:'t2',client:'Falcon Logistics',doc:'Bank statements',app:'VAT Return Q2 2026',due:'28 Jul 2026',urg:'Medium',risk:'Low',st:'Received ✓',cls:'p-green',file:null,fileName:'falcon-bank-jun.pdf'}
@@ -7096,7 +7722,10 @@ function startDemo(role){
   currentAccount={
     id:'demo-'+role, role:role,
     name: isBiz ? 'Ahmed' : 'Summit Auditors',
-    email:'demo@hisabone.ae', plan:'pro',
+    /* Business demo runs on the top tier so nothing looks locked; the practice
+       demo stays on the free tier because that is the story worth showing —
+       three clients of thirty, no card, no expiry. */
+    email:'demo@hisabone.ae', plan: isBiz?'pro':'firm_free',
     inviteCode:'DEMO-PREVIEW', trialEndsAt:null,
     parentFirmId:null, teamRole:'owner',
     firmId:'demo-'+role, bizId:'demo-'+role,
@@ -7105,6 +7734,7 @@ function startDemo(role){
     digestFreq:'off', isDemo:true
   };
   window._joinToken=null;
+  inviteCode=currentAccount.inviteCode||'';   /* the chip reads this, not currentAccount */
   enterApp(role);
   loadSampleData();
   toast(isBiz ? 'Business demo — sample data, nothing is saved' : 'Accountant demo — sample data, nothing is saved');
@@ -7132,6 +7762,8 @@ var EINV = {
 var PENALTY = { vatLateReturn:1000, vatLateReturnRepeat:2000, vatLateReg:10000, ctLateReg:10000, ctFileMo:500, ctFileMoAfter:1000, einvAspMo:5000 };
 var bizRevenueBand = null;   /* 'lt50m' | 'ge50m' | null */
 function fmtAED(n){ return 'AED '+Math.round(n||0).toLocaleString('en-US'); }
+/* a plan price is money and should be grouped like money */
+function nfmt(n){ return Number(n||0).toLocaleString('en-US'); }
 function healthBand(s){ return s>=80?{label:'Healthy',cls:'p-green',col:'#0053d6'}:(s>=55?{label:'Needs attention',cls:'p-amber',col:'#b45309'}:{label:'At risk',cls:'p-red',col:'#c0392b'}); }
 function scoreGauge(score, col, size){
   size=size||96; var deg=Math.max(0,Math.min(100,score))*3.6;
@@ -8079,15 +8711,15 @@ function settingsAccountCardHTML(){
   var a=currentAccount||{};
   var biz=a.role==='business';
   var initial=(a.name||'?').trim().charAt(0).toUpperCase();
-  var d=trialDaysLeft();
-  var trial = (d===null) ? '' : (d>0 ? 'Free trial · '+d+' day'+(d===1?'':'s')+' left' : 'Trial ended');
+  var _pl = biz ? bizPlanObj() : firmPlanObj();
+  var trial = _pl.name+(_pl.price?' · AED '+nfmt(_pl.price)+'/mo':' · Free');
   return '<div class="card mb14">'
     +'<div class="cardhead"><h3>'+svgIcon('users',16)+' Your account</h3><span class="pill p-teal">'+ctEsc(actorSeatLabel())+'</span></div>'
     +'<div style="display:flex;align-items:center;gap:14px;margin:-2px 0 12px;flex-wrap:wrap">'
       +'<div class="avatar" style="width:44px;height:44px;font-size:18px">'+ctEsc(initial)+'</div>'
       +'<div style="flex:1;min-width:180px"><div style="font-weight:700;font-size:14.5px">'+ctEsc(a.name||'Your account')+'</div>'
         +'<div class="muted" style="font-size:12.3px">'+ctEsc(a.email||'')+'</div></div>'
-      +(trial?'<span class="pill p-amber">'+ctEsc(trial)+'</span>':'')
+      +'<span class="pill p-teal" style="cursor:pointer" onclick="openPlanPicker()">'+ctEsc(trial)+'</span>'
     +'</div>'
     +setRow('Portal', biz?'Business portal — your own compliance, documents and returns':'Accountant portal — your practice and its clients', '')
     +(biz && a.companyName ? setRow('Company', ctEsc(a.companyName), '') : '')
@@ -8107,7 +8739,7 @@ function settingsInviteCardHTML(){
       +'<span class="pill '+(owner?'p-teal':'p-gray')+'">'+(owner?'You can change this':'View only')+'</span></div>'
     +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">A business enters this code on their Linked Firm page to connect to your practice. Only the practice owner can issue a new one — a code issued from a team seat would link clients to that person instead of the firm.</p>'
     +'<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'
-      +'<div style="font-family:ui-monospace,Menlo,monospace;font-size:17px;font-weight:700;letter-spacing:2px;background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:10px 16px;color:var(--accent)">'+ctEsc(inviteCode||'—')+'</div>'
+      +'<div style="font-family:ui-monospace,Menlo,monospace;font-size:17px;font-weight:700;letter-spacing:2px;background:var(--panel2);border:1px dashed var(--line);border-radius:10px;padding:10px 16px;color:var(--accent)">'+ctEsc(inviteCode||'not issued yet')+'</div>'
       +'<button class="btn sm" id="copyBtn" onclick="copyInvite()">Copy invite</button>'
       +(owner?'<button class="btn ghost sm" onclick="genInvite()">'+svgIcon('refresh',13)+' New code</button>':'')
     +'</div></div>';
@@ -8164,38 +8796,226 @@ function exportAccountData(){
     toast('Your data has been downloaded.');
   }catch(e){ toast('Could not build the export — try again.'); }
 }
+/* ==================================================================
+   PLAN & BILLING — one screen, both portals, switch takes effect now
+   ------------------------------------------------------------------
+   Karbon and Liscio both keep the plan one click from wherever you hit
+   the wall, and both show usage against the limit rather than making
+   you count. This does the same: the card states where you are, the
+   picker states what each tier costs, and choosing writes straight to
+   profiles.plan so the app unlocks in the same breath.
+
+   Nothing here takes a payment. Switching raises or lowers the limits
+   immediately and HisabOne invoices separately — which is why only the
+   account owner may do it, and why a downgrade you have already
+   outgrown is refused with the number you would have to get under.
+   ================================================================== */
+function planIsOwner(){
+  return !!(currentAccount && (currentAccount.teamRole==='owner' || !currentAccount.parentFirmId));
+}
+/* What each portal is actually metered on, so one function feeds the usage
+   bar, the downgrade guard and the picker copy. */
+function planUsage(){
+  var firm=currentAccount && currentAccount.role==='firm';
+  if(firm){
+    var used=firmClientCount(), cap=firmClientCap();
+    return {used:used, cap:cap, noun:'active client', capLabel:firmCapLabel()};
+  }
+  var seats=1;
+  try{ seats=Math.max(1,(teamMembers||[]).filter(function(m){return m.team_role!=='manager';}).length); }catch(e){ seats=1; }
+  var c=planSeats();
+  return {used:seats, cap:c, noun:'team seat', capLabel:String(c)};
+}
+function planCapOf(p){
+  if(!p) return Infinity;
+  if(typeof p.cap==='number') return p.cap>0?p.cap:Infinity;
+  return p.seats||Infinity;
+}
+/* A downgrade you have already outgrown is refused rather than silently
+   leaving the account over its own limit. */
+function planSwitchBlocker(role,p){
+  var u=planUsage(), cap=planCapOf(p);
+  if(u.used>cap){
+    return 'You are using '+u.used+' '+u.noun+(u.used===1?'':'s')+'. '+p.name+' covers '
+      +cap+' — '+(role==='firm'?'archive':'remove')+' '+(u.used-cap)+' first, then switch.';
+  }
+  return '';
+}
+function planUsageBarHTML(){
+  var u=planUsage();
+  var pct = u.cap===Infinity ? 6 : Math.min(100, Math.round(u.used/u.cap*100));
+  var col = u.cap===Infinity ? 'var(--green)' : (pct>=100?'var(--red)':(pct>=80?'var(--amber)':'var(--accent)'));
+  return '<div style="display:flex;align-items:baseline;gap:8px;margin:2px 0 8px">'
+      +'<span style="font-size:24px;font-weight:800;color:'+col+'">'+u.used+'</span>'
+      +'<span class="muted" style="font-size:13px">of '+u.capLabel+' '+u.noun+(u.cap===1?'':'s')+' used</span></div>'
+    +'<div style="height:8px;border-radius:99px;background:var(--panel2);overflow:hidden;border:1px solid var(--line)">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:99px;transition:width .4s"></div></div>';
+}
+function planFeatureLineHTML(p){
+  if(!p.features) return '';
+  var names={binv:'Invoice inbox', bvat:'VAT & CT returns', baudit:'Audit processes',
+             bank:'Bank statement drop', multiCo:'Multi-company', approveReturns:'Return sign-off'};
+  var on=[], off=[];
+  for(var k in names){ (p.features[k]!==false?on:off).push(names[k]); }
+  var row=function(list,yes){
+    return list.map(function(t){
+      return '<div style="display:flex;gap:7px;align-items:flex-start;font-size:12px;margin-top:4px;'
+        +(yes?'':'opacity:.5')+'"><span style="color:'+(yes?'var(--green)':'var(--muted)')+';font-weight:800">'
+        +(yes?'✓':'—')+'</span><span>'+ctEsc(t)+'</span></div>';
+    }).join('');
+  };
+  return row(on,true)+row(off,false);
+}
+function planCardHTML(role,p,cur){
+  var on=p.id===cur, blocked=planSwitchBlocker(role,p);
+  var cap = (typeof p.cap==='number')
+    ? (p.cap===0?'Unlimited clients':'Up to '+p.cap+' clients')
+    : (p.seats+' team seat'+(p.seats===1?'':'s')+' + Manager');
+  return '<div style="border:2px solid '+(on?'var(--accent)':'var(--line)')+';background:'+(on?'var(--accent-bg)':'#fff')
+      +';border-radius:14px;padding:15px;display:flex;flex-direction:column">'
+    +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b style="font-size:14.5px">'+ctEsc(p.name)+'</b>'
+      +(on?'<span class="pill p-teal" style="font-size:10px">Current plan</span>':'')+'</div>'
+    +'<div style="font-size:23px;font-weight:800;margin:6px 0 1px">'+(p.price?'AED '+nfmt(p.price):'Free')
+      +(p.price?'<span class="muted" style="font-size:12px;font-weight:500"> /mo</span>':'')+'</div>'
+    +'<div class="muted" style="font-size:12px">'+ctEsc(cap)+' · '+ctEsc(p.sub)+'</div>'
+    +(p.blurb?'<div class="muted" style="font-size:12px;margin-top:7px;line-height:1.45">'+ctEsc(p.blurb)+'</div>':'')
+    +planFeatureLineHTML(p)
+    +'<div style="flex:1;min-height:10px"></div>'
+    +(blocked?'<div style="font-size:11.5px;color:var(--red);margin-top:8px;line-height:1.4">'+ctEsc(blocked)+'</div>':'')
+    +(on
+      ? '<button class="btn ghost sm" disabled style="width:100%;margin-top:10px;opacity:.55;cursor:default">You are on this plan</button>'
+      : '<button class="btn'+(blocked?' ghost':'')+' sm" style="width:100%;margin-top:10px"'
+        +(blocked?' disabled style="width:100%;margin-top:10px;opacity:.5;cursor:not-allowed"':'')
+        +' onclick="choosePlan(\''+p.id+'\')">'+(p.price? 'Switch to '+ctEsc(p.name) : 'Switch to '+ctEsc(p.name))+'</button>')
+    +'</div>';
+}
+function closePlanPicker(){ var h=document.getElementById('planPickerModal'); if(h) h.style.display='none'; }
+function openPlanPicker(){
+  if(!currentAccount){ toast('Sign in to manage your plan.'); return; }
+  var role=currentAccount.role;
+  var cur=(role==='firm')?firmPlanId():bizPlan();
+  var owner=planIsOwner();
+  var cards=planList(role).map(function(p){ return planCardHTML(role,p,cur); }).join('');
+  var h=document.getElementById('planPickerModal');
+  if(!h){
+    h=document.createElement('div'); h.id='planPickerModal'; h.className='modal-overlay';
+    document.body.appendChild(h);
+    h.addEventListener('click', function(e){ if(e.target===h) closePlanPicker(); });
+  }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#fff;border-radius:18px;max-width:900px;width:100%;padding:24px;box-shadow:0 24px 60px rgba(8,20,40,.3);max-height:90vh;overflow:auto">'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">'
+      +'<div><h3 style="font-size:18px;margin:0 0 4px">'+(role==='firm'?'Practice plans':'Your plan')+'</h3>'
+      +'<p style="font-size:13px;color:var(--muted);margin:0;max-width:560px;line-height:1.5">'
+      +(role==='firm'
+        ? 'Priced on how many active clients sit on your portal. Your first 30 are free, forever, and archived clients never count towards the total.'
+        : 'Every plan includes the dashboard, compliance calendar, document vault and your accountant link. Higher tiers add the filing tools and more seats.')
+      +'</p></div>'
+      +'<button class="iconbtn" title="Close" onclick="closePlanPicker()">&#10005;</button>'
+    +'</div>'
+    +'<div class="card" style="margin:16px 0 4px;padding:14px">'
+      +'<div class="cardhead" style="margin-bottom:2px"><h3 style="font-size:13.5px">'+svgIcon('chart',14)+' Where you are today</h3></div>'
+      +planUsageBarHTML()
+    +'</div>'
+    +'<div class="grid '+(role==='firm'?'g4':'g3')+'" style="gap:12px;margin-top:14px;align-items:stretch">'+cards+'</div>'
+    +(owner
+      ? '<div class="note" style="margin-top:16px">'+svgIcon('check',13)+' Switching takes effect immediately. We invoice separately — no card is taken here, and nothing is charged by clicking.</div>'
+      : '<div class="note" style="margin-top:16px">'+svgIcon('shield',13)+' Only the account owner can change the plan. Ask them to switch it from Settings › Plan & billing.</div>')
+    +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">'
+      +'<button class="btn ghost" onclick="closePlanPicker()">Close</button>'
+      +'<a class="btn ghost" href="mailto:info@hisabone.ae?subject=HisabOne%20plan" style="text-decoration:none">Talk to us</a>'
+    +'</div></div>';
+}
+async function choosePlan(id){
+  if(!currentAccount) return;
+  var role=currentAccount.role;
+  var p=planById(role,id);
+  if(!p){ toast('That plan is no longer available.'); return; }
+  if(id===(role==='firm'?firmPlanId():bizPlan())){ closePlanPicker(); return; }
+  if(!planIsOwner()){ toast('Only the account owner can change the plan.'); return; }
+  var blocked=planSwitchBlocker(role,p);
+  if(blocked){ toast(blocked); return; }
+  if(currentAccount.isDemo || _sampleMode){
+    currentAccount.plan=id; if(role==='firm') firmPlanVal=id;
+    closePlanPicker(); updatePlanPill(); renderNav(); renderPage();
+    toast('Demo preview — switched to '+p.name+', nothing was saved.');
+    return;
+  }
+  var prev=currentAccount.plan, prevFirm=firmPlanVal;
+  /* Optimistic: the UI moves first so the screen the person was blocked on
+     unlocks instantly, and we roll back if the write is refused. */
+  currentAccount.plan=id; if(role==='firm') firmPlanVal=id;
+  closePlanPicker(); updatePlanPill(); renderNav(); renderPage();
+  if(!sb){ toast('Switched to '+p.name+' on this device — reconnect to save it to your account.'); return; }
+  try{
+    var r=await sb.from('profiles').update({plan:id}).eq('id',currentAccount.id);
+    if(r && r.error){ throw r.error; }
+    try{ if(typeof logActivity==='function') logActivity('plan_change','Plan changed to '+p.name); }catch(e){}
+    saveAccountData();
+    toast('You are on '+p.name+' now'+(p.price?' — we will invoice AED '+nfmt(p.price)+'/month':'')+'.');
+  }catch(e){
+    currentAccount.plan=prev; firmPlanVal=prevFirm;
+    updatePlanPill(); renderNav(); renderPage();
+    toast('Could not save the plan change — check your connection and try again.');
+  }
+}
+/* The Settings card. Same numbers as the picker, one click away from it. */
+function settingsPlanCardHTML(){
+  if(!currentAccount) return '';
+  var role=currentAccount.role;
+  var p=(role==='firm')?firmPlanObj():bizPlanObj();
+  var u=planUsage(), owner=planIsOwner();
+  var pct = u.cap===Infinity ? 0 : Math.round(u.used/u.cap*100);
+  var tone = u.cap===Infinity ? 'p-teal' : (pct>=100?'p-red':(pct>=80?'p-amber':'p-teal'));
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('chart',16)+' Plan &amp; billing</h3>'
+      +'<span class="pill '+tone+'">'+ctEsc(p.name)+(p.price?' · AED '+nfmt(p.price)+'/mo':' · Free')+'</span></div>'
+    +planUsageBarHTML()
+    +'<div class="muted" style="font-size:12.3px;margin-top:9px;line-height:1.5">'+ctEsc(p.blurb||'')+'</div>'
+    +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">'
+      +'<button class="btn ghost sm" onclick="openPlanPicker()">'+svgIcon('chart',13)+' '+(owner?'Change plan':'Compare plans')+'</button>'
+    +'</div>'
+    +(owner?'':'<div class="note" style="margin-top:11px">'+svgIcon('shield',13)+' Only the account owner can change the plan.</div>')
+    +'</div>';
+}
 function settingsPageHTML(){
   if(!currentAccount) return '<h1>Settings</h1><div class="sub">Sign in to manage this account.</div>';
   var biz=currentAccount.role==='business';
+  var sec=function(t,h){ return '<div class="sechead"><span>'+t+'</span><i></i></div>'
+    +(h?'<p class="muted" style="font-size:12px;margin:-4px 0 11px">'+h+'</p>':''); };
   return '<h1>Settings</h1>'
     +'<div class="sub">How you work, who you are and what HisabOne does for you — all in one place.</div>'
+    +sec('Your account','Who you are on HisabOne, and the plan this workspace runs on.')
     +settingsAccountCardHTML()
+    +settingsPlanCardHTML()
+    +sec('How you work', biz?'Standalone, or linked to the firm that files for you.':'Standalone, or linked to your clients’ own portals.')
     +workModeCardHTML()
-    +(biz && typeof signoffPinCardHTML==='function' ? signoffPinCardHTML() : '')
-    +(!biz ? firmUsageCardHTML() : '')
-    +(!biz ? settingsInviteCardHTML() : '')
+    +(biz && typeof signoffPinCardHTML==='function'
+        ? sec('Sign-off security','The PIN your authorised signatory types before a return can be approved.')+signoffPinCardHTML()
+        : '')
+    +(!biz ? sec('Your clients','How businesses join your practice, and what lands in your inbox.')+settingsInviteCardHTML() : '')
     +(!biz && typeof digestCardHTML==='function' ? digestCardHTML() : '')
+    +sec('Preferences','Language, appearance, and how tightly the lists are packed.')
+    +'<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('sliders',16)+' List density</h3>'+densityToggleHTML()+'</div>'
+      +'<p class="muted" style="font-size:12.5px;margin:-2px 0 0">Compact fits roughly a third more rows on a screen — worth having if you live in the client list and the document register all day. Comfortable is easier to scan occasionally.</p></div>'
     +settingsPrefsCardHTML()
+    +sec('Your data','Export everything you have put in, or close the account.')
     +settingsDataCardHTML();
 }
 
 /* ==================================================================
    ACCOUNTANT PRICING — free to 30 clients, tiered above
    ================================================================== */
-var FIRM_PLANS=[
-  {id:'firm_free',      name:'Practice Starter', cap:30,   price:0,    sub:'Free forever'},
-  {id:'firm_practice',  name:'Practice',         cap:75,   price:299,  sub:'Growing practices'},
-  {id:'firm_plus',      name:'Practice Plus',    cap:200,  price:699,  sub:'Established firms'},
-  {id:'firm_enterprise',name:'Enterprise',       cap:0,    price:1499, sub:'Unlimited clients'}
-];
+/* The practice tiers live in PLANS.firm; FIRM_PLANS is the historic name for
+   the same array, kept so the pricing screens read naturally. */
+var FIRM_PLANS=PLANS.firm;
 var firmPlanVal=null;
-function firmPlanId(){
-  if(firmPlanVal && FIRM_PLANS.some(function(p){return p.id===firmPlanVal;})) return firmPlanVal;
-  var p=currentAccount&&currentAccount.plan;
-  if(p && FIRM_PLANS.some(function(x){return x.id===p;})) return p;
-  return 'firm_free';
+function firmPlanId(){ return firmPlanObj().id; }
+function firmPlanObj(){
+  /* firmPlanVal is the local mirror the plan picker writes first, so the UI
+     updates the instant somebody switches rather than after the round trip. */
+  return planById('firm', firmPlanVal) || normalisePlan('firm', currentAccount&&currentAccount.plan);
 }
-function firmPlanObj(){ var id=firmPlanId(); return FIRM_PLANS.find(function(p){return p.id===id;})||FIRM_PLANS[0]; }
 function firmClientCap(){ var c=firmPlanObj().cap; return c>0?c:Infinity; }
 function firmClientCount(){ return (typeof activeFirmClients==='function'?activeFirmClients():[]).length; }
 function firmSeatsLeft(){ var c=firmClientCap(); return c===Infinity?Infinity:Math.max(0, c-firmClientCount()); }
@@ -8209,9 +9029,9 @@ function firmUpsell(){
   var need=firmPlanNeededFor(firmClientCount()+1);
   openConfirm({
     title:'You have reached '+firmCapLabel()+' clients',
-    danger:false, confirmLabel:'See practice pricing',
-    message:'Your '+firmPlanObj().name+' plan covers '+firmCapLabel()+' active clients. Move to '+need.name+' — AED '+need.price+'/month for '+(need.cap===0?'unlimited':'up to '+need.cap)+' clients — to keep adding. Archiving a client you no longer work with also frees a place immediately.',
-    onYes:function(){ window.open('https://hisabone.ae/#pricing','_blank'); }
+    danger:false, confirmLabel:'Change plan',
+    message:'Your '+firmPlanObj().name+' plan covers '+firmCapLabel()+' active clients. Move to '+need.name+' — AED '+nfmt(need.price)+'/month for '+(need.cap===0?'unlimited':'up to '+need.cap)+' clients — to keep adding. Archiving a client you no longer work with also frees a place immediately.',
+    onYes:function(){ openPlanPicker(); }
   });
 }
 function firmUsageCardHTML(){
@@ -8221,7 +9041,7 @@ function firmUsageCardHTML(){
   var next = FIRM_PLANS[FIRM_PLANS.indexOf(plan)+1];
   return '<div class="card mb14">'
     +'<div class="cardhead"><h3>'+svgIcon('users',16)+' Client capacity</h3>'
-      +'<span class="pill '+(pct>=100?'p-red':(pct>=80?'p-amber':'p-teal'))+'">'+plan.name+(plan.price?' · AED '+plan.price+'/mo':' · Free')+'</span></div>'
+      +'<span class="pill '+(pct>=100?'p-red':(pct>=80?'p-amber':'p-teal'))+'">'+plan.name+(plan.price?' · AED '+nfmt(plan.price)+'/mo':' · Free')+'</span></div>'
     +'<div style="display:flex;align-items:baseline;gap:8px;margin:-2px 0 8px">'
       +'<span style="font-size:26px;font-weight:800;color:'+col+'">'+used+'</span>'
       +'<span class="muted" style="font-size:13px">of '+firmCapLabel()+' active clients</span></div>'
@@ -8231,20 +9051,23 @@ function firmUsageCardHTML(){
       +(cap===Infinity
         ? 'Unlimited clients on Enterprise. Archived clients keep their full history and never count against you.'
         : (firmAtCap()
-          ? 'You are at capacity. Archive a client you no longer work with, or move to '+(next?next.name+' (AED '+next.price+'/mo, '+(next.cap===0?'unlimited':'up to '+next.cap)+' clients)':'a larger plan')+'.'
+          ? 'You are at capacity. Archive a client you no longer work with, or move to '+(next?next.name+' (AED '+nfmt(next.price)+'/mo, '+(next.cap===0?'unlimited':'up to '+next.cap)+' clients)':'a larger plan')+'.'
           : firmSeatsLeft()+' more client'+(firmSeatsLeft()===1?'':'s')+' on this plan. Archived clients keep their history and do not count.'))
     +'</div>'
     +(cap!==Infinity && next ? '<button class="btn ghost sm" style="margin-top:11px" onclick="openFirmPricing()">'+svgIcon('chart',13)+' Compare practice plans</button>' : '')
     +'</div>';
 }
-function openFirmPricing(){
+/* Kept as the historic entry point; the practice pricing screen and the
+   business one are now the same component. */
+function openFirmPricing(){ openPlanPicker(); }
+function openFirmPricingLegacy(){
   var used=firmClientCount(), cur=firmPlanId();
   var cards=FIRM_PLANS.map(function(p){
     var on=p.id===cur, fits=(p.cap===0||used<=p.cap);
     return '<div style="border:2px solid '+(on?'var(--accent)':'var(--line)')+';background:'+(on?'var(--accent-bg)':'#fff')+';border-radius:12px;padding:14px">'
       +'<div style="display:flex;align-items:center;gap:8px"><b style="font-size:14px">'+p.name+'</b>'
         +(on?'<span class="pill p-teal" style="font-size:10px">Your plan</span>':'')+'</div>'
-      +'<div style="font-size:22px;font-weight:800;margin:6px 0 2px">'+(p.price?'AED '+p.price:'Free')+(p.price?'<span class="muted" style="font-size:12px;font-weight:500"> /mo</span>':'')+'</div>'
+      +'<div style="font-size:22px;font-weight:800;margin:6px 0 2px">'+(p.price?'AED '+nfmt(p.price):'Free')+(p.price?'<span class="muted" style="font-size:12px;font-weight:500"> /mo</span>':'')+'</div>'
       +'<div class="muted" style="font-size:12px">'+(p.cap===0?'Unlimited clients':'Up to '+p.cap+' clients')+' · '+p.sub+'</div>'
       +(fits?'':'<div style="font-size:11.5px;color:var(--red);margin-top:6px">Below your current '+used+' clients</div>')
       +'</div>';
@@ -8577,6 +9400,8 @@ function setDocStatus(name, id, status){
   var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
   d.status=status;
   if(status==='received'&&!d.receivedAt) d.receivedAt=new Date().toISOString();
+  /* arriving work joins somebody's queue rather than closing itself */
+  if(status==='received'&&!d.reviewer) d.reviewer=docReviewer(name)||'';
   if(status==='reviewed') d.reviewedAt=new Date().toISOString();
   if(status==='signed') d.signedAt=new Date().toISOString();
   saveAccountData();
@@ -8620,8 +9445,14 @@ function handleClientDocFile(inp){
   var t=_docUploadTarget; _docUploadTarget=null;
   var d=docsFor(t.name).find(function(x){return x.id===t.id;}); if(!d) return;
   d.fileName=f.name; d.size=f.size; d.uploading=true; d.uploadError=false;
+  /* read the filename so nobody has to categorise their own upload */
+  if(!d.category||d.category==='Other'){
+    var guess=guessDocCategory(f.name);
+    if(guess){ d.category=guess; d.autoTagged=true; }
+  }
   if(d.status==='requested') d.status='received';
   if(!d.receivedAt) d.receivedAt=new Date().toISOString();
+  if(!d.reviewer) d.reviewer=docReviewer(t.name)||'';
   renderPage();
   if(!sb||!currentAccount){ d.uploading=false; d.uploadError=true; saveAccountData(); renderPage(); return; }
   try{
@@ -8651,11 +9482,14 @@ function clientDocRow(name, d, showClient){
   var st=docStatusObj(d.status);
   var sub=[];
   if(showClient) sub.push(ctEsc(name));
-  sub.push(d.category);
+  /* if we read the category off the filename, say so — a guess the reader
+     cannot see is a guess they cannot correct */
+  sub.push(ctEsc(d.category||'')+(d.autoTagged?' <span class="muted" title="Read from the file name — change it if it guessed wrong">(auto)</span>':''));
   if(d.period) sub.push(d.period);
   if(d.fileName) sub.push(ctEsc(d.fileName));
   if(d.due) sub.push('due '+d.due);
-  return '<div class="drow"><div class="dbar" style="background:'+(d.status==='requested'?'var(--amber)':(d.status==='received'?'var(--accent)':'var(--green)'))+'"></div>'
+  if(d.status==='received') sub.push(d.reviewer?('with '+ctEsc(d.reviewer)):'<span style="color:var(--amber)">unassigned</span>');
+  return '<div class="drow'+(isDense()?' dense':'')+'"><div class="dbar" style="background:'+(d.status==='requested'?'var(--amber)':(d.status==='received'?'var(--accent)':'var(--green)'))+'"></div>'
     +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(d.name)+'</div>'
       +'<div class="dmeta">'+sub.join(' · ')+(d.uploading?' · uploading…':'')+(d.uploadError?' · upload failed':'')+'</div></div>'
     +'<span class="pill '+st.pill+'" style="flex:0 0 auto">'+st.label+'</span>'
@@ -8710,6 +9544,52 @@ function submitAddDoc(){
   renderPage();
 }
 
+/* Everything a client has finished that a person has not. Grouped by whose
+   queue it sits in, because "received" describes the document, not the work. */
+function pendingReviewCardHTML(){
+  var pend=pendingReviewDocs();
+  if(!pend.length){
+    return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('inbox',16)+' Pending review</h3>'
+      +'<span class="pill p-green">Clear</span></div>'
+      +'<p class="muted" style="font-size:12.5px;margin:-2px 0 0">Nothing is sitting between a client finishing their half and your team finishing yours.</p></div>';
+  }
+  var groups={};
+  pend.forEach(function(x){ var k=x.d.reviewer||'__none'; (groups[k]=groups[k]||[]).push(x); });
+  var keys=Object.keys(groups).sort(function(a,b){
+    if(a==='__none') return -1; if(b==='__none') return 1; return a.localeCompare(b);
+  });
+  var body=keys.map(function(k){
+    var list=groups[k];
+    var head='<div style="display:flex;align-items:center;gap:8px;margin:14px 0 2px">'
+      +'<span class="abub" style="background:'+(k==='__none'?'var(--amber)':'var(--accent)')+'"></span>'
+      +'<b style="font-size:12.5px">'+(k==='__none'?'Nobody assigned':ctEsc(k))+'</b>'
+      +'<span class="frac">'+list.length+' waiting</span></div>';
+    return head+list.map(function(x){
+      var d=x.d, n=x.c.name;
+      var when='';
+      try{ if(d.receivedAt) when=' · arrived '+new Date(d.receivedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'}); }catch(e){}
+      return '<div class="focusrow"><span class="fx" style="color:var(--accent)">'+svgIcon('file',15)+'</span>'
+        +'<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">'+ctEsc(d.name)+'</div>'
+        +'<div class="muted" style="font-size:11.5px">'+ctEsc(n)+(d.category?' · '+ctEsc(d.category):'')+(d.autoTagged?' (auto)':'')+when+'</div></div>'
+        +(k==='__none'?'<button class="btn sm ghost" onclick="takeDocReview(\''+jsq(n)+'\',\''+d.id+'\')">Take it</button>':'')
+        +'<button class="btn sm ghost" onclick="setDocStatus(\''+jsq(n)+'\',\''+d.id+'\',\'reviewed\')">Reviewed</button>'
+        +'<button class="btn sm" onclick="setDocStatus(\''+jsq(n)+'\',\''+d.id+'\',\'signed\')">Sign off</button></div>';
+    }).join('');
+  }).join('');
+  return '<div class="card mb14" style="border-left:3px solid var(--accent)">'
+    +'<div class="cardhead"><h3>'+svgIcon('inbox',16)+' Pending review</h3>'
+      +'<span class="pill p-teal">'+pend.length+' waiting</span></div>'
+    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 0">A client finishing their half is not the job finishing. Everything below has arrived and needs a person.</p>'
+    +body+'</div>';
+}
+function takeDocReview(name,id){
+  var d=(docsFor(name)||[]).find(function(x){ return x.id===id; }); if(!d) return;
+  d.reviewer=(currentAccount&&(currentAccount.name||currentAccount.email))||'You';
+  saveAccountData();
+  toast('"'+d.name+'" is in your queue now.');
+  renderPage();
+}
+
 /* ---- Document Centre page ---- */
 var fdocClient='all', fdocCat='all', fdocStatus='all', fdocSearch='';
 function setFdoc(k,v){ if(k==='client')fdocClient=v; if(k==='cat')fdocCat=v; if(k==='status')fdocStatus=v; renderPage(); }
@@ -8727,6 +9607,23 @@ function fdocFiltered(){
     }
     return true;
   });
+}
+/* The counts belong on the control. A dropdown that reads "Received" tells
+   you a state exists; a tab that reads "Received 7" tells you the size of
+   the pile you are about to open. Counts respect the other two filters. */
+function fdocStatusTabsHTML(){
+  var base=allClientDocs().filter(function(x){
+    if(isArchived(x.c.name)) return false;
+    if(fdocClient!=='all' && x.c.name!==fdocClient) return false;
+    if(fdocCat!=='all' && x.d.category!==fdocCat) return false;
+    return true;
+  });
+  var tabs=[{id:'all',label:'Everything'}].concat(DOC_STATUSES.map(function(s){ return {id:s.id,label:s.label}; }));
+  return tabs.map(function(t){
+    var n=(t.id==='all')?base.length:base.filter(function(x){ return x.d.status===t.id; }).length;
+    return '<button class="ftab'+(fdocStatus===t.id?' on':'')+'" onclick="setFdoc(\'status\',\''+t.id+'\')">'
+      +t.label+'<span class="n">'+n+'</span></button>';
+  }).join('');
 }
 function fdocRowsHTML(){
   var rows=fdocFiltered();
@@ -8749,6 +9646,7 @@ function fdocsPageHTML(){
       +'<div class="card stat"><div class="ic ic-teal">'+svgIcon('inbox',20)+'</div><div class="num">'+rec+'</div><div class="lbl">Received, to review</div></div>'
       +'<div class="card stat"><div class="ic ic-green">'+svgIcon('check',20)+'</div><div class="num">'+done+'</div><div class="lbl">Reviewed or signed off</div></div>'
     +'</div>'
+    +pendingReviewCardHTML()
     +'<div class="card mb14">'
       +'<div class="cardhead"><h3>'+svgIcon('doc-new',16)+' Build a client’s pack</h3>'
         +'<button class="btn sm" onclick="openAddDoc()">+ Add document</button></div>'
@@ -8766,11 +9664,15 @@ function fdocsPageHTML(){
         +'<option value="all">All clients</option>'+names.map(function(n){ return '<option '+(n===fdocClient?'selected':'')+'>'+ctEsc(n)+'</option>'; }).join('')+'</select></div>'
       +'<div><label class="flabel">Category</label><select class="finput" onchange="setFdoc(\'cat\',this.value)">'
         +'<option value="all">All categories</option>'+DOC_CATEGORIES.map(function(c){ return '<option '+(c===fdocCat?'selected':'')+'>'+c+'</option>'; }).join('')+'</select></div>'
-      +'<div><label class="flabel">Status</label><select class="finput" onchange="setFdoc(\'status\',this.value)">'
-        +'<option value="all">Any status</option>'+DOC_STATUSES.map(function(s){ return '<option value="'+s.id+'" '+(s.id===fdocStatus?'selected':'')+'>'+s.label+'</option>'; }).join('')+'</select></div>'
-    +'</div></div>'
+    +'</div>'
+      +'<div class="ftabs" style="margin:15px 0 0">'+fdocStatusTabsHTML()+'</div>'
+    +'</div>'
     +'<div class="card" id="fdocRegister"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' Document register</h3>'
-      +'<span class="pill p-gray">'+withFile+' file'+(withFile===1?'':'s')+' attached</span></div>'
+      +'<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'
+        /* a count of nothing is not a fact worth a badge — the Attach button on
+           every row already says files are what goes here */
+        +(withFile?'<span class="pill p-gray">'+withFile+' file'+(withFile===1?'':'s')+' attached</span>':'')
+        +densityToggleHTML()+'</div></div>'
       +'<div id="fdocRows">'+fdocRowsHTML()+'</div></div>'
     +'<div class="note">Documents are stored privately against your practice. Only your team can open them.</div>';
 }
@@ -8786,7 +9688,8 @@ function clientDocCardHTML(name){
   var ds=docsFor(name);
   var req=ds.filter(function(d){return d.status==='requested';}).length;
   return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('folder',16)+' Document register</h3>'
-    +'<div style="display:flex;gap:7px;align-items:center">'
+    +'<div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">'
+      +docProgressHTML(name,86)
       +(req?'<span class="pill p-amber">'+req+' outstanding</span>':'<span class="pill p-green">Nothing outstanding</span>')
       +'<button class="btn sm" onclick="openAddDoc(\''+jsq(name)+'\')">+ Add</button></div></div>'
     +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin:-2px 0 12px">'
@@ -10094,8 +10997,12 @@ function v2AfterRender(p){
   if(!sb) return;
   try{
     const {data}=await sb.auth.getSession();
+    /* The stored session decides the portal — the profile row is the authority
+       on which one, not whichever card the visitor happened to click last. */
     if(data&&data.session){ await enterFromSession(data.session, null); return; }
-  }catch(e){}
+  }catch(e){
+    if(typeof toast==='function') toast('Could not restore your session — please sign in again.');
+  }
   try{ if(/[?&]join=/.test(location.search)) await handleJoinParam(); }catch(e){}
 })();
 </script>
@@ -10203,7 +11110,7 @@ function v2AfterRender(p){
     heroBadge:'إماراتي · متوافق مع الهيئة الاتحادية للضرائب · مدعوم بالذكاء الاصطناعي',
     heroH1:'طبقة الامتثال الضريبي <span class="hgrad">للإمارات</span>.',
     heroSub:'مساحة عمل آمنة واحدة تجمع الشركات ومحاسبيها — تُجمَع المستندات وتُلاحَق، وتُتابَع كل المواعيد، وتُعدّ مسودات إقرارات ضريبة القيمة المضافة وضريبة الشركات جاهزة للتقديم.',
-    ctaTrial:'ابدأ التجربة المجانية ←', ctaDemo:'معاينة تجريبية',
+    ctaTrial:'أنشئ حسابك ←', ctaDemo:'معاينة تجريبية',
     heroNote:'نسخة تجريبية · تجربة مجانية لمدة ٣ أشهر للمستخدمين الأوائل · مبنيّة لعصر ضريبة القيمة المضافة وضريبة الشركات والفوترة الإلكترونية',
     in5Line:'<span style="font-weight:800;font-size:13px;letter-spacing:.5px;background:#0b1226;color:#fff;border-radius:8px;padding:4px 9px">in5</span><span>مدعومة من <b style="color:var(--text)">in5 tech</b> — حاضنة تيكوم للشركات التقنية الناشئة في دبي</span>'
   };
@@ -10261,7 +11168,7 @@ function v2AfterRender(p){
     'Beta phase · Backed by':'مرحلة تجريبية · بدعم من',
     ', Dubai (TECOM Group)':'، دبي (مجموعة تيكوم)',
     'Security':'الأمان','Privacy Policy':'سياسة الخصوصية','Terms of Service':'شروط الاستخدام',
-    'Start free trial →':'ابدأ التجربة المجانية ←'
+    'Create your account →':'أنشئ حسابك ←'
   };
   function walkI18n(root, toAr){
     if(!root) return;

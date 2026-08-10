@@ -65,6 +65,36 @@
   .ltab{background:transparent;border:0;color:rgba(255,255,255,.6);font-size:14px;font-weight:600;padding:8px 16px;border-radius:9px;cursor:pointer}
   .ltab:hover{color:#fff;background:rgba(255,255,255,.07)}
   .ltab.on{color:#fff;background:rgba(255,255,255,.12)}
+  /* Pricing opens onto three different audiences, and a visitor should be able
+     to choose which one they are before the page loads rather than scrolling
+     past two sets of plans that are not for them. */
+  .ltabdrop{position:relative;display:inline-flex}
+  .ltabdrop>.ltab{display:inline-flex;align-items:center;gap:5px}
+  .ltabcar{opacity:.7;transition:transform .18s ease}
+  .ltabdrop:hover .ltabcar,.ltabdrop:focus-within .ltabcar{transform:rotate(180deg)}
+  .ltabmenu{position:absolute;top:100%;left:0;min-width:186px;padding:6px;margin-top:6px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-1);
+    display:flex;flex-direction:column;gap:2px;z-index:60;
+    opacity:0;visibility:hidden;transform:translateY(-5px);transition:opacity .16s ease,transform .16s ease,visibility .16s}
+  .ltabdrop:hover .ltabmenu,.ltabdrop:focus-within .ltabmenu{opacity:1;visibility:visible;transform:translateY(0)}
+  .ltabmenu button{background:transparent;border:0;text-align:left;color:var(--text);font-size:13.5px;
+    font-weight:600;padding:9px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .ltabmenu button:hover,.ltabmenu button:focus-visible{background:var(--accent-bg);color:var(--accent)}
+  /* the same three choices, restated on the page itself */
+  .pseg{display:flex;justify-content:center;gap:6px;margin:0 auto 22px;padding:5px;border-radius:14px;
+    background:var(--panel2);border:1px solid var(--line);width:fit-content;max-width:100%;flex-wrap:wrap}
+  .psegb{background:transparent;border:0;color:var(--muted);font-size:13.5px;font-weight:700;
+    padding:9px 20px;border-radius:10px;cursor:pointer;transition:background .18s ease,color .18s ease}
+  .psegb:hover{color:var(--text)}
+  .psegb.on{background:var(--panel);color:var(--accent);box-shadow:var(--shadow-1)}
+  .psegnote{text-align:center;font-size:12.5px;margin:-4px 0 18px}
+  .prow.pno{opacity:.5}
+  .prow.pno .pdash{display:inline-flex;width:15px;justify-content:center;font-weight:800;color:var(--muted)}
+  @media(max-width:820px){
+    .ltabmenu{position:static;opacity:1;visibility:visible;transform:none;display:none;box-shadow:none}
+    .ltabdrop{display:inline-flex}
+    .psegb{padding:8px 13px;font-size:12.5px}
+  }
   .lview{flex:1;display:none;flex-direction:column;align-items:center;overflow:auto;padding:34px 24px}
   #viewSignin{justify-content:flex-start}
   .lviewhead{text-align:center;margin-bottom:26px}
@@ -1055,7 +1085,14 @@
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
       <button id="tabPenalty" class="ltab" onclick="switchView('penalty')">Penalty Check</button>
       <button id="tabSignin" class="ltab" onclick="switchView('signin')">Sign In</button>
-      <button id="tabPricing" class="ltab" onclick="switchView('pricing')">Pricing</button>
+      <span class="ltabdrop">
+        <button id="tabPricing" class="ltab" aria-haspopup="true" onclick="switchView('pricing')">Pricing<svg class="ltabcar" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <span class="ltabmenu" role="menu">
+          <button role="menuitem" onclick="openPricing('firm')">For Accountants</button>
+          <button role="menuitem" onclick="openPricing('business')">For Businesses</button>
+          <button role="menuitem" onclick="openPricing('mne')">For MNEs</button>
+        </span>
+      </span>
       <button id="tabSecurity" class="ltab" onclick="switchView('security')">Security</button>
       <button id="langBtn" class="ltab" onclick="toggleLang()" title="اللغة العربية" style="font-weight:700">عربي</button>
     </div>
@@ -1342,11 +1379,17 @@
   <!-- ===== ABOUT US VIEW ===== -->
   <!-- ===== PRICING VIEW ===== -->
   <div id="viewPricing" class="lview">
-    <div style="max-width:1040px;width:100%">
+    <div style="max-width:1100px;width:100%">
       <div class="lviewhead" style="text-align:center"><h1>Simple, transparent pricing</h1>
-        <p>Plans for businesses and for accounting / audit firms. No setup fees — cancel anytime.</p></div>
+        <p>Pick the side you are on. No setup fees and no contract &mdash; change plan or cancel whenever you like.</p></div>
 
-      <div class="annualpromo"><span class="g"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M12 8S10.5 3 8 4.2 9.5 8 12 8zM12 8s1.5-5 4-3.8S14.5 8 12 8z"/></svg></span> Save 25% — get <b style="text-decoration:underline;text-underline-offset:2px">3 months free</b> on every annual plan</div>
+      <div class="pseg" role="tablist" aria-label="Pricing for">
+        <button id="pseg_firm" class="psegb" role="tab" aria-selected="false" onclick="setPriceSeg('firm')">For Accountants</button>
+        <button id="pseg_business" class="psegb on" role="tab" aria-selected="true" onclick="setPriceSeg('business')">For Businesses</button>
+        <button id="pseg_mne" class="psegb" role="tab" aria-selected="false" onclick="setPriceSeg('mne')">For MNEs</button>
+      </div>
+
+      <div class="annualpromo"><span class="g"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M12 8S10.5 3 8 4.2 9.5 8 12 8zM12 8s1.5-5 4-3.8S14.5 8 12 8z"/></svg></span> Save 25% &mdash; get <b style="text-decoration:underline;text-underline-offset:2px">3 months free</b> on every annual plan</div>
 
       <div class="billtoggle">
         <span class="seg">
@@ -1355,61 +1398,19 @@
         </span>
       </div>
 
-      <div class="lsectlabel" style="text-align:center">For Businesses</div>
-      <div class="grid g3" style="margin-bottom:30px;align-items:stretch">
-        <div class="card pcard" style="cursor:default">
-          <div class="ptitle">Starter</div>
-          <div class="psub">Stay compliant</div>
-          <div class="priceblk" data-monthly="199" style="margin-bottom:10px"><span class="price-amt">AED 199</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
-          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">2 seats — 1 team member + 1 Manager</div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Dashboard, health score &amp; “Needs your action”</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Compliance calendar &amp; Regulation radar</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Document vault — AI date-reading, expiry alerts &amp; renewals</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link your accountant · requests &amp; in-app messages</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI Assist (fair use) &amp; AI invoice reading — 25/mo</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>E-invoicing readiness, TRN &amp; penalty checks</span></div>
-          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
-        </div>
-        <div class="card pcard" style="cursor:default;border:2px solid var(--accent);position:relative">
-          <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
-          <div class="ptitle">Growth</div>
-          <div class="psub">Do your filings</div>
-          <div class="priceblk" data-monthly="299" style="margin-bottom:10px"><span class="price-amt">AED 299</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
-          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">4 seats — 3 team members + 1 Manager</div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Starter</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Invoice inbox with running VAT position — 150 AI reads/mo</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT return drafting — every VAT201 box from your period totals</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Corporate Tax return drafting — computation, adjustments &amp; Small Business Relief</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Draft-return review &amp; e-signature workflow</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Bank statement drop · reports &amp; audit trail</span></div>
-          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
-        </div>
-        <div class="card pcard" style="cursor:default">
-          <div class="ptitle">Business Pro</div>
-          <div class="psub">Groups &amp; teams</div>
-          <div class="priceblk" data-monthly="499" style="margin-bottom:10px"><span class="price-amt">AED 499</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
-          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">11 seats — 10 team members + 1 Manager</div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Growth</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Multi-company — up to 3 companies (AED 99/mo each extra)</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; external auditor link</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Unlimited AI invoice reading &amp; AI Assist (fair use)</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
-          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
-        </div>
-      </div>
-      <div class="muted" style="text-align:center;font-size:12px;margin:-16px 0 26px">Every plan includes one dedicated <b>Manager seat</b> — a separate login that oversees and observes the whole workspace (every page, report and message) without being able to edit anything. Invite yours from the Team tab.</div>
-
-      <div class="lsectlabel" style="text-align:center">For Accountants &amp; Audit Firms</div>
-      <div class="muted" style="text-align:center;font-size:12.5px;margin:-10px 0 18px">Priced on the number of active clients on your portal. <b>Your first 30 clients are free, forever.</b> Archived clients keep their full history and never count towards your total.</div>
+      <div id="psegp_firm" class="psegpanel" role="tabpanel" style="display:none">
+      <div class="muted psegnote">Priced on the number of active clients on your portal, and on nothing else &mdash; every tier opens every feature. <b>Your first 30 clients are free, forever.</b> Archived clients keep their full history and never count towards your total.</div>
       <div class="grid g4" style="margin-bottom:24px;align-items:stretch">
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Practice Starter</div>
           <div class="psub">Free forever</div>
           <div class="priceblk" style="margin-bottom:10px"><span class="price-amt">Free</span><div class="price-note">up to 30 clients</div></div>
           <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">30 active clients</div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Add clients yourself — no waiting for them to sign up</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Document Centre — request, receive, review &amp; sign off</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT &amp; Corporate Tax return drafting with the FTA return forms</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Every feature in the practice portal &mdash; nothing is held back on any tier</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Add clients yourself &mdash; no waiting for them to sign up</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Document Centre &mdash; request, receive, review &amp; sign off</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT &amp; Corporate Tax drafting on the FTA return forms</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Team logins &amp; roles, audit processes and AI document reading</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full-length downloadable client dossiers &amp; practice reports</span></div>
           <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free</button>
         </div>
@@ -1417,38 +1418,118 @@
           <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
           <div class="ptitle">Practice</div>
           <div class="psub">Growing practices</div>
-          <div class="priceblk" data-monthly="299" data-cap="up to 75 clients" style="margin-bottom:10px"><span class="price-amt">AED 299</span> <span class="price-per">/mo</span><div class="price-note">up to 75 clients</div></div>
-          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">75 active clients</div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Practice Starter</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Team logins &amp; roles — owner, manager, consultant</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI auto-chase &amp; scheduled email reminders</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Draft-return review &amp; client e-signature workflow</span></div>
+          <div class="priceblk" data-monthly="299" data-cap="up to 130 clients" style="margin-bottom:10px"><span class="price-amt">AED 299</span> <span class="price-per">/mo</span><div class="price-note">up to 130 clients</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">130 active clients</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything above &mdash; the feature set never changes</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span><b>100 clients on top of the 30 that are always free</b></span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Email support</span></div>
           <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
         </div>
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Practice Plus</div>
           <div class="psub">Established firms</div>
-          <div class="priceblk" data-monthly="699" data-cap="up to 200 clients" style="margin-bottom:10px"><span class="price-amt">AED 699</span> <span class="price-per">/mo</span><div class="price-note">up to 200 clients</div></div>
-          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">200 active clients</div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Practice</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; engagement management</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Unlimited AI document reading &amp; AI Assist (fair use)</span></div>
+          <div class="priceblk" data-monthly="499" data-cap="up to 260 clients" style="margin-bottom:10px"><span class="price-amt">AED 499</span> <span class="price-per">/mo</span><div class="price-note">up to 260 clients</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">260 active clients</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything above &mdash; the feature set never changes</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span><b>200 clients on top of 60 free</b> &mdash; room for a full portfolio</span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
           <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
         </div>
         <div class="card pcard" style="cursor:default">
           <div class="ptitle">Enterprise</div>
           <div class="psub">Unlimited clients</div>
-          <div class="priceblk" data-monthly="1499" data-cap="no client limit" style="margin-bottom:10px"><span class="price-amt">AED 1,499</span> <span class="price-per">/mo</span><div class="price-note">no client limit</div></div>
+          <div class="priceblk" data-monthly="999" data-cap="no client limit" style="margin-bottom:10px"><span class="price-amt">AED 999</span> <span class="price-per">/mo</span><div class="price-note">no client limit</div></div>
           <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">Unlimited clients</div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Practice Plus, with no cap on clients</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Multi-office &amp; multi-branch practice structure</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything above &mdash; the feature set never changes</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span><b>No cap on active clients at all</b></span></div>
           <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Onboarding &amp; migration assistance from our team</span></div>
-          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Named account manager</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Named account manager &amp; priority same-day support</span></div>
           <a class="btn ghost" href="mailto:info@hisabone.ae?subject=HisabOne%20Enterprise" style="width:100%;margin-top:auto;text-decoration:none;text-align:center">Talk to us</a>
         </div>
       </div>
-      <div class="muted" style="text-align:center;font-size:12px;padding:6px 0 10px">Prices exclude 5% VAT. Annual plans are billed yearly at the equivalent of nine months — three months free. A single avoided AED 1,000 late-filing penalty covers five months of the Starter plan.</div>
+      </div>
+      <div id="psegp_business" class="psegpanel" role="tabpanel">
+      <div class="muted psegnote">Start free and stay free for as long as it suits you &mdash; there is no trial clock. Upgrade the day you want the document vault, the AI reading or a second pair of hands.</div>
+      <div class="grid g3" style="margin-bottom:22px;align-items:stretch">
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Free</div>
+          <div class="psub">Stay compliant</div>
+          <div class="priceblk" style="margin-bottom:10px"><span class="price-amt">Free</span><div class="price-note">one company, one user</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">1 user</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Compliance dashboard, health score &amp; &ldquo;Needs your action&rdquo;</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Compliance calendar &amp; Regulation radar</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>VAT &amp; Corporate Tax return drafting &mdash; figures typed in by hand</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Link your accountant &middot; document requests &amp; in-app messages</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Approve and sign the returns your accountant drafts</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>E-invoicing readiness, TRN &amp; penalty checks</span></div>
+          <div class="prow pno"><span class="pdash">&mdash;</span><span>Secure document vault</span></div>
+          <div class="prow pno"><span class="pdash">&mdash;</span><span>AI document &amp; invoice reading</span></div>
+          <div class="prow pno"><span class="pdash">&mdash;</span><span>Invoice inbox &amp; bank statement drop</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Start free</button>
+        </div>
+        <div class="card pcard" style="cursor:default;border:2px solid var(--accent);position:relative">
+          <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
+          <div class="ptitle">Essentials</div>
+          <div class="psub">The whole workflow</div>
+          <div class="priceblk" data-monthly="49" style="margin-bottom:10px"><span class="price-amt">AED 49</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">4 seats &mdash; 3 team members + 1 Manager</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Free</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Secure document vault &mdash; expiry alerts &amp; renewals wallet</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI document reading &mdash; issue and expiry dates read off your certificates</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Invoice inbox with running VAT position &amp; AI invoice reading</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Bank statement drop with monthly completeness</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Sign-off PIN &amp; full audit trail</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>AI Assist</span></div>
+          <div class="prow pno"><span class="pdash">&mdash;</span><span>Full audit processes</span></div>
+          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
+        </div>
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Complete</div>
+          <div class="psub">Everything, one company</div>
+          <div class="priceblk" data-monthly="99" style="margin-bottom:10px"><span class="price-amt">AED 99</span> <span class="price-per">/mo</span><div class="price-note">billed monthly</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">10 seats</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Essentials</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; external auditor link</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Unlimited AI document &amp; invoice reading</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority support</span></div>
+          <div class="prow pno"><span class="pdash">&mdash;</span><span>Multi-company &mdash; see the MNE plans</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
+        </div>
+      </div>
+      <div class="muted" style="text-align:center;font-size:12px;margin:-8px 0 24px">Every paid plan includes one dedicated <b>Manager seat</b> &mdash; a separate login that oversees the whole workspace without being able to edit anything. Invite yours from the Team tab.</div>
+      </div>
+      <div id="psegp_mne" class="psegpanel" role="tabpanel" style="display:none">
+      <div class="muted psegnote">One login, several companies. Each company keeps its own profile, document vault, compliance calendar, invoices and renewals &mdash; you switch between them from the top bar. <b>Every feature is included on both plans.</b></div>
+      <div class="grid g2" style="margin-bottom:24px;align-items:stretch;max-width:720px;margin-left:auto;margin-right:auto">
+        <div class="card pcard" style="cursor:default;border:2px solid var(--accent);position:relative">
+          <span class="pill" style="position:absolute;top:-13px;left:18px;background:var(--accent);color:#fff;font-weight:700;font-size:11px;letter-spacing:.4px;padding:5px 14px;box-shadow:0 6px 16px var(--accent-bg)">Most popular</span>
+          <div class="ptitle">Group</div>
+          <div class="psub">Small groups</div>
+          <div class="priceblk" data-monthly="499" data-cap="up to 3 companies" style="margin-bottom:10px"><span class="price-amt">AED 499</span> <span class="price-per">/mo</span><div class="price-note">up to 3 companies</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">3 companies &middot; 10 seats each</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Complete, across <b>3 companies</b></span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Company switcher in the top bar &mdash; one login for the group</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Separate profile, vault, calendar, invoices and renewals per company</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Full audit processes &amp; external auditor link</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
+          <button class="btn" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
+        </div>
+        <div class="card pcard" style="cursor:default">
+          <div class="ptitle">Group Plus</div>
+          <div class="psub">Larger groups</div>
+          <div class="priceblk" data-monthly="999" data-cap="up to 8 companies" style="margin-bottom:10px"><span class="price-amt">AED 999</span> <span class="price-per">/mo</span><div class="price-note">up to 8 companies</div></div>
+          <div class="pill p-teal" style="margin-bottom:12px;font-size:11px">8 companies &middot; 10 seats each</div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Everything in Group, across <b>8 companies</b></span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span><b>AED 59 a month</b> for each company beyond the eighth</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Priority same-day support</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Onboarding &amp; migration assistance from our team</span></div>
+          <div class="prow"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><span>Named account manager</span></div>
+          <button class="btn ghost" style="width:100%;margin-top:auto" onclick="startTrial()">Get started</button>
+        </div>
+      </div>
+      </div>
+
+      <div class="muted" style="text-align:center;font-size:12px;padding:6px 0 10px">Prices exclude 5% VAT. Annual plans are billed yearly at the equivalent of nine months &mdash; three months free. A single avoided AED 1,000 late-filing penalty covers twenty months of the Essentials plan.</div>
     </div>
   </div>
 
@@ -2125,7 +2206,9 @@ function expiryInfo(iso){
   return {txt:txt,col:'var(--green)'};
 }
 function uploadCompanyDoc(typeId){
-  if(!bizGuard()) return; openDocTruth(function(){ runUploadCompanyDoc(typeId); }); }
+  if(!bizGuard()) return;
+  if(!planAllows('vault')){ upsell('vault','The document vault'); return; }
+  openDocTruth(function(){ runUploadCompanyDoc(typeId); }); }
 function runUploadCompanyDoc(typeId){
   const inp=document.getElementById('fileInput');
   inp.value='';
@@ -2136,12 +2219,16 @@ function runUploadCompanyDoc(typeId){
     vaultDocs=vaultDocs.filter(d=>d.typeId!==typeId); /* replace any existing of this type */
     companyDocReading[typeId]=true; renderPage();
     let res={};
-    try{
-      const payload=await fileToOCRPayload(f);
-      const r=await fetch('/api/docdates',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      const d=await r.json().catch(()=>({}));
-      if(r.ok && d && d.ok){ res=d; }
-    }catch(e){}
+    /* Reading the dates off the file is the AI half of this upload, and it is
+       what a plan without AI has not bought. The document still files. */
+    if(planAllows('ai')){
+      try{
+        const payload=await fileToOCRPayload(f);
+        const r=await fetch('/api/docdates',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const d=await r.json().catch(()=>({}));
+        if(r.ok && d && d.ok){ res=d; }
+      }catch(e){}
+    }
     delete companyDocReading[typeId];
     const entry={name:f.name, added:added, typeId:typeId, issueDate:res.issueDate||null, expiryDate:res.expiryDate||null};
     vaultDocs.unshift(entry);
@@ -2183,7 +2270,9 @@ function removeCompanyDoc(typeId){
   }});
 }
 function uploadVaultDoc(){
-  if(!bizGuard()) return; openDocTruth(function(){ runUploadVaultDoc(); }); }
+  if(!bizGuard()) return;
+  if(!planAllows('vault')){ upsell('vault','The document vault'); return; }
+  openDocTruth(function(){ runUploadVaultDoc(); }); }
 function runUploadVaultDoc(){
   const inp=document.getElementById('fileInput');
   inp.value='';
@@ -2275,9 +2364,25 @@ function switchView(v){
     const view=document.getElementById('view'+n); if(view){ const on=(n.toLowerCase()===v); view.style.display=on?'flex':'none'; if(on) view.scrollTop=0; }
     const tab=document.getElementById('tab'+n); if(tab) tab.classList.toggle('on', n.toLowerCase()===v);
   });
-  if(v==='pricing' && typeof setBilling==='function') setBilling(window._billing||'monthly');
+  if(v==='pricing' && typeof setPriceSeg==='function') setPriceSeg(window._priceSeg||'business');
   if(v==='signin' && window._pendingLfMode==='signup' && typeof trackEvent==='function') trackEvent('signup_view');
 }
+/* Which audience's plans are on screen. Kept on window so the nav menu, the
+   in-page tabs and a direct link all move the same piece of state. */
+function setPriceSeg(seg){
+  var all=['firm','business','mne'];
+  if(all.indexOf(seg)<0) seg='business';
+  window._priceSeg=seg;
+  all.forEach(function(k){
+    var b=document.getElementById('pseg_'+k), p=document.getElementById('psegp_'+k), on=(k===seg);
+    if(b){ b.classList.toggle('on', on); b.setAttribute('aria-selected', on?'true':'false'); }
+    if(p) p.style.display = on ? '' : 'none';
+  });
+  /* prices are rewritten in place by the billing toggle, so a newly revealed
+     panel has to be told which way that toggle is currently set */
+  if(typeof setBilling==='function') setBilling(window._billing||'monthly');
+}
+function openPricing(seg){ switchView('pricing'); setPriceSeg(seg); }
 function setBilling(mode){
   window._billing=mode;
   var blks=document.querySelectorAll('.priceblk');
@@ -3016,6 +3121,9 @@ function renderNav(){
         + ' onclick="go(\''+t+'\')"'
         + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();go(\''+t+'\')}">'
         + '<span class="ic">'+svgIcon(s.ic,17)+'</span><span class="txt">'+ctEsc(s.label)+'</span>'
+        /* the sub-rail already marks a locked entry; a top-level tab that is
+           just as locked should not look open until it is clicked */
+        + (navLocked(t)?'<span class="navcaret" title="Not on your plan">🔒</span>':'')
         + (b?'<span class="badge">'+b+'</span>':'')
         + '</div>';
     }).join('');
@@ -3291,13 +3399,15 @@ docs:()=>{
   const otherDocs=vaultDocs.filter(d=>!d.typeId);
   return `
   <h1>Company Profile</h1>
-  <div class="sub">Your company details and secure document vault. Fill this in once — your VAT and Corporate Tax returns pick the details up automatically — and keep your core documents on file with the dates read for you.</div>
+  <div class="sub">Your company details${planAllows('vault')?' and secure document vault':''}. Fill this in once — your VAT and Corporate Tax returns pick the details up automatically${planAllows('vault')?' — and keep your core documents on file with the dates read for you':''}.</div>
   ${companyProfileCardsHTML()}
   ${renewalsCardHTML()}
   ${bankStatementsCardHTML()}
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('folder',16)} Company documents</h3><span class="pill p-teal">${onFile}/${COMPANY_DOC_TYPES.length} on file</span></div>
-    <p class="muted" style="font-size:12.5px;margin-bottom:6px">Upload each document once. HisabOne reads the issue and expiry dates automatically and flags anything expiring soon.</p>
+    <p class="muted" style="font-size:12.5px;margin-bottom:6px">${planAllows('vault')
+        ? 'Upload each document once. HisabOne reads the issue and expiry dates automatically and flags anything expiring soon.'
+        : 'This is the checklist every UAE company is asked for. Storing the files here — and having their issue and expiry dates read for you — comes with '+ctEsc(planNeededFor('vault'))+'.'}</p>
     <div style="margin-top:6px">${COMPANY_DOC_TYPES.map(t=>companyDocRow(t)).join('')}</div>
   </div>
   <div class="grid g2 mb14">
@@ -5439,30 +5549,50 @@ function waClient(){
    occasionally 'free'); normalisePlan() folds any unknown value back
    to the entry tier, so no migration of the database is required.
    ================================================================== */
+/* Three segments, two account roles. An MNE is a business account whose plan
+   opens the company switcher — it is not a third kind of login, so a company
+   that grows into a group upgrades rather than migrating. `segment` is what the
+   pricing page and the plan picker column off. */
 var PLANS={
   business:[
-    {id:'starter', name:'Starter',      sub:'Stay compliant',  price:199, seats:1,
-     blurb:'Dashboard, compliance calendar, document vault and your accountant link.',
-     features:{ binv:false, bvat:false, baudit:false, bank:false, multiCo:false, approveReturns:false }},
-    {id:'growth',  name:'Growth',       sub:'Do your filings', price:299, seats:3,
-     blurb:'Everything in Starter, plus the invoice inbox, VAT & Corporate Tax return drafting and sign-off.',
-     features:{ binv:true,  bvat:true,  baudit:false, bank:true,  multiCo:false, approveReturns:true }},
-    {id:'pro',     name:'Business Pro', sub:'Groups & teams',  price:499, seats:10,
-     blurb:'Everything in Growth, plus multi-company, full audit processes and priority support.',
-     features:{ binv:true,  bvat:true,  baudit:true,  bank:true,  multiCo:true,  approveReturns:true }}
+    {id:'biz_free', name:'Free', sub:'Stay compliant', price:0, seats:1, segment:'business', maxCo:1,
+     blurb:'The compliance dashboard, calendar and your accountant link, with your figures typed in by hand.',
+     features:{ binv:false, bvat:true,  baudit:false, bank:false, multiCo:false, approveReturns:true, vault:false, ai:false, advSec:false }},
+    {id:'biz_essentials', name:'Essentials', sub:'The whole workflow', price:49, seats:4, segment:'business', maxCo:1,
+     blurb:'The document vault, AI document and invoice reading, the bank statement drop and the advanced security controls.',
+     features:{ binv:true,  bvat:true,  baudit:false, bank:true,  multiCo:false, approveReturns:true, vault:true,  ai:true,  advSec:true }},
+    {id:'biz_complete', name:'Complete', sub:'Everything, one company', price:99, seats:10, segment:'business', maxCo:1,
+     blurb:'Every feature HisabOne has, including full audit processes, for a single company.',
+     features:{ binv:true,  bvat:true,  baudit:true,  bank:true,  multiCo:false, approveReturns:true, vault:true,  ai:true,  advSec:true }},
+    {id:'mne_group', name:'Group', sub:'Small groups', price:499, seats:10, segment:'mne', maxCo:3,
+     blurb:'Every feature, across three companies, under one login with a company switcher.',
+     features:{ binv:true,  bvat:true,  baudit:true,  bank:true,  multiCo:true,  approveReturns:true, vault:true,  ai:true,  advSec:true }},
+    {id:'mne_group_plus', name:'Group Plus', sub:'Larger groups', price:999, seats:10, segment:'mne', maxCo:8, extraCo:59,
+     blurb:'Every feature across eight companies, and AED 59 a month for each company after that.',
+     features:{ binv:true,  bvat:true,  baudit:true,  bank:true,  multiCo:true,  approveReturns:true, vault:true,  ai:true,  advSec:true }}
   ],
+  /* A practice buys capacity, never capability — every tier below opens the
+     whole portal, and the only thing that moves is how many clients fit in it. */
   firm:[
-    {id:'firm_free',       name:'Practice Starter', sub:'Free forever',       price:0,    cap:30,
-     blurb:'Add clients yourself, run the document centre and draft VAT & CT returns.'},
-    {id:'firm_practice',   name:'Practice',         sub:'Growing practices',  price:299,  cap:75,
-     blurb:'Everything in Practice Starter, plus team logins, roles and scheduled reminders.'},
-    {id:'firm_plus',       name:'Practice Plus',    sub:'Established firms',  price:699,  cap:200,
-     blurb:'Everything in Practice, plus audit processes and unlimited AI document reading.'},
-    {id:'firm_enterprise', name:'Enterprise',       sub:'Unlimited clients',  price:1499, cap:0,
-     blurb:'No client limit, priority same-day support and onboarding help.'}
+    {id:'firm_free',       name:'Practice Starter', sub:'Free forever',      price:0,   cap:30,
+     blurb:'The whole practice portal for your first 30 clients — free, with no end date.'},
+    {id:'firm_practice',   name:'Practice',         sub:'Growing practices', price:299, cap:130,
+     blurb:'100 clients on top of the 30 that are always free.'},
+    {id:'firm_plus',       name:'Practice Plus',    sub:'Established firms', price:499, cap:260,
+     blurb:'200 clients on top of 60 free — room for a full portfolio.'},
+    {id:'firm_enterprise', name:'Enterprise',       sub:'Unlimited clients', price:999, cap:0,
+     blurb:'No cap at all, with onboarding help and a named account manager.'}
   ]
 };
-var PLAN_ENTRY={ business:'starter', firm:'firm_free' };
+var PLAN_ENTRY={ business:'biz_free', firm:'firm_free' };
+/* The business ids changed when the ladder was restructured. An account still
+   carrying an old one keeps the tier it was actually on rather than silently
+   dropping to Free the next time it loads. */
+var LEGACY_PLAN_IDS={ starter:'biz_essentials', growth:'biz_complete', pro:'mne_group' };
+function planSegment(p){ return (p&&p.segment)||'business'; }
+function planListBySegment(seg){
+  return PLANS.business.filter(function(p){ return planSegment(p)===seg; });
+}
 function planRoleKey(role){ return (role==='firm')?'firm':'business'; }
 function planList(role){ return PLANS[planRoleKey(role)]; }
 function planById(role,id){
@@ -5473,7 +5603,9 @@ function planById(role,id){
 /* Any id we do not recognise \u2014 'trial', 'free', null, or a business id sitting
    on a firm row \u2014 resolves to that portal's entry tier. */
 function normalisePlan(role,id){
-  return planById(role,id) || planById(role, PLAN_ENTRY[planRoleKey(role)]);
+  return planById(role,id)
+      || (planRoleKey(role)==='business' ? planById(role, LEGACY_PLAN_IDS[id]) : null)
+      || planById(role, PLAN_ENTRY[planRoleKey(role)]);
 }
 /* Derived from PLANS so there is still only one place to edit a feature flag. */
 var PLAN_FEATURES=(function(){
@@ -5492,7 +5624,27 @@ function planAllows(f){
   var fe=bizPlanObj().features;
   return fe[f]!==false;
 }
-function planSeats(){ return bizPlanObj().seats; }
+/* Group plans are sold per company, so the seat allowance grows with the group
+   instead of being shared thin across it. */
+function bizCompanyCount(){
+  return (typeof bizCompanies!=='undefined' && bizCompanies && bizCompanies.length) ? bizCompanies.length : 1;
+}
+function planSeats(){
+  var p=bizPlanObj();
+  return (p.features&&p.features.multiCo) ? p.seats*Math.max(1,bizCompanyCount()) : p.seats;
+}
+function planCompanyCap(){ return bizPlanObj().maxCo||1; }
+function planExtraCoPrice(){ return bizPlanObj().extraCo||0; }
+/* The next plan up that would fit more companies than the one asking. */
+function planNextForCompanies(){
+  var cap=planCompanyCap();
+  return PLANS.business.filter(function(x){ return (x.maxCo||1)>cap; })[0]||null;
+}
+/* Whether the sign-off PIN and the deeper audit trail are part of this plan.
+   On Free the typed name is the signature on its own — still timestamped and
+   still on the audit trail — so a free account can always complete the
+   approval its accountant is waiting on. */
+function pinRequired(){ return planAllows('advSec'); }
 function planLabel(){ return bizPlanObj().name; }
 /* The cheapest business plan that actually carries the feature being asked for. */
 function planNeededObjFor(f){
@@ -5511,7 +5663,7 @@ function upsell(f, featureName){
    sub-tabs unlock together. */
 var PLAN_PAGE_GATES={binv:['binv','the Invoice inbox'], bvat:['bvat','VAT returns'],
   bvat201:['bvat','VAT returns'], bct:['bvat','Corporate Tax returns'],
-  baudit:['baudit','Audit processes']};
+  baudit:['baudit','Audit processes'], guides:['ai','AI Assist']};
 function gatePage(id){
   var g=PLAN_PAGE_GATES[id];
   if(g && !planAllows(g[0])){ upsell(g[0], g[1]); return false; }
@@ -5576,10 +5728,18 @@ function bizTeamPageHTML(){
     +(rows||'<div style="display:flex;align-items:center;gap:12px;padding:12px 4px"><div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent-bg);color:var(--accent-d);font-weight:700">'+ctEsc((currentAccount&&currentAccount.name||'?').charAt(0).toUpperCase())+'</div><div><div style="font-weight:600">'+ctEsc(currentAccount?currentAccount.name:'')+' '+bizRoleLabel('owner')+'</div><div class="muted" style="font-size:12px">'+ctEsc(currentAccount?currentAccount.email||'':'')+'</div></div></div>')
     +invite+'</div>'
     +'<div class="card"><div class="cardhead"><h3>'+svgIcon('shield',16)+' Seats on your plan</h3><span class="pill p-teal">incl. Manager seat</span></div>'
-    +'<div class="ctrow"><span><b>Starter</b> — AED 199/mo</span><b class="val">2 seats · 1 member + 1 Manager</b></div>'
-    +'<div class="ctrow"><span><b>Growth</b> — AED 299/mo</span><b class="val">4 seats · 3 members + 1 Manager</b></div>'
-    +'<div class="ctrow"><span><b>Business Pro</b> — AED 499/mo</span><b class="val">11 seats · 10 members + 1 Manager</b></div>'
-    +'<p class="muted" style="font-size:12px;margin-top:10px">The Manager seat is a separate login that can open every page, report and message in this workspace but cannot upload, edit, approve or delete anything — oversight without risk. Team members work normally; only the owner manages the team and billing.</p></div>'
+    /* Read off PLANS rather than retyped, because a seat table that disagrees
+       with the plan picker is worse than no seat table at all. */
+    +PLANS.business.map(function(pl){
+        var grp=pl.features&&pl.features.multiCo;
+        var mem=pl.seats, tot=mem+(mem>1?1:0);
+        return '<div class="ctrow"><span><b>'+ctEsc(pl.name)+'</b> — '+(pl.price?('AED '+nfmt(pl.price)+'/mo'):'Free')+'</span>'
+          +'<b class="val">'+(grp
+              ? (tot+' seats per company · up to '+pl.maxCo+' companies')
+              : (mem>1 ? (tot+' seats · '+mem+' members + 1 Manager') : '1 seat'))
+          +'</b></div>';
+      }).join('')
+    +'<p class="muted" style="font-size:12px;margin-top:10px">The Manager seat comes with every paid plan. It is a separate login that can open every page, report and message in this workspace but cannot upload, edit, approve or delete anything — oversight without risk. Team members work normally; only the owner manages the team and billing.</p></div>'
     +'</div>';
 }
 function bizSeatCap(){ return planSeats()+1; } /* members + the Manager seat */
@@ -5862,6 +6022,18 @@ function rmRenewal(id){
 var bankYear=(new Date()).getFullYear();
 function bankSetYear(d){ bankYear+=d; renderPage(); }
 function bankStatementsCardHTML(){
+  /* Twelve live upload buttons on a plan that cannot store a file is a promise
+     the next click breaks. Say so up front instead. */
+  if(typeof planAllows==='function' && !planAllows('bank')){
+    var _need=planNeededObjFor('bank');
+    return '<div class="card mb14">'
+      +'<div class="cardhead"><h3>'+svgIcon('bank',16)+' Bank statements</h3>'
+        +'<span class="pill p-gray">'+ctEsc(_need.name)+'</span></div>'
+      +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">One statement a month, dropped in and shared with your accountant automatically, with a running count of which months are still missing. '
+        +'It arrives with '+ctEsc(_need.name)+' &mdash; AED '+nfmt(_need.price)+' a month.</p>'
+      +'<button class="btn sm" onclick="openPlanPicker()">'+svgIcon('chart',14)+' See plans</button>'
+      +'</div>';
+  }
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var have=0;
   var cells=months.map(function(mn,i){
@@ -5914,6 +6086,30 @@ function addCompanyPrompt(){
   if(!bizGuard()) return;
   if(!planAllows('multiCo')){ renderCompanySwitch(); upsell('multiCo','Multi-company'); return; }
   renderCompanySwitch();
+  var _p=bizPlanObj(), _n=bizCompanyCount(), _cap=planCompanyCap();
+  /* Group stops at its cap and points up the ladder. Group Plus does not stop
+     — it bills for the extra company, which is a different conversation and
+     deserves to be had before the company exists rather than after. */
+  if(_n>=_cap && !_p.extraCo){
+    var _next=planNextForCompanies();
+    openConfirm({title:'That is all '+_cap+' companies', danger:false,
+      confirmLabel:_next?('See '+_next.name):'Close',
+      message:_p.name+' covers '+_cap+' companies and you are using all '+_cap+'. '
+        +(_next?(_next.name+' — AED '+nfmt(_next.price)+' a month — covers '+_next.maxCo
+                 +(_next.extraCo?(', and AED '+nfmt(_next.extraCo)+' a month for each company after that.'):'.')):''),
+      onYes:function(){ if(_next) openPlanPicker(); }});
+    return;
+  }
+  if(_n>=_cap && _p.extraCo){
+    openConfirm({title:'Company '+(_n+1)+' is an add-on', danger:false, confirmLabel:'Add the company',
+      message:_p.name+' covers '+_cap+' companies. This one is AED '+nfmt(_p.extraCo)
+        +' a month on top, added to your next invoice. Everything else about it works exactly the same.',
+      onYes:function(){ askCompanyName(); }});
+    return;
+  }
+  askCompanyName();
+}
+function askCompanyName(){
   openInput({title:'Add a company', icon:'building', label:'Company name',
     placeholder:'e.g. Falcon Properties LLC',
     message:'A fresh workspace for this company — its own profile, vault, calendar, invoices and renewals. Switch between companies any time from the top bar.',
@@ -6963,7 +7159,7 @@ function retDeclarationHTML(rt,f){
     +retRow('Tax period',rt.period||'—')
     +retRow('Sign-off requested from',who)
     +retRow('Status',rt.status==='approved'?'Approved & signed':(rt.status==='changes_requested'?'Changes requested':'Awaiting your approval'))
-    +'<p class="muted" style="font-size:11.8px;line-height:1.6;margin:12px 0 0">Approving requires your full name and your 4-digit sign-off PIN. Your signature is timestamped and recorded on the audit trail, and the return is locked on your side once signed.</p>';
+    +'<p class="muted" style="font-size:11.8px;line-height:1.6;margin:12px 0 0">Approving requires your full name'+(pinRequired()?' and your 4-digit sign-off PIN':'')+'. Your signature is timestamped and recorded on the audit trail, and the return is locked on your side once signed.</p>';
 }
 function returnPages(rt){
   var f=rt.figures||{}, pages=[];
@@ -7217,6 +7413,16 @@ function resetSignoffPin(){
 }
 function signoffPinCardHTML(){
   if(!currentAccount||currentAccount.role!=='business') return '';
+  if(!pinRequired()){
+    var need=planNeededObjFor('advSec');
+    return '<div class="card mb14">'
+      +'<div class="cardhead"><h3>'+svgIcon('shield',16)+' Sign-off security</h3>'
+        +'<span class="pill p-gray">'+ctEsc(need.name)+'</span></div>'
+      +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Your documents are encrypted in transit and at rest and scoped to your account in the database itself — that is true on every plan, including this one. '
+        +'What '+ctEsc(need.name)+' adds is the extra control on top: a 4-digit PIN the authorised signer types alongside their name before a VAT or Corporate Tax return can be approved, with lockout after repeated wrong attempts.</p>'
+      +'<button class="btn sm" onclick="openPlanPicker()">'+svgIcon('chart',14)+' See '+ctEsc(need.name)+' — AED '+nfmt(need.price)+'/month</button>'
+      +'</div>';
+  }
   var set=hasSignoffPin();
   var when=set&&signoffPin.setAt?new Date(signoffPin.setAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'';
   var lock=pinLockedFor();
@@ -7332,6 +7538,7 @@ async function doApproveReturn(id){
   var sig=((document.getElementById('retSig')||{}).value||'').trim();
   if(!sig){ toast('Type your full name to sign this approval'); return; }
   if(!retAllPagesSeen()){ toast('Review every page of the draft before signing — '+retPagesLeft()+' left'); return; }
+  if(pinRequired()){
   if(!hasSignoffPin()){ toast('Create your 4-digit sign-off PIN first'); openPinSetup(false); return; }
   if(pinLockedFor()){ toast(pinLockMsg()); return; }
   var pin=pinValue('retPin');
@@ -7350,9 +7557,10 @@ async function doApproveReturn(id){
     return;
   }
   pinLockClear();
+  }
   rt.status='approved';
   if(sb){ try{ await sb.from('returns').update({status:'approved',updated_at:new Date().toISOString()}).eq('id',id); }catch(e){} }
-  await logReturnEvent(rt,'approved','Approved the '+(rt.kind==='vat'?'VAT':'Corporate Tax')+' return after reviewing all '+_retPages.length+' pages — signed with full name and 4-digit sign-off PIN',{signature:sig});
+  await logReturnEvent(rt,'approved','Approved the '+(rt.kind==='vat'?'VAT':'Corporate Tax')+' return after reviewing all '+_retPages.length+' pages — signed with full name'+(pinRequired()?' and 4-digit sign-off PIN':''),{signature:sig});
   if(sb){ try{ await sb.rpc('firm_audit',{target_firm:rt.firm_id,a_name:actorName(),a_type:'return_approved',a_detail:actorName()+' approved '+rt.title}); }catch(e){} }
   toast('Return approved and signed'); renderReturnModal(); renderPage();
 }
@@ -7380,7 +7588,11 @@ function renderReturnModal(){
   if(_retPage>=_retPages.length) _retPage=0;
   _retWm=(rt.status!=='approved');
   var lockLeft=pinLockedFor();
-  var pinSection = hasSignoffPin()
+  var pinSection = !pinRequired()
+    ? ('<div class="note" style="margin:12px 0">'+svgIcon('shield',13)+' Your typed name is your signature on this plan, and it is timestamped on the audit trail below. '
+        +'<b>'+ctEsc(planNeededFor('advSec'))+'</b> adds a 4-digit sign-off PIN on top of it. '
+        +'<button class="btn sm ghost" style="margin-top:8px" onclick="openPlanPicker()">'+svgIcon('chart',13)+' Compare plans</button></div>')
+    : hasSignoffPin()
     ? ('<div style="margin:12px 0">'+pinBoxes('retPin','Enter your 4-digit sign-off PIN')
         +'<p class="muted" style="font-size:11.5px;margin:7px 0 0">Wrong PIN '+PIN_MAX_TRIES+' times in a row locks sign-off for 15 minutes.'+(isBizOwner()?' You can change or reset the PIN on the Team page.':'')+'</p>'
         +(lockLeft?('<div class="note" style="margin-top:9px">'+svgIcon('warn',13)+' '+ctEsc(pinLockMsg())+'</div>'):'')+'</div>')
@@ -7396,7 +7608,7 @@ function renderReturnModal(){
         +'<label class="flabel">Type your full name to sign this approval'+((rt.figures&&rt.figures.signatory)?(' — requested signatory: '+ctEsc(rt.figures.signatory)):'')+'</label>'
         +'<input id="retSig" class="finput" placeholder="'+ctEsc((rt.figures&&rt.figures.signatory)||(currentAccount?currentAccount.name:''))+'" style="max-width:340px">'
         +pinSection
-        +'<p class="muted" style="font-size:11.5px;margin:6px 0 10px">Your typed name and PIN together form your electronic signature, timestamped on the audit trail below.</p>'
+        +'<p class="muted" style="font-size:11.5px;margin:6px 0 10px">'+(pinRequired()?'Your typed name and PIN together form your electronic signature, timestamped on the audit trail below.':'Your typed name is your electronic signature, timestamped on the audit trail below.')+'</p>'
         +'<button class="btn" id="retConfirmBtn" onclick="doApproveReturn(\''+rt.id+'\')">'+svgIcon('check',14)+' Confirm approval</button></div>'
       +'<div id="retChanges" style="display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px">'
         +'<label class="flabel">What needs to change?</label>'
@@ -7725,7 +7937,7 @@ function startDemo(role){
     /* Business demo runs on the top tier so nothing looks locked; the practice
        demo stays on the free tier because that is the story worth showing —
        three clients of thirty, no card, no expiry. */
-    email:'demo@hisabone.ae', plan: isBiz?'pro':'firm_free',
+    email:'demo@hisabone.ae', plan: isBiz?'biz_complete':'firm_free',
     inviteCode:'DEMO-PREVIEW', trialEndsAt:null,
     parentFirmId:null, teamRole:'owner',
     firmId:'demo-'+role, bizId:'demo-'+role,
@@ -8829,7 +9041,9 @@ function planUsage(){
 function planCapOf(p){
   if(!p) return Infinity;
   if(typeof p.cap==='number') return p.cap>0?p.cap:Infinity;
-  return p.seats||Infinity;
+  /* a group plan's seats are per company, so its ceiling is the whole group */
+  var co=(p.features&&p.features.multiCo)?(p.maxCo||1):1;
+  return (p.seats||Infinity)*co;
 }
 /* A downgrade you have already outgrown is refused rather than silently
    leaving the account over its own limit. */
@@ -8838,6 +9052,16 @@ function planSwitchBlocker(role,p){
   if(u.used>cap){
     return 'You are using '+u.used+' '+u.noun+(u.used===1?'':'s')+'. '+p.name+' covers '
       +cap+' — '+(role==='firm'?'archive':'remove')+' '+(u.used-cap)+' first, then switch.';
+  }
+  /* Companies are the other thing a business can be over. Dropping to a plan
+     that holds fewer of them would strand real workspaces, so it is refused
+     here rather than discovered afterwards. */
+  if(role!=='firm'){
+    var have=(typeof bizCompanyCount==='function')?bizCompanyCount():1, room=p.maxCo||1;
+    if(have>room){
+      return 'You have '+have+' companies set up. '+p.name+' covers '
+        +room+' — you would need to remove '+(have-room)+' before switching.';
+    }
   }
   return '';
 }
@@ -8853,8 +9077,9 @@ function planUsageBarHTML(){
 }
 function planFeatureLineHTML(p){
   if(!p.features) return '';
-  var names={binv:'Invoice inbox', bvat:'VAT & CT returns', baudit:'Audit processes',
-             bank:'Bank statement drop', multiCo:'Multi-company', approveReturns:'Return sign-off'};
+  var names={vault:'Document vault', ai:'AI document & invoice reading', binv:'Invoice inbox',
+             bvat:'VAT & CT returns', approveReturns:'Return sign-off', advSec:'Sign-off PIN & full audit trail',
+             bank:'Bank statement drop', baudit:'Audit processes', multiCo:'Multi-company'};
   var on=[], off=[];
   for(var k in names){ (p.features[k]!==false?on:off).push(names[k]); }
   var row=function(list,yes){
@@ -8869,8 +9094,10 @@ function planFeatureLineHTML(p){
 function planCardHTML(role,p,cur){
   var on=p.id===cur, blocked=planSwitchBlocker(role,p);
   var cap = (typeof p.cap==='number')
-    ? (p.cap===0?'Unlimited clients':'Up to '+p.cap+' clients')
-    : (p.seats+' team seat'+(p.seats===1?'':'s')+' + Manager');
+    ? (p.cap===0?'Unlimited clients':'Up to '+nfmt(p.cap)+' clients')
+    : ((p.features&&p.features.multiCo)
+        ? ('Up to '+p.maxCo+' companies · '+p.seats+' seats each')
+        : (p.seats+' team seat'+(p.seats===1?'':'s')+(p.seats>1?' + Manager':'')));
   return '<div style="border:2px solid '+(on?'var(--accent)':'var(--line)')+';background:'+(on?'var(--accent-bg)':'#fff')
       +';border-radius:14px;padding:15px;display:flex;flex-direction:column">'
     +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b style="font-size:14.5px">'+ctEsc(p.name)+'</b>'
@@ -8878,6 +9105,7 @@ function planCardHTML(role,p,cur){
     +'<div style="font-size:23px;font-weight:800;margin:6px 0 1px">'+(p.price?'AED '+nfmt(p.price):'Free')
       +(p.price?'<span class="muted" style="font-size:12px;font-weight:500"> /mo</span>':'')+'</div>'
     +'<div class="muted" style="font-size:12px">'+ctEsc(cap)+' · '+ctEsc(p.sub)+'</div>'
+    +(p.extraCo?'<div class="muted" style="font-size:11.5px;margin-top:3px">then AED '+nfmt(p.extraCo)+'/mo per extra company</div>':'')
     +(p.blurb?'<div class="muted" style="font-size:12px;margin-top:7px;line-height:1.45">'+ctEsc(p.blurb)+'</div>':'')
     +planFeatureLineHTML(p)
     +'<div style="flex:1;min-height:10px"></div>'
@@ -8895,7 +9123,22 @@ function openPlanPicker(){
   var role=currentAccount.role;
   var cur=(role==='firm')?firmPlanId():bizPlan();
   var owner=planIsOwner();
-  var cards=planList(role).map(function(p){ return planCardHTML(role,p,cur); }).join('');
+  var shelf=function(title, hint, list, cols){
+    if(!list.length) return '';
+    return '<div class="sechead" style="margin-top:16px"><span>'+title+'</span><i></i></div>'
+      +(hint?'<p class="muted" style="font-size:12px;margin:-4px 0 10px">'+hint+'</p>':'')
+      +'<div class="grid '+cols+'" style="gap:12px;align-items:stretch">'
+      +list.map(function(p){ return planCardHTML(role,p,cur); }).join('')+'</div>';
+  };
+  /* One company or several is a different purchase, not a bigger one, so the
+     two are shelved apart rather than stretched across a single row of five. */
+  var cards=(role==='firm')
+    ? '<div class="grid g4" style="gap:12px;margin-top:14px;align-items:stretch">'
+        +planList('firm').map(function(p){ return planCardHTML(role,p,cur); }).join('')+'</div>'
+    : shelf('One company','Everything a single UAE company needs to stay filed and on time.',
+            planListBySegment('business'),'g3')
+      +shelf('Groups &amp; MNEs','One login across several companies, each with its own vault, calendar and returns.',
+            planListBySegment('mne'),'g2');
   var h=document.getElementById('planPickerModal');
   if(!h){
     h=document.createElement('div'); h.id='planPickerModal'; h.className='modal-overlay';
@@ -8908,8 +9151,8 @@ function openPlanPicker(){
       +'<div><h3 style="font-size:18px;margin:0 0 4px">'+(role==='firm'?'Practice plans':'Your plan')+'</h3>'
       +'<p style="font-size:13px;color:var(--muted);margin:0;max-width:560px;line-height:1.5">'
       +(role==='firm'
-        ? 'Priced on how many active clients sit on your portal. Your first 30 are free, forever, and archived clients never count towards the total.'
-        : 'Every plan includes the dashboard, compliance calendar, document vault and your accountant link. Higher tiers add the filing tools and more seats.')
+        ? 'Priced on how many active clients sit on your portal, and on nothing else — every tier opens every feature. Your first 30 are free, forever, and archived clients never count towards the total.'
+        : 'Every plan includes the compliance dashboard, the calendar, return drafting and your accountant link. Paid plans add the document vault, AI reading, the security controls and more seats.')
       +'</p></div>'
       +'<button class="iconbtn" title="Close" onclick="closePlanPicker()">&#10005;</button>'
     +'</div>'
@@ -8917,7 +9160,7 @@ function openPlanPicker(){
       +'<div class="cardhead" style="margin-bottom:2px"><h3 style="font-size:13.5px">'+svgIcon('chart',14)+' Where you are today</h3></div>'
       +planUsageBarHTML()
     +'</div>'
-    +'<div class="grid '+(role==='firm'?'g4':'g3')+'" style="gap:12px;margin-top:14px;align-items:stretch">'+cards+'</div>'
+    +cards
     +(owner
       ? '<div class="note" style="margin-top:16px">'+svgIcon('check',13)+' Switching takes effect immediately. We invoice separately — no card is taken here, and nothing is charged by clicking.</div>'
       : '<div class="note" style="margin-top:16px">'+svgIcon('shield',13)+' Only the account owner can change the plan. Ask them to switch it from Settings › Plan & billing.</div>')
@@ -8971,6 +9214,12 @@ function settingsPlanCardHTML(){
     +'<div class="cardhead"><h3>'+svgIcon('chart',16)+' Plan &amp; billing</h3>'
       +'<span class="pill '+tone+'">'+ctEsc(p.name)+(p.price?' · AED '+nfmt(p.price)+'/mo':' · Free')+'</span></div>'
     +planUsageBarHTML()
+    +((role!=='firm' && p.features && p.features.multiCo)
+        ? '<div class="muted" style="font-size:12.3px;margin-top:9px">'+bizCompanyCount()+' of '+p.maxCo+' companies set up'
+          +(p.extraCo&&bizCompanyCount()>p.maxCo
+              ? ' — '+(bizCompanyCount()-p.maxCo)+' billed at AED '+nfmt(p.extraCo)+'/mo each'
+              : '')+'</div>'
+        : '')
     +'<div class="muted" style="font-size:12.3px;margin-top:9px;line-height:1.5">'+ctEsc(p.blurb||'')+'</div>'
     +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">'
       +'<button class="btn ghost sm" onclick="openPlanPicker()">'+svgIcon('chart',13)+' '+(owner?'Change plan':'Compare plans')+'</button>'
@@ -11105,7 +11354,7 @@ function v2AfterRender(p){
     }
   }catch(e){}
   var LAND_AR={
-    betaStrip:'هيساب ون في مرحلة تجريبية (بيتا) — ميزات جديدة كل أسبوع · تجربة مجانية لمدة ٣ أشهر للمستخدمين الأوائل',
+    betaStrip:'هيساب ون في مرحلة تجريبية (بيتا) — ميزات جديدة كل أسبوع · مجاني لمكاتب المحاسبة حتى ٣٠ عميلاً',
     tabHome:'الرئيسية', tabPenalty:'فحص الغرامات', tabSignin:'تسجيل الدخول', tabSignup:'إنشاء حساب', tabPricing:'الأسعار', tabSecurity:'الأمان',
     heroBadge:'إماراتي · متوافق مع الهيئة الاتحادية للضرائب · مدعوم بالذكاء الاصطناعي',
     heroH1:'طبقة الامتثال الضريبي <span class="hgrad">للإمارات</span>.',
@@ -11116,6 +11365,7 @@ function v2AfterRender(p){
   };
   var AR_TEXT={
     'Home':'الرئيسية','Penalty Check':'فحص الغرامات','Sign In':'تسجيل الدخول','Sign Up':'إنشاء حساب','Pricing':'الأسعار','Security':'الأمان',
+    'For Accountants':'للمحاسبين','For Businesses':'للشركات','For MNEs':'للمجموعات متعددة الشركات',
     'Demo preview':'معاينة تجريبية','Download desktop app':'حمّل تطبيق سطح المكتب','Install the app':'ثبّت التطبيق',
     'HisabOne · Accountant Dashboard':'هيساب ون · لوحة المحاسب',
     'Active clients':'عملاء نشطون','Docs awaited':'مستندات بانتظار','Overdue':'متأخر',

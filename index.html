@@ -71,12 +71,22 @@
   .ltabdrop{position:relative;display:inline-flex}
   .ltabdrop>.ltab{display:inline-flex;align-items:center;gap:5px}
   .ltabcar{opacity:.7;transition:transform .18s ease}
-  .ltabdrop:hover .ltabcar,.ltabdrop:focus-within .ltabcar{transform:rotate(180deg)}
-  .ltabmenu{position:absolute;top:100%;left:0;min-width:186px;padding:6px;margin-top:6px;
+  .ltabdrop:hover .ltabcar,.ltabdrop:focus-within .ltabcar,.ltabdrop.open .ltabcar{transform:rotate(180deg)}
+  /* The panel floats clear of the button for looks, which leaves a strip of
+     nothing between them, and the pointer crossing it left .ltabdrop and shut
+     the menu. The bridge belongs to the menu rather than the button: while the
+     menu is hidden it cannot receive pointer events at all, so it blocks
+     nothing, and while it is open hovering it keeps the whole group hovered. */
+  .ltabmenu::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:14px}
+  .ltabmenu{position:absolute;top:calc(100% + 8px);left:0;min-width:196px;padding:6px;
     background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-1);
-    display:flex;flex-direction:column;gap:2px;z-index:60;
+    display:flex;flex-direction:column;gap:2px;z-index:200;
     opacity:0;visibility:hidden;transform:translateY(-5px);transition:opacity .16s ease,transform .16s ease,visibility .16s}
-  .ltabdrop:hover .ltabmenu,.ltabdrop:focus-within .ltabmenu{opacity:1;visibility:visible;transform:translateY(0)}
+  .ltabdrop:hover .ltabmenu,.ltabdrop:focus-within .ltabmenu,.ltabdrop.open .ltabmenu{opacity:1;visibility:visible;transform:translateY(0)}
+  /* after a choice is made the menu should get out of the way, even though the
+     pointer is still resting on the item that was clicked */
+  .ltabdrop.picked .ltabmenu,.ltabdrop.picked:hover .ltabmenu,.ltabdrop.picked:focus-within .ltabmenu{
+    opacity:0;visibility:hidden;pointer-events:none}
   .ltabmenu button{background:transparent;border:0;text-align:left;color:var(--text);font-size:13.5px;
     font-weight:600;padding:9px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
   .ltabmenu button:hover,.ltabmenu button:focus-visible{background:var(--accent-bg);color:var(--accent)}
@@ -91,7 +101,9 @@
   .prow.pno{opacity:.5}
   .prow.pno .pdash{display:inline-flex;width:15px;justify-content:center;font-weight:800;color:var(--muted)}
   @media(max-width:820px){
-    .ltabmenu{position:static;opacity:1;visibility:visible;transform:none;display:none;box-shadow:none}
+    /* no hover on a touch screen, and a menu pinned under a scrolling tab strip
+       would be worse than none — the button goes straight to Pricing instead */
+    .ltabmenu{display:none}
     .ltabdrop{display:inline-flex}
     .psegb{padding:8px 13px;font-size:12.5px}
   }
@@ -731,6 +743,12 @@
   #login::before{width:520px;height:520px;left:-130px;top:-150px;background:radial-gradient(circle,rgba(0,115,252,.55),transparent 70%);animation:auroraA 18s ease-in-out infinite}
   #login::after{width:560px;height:560px;right:-150px;top:-120px;background:radial-gradient(circle,rgba(122,90,248,.5),transparent 70%);animation:auroraB 22s ease-in-out infinite}
   #login>*{position:relative;z-index:1}
+  /* That rule makes every child of #login its own stacking context at the
+     same level, so the view — a later sibling — painted over the whole top
+     bar, taking the Pricing menu with it however high its own z-index was.
+     The bar has to sit above the view for anything it drops down to be
+     reachable. */
+  #login>.ltopbar{z-index:20}
   /* shimmering brand words */
   .hgrad,.llogo-word .llogo-one,.ltopbar-logo .one{background-size:220% auto;animation:shimmer 6.5s linear infinite alternate}
   /* floating hero mock + animated storyboard bits */
@@ -1085,8 +1103,8 @@
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
       <button id="tabPenalty" class="ltab" onclick="switchView('penalty')">Penalty Check</button>
       <button id="tabSignin" class="ltab" onclick="switchView('signin')">Sign In</button>
-      <span class="ltabdrop">
-        <button id="tabPricing" class="ltab" aria-haspopup="true" onclick="switchView('pricing')">Pricing<svg class="ltabcar" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <span class="ltabdrop" id="pricingDrop">
+        <button id="tabPricing" class="ltab" aria-haspopup="true" aria-expanded="false" onclick="pricingMenuClick(event)">Pricing<svg class="ltabcar" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <span class="ltabmenu" role="menu">
           <button role="menuitem" onclick="openPricing('firm')">For Accountants</button>
           <button role="menuitem" onclick="openPricing('business')">For Businesses</button>
@@ -1799,7 +1817,7 @@ const SB_KEY='sb_publishable_ZoNeyNsawL0dEP-B19v90Q_HVLkrqbj';
 window.PRIVATE_MODE=true; /* invite-only preview: public signup disabled */ /* publishable key — safe to expose; access is enforced by RLS */
 let sb=null;
 try{ sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SB_URL, SB_KEY) : null; }catch(e){ sb=null; }
-let currentAccount=null;   /* {id, role, name, email, inviteCode, trialEndsAt} */
+let currentAccount=null;   /* {id, role, name, email, inviteCode, plan} */
 let myClients=[];          /* firm: [{business_id, business_name, business_email}] */
 let clientMeta={};         /* firm: per-client display meta (trn, deadline, risk, urgency) */
 
@@ -1818,7 +1836,6 @@ function updatePlanPill(){
   el.title='View and change your plan';
   el.onclick=function(){ if(typeof openPlanPicker==='function') openPlanPicker(); };
 }
-function updateTrialPill(){ updatePlanPill(); }
 
 /* per-user private state → account_data.data (debounced write-through; cross-user data lives in real tables) */
 let _saveT=null, _blobDirty=false;
@@ -1885,7 +1902,7 @@ function rebuildFirmClients(){
     const mine=all.filter(r=>r.client===c.business_name);
     const done=mine.filter(r=>r.st==='Received ✓').length;
     return {name:c.business_name, id:c.business_id, email:c.business_email||meta.email||'',
-            registered:c.registered_at||null, trialEnds:c.trial_ends_at||null,
+            registered:c.registered_at||null,
             trn:meta.trn||'—', deadline:meta.deadline||'Onboarding',
             docs:done+'/'+mine.length, risk:meta.risk||'medium', urgency:meta.urgency||'soon',
             linked:true};
@@ -1901,7 +1918,7 @@ function rebuildFirmClients(){
       var reg=(typeof docsFor==='function') ? docsFor(m.name) : [];
       var regDone=reg.filter(function(d){ return d.status==='received'||d.status==='reviewed'||d.status==='signed'; }).length;
       firmClients.push({name:m.name, id:m.id, email:m.email||meta.email||'',
-        registered:m.createdAt||null, trialEnds:null,
+        registered:m.createdAt||null,
         trn:m.trn||meta.trn||'—', deadline:meta.deadline||m.deadline||'Onboarding',
         docs:(done+regDone)+'/'+(mine.length+reg.length),
         risk:meta.risk||m.risk||'medium', urgency:meta.urgency||'soon',
@@ -1921,18 +1938,6 @@ function refreshRoleChip(){
     if(currentAccount.teamRole && currentAccount.teamRole!=='owner') return;
     el.textContent='Accounting firm · '+clients.length+' client'+(clients.length===1?'':'s');
   }catch(e){}
-}
-/* trial status helper: label + pill class from trial_ends_at */
-function trialBadge(iso){
-  if(!iso) return {label:'—', cls:'p-gray', days:null};
-  var end=new Date(iso), now=new Date();
-  var days=Math.ceil((end.getTime()-now.getTime())/86400000);
-  if(days>3650) return {label:'Complimentary', cls:'p-teal', days:days};
-  if(days<0) return {label:'Expired '+Math.abs(days)+'d ago', cls:'p-red', days:days};
-  if(days===0) return {label:'Ends today', cls:'p-red', days:days};
-  if(days<=3) return {label:days+' day'+(days===1?'':'s')+' left', cls:'p-red', days:days};
-  if(days<=7) return {label:days+' days left', cls:'p-amber', days:days};
-  return {label:days+' days left', cls:'p-green', days:days};
 }
 function fmtRegDate(iso){
   if(!iso) return '—';
@@ -2382,7 +2387,49 @@ function setPriceSeg(seg){
      panel has to be told which way that toggle is currently set */
   if(typeof setBilling==='function') setBilling(window._billing||'monthly');
 }
-function openPricing(seg){ switchView('pricing'); setPriceSeg(seg); }
+/* Hovering is fine with a mouse already on the button; clicking pins the menu
+   so reaching it never depends on a steady hand. */
+function pricingMenuOpen(on){
+  var d=document.getElementById('pricingDrop'), b=document.getElementById('tabPricing');
+  if(!d) return;
+  /* the post-choice block clears on mouseleave, which never fires if the menu
+     was opened from the keyboard — asking for it again clears it too */
+  if(on) d.classList.remove('picked');
+  d.classList.toggle('open', !!on);
+  if(b) b.setAttribute('aria-expanded', on?'true':'false');
+}
+function pricingMenuClick(e){
+  if(e){ e.preventDefault(); e.stopPropagation(); }
+  var narrow=false;
+  try{ narrow = window.matchMedia && window.matchMedia('(max-width:820px)').matches; }catch(err){}
+  /* the menu is not rendered on a phone, so the button has to do the job */
+  if(narrow){ switchView('pricing'); return; }
+  var d=document.getElementById('pricingDrop');
+  pricingMenuOpen(!(d && d.classList.contains('open')));
+}
+document.addEventListener('click', function(e){
+  var d=document.getElementById('pricingDrop');
+  if(d && d.classList.contains('open') && !d.contains(e.target)) pricingMenuOpen(false);
+});
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') pricingMenuOpen(false);
+});
+function openPricing(seg){
+  var d=document.getElementById('pricingDrop');
+  pricingMenuOpen(false);
+  if(d){
+    d.classList.add('picked');
+    /* the block lifts as soon as the pointer leaves, so hovering back in
+       reopens the menu as it always did */
+    d.addEventListener('mouseleave', function once(){ d.classList.remove('picked'); d.removeEventListener('mouseleave', once); });
+  }
+  switchView('pricing'); setPriceSeg(seg);
+  /* the clicked item keeps focus, and :focus-within holds the menu open over
+     the page it just navigated to. Moving focus onto the tab that is now
+     selected closes it and leaves a keyboard user where the action landed. */
+  var t=document.getElementById('pseg_'+seg);
+  if(t && t.focus){ try{ t.focus({preventScroll:true}); }catch(e){ t.focus(); } }
+}
 function setBilling(mode){
   window._billing=mode;
   var blks=document.querySelectorAll('.priceblk');
@@ -2750,7 +2797,7 @@ async function enterFromSession(session, expectRole){
   }
   currentAccount={id:uid, role:prof.role, name:prof.name, email:prof.email,
                   plan:normalisePlan(prof.role, prof.plan).id,
-                  inviteCode:prof.invite_code||'', trialEndsAt:prof.trial_ends_at,
+                  inviteCode:prof.invite_code||'',
                   parentFirmId:prof.parent_firm_id||null, teamRole:null,
                   firmId: prof.role==='firm' ? (prof.parent_firm_id||uid) : uid,
                   bizId: prof.role==='business' ? (prof.parent_firm_id||uid) : uid,
@@ -2778,7 +2825,7 @@ async function enterFromSession(session, expectRole){
 function enterApp(r){
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-  updateTrialPill();
+  updatePlanPill();
   setRole(r);
   if(typeof chatInit==='function') chatInit();
 }
@@ -7938,7 +7985,7 @@ function startDemo(role){
        demo stays on the free tier because that is the story worth showing —
        three clients of thirty, no card, no expiry. */
     email:'demo@hisabone.ae', plan: isBiz?'biz_complete':'firm_free',
-    inviteCode:'DEMO-PREVIEW', trialEndsAt:null,
+    inviteCode:'DEMO-PREVIEW',
     parentFirmId:null, teamRole:'owner',
     firmId:'demo-'+role, bizId:'demo-'+role,
     firmName: isBiz ? 'Al Noor Trading LLC' : 'Summit Auditors',

@@ -1205,7 +1205,7 @@
       var inp=document.getElementById('gateInput'), err=document.getElementById('gateErr');
       var v=(inp&&inp.value||'').trim();
       if(v===CODE){
-        var g=document.getElementById('accessGate'); if(g){ g.style.transition='opacity .3s ease'; g.style.opacity='0'; setTimeout(function(){ if(g.parentNode) g.parentNode.removeChild(g); },300); }
+        var g=document.getElementById('accessGate'); if(g){ g.style.transition='opacity .3s ease'; g.style.opacity='0'; setTimeout(function(){ if(g.parentNode) g.parentNode.removeChild(g); if(window._pwRecoveryPending && typeof maybeShowRecovery==='function') maybeShowRecovery(); },300); }
       } else {
         if(err) err.textContent='Incorrect code — try again.';
         if(inp){ inp.value=''; inp.focus();
@@ -1475,7 +1475,7 @@
         <div class="muted" style="font-size:11.5px;margin-top:4px">The account owner creates invites on the Team tab. Your seat type (Team member or Manager) comes from the invite itself.</div></div>
       <div class="lfield" id="lfNameWrap" style="display:none"><label class="flabel" for="lfName" id="lfNameLabel">Company name</label><input id="lfName" class="finput" type="text" placeholder="e.g. Falcon Trading LLC" autocomplete="organization" oninput="lfUnflag(this)"></div>
       <div class="lfield"><label class="flabel" for="lfEmail">Email</label><input id="lfEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username" oninput="lfUnflag(this)"></div>
-      <div class="lfield"><label class="flabel" for="lfPassword">Password</label>
+      <div class="lfield" id="lfPassWrap"><label class="flabel" for="lfPassword">Password</label>
         <div class="pw-wrap">
           <input id="lfPassword" name="password" class="finput" type="password" placeholder="Your password" autocomplete="current-password" oninput="lfPwCheck()">
           <button type="button" class="pw-eye" onclick="togglePw(this,'lfPassword')" aria-label="Show password" title="Show password"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
@@ -1485,6 +1485,7 @@
           <div class="pwlabel" id="lfPwLabel">Use at least 8 characters, with a capital letter, a number or a symbol.</div>
         </div>
       </div>
+      <div id="lfForgotLine" style="text-align:right;margin:-6px 0 12px"><span class="link" style="font-size:12.5px" onclick="openForgot()">Forgot password?</span></div>
       <div class="lfield" id="lfConfirmWrap" style="display:none"><label class="flabel" for="lfConfirm">Confirm password</label>
         <div class="pw-wrap">
           <input id="lfConfirm" class="finput" type="password" placeholder="Type it once more" autocomplete="new-password" oninput="lfConfirmCheck()">
@@ -1508,7 +1509,7 @@
       </form>
       <div class="muted" id="lfSwapLine" style="text-align:center;font-size:12.5px;margin-top:13px">
         <span id="lfSwapText">New to HisabOne?</span>
-        <span class="link" id="lfSwapLink" onclick="setLfMode(lfMode==='signup'?'signin':'signup')">Create an account</span>
+        <span class="link" id="lfSwapLink" onclick="lfSwapClick()">Create an account</span>
       </div>
       <div style="text-align:center;margin-top:9px"><span class="link" onclick="backToPortals()">← Choose a different portal</span></div>
       <div class="muted" id="lfConsentLine" style="text-align:center;font-size:11.5px;margin-top:7px">By continuing you agree to our <span class="link" onclick="switchView('terms')">Terms of Use</span> and <span class="link" onclick="switchView('privacy')">Privacy Policy</span> (including AI &amp; data-processing disclosures).</div>
@@ -1943,6 +1944,12 @@ const SB_KEY='sb_publishable_ZoNeyNsawL0dEP-B19v90Q_HVLkrqbj';
 window.PRIVATE_MODE=true; /* invite-only preview: public signup disabled */ /* publishable key — safe to expose; access is enforced by RLS */
 let sb=null;
 try{ sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SB_URL, SB_KEY) : null; }catch(e){ sb=null; }
+/* a reset email links back here with a recovery token in the hash; supabase-js
+   exchanges it for a session and announces PASSWORD_RECOVERY */
+if(/type=recovery/.test(location.hash)) window._pwRecoveryPending=true;
+if(sb){ try{ sb.auth.onAuthStateChange(function(evt){
+  if(evt==='PASSWORD_RECOVERY'){ window._pwRecoveryPending=true; if(typeof maybeShowRecovery==='function') maybeShowRecovery(); }
+}); }catch(e){} }
 let currentAccount=null;   /* {id, role, name, email, inviteCode, plan} */
 let myClients=[];          /* firm: [{business_id, business_name, business_email}] */
 let clientMeta={};         /* firm: per-client display meta (trn, deadline, risk, urgency) */
@@ -2758,6 +2765,8 @@ function setLfMode(m){
   if(su && typeof lfWhoChanged==='function') lfWhoChanged();
   g('lfTrialNote').style.display=su?'block':'none';
   const rm=g('lfRememberWrap'); if(rm) rm.style.display=su?'none':'flex';
+  var fl=g('lfForgotLine'); if(fl) fl.style.display=su?'none':'block';
+  var pww=g('lfPassWrap'); if(pww) pww.style.display='block';
   var cw=g('lfConfirmWrap'); if(cw) cw.style.display=su?'block':'none';
   var pmr=g('lfPwMeter');    if(pmr) pmr.style.display=su?'block':'none';
   var tw=g('lfTermsWrap');   if(tw) tw.style.display=su?'block':'none';
@@ -2802,7 +2811,7 @@ function setLfBusy(b, label){
     if(btn._lfLabel!==undefined){ btn.textContent=btn._lfLabel; btn._lfLabel=undefined; }
   }
 }
-function submitLoginForm(){ if(lfMode==='signup') doSignup(); else doLogin(); }
+function submitLoginForm(){ if(lfMode==='signup') doSignup(); else if(lfMode==='reset') doForgot(); else doLogin(); }
 function lfWhoChanged(){
   var who=(document.getElementById('lfWho')||{}).value||'owner';
   var joining=(who!=='owner');
@@ -2839,6 +2848,89 @@ async function doLogin(){
     await enterFromSession(data.session, loginRole);
   }catch(e){ showLoginErr('Could not sign in — please try again.'); }
   finally{ setLfBusy(false); }
+}
+
+/* ---------- FORGOT PASSWORD ---------- */
+function openForgot(){
+  lfMode='reset';
+  var g=function(id){return document.getElementById(id);};
+  var pww=g('lfPassWrap'); if(pww) pww.style.display='none';
+  var fl=g('lfForgotLine'); if(fl) fl.style.display='none';
+  var rm=g('lfRememberWrap'); if(rm) rm.style.display='none';
+  g('lfErr').style.display='none'; g('lfNotice').style.display='none';
+  g('lfTitle').textContent='Reset your password';
+  g('lfSubmit').textContent='Email me a reset link \u2192';
+  var st=g('lfSwapText'), sl=g('lfSwapLink');
+  if(st) st.textContent='Remembered it?';
+  if(sl) sl.textContent='Back to sign in';
+  var em=g('lfEmail'); if(em) em.focus();
+}
+function closeForgot(){ setLfMode('signin'); }
+function lfSwapClick(){
+  if(lfMode==='reset') closeForgot();
+  else setLfMode(lfMode==='signup'?'signin':'signup');
+}
+async function doForgot(){
+  const email=document.getElementById('lfEmail').value.trim();
+  document.getElementById('lfErr').style.display='none';
+  document.getElementById('lfNotice').style.display='none';
+  lfClearBad();
+  if(!email){showLoginErr('Enter your email address.','lfEmail');return;}
+  if(!validEmail(email)){showLoginErr('That does not look like a valid email address.','lfEmail');return;}
+  if(!sb){showLoginErr('Cannot reach the server — check your connection and reload.');return;}
+  setLfBusy(true,'Sending the link\u2026');
+  try{
+    /* the answer is the same whether or not the address exists — the form
+       must not double as a directory of registered emails */
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
+    if(error && !/user not found/i.test(error.message||'')){ showLoginErr(friendlyAuthError(error)); return; }
+    const n=document.getElementById('lfNotice');
+    n.textContent='If an account exists for '+email+', a reset link is on its way — check your inbox and spam folder.';
+    n.style.display='block';
+  }catch(e){ showLoginErr('Could not send the link — please try again.'); }
+  finally{ setLfBusy(false); }
+}
+
+/* ---------- the other half: the reset email lands back here ---------- */
+function maybeShowRecovery(){
+  if(!window._pwRecoveryPending) return;
+  if(document.getElementById('accessGate')) return;      /* the gate calls back after the code */
+  window._pwRecoveryPending=false;
+  var old=document.getElementById('pwRecOverlay'); if(old) old.remove();
+  var ov=document.createElement('div');
+  ov.className='modal-overlay'; ov.id='pwRecOverlay';
+  ov.innerHTML='<div class="modal"><h3>Set a new password</h3>'
+    +'<p>You followed a password-reset link — choose a new password for your account.</p>'
+    +'<div class="lfield"><label class="flabel">New password</label><input id="pwRecNew" class="finput" type="password" autocomplete="new-password" placeholder="At least 8 characters" style="width:100%"></div>'
+    +'<div class="lfield"><label class="flabel">Confirm password</label><input id="pwRecConfirm" class="finput" type="password" autocomplete="new-password" placeholder="Type it once more" style="width:100%" onkeydown="if(event.key===\'Enter\')pwRecSave()"></div>'
+    +'<div id="pwRecErr" style="color:var(--red);font-size:12.5px;margin-bottom:10px;display:none"></div>'
+    +'<div style="display:flex;gap:9px;justify-content:flex-end">'
+    +'<button class="btn ghost" onclick="document.getElementById(\'pwRecOverlay\').remove()">Cancel</button>'
+    +'<button class="btn" id="pwRecBtn" onclick="pwRecSave()">Save new password</button></div></div>';
+  document.body.appendChild(ov);
+  setTimeout(function(){ var i=document.getElementById('pwRecNew'); if(i) i.focus(); },80);
+}
+async function pwRecSave(){
+  var p1=(document.getElementById('pwRecNew')||{}).value||'';
+  var p2=(document.getElementById('pwRecConfirm')||{}).value||'';
+  var err=document.getElementById('pwRecErr');
+  function fail(m){ if(err){ err.textContent=m; err.style.display='block'; } }
+  if(p1.length<8) return fail('Use at least 8 characters.');
+  if(p1!==p2) return fail('The two passwords do not match.');
+  if(!sb) return fail('Cannot reach the server — check your connection and reload.');
+  var b=document.getElementById('pwRecBtn'); if(b) b.classList.add('loading');
+  try{
+    var r=await sb.auth.updateUser({password:p1});
+    if(r.error) return fail(friendlyAuthError(r.error));
+    var ov=document.getElementById('pwRecOverlay'); if(ov) ov.remove();
+    try{ await sb.auth.signOut(); }catch(e){}
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
+    if(typeof toast==='function') toast('Password updated — sign in with your new password');
+    if(typeof switchView==='function') switchView('signin');
+    var n=document.getElementById('lfNotice');
+    if(n){ n.textContent='Password updated — sign in with your new password.'; n.style.display='block'; }
+  }catch(e){ fail('Could not update the password — please try again.'); }
+  finally{ if(b) b.classList.remove('loading'); }
 }
 
 /* ---------- SIGN UP (free entry plan, no credit card, nothing expires) ---------- */

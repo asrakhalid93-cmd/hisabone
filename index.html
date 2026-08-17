@@ -96,7 +96,7 @@
   .psegb{background:transparent;border:0;color:var(--muted);font-size:13.5px;font-weight:700;
     padding:9px 20px;border-radius:10px;cursor:pointer;transition:background .18s ease,color .18s ease}
   .psegb:hover{color:var(--text)}
-  .psegb.on{background:var(--panel);color:var(--accent);box-shadow:var(--shadow-1)}
+  .psegb.on{background:var(--accent);color:#fff;box-shadow:0 2px 8px var(--accent-bg2)}
   .psegnote{text-align:center;font-size:12.5px;margin:-4px 0 18px}
   .prow.pno{opacity:.5}
   .prow.pno .pdash{display:inline-flex;width:15px;justify-content:center;font-weight:800;color:var(--muted)}
@@ -528,7 +528,7 @@
   .gearbtn{background:transparent;border:0;color:var(--muted);cursor:pointer;padding:6px;border-radius:9px;display:inline-flex;align-items:center;transition:.15s}
   .gearbtn:hover{background:var(--accent-bg);color:var(--accent-d)}
   .gearbtn.on{background:var(--accent-bg);color:var(--accent-d)}
-  .belldot{position:absolute;top:3px;right:3px;min-width:15px;height:15px;padding:0 4px;border-radius:999px;background:var(--red);color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+  .belldot{position:absolute;top:-2px;right:-3px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--red);color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 0 0 2px #fff}
   .notifpanel{position:absolute;top:40px;right:0;width:330px;max-height:420px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 50px rgba(16,32,60,.18);z-index:120}
   .notifhead{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff}
   .notifhead b{font-size:14px}
@@ -691,7 +691,7 @@
   .ltopbar-logo .one{background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
   .logo .word-one{background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
   /* ===== landing v2 — visual flow + subtle reveals ===== */
-  .reveal{opacity:0;transform:translateY(46px) scale(.98);transition:opacity .75s cubic-bezier(.22,.72,.2,1),transform .75s cubic-bezier(.22,.72,.2,1)}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
   .reveal.in{opacity:1;transform:none}
   .homesect.reveal-sect .homeh2,.homesect.reveal-sect .lsectlabel{transition-delay:.02s}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1 !important;transform:none !important;transition:none}}
@@ -901,7 +901,7 @@
   .ltab{transition:background .18s var(--ease),color .18s var(--ease)}
 
   /* -- accessibility: visible keyboard focus -- */
-  .btn:focus-visible,.iconbtn:focus-visible,.navitem:focus-visible,.seg button:focus-visible,.ltab:focus-visible,.lf-btn:focus-visible,.link:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:9px}
+  .btn:focus-visible,.iconbtn:focus-visible,.navitem:focus-visible,.seg button:focus-visible,.ltab:focus-visible,.lf-btn:focus-visible,.link:focus-visible,.psegb:focus-visible,.lmtab:focus-visible,.secitem:focus-visible,.finput:focus-visible,.retdot:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:9px}
 
   /* ================= MODERNIZE v4 — roomier forms, gradient accents, chat ================= */
   /* roomier inputs & grids (fields were too tight) */
@@ -1046,6 +1046,128 @@
   .adm-wrap>*:nth-child(2){animation-delay:.05s}.adm-wrap>*:nth-child(3){animation-delay:.1s}.adm-wrap>*:nth-child(4){animation-delay:.15s}
 
   /* -- respect reduced motion -- */
+
+  /* ================= APP-FEEL v6 — tempo, cohesion, and the last 10% ================= */
+  /* -- tempo: the v2-v5 layers moved, this layer makes them quick.
+        Ceilings come from Carbon/Material (micro 70-150ms, views <300ms);
+        the asymmetry (enter slower than exit) is the Linear trick. -- */
+  #main.pagein > *{animation-duration:.3s}
+  #main.pagein > *:nth-child(2){animation-delay:.025s}
+  #main.pagein > *:nth-child(3){animation-delay:.05s}
+  #main.pagein > *:nth-child(4){animation-delay:.075s}
+  #main.pagein > *:nth-child(5){animation-delay:.1s}
+  #main.pagein > *:nth-child(n+6){animation-delay:.12s}
+  @keyframes pgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .card{transition-duration:.18s,.18s,.18s}
+  .card.clk:hover,.card.stat.clk:hover{transform:translateY(-2px)}
+  .reveal{transform:translateY(18px);transition-duration:.5s,.5s}
+  .modal-overlay > div{animation-duration:.24s}
+  .modal-overlay{animation-duration:.18s}
+
+  /* -- platform feel: selection tint, no tap flash, financial digits align -- */
+  ::selection{background:var(--accent-bg2);color:var(--ink)}
+  *{-webkit-tap-highlight-color:transparent}
+  button{font-family:inherit}
+  td{font-variant-numeric:tabular-nums}
+  tbody tr{transition:background .14s var(--ease)}
+  tbody tr:hover td{background:rgba(16,32,60,.025)}
+  tr.clickable:hover td{background:var(--accent-bg)}
+  *::-webkit-scrollbar{width:10px;height:10px}
+  *::-webkit-scrollbar-track{background:transparent}
+  *::-webkit-scrollbar-thumb{background:rgba(16,32,60,.16);border-radius:8px;border:3px solid transparent;background-clip:content-box}
+  *::-webkit-scrollbar-thumb:hover{background:rgba(16,32,60,.28);border:3px solid transparent;background-clip:content-box}
+
+  /* -- section tabs: the underline grows in instead of appearing -- */
+  .secitem{border-bottom-color:transparent !important;position:relative}
+  .secitem::after{content:'';position:absolute;left:12px;right:12px;bottom:-1px;height:2.5px;border-radius:3px;
+    background:var(--accent);transform:scaleX(0);opacity:0}
+  .secitem.active::after{transform:scaleX(1);opacity:1;animation:tabIn .26s var(--ease)}
+  @keyframes tabIn{from{transform:scaleX(.4);opacity:0}to{transform:scaleX(1);opacity:1}}
+  .secitem:hover:not(.active){background:rgba(16,32,60,.035);border-radius:9px 9px 0 0}
+  .secitem:active{transform:scale(.98)}
+
+  /* -- accent-outlined cards: a wash, not a wire.
+        The hard 1px accent border read as a warning; a 30% mix and a 3% tint
+        says "connected" without shouting. Inline styles win the cascade, hence
+        the attribute selector + important. -- */
+  .card[style*="border-color:var(--accent)"]{
+    border-color:color-mix(in srgb, var(--accent) 30%, #fff) !important;
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 3.5%, #fff), #fff);
+  }
+
+  /* -- buttons: complete the state set (disabled + loading were missing) -- */
+  .btn:disabled,.btn[disabled]{opacity:.55;pointer-events:none;transform:none;box-shadow:none}
+  .btn.loading{pointer-events:none;position:relative;color:transparent !important}
+  .btn.loading::after{content:'';position:absolute;inset:0;margin:auto;width:16px;height:16px;
+    border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+  .btn.ghost.loading::after{border-color:rgba(16,32,60,.2);border-top-color:var(--accent)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* -- form controls: one height on a row, one typeface everywhere -- */
+  input.finput:not([type=checkbox]):not([type=radio]){height:42px}
+  select.finput{height:42px}
+  input[type=date].finput,input[type=month].finput{font-family:inherit}
+  .v201 input.finput{height:36px}
+
+  /* -- selects: native chrome out, quiet chevron in -- */
+  select.finput{appearance:none;-webkit-appearance:none;padding-right:34px !important;cursor:pointer;
+    background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%235f6e88' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 13px center}
+  select.finput:hover{border-color:color-mix(in srgb, var(--accent) 45%, var(--line))}
+  .finput:hover:not(:focus){border-color:color-mix(in srgb, var(--accent) 30%, var(--line))}
+
+  /* -- toast and chat: never sit on the demo banner -- */
+  #toast{transition:opacity .22s var(--ease),transform .22s var(--ease)}
+  body:has(#sampleBanner[style*="display: flex"]) #toast,
+  body:has(#sampleBanner[style*="display:flex"]) #toast{bottom:92px}
+  body:has(#sampleBanner[style*="display: flex"]) #chatFab,
+  body:has(#sampleBanner[style*="display:flex"]) #chatFab{bottom:88px}
+  body:has(#sampleBanner[style*="display: flex"]) #chatPanel,
+  body:has(#sampleBanner[style*="display:flex"]) #chatPanel{bottom:152px}
+
+  /* -- access gate: an entrance, a focus ring, and a shake that answers back -- */
+  #accessGate > div{animation:gateIn .55s cubic-bezier(.16,1,.3,1) both}
+  @keyframes gateIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+  #gateInput{transition:border-color .18s var(--ease),box-shadow .18s var(--ease),background .18s var(--ease)}
+  #gateInput:focus{border-color:#0073fc !important;box-shadow:0 0 0 3px rgba(0,115,252,.14)}
+  #gateInput.shake{animation:gateShake .4s var(--ease)}
+  @keyframes gateShake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+  #accessGate button{transition:transform .16s var(--ease),box-shadow .16s var(--ease),filter .16s var(--ease)}
+  #accessGate button:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,115,252,.4);filter:brightness(1.05)}
+  #accessGate button:active{transform:translateY(0) scale(.97)}
+
+  /* -- hero visual: a slow breath, paused for anyone who asked for stillness -- */
+  @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .hero-visual{animation:heroFloat 7s ease-in-out infinite}
+
+  /* -- the health ring sweeps up to its score on entry -- */
+  @property --hdeg{syntax:'<angle>';initial-value:0deg;inherits:false}
+  @keyframes ringSweep{from{--hdeg:0deg}}
+  .hring{animation:ringSweep .9s var(--ease) both}
+
+  /* -- nav press feedback (the sidebar had hover but no press) -- */
+  .navitem:active{transform:scale(.985)}
+  .ltab:active,.psegb:active,.lmtab:active{transform:scale(.96)}
+
+  /* -- pills: settle the sizes, keep colour for status only -- */
+  .pill{font-variant-numeric:tabular-nums}
+
+  /* -- inputs inside the gate of a touch device: hover states stay off glass -- */
+  @media (hover:none){
+    .btn:hover,.btn.ghost:hover,.iconbtn:hover{transform:none;box-shadow:none}
+    .card.clk:hover,.card.stat.clk:hover{transform:none}
+    .navitem:hover{padding-left:12px}
+  }
+
+  /* -- reduced motion: the new layer obeys the same contract as the old -- */
+  @media(prefers-reduced-motion:reduce){
+    .secitem.active::after,#accessGate > div,.btn.loading::after,.hring{animation:none !important}
+    .secitem.active::after{transform:scaleX(1);opacity:1}
+    #gateInput.shake{animation:none}
+    .hero-visual{animation:none}
+    tbody tr,#toast{transition:none}
+  }
+
   @media(prefers-reduced-motion:reduce){
     #main.pagein > *,.modal-overlay,.modal-overlay > div,.notifpanel,.hero-badge,.chatmsg,#chatPanel,.adm-wrap>*{animation:none !important}
     #login::before,#login::after{animation:none !important}
@@ -1057,19 +1179,22 @@
 <body data-role="business">
 
 <!-- ================= PRIVATE PREVIEW ACCESS GATE ================= -->
-<div id="accessGate" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(150deg,#0b1530,#101c38 45%,#1a1240);display:flex;align-items:center;justify-content:center;padding:22px;font-family:Inter,system-ui,-apple-system,sans-serif">
-  <div style="max-width:380px;width:100%;text-align:center;color:#fff">
-    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 18px;background:linear-gradient(135deg,#1e9bff,#4f7ef0 52%,#8a5cf6);display:flex;align-items:center;justify-content:center">
+<div id="accessGate" style="position:fixed;inset:0;z-index:99999;background:
+    radial-gradient(820px 560px at 8% -8%, rgba(0,115,252,.16), transparent 55%),
+    radial-gradient(880px 600px at 92% -4%, rgba(122,90,248,.18), transparent 55%),
+    linear-gradient(160deg,#f5faf9 0%,#f1f5fb 45%,#f4f1fc 100%);display:flex;align-items:center;justify-content:center;padding:22px;font-family:Inter,system-ui,-apple-system,sans-serif">
+  <div style="max-width:400px;width:100%;text-align:center;background:#fff;border:1px solid #e7ebf2;border-radius:18px;padding:34px 30px 28px;box-shadow:0 1px 2px rgba(17,28,48,.05),0 24px 60px rgba(17,28,48,.10)">
+    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 16px;background:linear-gradient(135deg,#0073fc,#4f7ef0 52%,#7a5af8);display:flex;align-items:center;justify-content:center">
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
     </div>
-    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px">Hisab<span style="background:linear-gradient(120deg,#1e9bff,#8a5cf6);-webkit-background-clip:text;background-clip:text;color:transparent">One</span></div>
-    <div style="font-size:14px;color:rgba(255,255,255,.62);margin-bottom:22px">Private preview — enter your access code to continue.</div>
+    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px;color:#111c30">Hisab<span style="color:#0073fc">One</span></div>
+    <div style="font-size:14px;color:#5f6e88;margin-bottom:22px">Private preview — enter your access code to continue.</div>
     <input id="gateInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Access code"
-      style="width:100%;padding:13px 15px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:15px;text-align:center;letter-spacing:3px;outline:none"
+      style="width:100%;padding:13px 15px;border-radius:11px;border:1.5px solid #e7ebf2;background:#fff;color:#111c30;font-size:15px;text-align:center;letter-spacing:3px;outline:none"
       onkeydown="if(event.key==='Enter')gateCheck()">
-    <div id="gateErr" style="color:#ff8b8b;font-size:12.5px;height:16px;margin:9px 0 4px"></div>
-    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:12px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#fff;background:linear-gradient(135deg,#38a3ff,#0073fc,#8a3df2)">Enter &rarr;</button>
-    <div style="font-size:11.5px;color:rgba(255,255,255,.4);margin-top:16px">Access by invitation only</div>
+    <div id="gateErr" style="color:#dd3a53;font-size:12.5px;height:16px;margin:9px 0 4px"></div>
+    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#fff;background:#0073fc;box-shadow:0 1px 2px rgba(17,28,48,.10)">Enter &rarr;</button>
+    <div style="font-size:11.5px;color:#8b98ad;margin-top:16px">Access by invitation only</div>
   </div>
 </div>
 <script>
@@ -1083,7 +1208,8 @@
         var g=document.getElementById('accessGate'); if(g){ g.style.transition='opacity .3s ease'; g.style.opacity='0'; setTimeout(function(){ if(g.parentNode) g.parentNode.removeChild(g); },300); }
       } else {
         if(err) err.textContent='Incorrect code — try again.';
-        if(inp){ inp.value=''; inp.focus(); }
+        if(inp){ inp.value=''; inp.focus();
+          inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake'); }
       }
     };
     var t=setInterval(function(){ var i=document.getElementById('gateInput'); if(i){ i.focus(); clearInterval(t); } },60);
@@ -3560,7 +3686,7 @@ fdash:()=>{
   ${firmHealthCard()}
   <div class="grid g4 mb14">
     <div class="card stat clk" onclick="go('clients')"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Active clients</div></div>
-    <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-red">${svgIcon('clock',20)}</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
+    <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ${overdue>0?'ic-red':'ic-teal'}">${svgIcon('clock',20)}</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-amber">${svgIcon('inbox',20)}</div><div class="num">${awaited}</div><div class="lbl">Documents awaited</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-green">${svgIcon('check',20)}</div><div class="num">${received}</div><div class="lbl">Documents received</div></div>
   </div>
@@ -3683,7 +3809,7 @@ reminders:()=>`
     <div class="card stat"><div class="ic ic-teal">${svgIcon('mail',20)}</div><div class="num">${firmReminders.length}</div><div class="lbl">Reminders scheduled</div></div>
     <div class="card stat"><div class="ic ic-amber">${svgIcon('clock',20)}</div><div class="num">${firmReminders.filter(r=>r.next&&r.next!=='—').length}</div><div class="lbl">Upcoming reminders</div></div>
     <div class="card stat"><div class="ic ic-green">${svgIcon('refresh',20)}</div><div class="num">${firmReminders.filter(r=>r.auto==='green').length}</div><div class="lbl">Auto-chase active</div></div>
-    <div class="card stat"><div class="ic ic-red">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Linked clients</div></div>
+    <div class="card stat"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Linked clients</div></div>
   </div>
   ${reminderFormOpen?`
   <div class="card mb14" style="border-color:var(--accent)">
@@ -3755,8 +3881,8 @@ vat:()=>{
       <div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>
       <div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>
       <div><label class="flabel">Mode</label><select id="qcMode" class="finput" oninput="recalcVAT()">
-        <option value="add">Add VAT (amount excludes VAT)</option>
-        <option value="extract">Extract VAT (amount includes VAT)</option></select></div>
+        <option value="add">Add VAT — net amount</option>
+        <option value="extract">Extract VAT — gross amount</option></select></div>
       <div></div>
     </div>
     <div class="grid g3 mt18">
@@ -5752,7 +5878,7 @@ function bizTeamPageHTML(){
     invite='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">'
       +'<div class="flabel" style="margin-bottom:8px">Invite someone to this workspace</div>'
       +'<div class="grid g2" style="gap:8px"><input id="btmName" class="finput" placeholder="Full name">'
-      +'<select id="btmRole" class="finput"><option value="consultant">Team member — works in the portal</option>'
+      +'<select id="btmRole" class="finput"><option value="consultant">Team member</option>'
       +(hasManager?'':'<option value="manager">Manager — oversees &amp; observes (view-only)</option>')
       +'</select></div>'
       +'<input id="btmEmail" class="finput" placeholder="Work email" style="margin-top:8px">'
@@ -6450,7 +6576,7 @@ function docProgress(name){
 function docProgressHTML(name, width){
   var p=docProgress(name);
   if(!p.total) return '<span class="muted" style="font-size:11.5px">Nothing requested</span>';
-  var col = p.pct===100 ? 'var(--green)' : (p.pct===0 ? 'var(--amber)' : 'var(--accent)');
+  var col = 'var(--accent)';   /* completion is not a status — the fraction says the rest */
   return '<span style="display:inline-flex;align-items:center;gap:8px">'
     +'<span class="minibar" style="width:'+(width||80)+'px"><i style="width:'+p.pct+'%;background:'+col+'"></i></span>'
     +'<span class="frac">'+p.done+' / '+p.total+'</span></span>';
@@ -6806,7 +6932,7 @@ function reqDocPage(kind){
   <div class="card" style="padding:0;overflow-x:auto">
     <table>
       <tr><th>Client</th><th>Document requested</th><th>${tax?'Application':'Engagement'}</th><th>Deadline</th><th>Urgency</th><th>Risk</th><th>Status</th><th>File</th><th></th></tr>
-      ${arr.map((r,i)=>reqRow(r,i,kind)).join('')}
+      ${arr.map((r,i)=>reqRow(r,i,kind)).join('') || `<tr><td colspan="9" class="muted" style="text-align:center;padding:26px;font-size:13px">${tax?'No tax documents requested yet — request the first one below.':'No audit documents requested yet — request the first one below.'}</td></tr>`}
     </table>
   </div>
   <button class="btn mt18" onclick="toggleReqForm('${kind}')">${formOpen[kind]?'Close form':(tax?'+ Request a tax document':'+ Request an audit document')}</button>`;}
@@ -8026,7 +8152,7 @@ function nfmt(n){ return Number(n||0).toLocaleString('en-US'); }
 function healthBand(s){ return s>=80?{label:'Healthy',cls:'p-green',col:'#0053d6'}:(s>=55?{label:'Needs attention',cls:'p-amber',col:'#b45309'}:{label:'At risk',cls:'p-red',col:'#c0392b'}); }
 function scoreGauge(score, col, size){
   size=size||96; var deg=Math.max(0,Math.min(100,score))*3.6;
-  return '<div style="width:'+size+'px;height:'+size+'px;border-radius:50%;flex-shrink:0;background:conic-gradient('+col+' '+deg+'deg,var(--panel2) 0deg);display:flex;align-items:center;justify-content:center">'
+  return '<div class="hring" style="--hdeg:'+deg+'deg;width:'+size+'px;height:'+size+'px;border-radius:50%;flex-shrink:0;background:conic-gradient('+col+' var(--hdeg,'+deg+'deg),var(--panel2) 0deg);display:flex;align-items:center;justify-content:center">'
     +'<div style="width:'+(size-18)+'px;height:'+(size-18)+'px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center">'
     +'<div style="font-size:'+Math.round(size*0.30)+'px;font-weight:800;line-height:1;color:'+col+'">'+score+'</div><div class="muted" style="font-size:9.5px;letter-spacing:.5px">/ 100</div></div></div>';
 }
@@ -8107,7 +8233,7 @@ function businessHealthCard(){
     ? '<div style="font-size:14px;margin-top:6px"><b style="color:#c0392b">'+fmtAED(h.exposure)+'</b> <span class="muted">exposed across '+n+' deadline'+(n===1?'':'s')+'</span></div>'
     : '<div style="font-size:13.5px;margin-top:6px;color:#0053d6;font-weight:600;display:inline-flex;align-items:center;gap:5px">'+svgIcon('success',14)+' No penalties currently at risk</div>';
   var list = h.atRisk.length? '<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px">'+h.atRisk.map(function(r){return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:4px 0"><span style="display:inline-flex;align-items:center;gap:6px;color:var(--text)"><span style="color:#c0392b">'+svgIcon('warn',12)+'</span>'+ctEsc(r.label)+'</span><b style="color:#c0392b">'+fmtAED(r.amount)+'</b></div>';}).join('')+'</div>' : '';
-  return '<div class="card mb14" style="border-color:'+h.band.col+'">'
+  return '<div class="card mb14" style="border-color:color-mix(in srgb, '+h.band.col+' 28%, #fff);background:linear-gradient(180deg, color-mix(in srgb, '+h.band.col+' 3.5%, #fff), #fff)">'
     +'<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'
     +scoreGauge(h.score,h.band.col,104)
     +'<div style="flex:1;min-width:220px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="font-size:16px;margin:0">Compliance Health Score</h3><span class="pill '+h.band.cls+'">'+h.band.label+'</span></div>'
@@ -8121,7 +8247,7 @@ function firmHealthCard(){
   var a=firmAggregateHealth();
   if(a.avg==null) return '';
   var expLine=a.exposure>0?'<b style="color:#c0392b">'+fmtAED(a.exposure)+'</b> <span class="muted">estimated exposure across '+a.atRiskClients+' client'+(a.atRiskClients===1?'':'s')+' at risk</span>':'<span style="color:#0053d6;font-weight:600">No penalties currently at risk</span>';
-  return '<div class="card mb14" style="border-color:'+a.band.col+'"><div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'
+  return '<div class="card mb14" style="border-color:color-mix(in srgb, '+a.band.col+' 28%, #fff);background:linear-gradient(180deg, color-mix(in srgb, '+a.band.col+' 3.5%, #fff), #fff)"><div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'
     +scoreGauge(a.avg,a.band.col,96)
     +'<div style="flex:1;min-width:220px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="font-size:16px;margin:0">Practice Compliance Health</h3><span class="pill '+a.band.cls+'">'+a.band.label+'</span></div>'
     +'<div style="font-size:14px;margin-top:6px">'+expLine+'</div>'
@@ -9159,7 +9285,7 @@ function planCardHTML(role,p,cur){
     +(blocked?'<div style="font-size:11.5px;color:var(--red);margin-top:8px;line-height:1.4">'+ctEsc(blocked)+'</div>':'')
     +(on
       ? '<button class="btn ghost sm" disabled style="width:100%;margin-top:10px;opacity:.55;cursor:default">You are on this plan</button>'
-      : '<button class="btn'+(blocked?' ghost':'')+' sm" style="width:100%;margin-top:10px"'
+      : '<button class="btn ghost sm" style="width:100%;margin-top:10px"'
         +(blocked?' disabled style="width:100%;margin-top:10px;opacity:.5;cursor:not-allowed"':'')
         +' onclick="choosePlan(\''+p.id+'\')">'+(p.price? 'Switch to '+ctEsc(p.name) : 'Switch to '+ctEsc(p.name))+'</button>')
     +'</div>';
@@ -10744,8 +10870,8 @@ function vatCalcCardHTML(){
       + '<div><label class="flabel">Amount (AED)</label><input id="qcAmt" class="finput" type="number" min="0" placeholder="0.00" oninput="recalcVAT()" style="text-align:right"></div>'
       + '<div><label class="flabel">VAT rate</label><select id="qcRate" class="finput" oninput="recalcVAT()"><option value="5">5%</option><option value="0">0%</option></select></div>'
       + '<div><label class="flabel">Mode</label><select id="qcMode" class="finput" oninput="recalcVAT()">'
-        + '<option value="add">Add VAT (amount excludes VAT)</option>'
-        + '<option value="extract">Extract VAT (amount includes VAT)</option></select></div>'
+        + '<option value="add">Add VAT — net amount</option>'
+        + '<option value="extract">Extract VAT — gross amount</option></select></div>'
     + '</div>'
     + '<div class="grid g3 mt18">'
       + '<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Net (excl. VAT)</div><div id="qcNet" style="font-size:24px;font-weight:700">AED 0.00</div></div>'

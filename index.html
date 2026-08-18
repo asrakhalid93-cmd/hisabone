@@ -264,6 +264,8 @@
     font-family:inherit;line-height:1.2;transition:border-color .16s ease,background .16s ease,color .16s ease}
   .ftab:hover{border-color:var(--accent)}
   .ftab.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+  .ftab.hot:not(.on){border-color:rgba(221,58,83,.4);color:var(--red)}
+  .ftab.hot:not(.on) .n{color:var(--red)}
   .ftab .n{font-weight:800;font-variant-numeric:tabular-nums}
   .minibar{height:5px;border-radius:99px;background:var(--line);overflow:hidden;display:inline-block;vertical-align:middle}
   .minibar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
@@ -3770,17 +3772,20 @@ fdash:()=>{
   const overdue = allReqs.filter(r=>r.st==='Overdue').length;
   const awaited = allReqs.length - received;
   const attention = firmClients.filter(c=>c.urgency==='overdue'||c.urgency==='soon');
+  const xb = firmExpiryBuckets();
   return `
   <h1>Accountant Dashboard</h1>
   <div class="sub">${firmName} · ${firmClients.length} client${firmClients.length===1?'':'s'} · ${ctEsc(firmPlanObj().name)} plan</div>
   ${typeof legacyBooksBannerHTML==='function'?legacyBooksBannerHTML():''}
   ${onboardingHTML()}
   ${firmHealthCard()}
-  <div class="grid g4 mb14">
+  <div class="grid g3 mb14">
     <div class="card stat clk" onclick="go('clients')"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Active clients</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ${overdue>0?'ic-red':'ic-teal'}">${svgIcon('clock',20)}</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-amber">${svgIcon('inbox',20)}</div><div class="num">${awaited}</div><div class="lbl">Documents awaited</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ic-green">${svgIcon('check',20)}</div><div class="num">${received}</div><div class="lbl">Documents received</div></div>
+    <div class="card stat clk" onclick="goFdocsExpiry('expiring')" title="Client documents expiring within 60 days — click for the list"><div class="ic ${xb.soon.length>0?'ic-amber':'ic-teal'}">${svgIcon('calendar',20)}</div><div class="num">${xb.soon.length}</div><div class="lbl">Nearing expiry · 60d</div></div>
+    <div class="card stat clk" onclick="goFdocsExpiry('expired')" title="Client documents past their expiry date — click for the list"><div class="ic ${xb.gone.length>0?'ic-red':'ic-teal'}">${svgIcon('warn',20)}</div><div class="num">${xb.gone.length}</div><div class="lbl">Expired documents</div></div>
   </div>
   ${clients.length ? `
   <div class="banner">
@@ -8095,22 +8100,22 @@ function loadSampleData(){
     var _t=function(h){ return new Date(Date.now()-h*3600000).toISOString(); };
     clientDocs={
       'Al Noor Trading LLC':[
-        {id:'dd01',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',addedAt:_t(720),receivedAt:_t(700),reviewedAt:_t(690),signedAt:_t(688),reviewer:'Omar Aziz'},
-        {id:'dd02',name:'Emirates ID — Mr Al Noor.pdf',category:'Emirates ID / Passport',period:'',status:'reviewed',due:'',note:'',addedAt:_t(715),receivedAt:_t(698),reviewedAt:_t(680),reviewer:'Omar Aziz',autoTagged:true},
+        {id:'dd01',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2026-07-31',addedAt:_t(720),receivedAt:_t(700),reviewedAt:_t(690),signedAt:_t(688),reviewer:'Omar Aziz'},
+        {id:'dd02',name:'Emirates ID — Mr Al Noor.pdf',category:'Emirates ID / Passport',period:'',status:'reviewed',due:'',note:'',expiry:'2026-09-12',addedAt:_t(715),receivedAt:_t(698),reviewedAt:_t(680),reviewer:'Omar Aziz',autoTagged:true},
         {id:'dd03',name:'June sales invoices',category:'Sales invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
         {id:'dd04',name:'Bank statements — Apr to Jun',category:'Bank statements',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
         {id:'dd05',name:'Purchase invoices — Q2',category:'Purchase invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)}
       ],
       'Falcon Logistics':[
-        {id:'dd06',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',addedAt:_t(600),receivedAt:_t(590),reviewedAt:_t(585),signedAt:_t(584),reviewer:'Layla Hassan'},
+        {id:'dd06',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2026-09-28',addedAt:_t(600),receivedAt:_t(590),reviewedAt:_t(585),signedAt:_t(584),reviewer:'Layla Hassan'},
         {id:'dd07',name:'MOA and AOA.pdf',category:'Memorandum & Articles',period:'',status:'reviewed',due:'',note:'',addedAt:_t(598),receivedAt:_t(588),reviewedAt:_t(560),reviewer:'Layla Hassan',autoTagged:true},
         {id:'dd08',name:'ENBD bank statement Apr-Jun.pdf',category:'Bank statements',period:'Q2 2026',status:'received',due:'28 Jul 2026',note:'',addedAt:_t(120),receivedAt:_t(20),reviewer:'Layla Hassan',autoTagged:true},
-        {id:'dd09',name:'Ejari tenancy contract.pdf',category:'Lease agreement',period:'',status:'received',due:'',note:'',addedAt:_t(140),receivedAt:_t(9),reviewer:'Layla Hassan',autoTagged:true},
+        {id:'dd09',name:'Ejari tenancy contract.pdf',category:'Lease agreement',period:'',status:'received',due:'',note:'',expiry:'2026-06-30',addedAt:_t(140),receivedAt:_t(9),reviewer:'Layla Hassan',autoTagged:true},
         {id:'dd10',name:'Sales invoices — Q2',category:'Sales invoices',period:'Q2 2026',status:'reviewed',due:'28 Jul 2026',note:'',addedAt:_t(150),receivedAt:_t(60),reviewedAt:_t(40),reviewer:'Layla Hassan'},
         {id:'dd11',name:'Payroll WPS — June',category:'Payroll records',period:'Jun 2026',status:'requested',due:'31 Jul 2026',note:'',addedAt:_t(72)}
       ],
       'Zenith Consulting':[
-        {id:'dd12',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',addedAt:_t(400),receivedAt:_t(390),reviewedAt:_t(380),signedAt:_t(379),reviewer:''},
+        {id:'dd12',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2027-03-01',addedAt:_t(400),receivedAt:_t(390),reviewedAt:_t(380),signedAt:_t(379),reviewer:''},
         {id:'dd13',name:'VAT certificate.pdf',category:'VAT registration certificate',period:'',status:'reviewed',due:'',note:'',addedAt:_t(398),receivedAt:_t(388),reviewedAt:_t(370),reviewer:'',autoTagged:true},
         {id:'dd14',name:'audit_report_2025_final.pdf',category:'Audit report',period:'FY2025',status:'received',due:'',note:'',addedAt:_t(60),receivedAt:_t(4),reviewer:'',autoTagged:true}
       ]
@@ -9902,6 +9907,51 @@ function allClientDocs(){
   return out;
 }
 function docId(){ return 'cd_'+Math.random().toString(36).slice(2,10); }
+/* days until a client document's expiry — null when no date is recorded */
+function docExpiryDays(d){
+  var e=String((d&&d.expiry)||'').trim(); if(!e) return null;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(e)) return calDaysUntil(e);
+  var t=new Date(e); if(isNaN(t.getTime())) return null;
+  var today=new Date(); today.setHours(0,0,0,0);
+  return Math.round((t.getTime()-today.getTime())/86400000);
+}
+var EXPIRY_SOON_DAYS=60;   /* matches the business portal's "renew soon" */
+function firmExpiryBuckets(){
+  var soon=[], gone=[];
+  allClientDocs().forEach(function(x){
+    if(isArchived(x.c.name)) return;
+    var dl=docExpiryDays(x.d); if(dl===null) return;
+    if(dl<0) gone.push(x); else if(dl<=EXPIRY_SOON_DAYS) soon.push(x);
+  });
+  return {soon:soon, gone:gone};
+}
+/* dashboard cards land here: clean slate, one filter, straight to the list */
+function goFdocsExpiry(which){
+  fdocClient='all'; fdocCat='all'; fdocStatus='all'; fdocSearch='';
+  fdocExpiry=which; go('fdocs');
+  /* the card promised a list, so land on the list — not the top of the page */
+  setTimeout(function(){
+    var el=document.getElementById('fdocRegister');
+    if(el) el.scrollIntoView({behavior:(matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'), block:'start'});
+  }, 120);
+}
+/* one click turns an expiring document into a fresh request — same client,
+   same category, a 14-day due date, nothing re-typed */
+function requestDocRenewal(name, id){
+  var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
+  if(d.renewalReqId && docsFor(name).some(function(x){return x.id===d.renewalReqId;})){
+    toast('Renewal already requested — it is on the register.'); return;
+  }
+  var due=new Date(); due.setDate(due.getDate()+14);
+  var nd=addClientDoc(name, {
+    name:'Renewed: '+d.name, category:d.category, period:d.period||'',
+    status:'requested', due:fmtDocDate(due.toISOString().slice(0,10)),
+    note:'Replaces the '+(docExpiryDays(d)<0?'expired':'expiring')+' copy on file.'
+  });
+  d.renewalReqId=nd.id; saveAccountData();
+  toast('Renewal requested from '+name);
+  renderPage();
+}
 function addClientDoc(name, fields){
   clientDocs[name]=clientDocs[name]||[];
   var d={ id:docId(), name:fields.name||'Untitled document', category:fields.category||'Other',
@@ -10002,12 +10052,21 @@ function clientDocRow(name, d, showClient){
   if(d.period) sub.push(d.period);
   if(d.fileName) sub.push(ctEsc(d.fileName));
   if(d.due) sub.push('due '+d.due);
+  var _dl=docExpiryDays(d);
+  if(_dl!==null){
+    sub.push(_dl<0
+      ? '<span style="color:var(--red);font-weight:700">expired '+(-_dl)+'d ago</span>'
+      : (_dl<=EXPIRY_SOON_DAYS
+        ? '<span style="color:var(--amber);font-weight:700">expires in '+_dl+'d</span>'
+        : 'expires '+ctEsc(String(d.expiry))));
+  }
   if(d.status==='received') sub.push(d.reviewer?('with '+ctEsc(d.reviewer)):'<span style="color:var(--amber)">unassigned</span>');
   return '<div class="drow'+(isDense()?' dense':'')+'"><div class="dbar" style="background:'+(d.status==='requested'?'var(--amber)':(d.status==='received'?'var(--accent)':'var(--green)'))+'"></div>'
     +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(d.name)+'</div>'
       +'<div class="dmeta">'+sub.join(' · ')+(d.uploading?' · uploading…':'')+(d.uploadError?' · upload failed':'')+'</div></div>'
     +'<span class="pill '+st.pill+'" style="flex:0 0 auto">'+st.label+'</span>'
     +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'
+      +((_dl!==null && _dl<=EXPIRY_SOON_DAYS)?'<button class="btn sm ghost" style="color:'+(_dl<0?'var(--red)':'var(--amber)')+'" title="Create a request for the renewed document — same client, same category" onclick="requestDocRenewal(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('plus',13)+' Request renewal</button>':'')
       +(d.storagePath?'<button class="btn sm ghost" onclick="openClientDocFile(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('eye',13)+' Open</button>':'')
       +'<button class="btn sm ghost" onclick="attachClientDoc(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('paperclip',13)+' '+(d.storagePath?'Replace':'Attach')+'</button>'
       +'<select class="finput" style="width:auto;padding:6px 9px;font-size:12px" onchange="setDocStatus(\''+jsq(name)+'\',\''+d.id+'\',this.value)">'
@@ -10039,7 +10098,7 @@ function openAddDoc(preName){
       +'<div><label class="flabel">Status</label><select id="adStatus" class="finput">'
         +DOC_STATUSES.map(function(s){ return '<option value="'+s.id+'">'+s.label+'</option>'; }).join('')+'</select></div>'
       +'<div><label class="flabel">Due date</label><input id="adDue" class="finput" placeholder="e.g. 28 Feb 2026"></div>'
-      +'<div><label class="flabel">Expiry (if any)</label><input id="adExpiry" class="finput" placeholder="e.g. 14 Nov 2026"></div>'
+      +'<div><label class="flabel">Expiry (if any)</label><input id="adExpiry" class="finput" type="date"></div>'
       +'<div><label class="flabel">Note</label><input id="adNote" class="finput" placeholder="Optional"></div>'
     +'</div>'
     +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">'
@@ -10105,8 +10164,8 @@ function takeDocReview(name,id){
 }
 
 /* ---- Document Centre page ---- */
-var fdocClient='all', fdocCat='all', fdocStatus='all', fdocSearch='';
-function setFdoc(k,v){ if(k==='client')fdocClient=v; if(k==='cat')fdocCat=v; if(k==='status')fdocStatus=v; renderPage(); }
+var fdocClient='all', fdocCat='all', fdocStatus='all', fdocSearch='', fdocExpiry='all';
+function setFdoc(k,v){ if(k==='client')fdocClient=v; if(k==='cat')fdocCat=v; if(k==='status')fdocStatus=v; if(k==='expiry')fdocExpiry=v; renderPage(); }
 function setFdocSearch(v){ fdocSearch=v; var w=document.getElementById('fdocRows'); if(!w) return; w.innerHTML=fdocRowsHTML(); }
 function fdocFiltered(){
   return allClientDocs().filter(function(x){
@@ -10114,6 +10173,12 @@ function fdocFiltered(){
     if(fdocClient!=='all' && x.c.name!==fdocClient) return false;
     if(fdocCat!=='all' && x.d.category!==fdocCat) return false;
     if(fdocStatus!=='all' && x.d.status!==fdocStatus) return false;
+    if(fdocExpiry!=='all'){
+      var dl=docExpiryDays(x.d);
+      if(dl===null) return false;
+      if(fdocExpiry==='expiring' && !(dl>=0 && dl<=EXPIRY_SOON_DAYS)) return false;
+      if(fdocExpiry==='expired' && dl>=0) return false;
+    }
     if(fdocSearch){
       var q=fdocSearch.toLowerCase();
       var hay=(x.d.name+' '+x.d.category+' '+x.c.name+' '+(x.d.period||'')+' '+(x.d.fileName||'')).toLowerCase();
@@ -10139,8 +10204,30 @@ function fdocStatusTabsHTML(){
       +t.label+'<span class="n">'+n+'</span></button>';
   }).join('');
 }
+function fdocExpiryTabsHTML(){
+  var base=allClientDocs().filter(function(x){
+    if(isArchived(x.c.name)) return false;
+    if(fdocClient!=='all' && x.c.name!==fdocClient) return false;
+    if(fdocCat!=='all' && x.d.category!==fdocCat) return false;
+    return true;
+  });
+  var soon=0, gone=0;
+  base.forEach(function(x){ var dl=docExpiryDays(x.d); if(dl===null) return; if(dl<0) gone++; else if(dl<=EXPIRY_SOON_DAYS) soon++; });
+  var tabs=[{id:'all',label:'Any expiry',n:null},
+            {id:'expiring',label:'Expiring \u2264 '+EXPIRY_SOON_DAYS+'d',n:soon},
+            {id:'expired',label:'Expired',n:gone}];
+  return tabs.map(function(t){
+    return '<button class="ftab'+(fdocExpiry===t.id?' on':'')+(t.id==='expired'&&t.n>0?' hot':'')
+      +'" onclick="setFdoc(\'expiry\',\''+t.id+'\')">'+t.label
+      +(t.n===null?'':'<span class="n">'+t.n+'</span>')+'</button>';
+  }).join('');
+}
 function fdocRowsHTML(){
   var rows=fdocFiltered();
+  /* with an expiry filter on, the most urgent document comes first */
+  if(fdocExpiry!=='all'){
+    rows=rows.slice().sort(function(a,b){ return (docExpiryDays(a.d)||0)-(docExpiryDays(b.d)||0); });
+  }
   if(!rows.length) return '<div class="muted" style="text-align:center;padding:26px;font-size:13px">'
     +(allClientDocs().length?'No documents match these filters.':'No documents yet — add one above, or open a client and apply a document pack to build their checklist in one click.')+'</div>';
   return rows.map(function(x){ return clientDocRow(x.c.name, x.d, true); }).join('');
@@ -10180,6 +10267,7 @@ function fdocsPageHTML(){
         +'<option value="all">All categories</option>'+DOC_CATEGORIES.map(function(c){ return '<option '+(c===fdocCat?'selected':'')+'>'+c+'</option>'; }).join('')+'</select></div>'
     +'</div>'
       +'<div class="ftabs" style="margin:15px 0 0">'+fdocStatusTabsHTML()+'</div>'
+      +'<div class="ftabs" style="margin:9px 0 0">'+fdocExpiryTabsHTML()+'</div>'
     +'</div>'
     +'<div class="card" id="fdocRegister"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' Document register</h3>'
       +'<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'

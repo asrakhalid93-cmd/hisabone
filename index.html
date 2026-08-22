@@ -376,8 +376,8 @@
   :root{
     --ink:#111c30; --text:#22304a; --muted:#5f6e88; --line:#e7ebf2;
     --panel:#ffffff; --panel2:#f2f5f9;
-    --green:#0073fc; --amber:#b7791f; --red:#dd3a53;
-    --green-bg:rgba(0,115,252,.10); --amber-bg:rgba(183,121,31,.12); --red-bg:rgba(221,58,83,.10);
+    --green:#0d9256; --amber:#b7791f; --red:#dd3a53;
+    --green-bg:rgba(13,146,86,.11); --amber-bg:rgba(183,121,31,.12); --red-bg:rgba(221,58,83,.10);
     --bg1:#f1f4f9; --bg2:#fafbfd; --accent:#0073fc; --accent-d:#0053d6;
     --accent-bg:rgba(0,115,252,.10); --accent-bg2:rgba(0,115,252,.16); --topbar:rgba(255,255,255,.88);
     --brand-grad:linear-gradient(120deg,#008efe,#0059f9 52%,#7a2ff0);
@@ -1175,6 +1175,118 @@
     #login::before,#login::after{animation:none !important}
     .card,.btn,.navitem,.mock,.lportal-card,.flowstep,#chatFab{transition:none !important}
     html{scroll-behavior:auto}
+  }
+
+  /* ================= DESIGN SYSTEM v7 — tokens, surfaces, polish ================= */
+  :root{
+    --r-lg:16px; --r-md:12px; --r-sm:10px;
+    --shadow-1:0 1px 2px rgba(17,28,48,.05);
+    --shadow-2:0 1px 2px rgba(17,28,48,.04), 0 6px 18px rgba(17,28,48,.05);
+    --shadow-3:0 2px 6px rgba(17,28,48,.06), 0 18px 44px rgba(17,28,48,.10);
+    --shadow-pop:0 24px 70px rgba(17,28,48,.18);
+  }
+
+  /* -- layout: the content column stands centered, not pinned left -- */
+  .main{margin-inline:auto;max-width:1180px;padding:30px 36px 46px}
+  @media(max-width:900px){.main{padding:22px 18px 34px}}
+  @media(max-width:640px){.main{padding:16px 12px 28px}}
+
+  /* -- type scale: a page states its name with quiet confidence -- */
+  h1{font-size:26px;font-weight:750;letter-spacing:-.03em}
+  .sub{font-size:13.5px;margin-bottom:24px}
+  .cardhead h3{letter-spacing:-.01em}
+
+  /* -- chrome: glass topbar and section bar over scrolling content -- */
+  .topbar{background:rgba(255,255,255,.72);backdrop-filter:blur(16px) saturate(1.6);-webkit-backdrop-filter:blur(16px) saturate(1.6)}
+  .secbar{background:rgba(255,255,255,.66);backdrop-filter:blur(14px) saturate(1.5);-webkit-backdrop-filter:blur(14px) saturate(1.5)}
+  .sidebar{padding-top:20px}
+
+  /* -- rail: the active page carries a physical marker -- */
+  .navitem{position:relative;border-radius:10px;transition:background .14s,color .14s}
+  .navitem.active::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:99px;background:var(--accent)}
+
+  /* -- elevation ladder: one recipe for every card -- */
+  .card{border-radius:var(--r-lg);box-shadow:var(--shadow-2);border-color:color-mix(in srgb, var(--line) 88%, #fff);transition:box-shadow .18s var(--ease),transform .18s var(--ease),border-color .18s}
+  .stat.clk:hover,.card.clk:hover{transform:translateY(-2px);box-shadow:var(--shadow-3)}
+  .banner{border-radius:var(--r-lg);box-shadow:var(--shadow-2)}
+
+  /* -- stat cards: tinted gradient icon chips, tabular numerals -- */
+  .stat .ic{width:40px;height:40px;border-radius:12px;box-shadow:inset 0 0 0 1px color-mix(in srgb, currentColor 15%, transparent)}
+  .ic-teal{background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, #fff), color-mix(in srgb, var(--accent) 19%, #fff))}
+  .ic-amber{background:linear-gradient(135deg, color-mix(in srgb, var(--amber) 10%, #fff), color-mix(in srgb, var(--amber) 20%, #fff))}
+  .ic-red{background:linear-gradient(135deg, color-mix(in srgb, var(--red) 9%, #fff), color-mix(in srgb, var(--red) 18%, #fff))}
+  .ic-green{background:linear-gradient(135deg, color-mix(in srgb, var(--green) 9%, #fff), color-mix(in srgb, var(--green) 19%, #fff))}
+  .stat .num{font-size:30px;font-weight:750;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+
+  /* -- buttons: gradient primaries that answer the hand -- */
+  .btn{border-radius:var(--r-sm);color:#fff;
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, #fff), var(--accent) 48%, color-mix(in srgb, var(--accent) 72%, var(--accent-d)));
+    box-shadow:0 1px 2px rgba(17,28,48,.12), 0 4px 12px color-mix(in srgb, var(--accent) 22%, transparent);
+    transition:transform .15s var(--ease),box-shadow .15s var(--ease),filter .15s}
+  .btn:hover{filter:none;transform:translateY(-1px);box-shadow:0 2px 4px rgba(17,28,48,.10), 0 8px 20px color-mix(in srgb, var(--accent) 30%, transparent)}
+  .btn:active{transform:translateY(0) scale(.985);box-shadow:0 1px 2px rgba(17,28,48,.12)}
+  .btn.ghost{background:#fff;box-shadow:var(--shadow-1);color:var(--text)}
+  .btn.ghost:hover{background:var(--panel2);transform:none;box-shadow:var(--shadow-1);border-color:color-mix(in srgb, var(--accent) 35%, var(--line))}
+  .btn.ghost:active{transform:scale(.985)}
+  .iconbtn{transition:color .14s,border-color .14s,background .14s}
+
+  /* -- pills & chips: a hairline of their own colour -- */
+  .pill{box-shadow:inset 0 0 0 1px color-mix(in srgb, currentColor 16%, transparent)}
+  .ftab{background:#fff}
+  .ftab:hover{background:color-mix(in srgb, var(--accent) 4%, #fff)}
+
+  /* -- tables: registers stay dense, headers whisper -- */
+  th{font-size:10.5px;letter-spacing:.8px;padding:9px 12px;font-weight:700}
+  tbody tr{transition:background .12s}
+  tr.clickable:hover td{background:color-mix(in srgb, var(--accent) 4%, #fff)}
+  .drow{transition:background .12s}
+  .drow.clk:hover{background:color-mix(in srgb, var(--accent) 4%, #fff)}
+
+  /* -- forms: calm fields, confident focus -- */
+  .finput{background:#fff;transition:border-color .14s,box-shadow .14s}
+  .finput:hover{border-color:color-mix(in srgb, var(--accent) 30%, var(--line))}
+
+  /* -- progress: gradient fills -- */
+  .bar > div{background:linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 65%, var(--accent-d)))}
+  .minibar i{background:linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 65%, var(--accent-d)))}
+
+  /* -- overlays: light scrim, deep glass -- */
+  .modal-overlay{background:rgba(15,23,42,.45);backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px) saturate(1.2)}
+  .modal{border-radius:18px;box-shadow:var(--shadow-pop)}
+  .notifpanel{background:rgba(255,255,255,.92);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-radius:16px;box-shadow:var(--shadow-pop)}
+
+  /* -- the AI band: the one place the gradient speaks first -- */
+  .ai{position:relative;overflow:hidden;border-radius:var(--r-lg);
+    background:linear-gradient(110deg, color-mix(in srgb, var(--accent) 7%, #fff), color-mix(in srgb, #7a5af8 9%, #fff));
+    border:1px solid color-mix(in srgb, var(--accent) 20%, var(--line))}
+  .ai::after{content:"";position:absolute;top:-60px;right:-30px;width:280px;height:200px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(255,255,255,.55), transparent 70%);pointer-events:none}
+
+  /* -- calendar: soft cells, clear today -- */
+  .calgrid{gap:6px}
+  .calcell{border-radius:10px;border-color:color-mix(in srgb, var(--line) 75%, #fff);transition:border-color .14s,box-shadow .14s}
+  .calcell:not(.empty):hover{border-color:color-mix(in srgb, var(--accent) 45%, var(--line));box-shadow:var(--shadow-1)}
+  .calcell.today{box-shadow:inset 0 0 0 1.5px var(--accent), var(--shadow-1)}
+
+  /* -- empty states: absence, stated properly -- */
+  .emptybox{display:block;text-align:center;padding:26px 18px;font-size:13px;color:var(--muted);
+    border:1.5px dashed color-mix(in srgb, var(--muted) 28%, transparent);border-radius:12px;
+    background:color-mix(in srgb, var(--panel2) 50%, transparent);margin:4px 0}
+
+  /* -- loading primitives: skeleton shimmer and spinner -- */
+  .skel{position:relative;overflow:hidden;background:var(--panel2);border-radius:8px;min-height:12px}
+  .skel::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);animation:skelSlide 1.3s infinite}
+  @keyframes skelSlide{to{transform:translateX(100%)}}
+  .spinner{width:16px;height:16px;border-radius:50%;display:inline-block;vertical-align:-3px;
+    border:2px solid var(--accent-bg2);border-top-color:var(--accent);animation:v7spin .7s linear infinite}
+  @keyframes v7spin{to{transform:rotate(360deg)}}
+
+  /* -- reduced motion: v7 obeys the same contract -- */
+  @media(prefers-reduced-motion:reduce){
+    .card,.btn,.btn.ghost,.navitem,.ftab,.finput,.calcell,tbody tr,.drow{transition:none !important}
+    .stat.clk:hover,.card.clk:hover,.btn:hover{transform:none}
+    .skel::after,.spinner{animation:none !important}
   }
 </style>
 </head>
@@ -3506,11 +3618,11 @@ dash:()=>{
   <div class="grid g2">
     <div class="card">
       <div class="cardhead"><h3>Outstanding document requests</h3><span class="link" onclick="go('btax')">View all</span></div>
-      ${open.length ? open.slice(0,4).map(d=>deadlineRow(d.urg==='Urgent'?'red':(d.urg==='High'?'amber':'teal'), d.name, d.note, d.due, `go('${d.kind==='tax'?'btax':'baudit'}')`)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No outstanding requests.</div>`}
+      ${open.length ? open.slice(0,4).map(d=>deadlineRow(d.urg==='Urgent'?'red':(d.urg==='High'?'amber':'teal'), d.name, d.note, d.due, `go('${d.kind==='tax'?'btax':'baudit'}')`)).join('') : `<div class="muted emptybox">No outstanding requests.</div>`}
     </div>
     <div class="card">
       <div class="cardhead"><h3>Recent documents</h3><span class="link" onclick="go('docs')">Manage</span></div>
-      ${vaultDocs.length ? vaultDocs.slice(0,4).map(d=>docRow('file',d.name,'green','Added '+d.added)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No documents uploaded yet.</div>`}
+      ${vaultDocs.length ? vaultDocs.slice(0,4).map(d=>docRow('file',d.name,'green','Added '+d.added)).join('') : `<div class="muted emptybox">No documents uploaded yet.</div>`}
     </div>
   </div>
   <div class="mt18">
@@ -3685,11 +3797,11 @@ docs:()=>{
     <div>
       <div class="card mb14">
         <div class="cardhead"><h3>Requests from your firm</h3>${openTax.length?`<span class="pill p-amber">${openTax.length} open</span>`:''}</div>
-        ${bizTaxDocs.length ? bizTaxDocs.slice(0,4).map(d=>reqFromFirm(d.name,d.note,d.state==='done'?'p-green':(d.urg==='Urgent'?'p-red':'p-amber'),d.state==='done'?'Uploaded ✓':d.due)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No requests yet${linkedFirm?' from your firm.':' — link a firm to receive requests.'}</div>`}
+        ${bizTaxDocs.length ? bizTaxDocs.slice(0,4).map(d=>reqFromFirm(d.name,d.note,d.state==='done'?'p-green':(d.urg==='Urgent'?'p-red':'p-amber'),d.state==='done'?'Uploaded ✓':d.due)).join('') : `<div class="muted emptybox">No requests yet${linkedFirm?' from your firm.':' — link a firm to receive requests.'}</div>`}
       </div>
       <div class="card mb14">
         <div class="cardhead"><h3>Audit document checklist</h3>${bizAuditDocs.length?`<span class="pill p-amber">${auditDone}/${bizAuditDocs.length}</span>`:''}</div>
-        ${bizAuditDocs.length ? bizAuditDocs.map(d=>checkRow(d.state==='done',d.name)).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No audit documents requested yet.</div>`}
+        ${bizAuditDocs.length ? bizAuditDocs.map(d=>checkRow(d.state==='done',d.name)).join('') : `<div class="muted emptybox">No audit documents requested yet.</div>`}
       </div>
     </div>
   </div>`;
@@ -3803,11 +3915,11 @@ fdash:()=>{
   <div class="grid g2">
     <div class="card">
       <div class="cardhead"><h3>Clients needing attention</h3><span class="link" onclick="go('clients')">All clients</span></div>
-      ${attention.length ? attention.slice(0,4).map(c=>clientRow(c.name,c.deadline,c.risk==='high'?'p-red':(c.risk==='medium'?'p-amber':'p-teal'),c.urgency==='overdue'?'Overdue risk':'Action')).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No clients need attention right now.</div>`}
+      ${attention.length ? attention.slice(0,4).map(c=>clientRow(c.name,c.deadline,c.risk==='high'?'p-red':(c.risk==='medium'?'p-amber':'p-teal'),c.urgency==='overdue'?'Overdue risk':'Action')).join('') : `<div class="muted emptybox">No clients need attention right now.</div>`}
     </div>
     <div class="card">
       <div class="cardhead"><h3>Recent requests</h3></div>
-      ${allReqs.length ? allReqs.slice(0,4).map(r=>deadlineRow(r.cls==='p-red'?'red':(r.cls==='p-amber'?'amber':(r.cls==='p-green'?'green':'teal')), r.doc, r.client, r.st, "go('taxdocs')")).join('') : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">No document requests sent yet.</div>`}
+      ${allReqs.length ? allReqs.slice(0,4).map(r=>deadlineRow(r.cls==='p-red'?'red':(r.cls==='p-amber'?'amber':(r.cls==='p-green'?'green':'teal')), r.doc, r.client, r.st, "go('taxdocs')")).join('') : `<div class="muted emptybox">No document requests sent yet.</div>`}
     </div>
   </div>
   <div class="ai mt18"><div class="sparkle">${svgIcon('sparkles',22)}</div>
@@ -3942,7 +4054,7 @@ reminders:()=>`
       We still need <b>${r.doc}</b> from you${r.app?` for your <b>${r.app}</b>`:''}. Please sign in to your HisabOne portal and upload it securely — no email attachments needed.<br><br>
       <a href="https://hisabone.ae" target="_blank" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:9px">Sign in &amp; upload →</a><br><br>
       Thank you,<br>${firm}
-    </div>`; })() : `<div class="muted" style="text-align:center;padding:18px;font-size:13px">Schedule a reminder above to see a live preview here.</div>`}
+    </div>`; })() : `<div class="muted emptybox">Schedule a reminder above to see a live preview here.</div>`}
   </div>`,
 
 vat:()=>{
@@ -5349,7 +5461,7 @@ function buildNotifs(){
     if(currentAccount.role==='business'){
       if(rt.business_id===bizWorkspaceId() && rt.status==='pending_review') out.push({id:'ret_'+rt.id, ic:'clipboard', t:'Draft return to review', s:(rt.title||'Return')+(rt.period?(' · '+rt.period):''), page:'breports'});
     } else if(rt.firm_id===effFirmId()){
-      if(rt.status==='approved') out.push({id:'reta_'+rt.id, ic:'success', t:'Return approved &amp; signed', s:(rt.title||'Return')+' — '+bizNameById(rt.business_id), page:'freports'});
+      if(rt.status==='approved') out.push({id:'reta_'+rt.id, ic:'success', t:'Return approved & signed', s:(rt.title||'Return')+' — '+bizNameById(rt.business_id), page:'freports'});
       else if(rt.status==='changes_requested') out.push({id:'retc_'+rt.id, ic:'warn', t:'Changes requested', s:(rt.title||'Return')+' — '+bizNameById(rt.business_id), page:'freports'});
     }
   });
@@ -5365,7 +5477,7 @@ function renderNotifPanel(){
   const list=buildNotifs();
   const items=list.map(n=>{
     const unread=notifSeen.indexOf(n.id)<0;
-    return '<div class="notifitem'+(unread?' unread':'')+'" onclick="notifClick(\''+n.id+'\',\''+n.page+'\')">'
+    return '<div class="notifitem'+(unread?' unread':'')+'" onclick="notifClick(\''+ctEsc(jsq(n.id))+'\',\''+ctEsc(jsq(n.page))+'\')">'
       +'<span class="ni-ic">'+svgIcon(n.ic,17)+'</span><div style="flex:1;min-width:0"><div class="ni-t">'+ctEsc(n.t)+'</div><div class="ni-s">'+ctEsc(n.s)+'</div></div></div>';
   }).join('');
   p.innerHTML='<div class="notifhead"><b>Notifications</b>'+(list.length?'<span class="link" onclick="markAllNotifRead(event)">Mark all read</span>':'')+'</div>'
@@ -6979,14 +7091,14 @@ function clientProfileHTML(){
     </div>
     <div class="card">
       <div class="cardhead"><h3>${svgIcon('chat',16)} Communication log</h3><span style="display:flex;gap:12px"><span class="link" onclick="waClient()">WhatsApp</span><span class="link" onclick="chatSelectPeer('${c.id}');go('fchat')">Open chat</span></span></div>
-      ${recent.length?recent.map(function(m){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon(m.sender_role==='firm'?'share':'inbox',15)+'</div><div style="flex:1;min-width:0"><div style="font-size:12.5px">'+ctEsc(m.body.length>90?m.body.slice(0,90)+'…':m.body)+'</div><div class="muted" style="font-size:10.5px">'+ctEsc(m.sender_name||'')+' · '+chatTimeFmt(m.created_at)+'</div></div></div>'; }).join(''):'<div class="muted" style="text-align:center;padding:18px;font-size:13px">No messages yet — open the chat to start the conversation.</div>'}
+      ${recent.length?recent.map(function(m){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon(m.sender_role==='firm'?'share':'inbox',15)+'</div><div style="flex:1;min-width:0"><div style="font-size:12.5px">'+ctEsc(m.body.length>90?m.body.slice(0,90)+'…':m.body)+'</div><div class="muted" style="font-size:10.5px">'+ctEsc(m.sender_name||'')+' · '+chatTimeFmt(m.created_at)+'</div></div></div>'; }).join(''):'<div class="muted emptybox">No messages yet — open the chat to start the conversation.</div>'}
       ${acts.length?'<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><div class="muted" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Firm activity involving this client</div>'+acts.map(function(a){ return '<div class="drow" style="padding:6px 2px"><div style="color:var(--accent)">'+svgIcon('activity',13)+'</div><div style="flex:1;font-size:12px">'+ctEsc(a.detail)+'<span class="muted" style="font-size:10.5px"> · '+new Date(a.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'</span></div></div>'; }).join('')+'</div>':''}
     </div>
   </div>
   <div class="grid g2 mb14">
     <div class="card">
       <div class="cardhead"><h3>${svgIcon('file-text',16)} Document requests</h3>${openReqs.length?`<span class="pill p-amber">${openReqs.length} open</span>`:'<span class="pill p-green">All received</span>'}</div>
-      ${reqs.length?reqs.slice(0,8).map(function(r){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('inbox',15)+'</div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(r.doc)+'</div><div class="dmeta">'+r.kind+' · '+ctEsc(r.app||'')+'</div></div><span class="pill '+r.cls+'">'+r.st+'</span></div>'; }).join(''):'<div class="muted" style="text-align:center;padding:18px;font-size:13px">No requests yet for this client.</div>'}
+      ${reqs.length?reqs.slice(0,8).map(function(r){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('inbox',15)+'</div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(r.doc)+'</div><div class="dmeta">'+r.kind+' · '+ctEsc(r.app||'')+'</div></div><span class="pill '+r.cls+'">'+r.st+'</span></div>'; }).join(''):'<div class="muted emptybox">No requests yet for this client.</div>'}
     </div>
     <div class="card">
       <div class="cardhead"><h3>${svgIcon('clipboard',16)} Draft returns &amp; shared documents</h3></div>

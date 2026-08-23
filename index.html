@@ -2600,7 +2600,11 @@ function deleteBizDoc(kind,i){
 function deleteReqDoc(kind,i){
   const arr = kind==='tax'?firmTaxReqs:firmAuditReqs;
   var r=arr[i]||{};
-  openConfirm({title:'Delete request', message:'Delete the request for "'+(r.doc||'document')+'" from '+(r.client||'this client')+'? This cannot be undone.', onYes:function(){ arr.splice(i,1); renderPage(); }});
+  openConfirm({title:'Delete request', message:'Delete the request for "'+(r.doc||'document')+'" from '+(r.client||'this client')+'? This cannot be undone.', onYes:function(){
+    arr.splice(i,1); renderPage();
+    /* the row came from the database — remove it there too, or it returns next sign-in */
+    if(sb && !_sampleMode && r.id){ try{ sb.from('doc_requests').delete().eq('id', r.id); }catch(e){} }
+  }});
 }
 
 /* ---------- UNLINK CONFIRMATION ---------- */
@@ -3438,9 +3442,9 @@ const NAV = {
     {id:'secFreturns', ic:'fta', label:'Returns', children:[
       {id:'vat', ic:'calc', label:'VAT'},
       {id:'ct',  ic:'calc', label:'Corporate Tax'}]},
+    {id:'team', ic:'users', label:'Team'},
     {id:'secPractice', ic:'building', label:'Practice', children:[
       {id:'freports',  ic:'chart', label:'Reports'},
-      {id:'team',      ic:'users', label:'Team'},
       {id:'reminders', ic:'mail',  label:'Email Reminders'}]},
     {id:'fguides', ic:'sparkles', label:'AI Assist'},
     {id:'fchat', ic:'chat', label:'Messages'},
@@ -6749,7 +6753,7 @@ function askKey(nm){ return String(nm||'').toLowerCase().replace(/[^a-z0-9]+/g,'
 function clientOutstandingAsks(name){
   var seen={}, out=[];
   (typeof docsFor==='function'?docsFor(name):[]).forEach(function(d){
-    if(d.status!=='requested') return;
+    if(d.status!=='requested'||d.optional) return;
     var k=askKey(d.name); if(!k||seen[k]) return;
     seen[k]=1; out.push({src:'register', name:d.name, due:d.due||'', category:d.category||'', doc:d});
   });
@@ -6796,8 +6800,10 @@ function densityToggleHTML(){
    "9 / 14" tells you how much is left to chase. "64%" does not. --- */
 function docProgress(name){
   var ds=(typeof docsFor==='function'?docsFor(name):[]);
-  var total=ds.length;
-  var got=ds.filter(function(d){return d.status!=='requested';}).length;
+  /* an optional item still waiting is not owed — it neither counts nor chases */
+  var rel=ds.filter(function(d){return !(d.optional&&d.status==='requested');});
+  var total=rel.length;
+  var got=rel.filter(function(d){return d.status!=='requested';}).length;
   return {total:total, done:got, pct: total?Math.round(got/total*100):0};
 }
 function docProgressHTML(name, width){
@@ -6817,8 +6823,9 @@ var DOC_TAG_RULES=[
   [/engagement\s*letter|\beng\s*letter/i,'Engagement letter'],
   [/trade\s*licen[cs]e|\blicen[cs]e\b/i,'Trade licence'],
   [/\bmoa\b|\baoa\b|memorandum|articles\s*of\s*assoc/i,'Memorandum & Articles'],
-  [/establishment\s*card|\best\.?\s*card/i,'Establishment card'],
-  [/emirates\s*id|\beid\b|passport/i,'Emirates ID / Passport'],
+  [/certificate\s*of\s*incorporation|\bincorporation\b|\bcoi\b/i,'Certificate of incorporation'],
+  [/emirates\s*id|\beid\b/i,'Emirates ID'],
+  [/passport/i,'Passport'],
   [/vat\s*(registration|reg\b|certificate|cert\b)|trn\s*cert/i,'VAT registration certificate'],
   [/(corporate\s*tax|\bct\b)\s*(registration|reg\b|certificate|cert\b)/i,'Corporate Tax registration'],
   [/audit(ed)?\s*report|auditor|audit\s*file/i,'Audit report'],
@@ -8319,7 +8326,7 @@ function loadSampleData(){
     clientDocs={
       'Al Noor Trading LLC':[
         {id:'dd01',pack:'Client onboarding (KYC)',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2026-07-31',addedAt:_t(720),receivedAt:_t(700),reviewedAt:_t(690),signedAt:_t(688),reviewer:'Omar Aziz'},
-        {id:'dd02',pack:'Client onboarding (KYC)',name:'Emirates ID — Mr Al Noor.pdf',category:'Emirates ID / Passport',period:'',status:'reviewed',due:'',note:'',expiry:'2026-09-12',addedAt:_t(715),receivedAt:_t(698),reviewedAt:_t(680),reviewer:'Omar Aziz',autoTagged:true},
+        {id:'dd02',pack:'Client onboarding (KYC)',name:'Emirates ID — Mr Al Noor.pdf',category:'Emirates ID',period:'',status:'reviewed',due:'',note:'',expiry:'2026-09-12',addedAt:_t(715),receivedAt:_t(698),reviewedAt:_t(680),reviewer:'Omar Aziz',autoTagged:true},
         {id:'dd03',pack:'VAT return pack',name:'June sales invoices',category:'Sales invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
         {id:'dd04',pack:'VAT return pack',name:'Bank statements — Apr to Jun',category:'Bank statements',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
         {id:'dd05',pack:'VAT return pack',name:'Purchase invoices — Q2',category:'Purchase invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)}
@@ -9840,6 +9847,7 @@ var ENTITY_TYPES=['LLC (Mainland)','Free Zone company','Sole establishment','Bra
    an emirate's DED (or its renamed successor), a free-zone licence by the zone
    itself. Showing both lists at once is how clients end up mis-registered. */
 var JURISDICTIONS=['Mainland','Free Zone'];
+var FY_ENDS=['31 December','31 March','30 June','30 September','31 January','28/29 February','30 April','31 May','31 July','31 August','31 October','30 November'];
 var MAINLAND_AUTHORITIES=[
   'Abu Dhabi — ADDED (Department of Economic Development)',
   'Dubai — DET (Department of Economy and Tourism)',
@@ -9855,6 +9863,7 @@ var FREEZONE_AUTHORITIES=[
   'DMCC — Dubai Multi Commodities Centre',
   'JAFZA — Jebel Ali Free Zone',
   'DAFZA — Dubai Airport Free Zone',
+  'DDA — Dubai Development Authority',
   'DIFC — Dubai International Financial Centre',
   'Dubai Silicon Oasis (DSO / DIEZ)',
   'Dubai South',
@@ -9953,12 +9962,11 @@ function openAddClient(){
       +acFld('acEmail','Email','name@company.ae')
       +acFld('acPhone','Phone','+971 50 000 0000')
       +acSel('acEntity','Entity type', ENTITY_TYPES, 'acEntityChanged()')
-      +acSel('acJur','Jurisdiction', JURISDICTIONS, "syncAuthoritySelect('acJur','acAuth','')")
       +acSel('acAuth','Licensing authority', [])
       +acFld('acLicense','Trade licence number','e.g. 1043912')
       +acFld('acTrn','VAT TRN','15 digits')
       +acFld('acCtTrn','Corporate Tax TRN','15 digits')
-      +acFld('acFy','Financial year end','e.g. 31 December')
+      +acSel('acFy','Financial year end', FY_ENDS)
       +acSel('acRisk','Risk rating',['medium','high','low'])
       +acSel('acStage','Stage', CLIENT_STAGES.map(function(s){return s.label;}))
     +'</div>'
@@ -9972,7 +9980,7 @@ function openAddClient(){
     +'</div>';
   /* The authority list depends on the jurisdiction, so populate it once the
      markup exists rather than baking a combined list into the template. */
-  syncAuthoritySelect('acJur','acAuth','');
+  acSyncAuth('');
   window._acLicense=null;
   setTimeout(function(){ var f=document.getElementById('acName'); if(f) f.focus(); },50);
 }
@@ -10024,11 +10032,10 @@ function handleLicenseFile(inp){
       var lic=x.d.license;
       _acSetVal('acName', lic.legalName);
       _acSetVal('acLicense', lic.licenseNumber);
-      if(lic.jurisdiction){
-        if(_acPickOption('acJur', /free/i.test(lic.jurisdiction)?'Free Zone':'Mainland')) syncAuthoritySelect('acJur','acAuth','');
-      }
       var ent=_acEntityFromForm(lic);
+      if(!ent && lic.jurisdiction && /free/i.test(lic.jurisdiction)) ent='Free Zone company';
       if(ent){ _acPickOption('acEntity', ent); }
+      acSyncAuth('');
       var authHit=_acPickOption('acAuth', lic.licensingAuthority);
       window._acLicense={ file:f, expiry:lic.expiryDate||'', issue:lic.issueDate||'', raw:lic };
       var bits=[];
@@ -10045,14 +10052,21 @@ function handleLicenseFile(inp){
     })
     .then(function(){ var b=document.getElementById('acLicBtn'); if(b) b.disabled=false; });
 }
-/* Entity type implies the jurisdiction — follow it, then refilter the authorities. */
-function acEntityChanged(){
-  var e=document.getElementById('acEntity'), j=document.getElementById('acJur');
-  if(!e||!j) return;
-  var want=jurisdictionForEntity(e.value);
-  if(/other/i.test(e.value||'')) return;   /* "Other" shouldn't yank their choice */
-  if(j.value!==want){ j.value=want; syncAuthoritySelect('acJur','acAuth',''); }
+/* The entity type implies the jurisdiction, and the jurisdiction implies the
+   authority list — no separate field needed. "Other" shows every authority. */
+function acSyncAuth(keep){
+  var a=document.getElementById('acAuth'); if(!a) return;
+  var e=document.getElementById('acEntity');
+  var list=/other/i.test((e&&e.value)||'') ? EMIRATE_AUTHORITIES.slice()
+          : authoritiesFor(jurisdictionForEntity(e?e.value:'')).slice();
+  var want=(keep===undefined)?a.value:keep;
+  if(want && list.indexOf(want)<0) list.push(want);
+  a.innerHTML='<option value=""></option>'+list.map(function(o){
+    return '<option value="'+ctEsc(o)+'"'+(o===want?' selected':'')+'>'+ctEsc(o)+'</option>';
+  }).join('');
+  a.value=want||'';
 }
+function acEntityChanged(){ acSyncAuth(''); }
 function acFld(id,label,ph){ return '<div><label class="flabel">'+label+'</label><input id="'+id+'" class="finput" placeholder="'+ph+'"></div>'; }
 function acSel(id,label,opts,onch){ return '<div><label class="flabel">'+label+'</label><select id="'+id+'" class="finput"'+(onch?' onchange="'+onch+'"':'')+'>'+opts.map(function(o){return '<option>'+ctEsc(o)+'</option>';}).join('')+'</select></div>'; }
 function closeAddClient(){ var h=document.getElementById('addClientModal'); if(h) h.style.display='none'; }
@@ -10069,7 +10083,9 @@ function submitAddClient(){
   var stageLbl=acVal('acStage');
   var stage=(CLIENT_STAGES.find(function(s){return s.label===stageLbl;})||CLIENT_STAGES[0]).id;
   var c={ id:manualClientId(), name:name, contact:acVal('acContact'), email:acVal('acEmail'), phone:acVal('acPhone'),
-          entityType:acVal('acEntity'), jurisdiction:acVal('acJur'), authority:acVal('acAuth'), license:acVal('acLicense'),
+          entityType:acVal('acEntity'),
+          jurisdiction:(jurisdictionForAuthority(acVal('acAuth'))||jurisdictionForEntity(acVal('acEntity'))),
+          authority:acVal('acAuth'), license:acVal('acLicense'),
           trn:acVal('acTrn'), ctTrn:acVal('acCtTrn'), fyEnd:acVal('acFy'), notes:acVal('acNotes'),
           createdAt:new Date().toISOString() };
   manualClients.push(c);
@@ -10121,11 +10137,16 @@ function editManualClient(id){
     var set=function(f,v){ var e=document.getElementById(f); if(e) e.value=v||''; };
     set('acName',c.name); set('acContact',c.contact); set('acEmail',c.email); set('acPhone',c.phone);
     set('acEntity',c.entityType);
-    /* Older records predate the jurisdiction field — infer it from the saved authority. */
-    set('acJur', c.jurisdiction || jurisdictionForAuthority(c.authority) || jurisdictionForEntity(c.entityType));
-    syncAuthoritySelect('acJur','acAuth', c.authority||'');
+    acSyncAuth(c.authority||'');
     set('acLicense',c.license);
-    set('acTrn',c.trn); set('acCtTrn',c.ctTrn); set('acFy',c.fyEnd); set('acNotes',c.notes);
+    set('acTrn',c.trn); set('acCtTrn',c.ctTrn); set('acNotes',c.notes);
+    var fy=document.getElementById('acFy');
+    if(fy && c.fyEnd){
+      if(![].slice.call(fy.options).some(function(o){return o.value===c.fyEnd;})){
+        var o=document.createElement('option'); o.textContent=c.fyEnd; fy.appendChild(o);
+      }
+      fy.value=c.fyEnd;
+    }
     var meta=clientMeta[c.name]||{};
     set('acRisk',meta.risk||'medium');
     var st=CLIENT_STAGES.find(function(s){return s.id===(meta.stage||'onboarding');});
@@ -10145,7 +10166,9 @@ function saveManualClient(id){
     if(err){ err.textContent='You already have a client with that name.'; err.style.display='block'; } return;
   }
   c.name=name; c.contact=acVal('acContact'); c.email=acVal('acEmail'); c.phone=acVal('acPhone');
-  c.entityType=acVal('acEntity'); c.jurisdiction=acVal('acJur'); c.authority=acVal('acAuth'); c.license=acVal('acLicense');
+  c.entityType=acVal('acEntity');
+  c.jurisdiction=(jurisdictionForAuthority(acVal('acAuth'))||jurisdictionForEntity(acVal('acEntity')));
+  c.authority=acVal('acAuth'); c.license=acVal('acLicense');
   c.trn=acVal('acTrn'); c.ctTrn=acVal('acCtTrn'); c.fyEnd=acVal('acFy'); c.notes=acVal('acNotes');
   if(name!==oldName){
     clientMeta[name]=clientMeta[oldName]||{};
@@ -10205,7 +10228,7 @@ function clientStageBarHTML(name){
    ================================================================== */
 var clientDocs={};   /* {clientName:[{id,name,category,period,status,due,addedAt,expiry,note,storagePath,fileName,size}]} */
 var DOC_CATEGORIES=[
-  'Trade licence','Memorandum & Articles','Establishment card','Emirates ID / Passport',
+  'Trade licence','Certificate of incorporation','Memorandum & Articles','Emirates ID','Passport',
   'VAT registration certificate','Corporate Tax registration','Bank statements','Sales invoices',
   'Purchase invoices','Payroll records','Lease agreement','Financial statements','Audit report',
   'FTA correspondence','Engagement letter','KYC / due diligence','Other'
@@ -10217,7 +10240,7 @@ var DOC_STATUSES=[
   {id:'signed',    label:'Signed off',pill:'p-green'}
 ];
 var DOC_PACKS={
-  'Client onboarding (KYC)':['Trade licence','Memorandum & Articles','Establishment card','Emirates ID / Passport','Engagement letter','KYC / due diligence'],
+  'Client onboarding (KYC)':['Trade licence','Certificate of incorporation','Memorandum & Articles','Emirates ID','Passport',{n:'Engagement letter',opt:true},'KYC / due diligence'],
   'VAT return pack':['Sales invoices','Purchase invoices','Bank statements','VAT registration certificate'],
   'Corporate Tax pack':['Financial statements','Corporate Tax registration','Trade licence','Bank statements','Payroll records'],
   'Audit pack':['Financial statements','Bank statements','Sales invoices','Purchase invoices','Lease agreement','Payroll records']
@@ -10279,9 +10302,17 @@ function addClientDoc(name, fields){
   clientDocs[name]=clientDocs[name]||[];
   var d={ id:docId(), name:fields.name||'Untitled document', category:fields.category||'Other',
           period:fields.period||'', status:fields.status||'requested', due:fields.due||'',
-          note:fields.note||'', addedAt:new Date().toISOString(), expiry:fields.expiry||'', pack:fields.pack||'' };
+          note:fields.note||'', addedAt:new Date().toISOString(), expiry:fields.expiry||'', pack:fields.pack||'', optional:!!fields.optional };
   clientDocs[name].push(d); saveAccountData();
   return d;
+}
+function assignDocTo(name, id, member){
+  var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
+  d.reviewer=member||'';
+  saveAccountData();
+  if(typeof logActivity==='function'&&member){ try{ logActivity('doc_assign', name+' — '+d.name+' assigned to '+member); }catch(e){} }
+  toast(member?(d.name+' assigned to '+member):'Assignment cleared');
+  renderPage();
 }
 function setDocStatus(name, id, status){
   var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
@@ -10305,9 +10336,11 @@ function applyDocPack(name, packName){
   var items=DOC_PACKS[packName]||[];
   var have=docsFor(name).map(function(d){return d.category+'|'+d.name;});
   var added=0;
-  items.forEach(function(cat){
-    if(have.indexOf(cat+'|'+cat)>-1) return;
-    addClientDoc(name,{name:cat, category:cat, status:'requested', note:'From the '+packName, pack:packName});
+  items.forEach(function(it){
+    var nm=(typeof it==='string')?it:it.n;
+    var opt=(typeof it==='object'&&!!it.opt);
+    if(have.indexOf(nm+'|'+nm)>-1) return;
+    addClientDoc(name,{name:nm, category:nm, status:'requested', note:'From the '+packName+(opt?' — optional':''), pack:packName, optional:opt});
     added++;
   });
   flushAccountData();
@@ -10370,6 +10403,7 @@ function clientDocRow(name, d, showClient){
   var sub=[];
   if(showClient) sub.push(ctEsc(name));
   if(showClient && d.pack) sub.push('<span class="packchip" title="Part of the '+ctEsc(d.pack)+'">'+ctEsc(d.pack)+'</span>');
+  if(d.optional && d.status==='requested') sub.push('<span style="color:var(--muted);font-weight:700">optional</span>');
   /* if we read the category off the filename, say so — a guess the reader
      cannot see is a guess they cannot correct */
   sub.push(ctEsc(d.category||'')+(d.autoTagged?' <span class="muted" title="Read from the file name — change it if it guessed wrong">(auto)</span>':''));
@@ -10393,9 +10427,14 @@ function clientDocRow(name, d, showClient){
       +((_dl!==null && _dl<=EXPIRY_SOON_DAYS)?'<button class="btn sm ghost" style="color:'+(_dl<0?'var(--red)':'var(--amber)')+'" title="Create a request for the renewed document — same client, same category" onclick="requestDocRenewal(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('plus',13)+' Request renewal</button>':'')
       +(d.storagePath?'<button class="btn sm ghost" onclick="openClientDocFile(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('eye',13)+' Open</button>':'')
       +'<button class="btn sm ghost" onclick="attachClientDoc(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('paperclip',13)+' '+(d.storagePath?'Replace':'Attach')+'</button>'
-      +'<select class="finput" style="width:auto;padding:6px 9px;font-size:12px" onchange="setDocStatus(\''+jsq(name)+'\',\''+d.id+'\',this.value)">'
-        +DOC_STATUSES.map(function(s){ return '<option value="'+s.id+'" '+(s.id===d.status?'selected':'')+'>'+s.label+'</option>'; }).join('')
-      +'</select>'
+      +(canManage()
+        ? '<select class="finput" style="width:auto;padding:6px 9px;font-size:12px" title="Assign this document to a team member" onchange="assignDocTo(\''+jsq(name)+'\',\''+d.id+'\',this.value)">'
+            +'<option value="">Assign to\u2026</option>'
+            +(teamMembers||[]).map(function(t){ var n=t.name||t.email||'Member'; return '<option value="'+ctEsc(n)+'"'+(d.reviewer===n?' selected':'')+'>'+ctEsc(n)+'</option>'; }).join('')
+          +'</select>'
+        : '<select class="finput" style="width:auto;padding:6px 9px;font-size:12px" onchange="setDocStatus(\''+jsq(name)+'\',\''+d.id+'\',this.value)">'
+            +DOC_STATUSES.map(function(s){ return '<option value="'+s.id+'" '+(s.id===d.status?'selected':'')+'>'+s.label+'</option>'; }).join('')
+          +'</select>')
       +'<button class="btn sm ghost" title="Remove" onclick="removeClientDoc(\''+jsq(name)+'\',\''+d.id+'\')">'+svgIcon('trash',13)+'</button>'
     +'</div></div>';
 }
@@ -10546,6 +10585,12 @@ function fdocExpiryTabsHTML(){
       +(t.n===null?'':'<span class="n">'+t.n+'</span>')+'</button>';
   }).join('');
 }
+var _fdocOpen={};
+function toggleFdocFolder(n){
+  _fdocOpen[n]=!_fdocOpen[n];
+  var el=document.getElementById('fdocRows');
+  if(el) el.innerHTML=fdocRowsHTML(); else renderPage();
+}
 function fdocRowsHTML(){
   var rows=fdocFiltered();
   /* with an expiry filter on, the most urgent document comes first */
@@ -10554,7 +10599,30 @@ function fdocRowsHTML(){
   }
   if(!rows.length) return '<div class="muted" style="text-align:center;padding:26px;font-size:13px">'
     +(allClientDocs().length?'No documents match these filters.':'No documents yet — add one above, or open a client and apply a document pack to build their checklist in one click.')+'</div>';
-  return rows.map(function(x){ return clientDocRow(x.c.name, x.d, true); }).join('');
+  /* one client selected: their documents, flat */
+  if(fdocClient!=='all') return rows.map(function(x){ return clientDocRow(x.c.name, x.d, false); }).join('');
+  /* otherwise: a folder per client — click to open; active filters open every
+     folder that still has matches, so nothing a filter found can hide */
+  var filtersOn = fdocCat!=='all'||fdocStatus!=='all'||!!fdocSearch||fdocExpiry!=='all';
+  var groups={}, order=[];
+  rows.forEach(function(x){ if(!groups[x.c.name]){ groups[x.c.name]=[]; order.push(x.c.name); } groups[x.c.name].push(x); });
+  order.sort(function(a,b){ return a.localeCompare(b); });
+  return order.map(function(n){
+    var g=groups[n];
+    var open = filtersOn || !!_fdocOpen[n];
+    var chase=g.filter(function(x){return x.d.status==='requested'&&!x.d.optional;}).length;
+    return '<div class="packgrp'+(open?'':' closed')+'">'
+      +'<div class="packhead" onclick="toggleFdocFolder(\''+jsq(n)+'\')" title="'+(open?'Collapse':'Open')+' '+ctEsc(n)+'\u2019s documents">'
+        +'<span class="packcaret">'+(open?'\u25be':'\u25b8')+'</span>'
+        +'<span class="avatar" style="width:26px;height:26px;font-size:12px;background:var(--accent-bg);color:var(--accent-d)">'+ctEsc(n[0]||'C')+'</span>'
+        +'<span class="packname">'+ctEsc(n)+'<span class="muted" style="font-weight:500;font-size:11.5px">\u00b7 '+g.length+' document'+(g.length===1?'':'s')+'</span></span>'
+        +docProgressHTML(n,72)
+        +(chase?'<span class="pill p-amber">'+chase+' to chase</span>':'<span class="pill p-green">Nothing outstanding</span>')
+        +'<span class="link" style="font-size:12px" onclick="event.stopPropagation();(function(){var c=(firmClients||[]).find(function(x){return x.name===\''+jsq(n)+'\';});if(c)openClientProfile(c.id);})()">Open client \u2192</span>'
+      +'</div>'
+      +(open?'<div class="packbody">'+g.map(function(x){ return clientDocRow(x.c.name, x.d, false); }).join('')+'</div>':'')
+    +'</div>';
+  }).join('');
 }
 function fdocsPageHTML(){
   var all=allClientDocs().filter(function(x){ return !isArchived(x.c.name); });
@@ -10615,16 +10683,18 @@ function togglePack(name, pack){
   var k=name+'|'+pack; _packCollapsed[k]=!_packCollapsed[k]; renderPage();
 }
 function packGroupHTML(name, pack, docs){
-  var done=docs.filter(function(d){return d.status!=='requested';}).length;
-  var pct=docs.length?Math.round(done/docs.length*100):0;
+  var rel=docs.filter(function(d){return !(d.optional&&d.status==='requested');});
+  var done=rel.filter(function(d){return d.status!=='requested';}).length;
+  var chase=docs.filter(function(d){return d.status==='requested'&&!d.optional;}).length;
+  var pct=rel.length?Math.round(done/rel.length*100):(chase?0:100);
   var closed=!!_packCollapsed[name+'|'+pack];
   return '<div class="packgrp'+(closed?' closed':'')+'">'
     +'<div class="packhead" onclick="togglePack(\''+jsq(name)+'\',\''+jsq(pack)+'\')" title="'+(closed?'Expand':'Collapse')+' this pack">'
       +'<span class="packcaret">'+(closed?'▸':'▾')+'</span>'
       +'<span class="packname">'+svgIcon('clipboard',14)+' '+ctEsc(pack)+'</span>'
       +'<span class="minibar" style="width:76px"><i style="width:'+pct+'%"></i></span>'
-      +'<span class="frac">'+done+' / '+docs.length+'</span>'
-      +(done===docs.length?'<span class="pill p-green">Complete</span>':'<span class="pill p-amber">'+(docs.length-done)+' to chase</span>')
+      +'<span class="frac">'+done+' / '+rel.length+'</span>'
+      +(chase?'<span class="pill p-amber">'+chase+' to chase</span>':'<span class="pill p-green">Complete</span>')
     +'</div>'
     +(closed?'':'<div class="packbody">'+docs.map(function(d){ return clientDocRow(name,d,false); }).join('')+'</div>')
     +'</div>';

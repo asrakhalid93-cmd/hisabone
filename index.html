@@ -9936,7 +9936,17 @@ function openAddClient(){
   h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:640px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3);max-height:88vh;overflow:auto">'
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:3px"><span style="color:var(--accent)">'+svgIcon('users',20)+'</span>'
       +'<h3 style="font-size:17px;margin:0">Add a client</h3></div>'
-    +'<p style="font-size:12.8px;color:var(--muted);line-height:1.6;margin:6px 0 15px">Add the client yourself — they do not need to sign in anywhere. You can invite them onto their own portal later if you ever want to.</p>'
+    +'<p style="font-size:12.8px;color:var(--muted);line-height:1.6;margin:6px 0 13px">Add the client yourself — they do not need to sign in anywhere. You can invite them onto their own portal later if you ever want to.</p>'
+    +'<div id="acLicPanel" style="border:1.5px dashed color-mix(in srgb, var(--accent) 35%, var(--line));background:color-mix(in srgb, var(--accent) 4%, #fff);border-radius:12px;padding:13px 15px;margin-bottom:15px">'
+      +'<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'
+        +'<span style="color:var(--accent)">'+svgIcon('sparkles',18)+'</span>'
+        +'<div style="flex:1;min-width:200px"><b style="font-size:13px">Start from the trade licence</b>'
+          +'<div class="muted" style="font-size:12px">Upload the licence (PDF or photo) and the form fills itself. The file lands on the client\u2019s register with its expiry tracked.</div></div>'
+        +'<button class="btn sm" id="acLicBtn" onclick="document.getElementById(\'acLicFile\').click()">'+svgIcon('paperclip',13)+' Upload licence</button>'
+      +'</div>'
+      +'<div id="acLicStatus" style="font-size:12.5px;margin-top:8px;display:none"></div>'
+    +'</div>'
+    +'<input type="file" id="acLicFile" accept="application/pdf,image/*" style="display:none" onchange="handleLicenseFile(this)">'
     +'<div class="grid g2" style="gap:11px">'
       +acFld('acName','Client / company name *','e.g. Falcon Trading LLC')
       +acFld('acContact','Main contact','e.g. Ahmed Al Marzouqi')
@@ -9963,7 +9973,77 @@ function openAddClient(){
   /* The authority list depends on the jurisdiction, so populate it once the
      markup exists rather than baking a combined list into the template. */
   syncAuthoritySelect('acJur','acAuth','');
+  window._acLicense=null;
   setTimeout(function(){ var f=document.getElementById('acName'); if(f) f.focus(); },50);
+}
+/* ---- the licence reads itself into the form ---- */
+function _acLicMsg(html, col){
+  var el=document.getElementById('acLicStatus'); if(!el) return;
+  el.style.display='block'; el.style.color=col||'var(--muted)'; el.innerHTML=html;
+}
+function _acSetVal(id, v){
+  if(v==null||v==='') return;
+  var el=document.getElementById(id); if(el) el.value=String(v);
+}
+function _acPickOption(id, want){
+  var el=document.getElementById(id); if(!el||!want) return false;
+  var w=String(want).toLowerCase();
+  var opts=Array.prototype.slice.call(el.options||[]);
+  var hit=opts.find(function(o){ return o.value.toLowerCase()===w; })
+       || opts.find(function(o){ var v=o.value.toLowerCase(); return v && (v.indexOf(w)>-1 || (w.length>2 && w.indexOf(v)>-1)); });
+  if(hit){ el.value=hit.value; return true; }
+  return false;
+}
+function _acEntityFromForm(lic){
+  var f=String(lic.legalForm||'').toLowerCase(), j=String(lic.jurisdiction||'').toLowerCase();
+  if(/fz|free\s*zone/.test(f) || /free/.test(j)) return 'Free Zone company';
+  if(/sole/.test(f)) return 'Sole establishment';
+  if(/branch/.test(f)) return 'Branch of a foreign company';
+  if(/civil/.test(f)) return 'Civil company';
+  if(/joint|jsc|pjsc/.test(f)) return 'Public/Private joint stock';
+  if(/partner/.test(f)) return 'Partnership';
+  if(/llc|limited liability/.test(f)) return 'LLC (Mainland)';
+  return '';
+}
+function handleLicenseFile(inp){
+  var f=inp.files&&inp.files[0]; inp.value='';
+  if(!f) return;
+  var btn=document.getElementById('acLicBtn'); if(btn) btn.disabled=true;
+  _acLicMsg('<span class="spinner" style="width:13px;height:13px;vertical-align:-2px"></span> Reading the licence with AI\u2026','var(--accent-d)');
+  fileToOCRPayload(f)
+    .then(function(payload){
+      return fetch('/api/ocr-license',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    })
+    .then(function(r){ return r.json().then(function(d){ return {r:r,d:d}; }); })
+    .then(function(x){
+      if(!x.r.ok || !x.d.ok || !x.d.license){
+        var msg = x.d && x.d.error ? (typeof x.d.error==='string'?x.d.error:JSON.stringify(x.d.error)) : 'Could not read the licence';
+        if(/ANTHROPIC_API_KEY/.test(msg)) msg='AI reading is not configured yet — add ANTHROPIC_API_KEY in Vercel (Project \u2192 Settings \u2192 Environment Variables), then redeploy.';
+        throw new Error(msg);
+      }
+      var lic=x.d.license;
+      _acSetVal('acName', lic.legalName);
+      _acSetVal('acLicense', lic.licenseNumber);
+      if(lic.jurisdiction){
+        if(_acPickOption('acJur', /free/i.test(lic.jurisdiction)?'Free Zone':'Mainland')) syncAuthoritySelect('acJur','acAuth','');
+      }
+      var ent=_acEntityFromForm(lic);
+      if(ent){ _acPickOption('acEntity', ent); }
+      var authHit=_acPickOption('acAuth', lic.licensingAuthority);
+      window._acLicense={ file:f, expiry:lic.expiryDate||'', issue:lic.issueDate||'', raw:lic };
+      var bits=[];
+      if(lic.legalName) bits.push('<b>'+ctEsc(lic.legalName)+'</b>');
+      if(lic.licenseNumber) bits.push('licence '+ctEsc(lic.licenseNumber));
+      if(lic.expiryDate) bits.push('expires '+ctEsc(lic.expiryDate));
+      if(lic.licensingAuthority && !authHit) bits.push('authority: '+ctEsc(lic.licensingAuthority)+' (pick the closest match)');
+      _acLicMsg('\u2713 Licence read — '+bits.join(' \u00b7 ')+'. Check the details below, then add the client.','var(--green)');
+      if(typeof trackEvent==='function') trackEvent('ai_ocr');
+    })
+    .catch(function(err){
+      window._acLicense=null;
+      _acLicMsg('\u2715 '+ctEsc(err&&err.message?err.message:String(err))+' — you can still fill the form by hand.','var(--red)');
+    })
+    .then(function(){ var b=document.getElementById('acLicBtn'); if(b) b.disabled=false; });
 }
 /* Entity type implies the jurisdiction — follow it, then refilter the authorities. */
 function acEntityChanged(){
@@ -9999,12 +10079,37 @@ function submitAddClient(){
   clientMeta[name].urgency='soon';
   clientMeta[name].stage=stage;
   clientMeta[name].manual=true;
+  /* the licence that opened this file becomes its first register entry —
+     received, expiry tracked, clubbed under the KYC pack, file attached */
+  var lic=window._acLicense; window._acLicense=null;
+  if(lic){
+    var nd=addClientDoc(name,{ name:(lic.file&&lic.file.name)||'Trade licence', category:'Trade licence',
+      status:'received', expiry:lic.expiry||'', note:'Read from the uploaded licence when the client was added',
+      pack:'Client onboarding (KYC)' });
+    nd.receivedAt=new Date().toISOString();
+    if(lic.file){
+      nd.fileName=lic.file.name; nd.size=lic.file.size;
+      if(sb && currentAccount && !_sampleMode){
+        nd.uploading=true;
+        try{
+          sb.storage.from('vault').upload(blobId()+'/client_'+Date.now()+'_'+lic.file.name, lic.file)
+            .then(function(r){ nd.uploading=false;
+              if(r&&!r.error&&r.data){ nd.storagePath=r.data.path; } else { nd.uploadError=true; }
+              saveAccountData(); flushAccountData();
+              if(page==='clientprofile'||page==='fdocs') renderPage(); })
+            .catch(function(){ nd.uploading=false; nd.uploadError=true; renderPage(); });
+        }catch(e){ nd.uploading=false; nd.uploadError=true; }
+      }
+    }
+  }
   saveAccountData(); flushAccountData();
   rebuildFirmClients();
-  if(typeof logActivity==='function'){ try{ logActivity('client_linked','Added client '+name+' manually'); }catch(e){} }
+  if(typeof logActivity==='function'){ try{ logActivity('client_linked','Added client '+name+' manually'+(lic?' from their trade licence':'')); }catch(e){} }
   closeAddClient();
-  toast(name+' added — open their profile to build their document pack.');
-  renderNav(); renderPage();
+  /* straight to the client file — everything visible, ready to work */
+  openClientProfile(c.id);
+  toast(name+' added'+(lic?' — trade licence filed on their register.':' — their client file is ready.'));
+  renderNav();
 }
 
 function editManualClient(id){

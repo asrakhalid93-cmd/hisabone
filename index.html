@@ -2602,8 +2602,15 @@ function deleteReqDoc(kind,i){
   var r=arr[i]||{};
   openConfirm({title:'Delete request', message:'Delete the request for "'+(r.doc||'document')+'" from '+(r.client||'this client')+'? This cannot be undone.', onYes:function(){
     arr.splice(i,1); renderPage();
-    /* the row came from the database — remove it there too, or it returns next sign-in */
-    if(sb && !_sampleMode && r.id){ try{ sb.from('doc_requests').delete().eq('id', r.id); }catch(e){} }
+    /* the row came from the database — remove it there too, or it returns next
+       sign-in. The builder only fires when awaited, so .then() is not optional. */
+    if(sb && !_sampleMode && r.id){
+      try{
+        sb.from('doc_requests').delete().eq('id', r.id).then(function(res){
+          if(res && res.error){ toast('Removed from this screen, but the server refused the delete — it may reappear. Please try again.'); }
+        });
+      }catch(e){}
+    }
   }});
 }
 

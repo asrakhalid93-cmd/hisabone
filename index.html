@@ -1178,6 +1178,21 @@
     html{scroll-behavior:auto}
   }
 
+  /* -- (i) header tooltips: the card explains itself on demand -- */
+  .itip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;
+    border-radius:50%;border:1.5px solid color-mix(in srgb, var(--muted) 45%, transparent);color:var(--muted);
+    font-size:10.5px;font-weight:700;font-style:normal;line-height:1;cursor:help;vertical-align:-2px;flex:0 0 auto}
+  .itip:hover,.itip:focus-visible{color:var(--accent);border-color:var(--accent);outline:none}
+  .itip .itipbox{display:none;position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);
+    width:min(310px,74vw);background:#232336;color:#fff;font-size:12px;font-weight:500;line-height:1.55;
+    padding:10px 13px;border-radius:10px;box-shadow:0 14px 34px rgba(17,28,48,.28);z-index:95;text-align:left;white-space:normal}
+  .itip .itipbox::before{content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(45deg);
+    width:10px;height:10px;background:#232336;border-radius:2px}
+  .itip:hover .itipbox,.itip:focus-visible .itipbox{display:block}
+  .cardhead h3 .itip{margin-left:4px}
+  /* cards are stacking contexts — the one holding an open tooltip must win */
+  .card:has(.itip:hover),.card:has(.itip:focus-visible){position:relative;z-index:96}
+
   /* ================= DESIGN SYSTEM v7 — tokens, surfaces, polish ================= */
   :root{
     --r-lg:16px; --r-md:12px; --r-sm:10px;
@@ -3812,10 +3827,9 @@ docs:()=>{
   ${renewalsCardHTML()}
   ${bankStatementsCardHTML()}
   <div class="card mb14">
-    <div class="cardhead"><h3>${svgIcon('folder',16)} Company documents</h3><span class="pill p-teal">${onFile}/${COMPANY_DOC_TYPES.length} on file</span></div>
-    <p class="muted" style="font-size:12.5px;margin-bottom:6px">${planAllows('vault')
+    <div class="cardhead"><h3>${svgIcon('folder',16)} Company documents ${infoTip(planAllows('vault')
         ? 'Upload each document once. HisabOne reads the issue and expiry dates automatically and flags anything expiring soon.'
-        : 'This is the checklist every UAE company is asked for. Storing the files here — and having their issue and expiry dates read for you — comes with '+ctEsc(planNeededFor('vault'))+'.'}</p>
+        : 'This is the checklist every UAE company is asked for. Storing the files here — and having their issue and expiry dates read for you — comes with '+planNeededFor('vault')+'.')}</h3><span class="pill p-teal">${onFile}/${COMPANY_DOC_TYPES.length} on file</span></div>
     <div style="margin-top:6px">${COMPANY_DOC_TYPES.map(t=>companyDocRow(t)).join('')}</div>
   </div>
   <div class="grid g2 mb14">
@@ -3891,8 +3905,7 @@ links:()=>`
     </div>
   </div>` : `
   <div class="card mb14">
-    <div class="cardhead"><h3>${svgIcon('link',16)} Link your accounting / audit firm <span class="muted" style="font-weight:400;font-size:12px">(one only)</span></h3></div>
-    <p class="muted" style="font-size:12.5px;margin-bottom:10px">Ask your accountant for their invite code from their Clients page, and enter it below.</p>
+    <div class="cardhead"><h3>${svgIcon('link',16)} Link your accounting / audit firm ${infoTip('Ask your accountant for their invite code from their Clients page, and enter it below. You can link one firm at a time.')}</h3></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <input id="firmCode" class="finput" style="flex:1;min-width:180px" placeholder="e.g. HSB-XXXX-XXXX">
       <button class="btn" onclick="linkFirmByCode()">Link firm</button>
@@ -4162,8 +4175,7 @@ vat:()=>{
   </div>
 
   <div class="card mt18 v201" style="border-color:var(--accent)">
-    <div class="cardhead"><h3>${svgIcon('file-text',16)} VAT return (VAT201) — FTA boxes</h3><span class="pill p-teal">EmaraTax-ready</span></div>
-    <p class="muted" style="font-size:12.5px;margin:-2px 0 12px">The official VAT201 structure. Fill it by hand, or click the button to allocate the calculator totals — then transcribe the boxes straight into EmaraTax. These boxes are included when you share the draft return for client approval.</p>
+    <div class="cardhead"><h3>${svgIcon('file-text',16)} VAT return (VAT201) — FTA boxes ${infoTip('The official VAT201 structure. Fill it by hand, or click the button to allocate the calculator totals — then transcribe the boxes straight into EmaraTax. These boxes are included when you share the draft return for client approval.')}</h3><span class="pill p-teal">EmaraTax-ready</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px">
       <div><label class="flabel">Allocate standard-rated sales to</label>
         <select id="v2Emirate" class="finput" style="min-width:190px">
@@ -4325,21 +4337,23 @@ freports:()=>{
   <div class="sub">Generate, download and share polished reporting with your clients — all inside HisabOne.</div>
   ${reportsRoleBanner()}
   <div class="card mb14" style="border-color:var(--accent)">
-    <div class="cardhead"><h3>${svgIcon('file-text',16)} Full-length reports</h3><span class="pill p-teal">Print-ready PDF</span></div>
-    <p class="muted" style="font-size:13px;margin-bottom:12px">Multi-page branded reports with a cover page, contents, findings and a declaration — the kind you can put your name on and send to a client or a bank. Produced from your live practice data and downloadable as a PDF.</p>
+    <div class="cardhead"><h3>${svgIcon('file-text',16)} Full-length reports ${infoTip('Multi-page branded reports with a cover page, contents, findings and a declaration — the kind you can put your name on and send to a client or a bank. Produced from your live practice data and downloadable as a PDF. A dossier for an individual client is generated from their profile page.')}</h3><span class="pill p-teal">Print-ready PDF</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn" onclick="openPracticeReport()">${svgIcon('eye',15)} Practice report</button>
       <button class="btn ghost" onclick="downloadPracticeReport()">${svgIcon('download',15)} Download practice report</button>
       <button class="btn ghost" onclick="go('clients')">${svgIcon('users',15)} Client dossiers</button>
     </div>
-    <p class="muted" style="font-size:12px;margin:12px 0 0">A dossier for an individual client is generated from their profile page — open any client and use “Client dossier”.</p>
   </div>
   ${digestCardHTML()}
   ${returnsPanelHTML('firm')}
   <div class="grid g2 mb14">
     <div class="card" style="border-color:var(--accent)">
-      <div class="cardhead"><h3>${svgIcon('clipboard',16)} Audit trail report</h3><span class="pill p-teal">Live</span></div>
-      <p class="muted" style="font-size:13px;margin-bottom:12px">A complete audit trail across your ${clients.length||'—'} linked client${clients.length===1?'':'s'} — every document request (${open} open), status and reminder — generated from your live practice data.</p>
+      <div class="cardhead"><h3>${svgIcon('clipboard',16)} Audit trail report ${infoTip(`A complete audit trail generated from your live practice data — every document request (${open} open), register entry, status and reminder. Scope it to one client or run it across the whole practice.`)}</h3><span class="pill p-teal">Live</span></div>
+      <div style="margin-bottom:12px;max-width:280px"><label class="flabel">Report scope</label>
+        <select class="finput" onchange="atClient=this.value">
+          <option value="all" ${atClient==='all'?'selected':''}>All clients — whole practice</option>
+          ${(firmClients||[]).map(c=>`<option value="${ctEsc(c.name)}" ${atClient===c.name?'selected':''}>${ctEsc(c.name)}</option>`).join('')}
+        </select></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn" onclick="viewOwnReport('audit')">${svgIcon('eye',15)} View report</button>
         <button class="btn ghost" onclick="downloadOwnReportPDF('audit')">${svgIcon('download',15)} Download PDF</button>
@@ -5388,6 +5402,7 @@ function logActivity(type, detail){
   if(page==='team'){ const el=document.getElementById('main'); if(el) el.innerHTML=PAGES.team(); }
 }
 var lastInvite=null;
+var atClient='all';   /* audit-trail report scope */
 function roleBadge(tr){
   if(tr==='owner') return '<span class="pill p-teal" style="font-size:10px">Owner</span>';
   if(tr==='manager') return '<span class="pill" style="font-size:10px;background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Manager / Reviewer</span>';
@@ -5661,23 +5676,32 @@ function buildComplianceReport(){
   };
 }
 /* build a structured audit-trail report snapshot from live firm data */
-function buildAuditTrailReport(){
+function buildAuditTrailReport(scope){
+  scope=scope||atClient||'all';
+  const one=scope!=='all';
   const firm=currentAccount?currentAccount.name:'Firm';
-  const reqRows=[...firmTaxReqs.map(r=>[r.client,r.doc,r.app,r.due,r.st]),...firmAuditReqs.map(r=>[r.client,r.doc,r.app,r.due,r.st])];
-  const remRows=firmReminders.map(r=>[r.client,r.doc,r.last,r.next,r.auto==='green'?'On':'Off']);
-  const open=[...firmTaxReqs,...firmAuditReqs].filter(r=>!/Received/.test(r.st)).length;
+  const inScope=r=>!one||r.client===scope;
+  const reqRows=[...firmTaxReqs.filter(inScope).map(r=>[r.client,r.doc,r.app,r.due,r.st]),...firmAuditReqs.filter(inScope).map(r=>[r.client,r.doc,r.app,r.due,r.st])];
+  const remRows=firmReminders.filter(inScope).map(r=>[r.client,r.doc,r.last,r.next,r.auto==='green'?'On':'Off']);
+  const open=[...firmTaxReqs,...firmAuditReqs].filter(inScope).filter(r=>!/Received/.test(r.st)).length;
+  const regSrc=one?docsFor(scope).map(d=>({c:{name:scope},d:d})):allClientDocs();
+  const fmtD=v=>{ try{ return v?new Date(v).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—'; }catch(e){ return '—'; } };
+  const regRows=regSrc.map(x=>[x.c.name, x.d.name, x.d.category||'—', docStatusObj(x.d.status).label, fmtD(x.d.addedAt), x.d.expiry||'—']);
   return {
     id:'AT-'+Date.now().toString(36).toUpperCase(),
     type:'audit', accent:'#7c5cff',
-    title:'Audit Trail Report',
-    from:firm, forName:clients.length?clients.join(', '):firm,
+    title:'Audit Trail Report'+(one?' — '+scope:''),
+    from:firm, forName:one?scope:(clients.length?clients.join(', '):firm),
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
-    summary:[['Linked clients',String(clients.length)],['Document requests',String(reqRows.length)],['Open requests',String(open)],['Reminders scheduled',String(remRows.length)]],
+    summary:one
+      ? [['Client',scope],['Document requests',String(reqRows.length)],['Open requests',String(open)],['Register entries',String(regRows.length)]]
+      : [['Linked clients',String(clients.length)],['Document requests',String(reqRows.length)],['Open requests',String(open)],['Reminders scheduled',String(remRows.length)]],
     tables:[
       {title:'Document requests',headers:['Client','Document','Application','Deadline','Status'],rows:reqRows},
+      {title:'Document register',headers:['Client','Document','Category','Status','Added','Expiry'],rows:regRows},
       {title:'Email reminders',headers:['Client','Document','Last sent','Next reminder','Auto-chase'],rows:remRows}
     ],
-    note:'Every request and reminder is timestamped and tracked in HisabOne for a complete, auditable engagement record.'
+    note:'Every request, register entry and reminder is timestamped and tracked in HisabOne for a complete, auditable engagement record.'
   };
 }
 /* themed report document (inline-styled so the PDF matches the in-app view exactly) */
@@ -5799,21 +5823,22 @@ async function shareComplianceReport(){
   }catch(e){ toast('Could not share the report — please try again.'); }
 }
 function exportAuditTrail(){
-  const firm=currentAccount?currentAccount.name:'Firm';
-  const rows=[['HisabOne — Audit Trail Report'],['Firm',firm],['Generated',new Date().toLocaleString()],[],
-    ['Document requests'],['Client','Document','Application','Deadline','Status']];
-  [...firmTaxReqs,...firmAuditReqs].forEach(r=>rows.push([r.client,r.doc,r.app,r.due,r.st]));
-  rows.push([],['Email reminders'],['Client','Document','Last sent','Next reminder','Auto-chase']);
-  firmReminders.forEach(r=>rows.push([r.client,r.doc,r.last,r.next,r.auto==='green'?'On':'Off']));
-  downloadCSV('HisabOne-Audit-Trail-Report.csv', rows);
+  const rep=buildAuditTrailReport(atClient);
+  const rows=[['HisabOne — '+rep.title],['Firm',rep.from],['Generated',new Date().toLocaleString()]];
+  rep.tables.forEach(t=>{ rows.push([],[t.title],t.headers); t.rows.forEach(r=>rows.push(r)); });
+  downloadCSV('HisabOne-Audit-Trail'+(atClient!=='all'?'-'+atClient.replace(/[^\w-]+/g,'-'):'')+'.csv', rows);
   if(typeof toast==='function') toast('Audit trail report extracted (CSV downloaded)');
 }
 async function shareAuditTrail(){
+  if(atClient!=='all'){
+    var tgt=(myClients||[]).find(function(c){return c.business_name===atClient;});
+    if(!tgt){ toast(atClient+' does not have a linked portal — download the PDF and send it directly.'); return; }
+  }
   if(!myClients.length){ toast('Link a client first to share the report'); return; }
   if(!sb||!currentAccount){ toast('Not signed in.'); return; }
   const stamp=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
   let sent=0;
-  for(const c of myClients){
+  for(const c of (atClient==='all'?myClients:myClients.filter(x=>x.business_name===atClient))){
     const rep=buildAuditTrailReport();
     rep.forName=c.business_name; rep.sharedAt=stamp;
     try{
@@ -6419,8 +6444,7 @@ function renewalsCardHTML(){
       +(r.src==='manual'?'<button class="iconbtn" title="Remove" onclick="rmRenewal(\''+r.id+'\')">'+svgIcon('trash',14)+'</button>':'')
       +'</div>';
   }).join('');
-  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('refresh',16)+' Renewals</h3><span class="pill p-teal">'+items.length+' tracked</span></div>'
-    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 8px">Everything with an expiry in one place — document dates are read automatically from your vault; add anything else (Ejari, insurance, Emirates IDs) below. Items within 30 days appear in "Needs your action" on your dashboard.</p>'
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('refresh',16)+' Renewals '+infoTip('Everything with an expiry in one place — document dates are read automatically from your vault; add anything else (Ejari, insurance, Emirates IDs) below. Items within 30 days appear in "Needs your action" on your dashboard.')+'</h3><span class="pill p-teal">'+items.length+' tracked</span></div>'
     +(rows||'<div class="muted" style="text-align:center;padding:16px;font-size:13px">Nothing tracked yet.</div>')
     +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)">'
     +'<input id="rnName" class="finput" placeholder="e.g. Office Ejari, Vehicle insurance" style="max-width:230px">'
@@ -6455,10 +6479,8 @@ function bankStatementsCardHTML(){
   if(typeof planAllows==='function' && !planAllows('bank')){
     var _need=planNeededObjFor('bank');
     return '<div class="card mb14">'
-      +'<div class="cardhead"><h3>'+svgIcon('bank',16)+' Bank statements</h3>'
+      +'<div class="cardhead"><h3>'+svgIcon('bank',16)+' Bank statements '+infoTip('One statement a month, dropped in and shared with your accountant automatically, with a running count of which months are still missing. It arrives with '+_need.name+' — AED '+nfmt(_need.price)+' a month.')+'</h3>'
         +'<span class="pill p-gray">'+ctEsc(_need.name)+'</span></div>'
-      +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">One statement a month, dropped in and shared with your accountant automatically, with a running count of which months are still missing. '
-        +'It arrives with '+ctEsc(_need.name)+' &mdash; AED '+nfmt(_need.price)+' a month.</p>'
       +'<button class="btn sm" onclick="openPlanPicker()">'+svgIcon('chart',14)+' See plans</button>'
       +'</div>';
   }
@@ -6474,9 +6496,8 @@ function bankStatementsCardHTML(){
     return '<div style="border:1px dashed var(--line);border-radius:10px;padding:9px 6px;text-align:center;cursor:pointer" onclick="bankUpload(\''+ym+'\',\''+mn+'\')">'
       +'<div style="font-weight:600;font-size:12px;color:var(--muted)">'+mn+'</div><div class="muted" style="font-size:10.5px">upload</div></div>';
   }).join('');
-  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('bar',16)+' Bank statements</h3>'
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('bar',16)+' Bank statements '+infoTip('One statement per month — uploaded files go to your vault and are '+(linkedFirm?'shared with '+linkedFirm+' automatically.':'shared with your accountant automatically once you link a firm.'))+'</h3>'
     +'<div style="display:flex;gap:6px;align-items:center"><button class="iconbtn" onclick="bankSetYear(-1)">‹</button><b style="font-size:13px">'+bankYear+'</b><button class="iconbtn" onclick="bankSetYear(1)">›</button><span class="pill '+(have>=6?'p-teal':'p-gray')+'">'+have+'/12</span></div></div>'
-    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 10px">One statement per month — uploaded files go to your vault and are '+(linkedFirm?'shared with '+ctEsc(linkedFirm)+' automatically.':'shared with your accountant automatically once you link a firm.')+'</p>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px">'+cells+'</div></div>';
 }
 function bankUpload(ym, label){
@@ -6944,9 +6965,8 @@ function linkedPortalsCardHTML(){
     return '<span style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px">'
       +ctEsc(c)+'<span style="cursor:pointer;opacity:.6" title="Unlink (needs verification)" onclick="requestUnlinkClient('+clients.indexOf(c)+')">&#10005;</span></span>';
   }).join('');
-  return '<div class="card mt18"><div class="cardhead"><h3>'+svgIcon('link',16)+' Linked portals</h3>'
+  return '<div class="card mt18"><div class="cardhead"><h3>'+svgIcon('link',16)+' Linked portals '+infoTip('These businesses run their own HisabOne portal and have linked it to your practice. Unlinking needs verification from both sides.')+'</h3>'
     +'<span class="pill p-teal">'+live.length+'</span></div>'
-    +'<p class="muted" style="font-size:12px;margin:-2px 0 10px">These businesses run their own HisabOne portal and have linked it to your practice. Unlinking needs verification from both sides.</p>'
     +'<div style="display:flex;flex-wrap:wrap;gap:8px">'+chips+'</div></div>';
 }
 /* ---- archive clients (keep history, hide from active work) ---- */
@@ -6985,8 +7005,7 @@ function archivedClientsCardHTML(){
       +'<button class="btn sm" onclick="restoreClient(\''+c.id+'\')">Restore</button>'
       +'</div>';
   }).join('');
-  return '<div class="card mt18"><div class="cardhead"><h3>'+svgIcon('folder',16)+' Archived clients</h3><span class="pill p-gray">'+arch.length+'</span></div>'
-    +'<p class="muted" style="font-size:12px;margin:-2px 0 6px">No longer working together — kept out of your active lists but with every request, return and report preserved.</p>'+rows+'</div>';
+  return '<div class="card mt18"><div class="cardhead"><h3>'+svgIcon('folder',16)+' Archived clients '+infoTip('No longer working together — kept out of your active lists but with every request, return and report preserved.')+'</h3><span class="pill p-gray">'+arch.length+'</span></div>'+rows+'</div>';
 }
 /* --- "In focus": what actually needs a person on this client ---------
    Liscio's per-client focus tab, and the reason it earns its place: a
@@ -7637,7 +7656,7 @@ function returnsPanelHTML(side){
   var list=(returnsList||[]).filter(function(rt){ return side==='firm' ? rt.firm_id===effFirmId() : rt.business_id===bizWorkspaceId(); });
   if(!list.length){
     if(side==='business') return '';
-    return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' Draft returns &amp; sign-off</h3></div><p class="muted" style="font-size:12.5px;margin:0">Draft VAT and Corporate Tax returns you share from the calculators appear here — each with a full audit trail of access, changes and client sign-off.</p></div>';
+    return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' Draft returns &amp; sign-off '+infoTip('Draft VAT and Corporate Tax returns you share from the calculators appear here — each with a full audit trail of access, changes and client sign-off.')+'</h3></div><div class="muted emptybox">No draft returns shared yet.</div></div>';
   }
   var rows=list.map(function(rt){
     var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>');
@@ -7649,9 +7668,9 @@ function returnsPanelHTML(side){
       +st+'<button class="btn sm ghost" onclick="viewReturn(\''+rt.id+'\')">'+svgIcon('eye',13)+' '+cta+'</button></div>';
   }).join('');
   var title=side==='firm'?'Draft returns &amp; sign-off':'Returns to review';
-  var sub=side==='firm'?'Every draft you shared — with a full audit trail of access, changes and client signatures.':'Draft VAT &amp; Corporate Tax returns your accountant shared for your approval.';
-  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' '+title+'</h3><span class="pill p-gray">'+list.length+'</span></div>'
-    +'<p class="muted" style="font-size:12.5px;margin:-4px 0 10px">'+sub+'</p>'+rows+'</div>';
+  var sub=side==='firm'?'Every draft you shared — with a full audit trail of access, changes and client signatures.':'Draft VAT & Corporate Tax returns your accountant shared for your approval.';
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('clipboard',16)+' '+title+' '+infoTip(sub)+'</h3><span class="pill p-gray">'+list.length+'</span></div>'
+    +rows+'</div>';
 }
 
 /* ---- figures + audit rendering ---- */
@@ -8165,8 +8184,7 @@ function digestCardHTML(){
   if(!canManage()) return '';
   var f=(currentAccount&&currentAccount.digestFreq)||'off';
   return '<div class="card mb14" style="border-color:#d9ccff">'
-    +'<div class="cardhead"><h3>'+svgIcon('mail',16)+' Activity &amp; client digest</h3><span class="pill" style="background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Manager / Reviewer</span></div>'
-    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">A rolled-up overview of team activity, client compliance status, draft-return sign-offs and upcoming deadlines — delivered to '+ctEsc(currentAccount.email||'you')+'.</p>'
+    +'<div class="cardhead"><h3>'+svgIcon('mail',16)+' Activity &amp; client digest '+infoTip('A rolled-up overview of team activity, client compliance status, draft-return sign-offs and upcoming deadlines — delivered to '+(currentAccount.email||'you')+'.')+'</h3><span class="pill" style="background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Manager / Reviewer</span></div>'
     +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><span class="muted" style="font-size:12px">Email me</span>'
     +'<span class="seg" id="digestSeg">'
       +'<button class="'+(f==='off'?'on':'')+'" onclick="setDigestFreq(\'off\')">Off</button>'
@@ -10463,6 +10481,7 @@ function clientDocRow(name, d, showClient){
     +'</div></div>';
 }
 function jsq(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function infoTip(t){ return '<span class="itip" tabindex="0">i<span class="itipbox">'+ctEsc(t)+'</span></span>'; }
 
 /* ---- add-document modal ---- */
 function openAddDoc(preName){
@@ -10537,9 +10556,8 @@ function pendingReviewCardHTML(){
     }).join('');
   }).join('');
   return '<div class="card mb14" style="border-left:3px solid var(--accent)">'
-    +'<div class="cardhead"><h3>'+svgIcon('inbox',16)+' Pending review</h3>'
+    +'<div class="cardhead"><h3>'+svgIcon('inbox',16)+' Pending review '+infoTip('A client finishing their half is not the job finishing. Everything below has arrived and needs a person.')+'</h3>'
       +'<span class="pill p-teal">'+pend.length+' waiting</span></div>'
-    +'<p class="muted" style="font-size:12.5px;margin:-2px 0 0">A client finishing their half is not the job finishing. Everything below has arrived and needs a person.</p>'
     +body+'</div>';
 }
 function takeDocReview(name,id){
@@ -10665,9 +10683,8 @@ function fdocsPageHTML(){
     +'</div>'
     +pendingReviewCardHTML()
     +'<div class="card mb14">'
-      +'<div class="cardhead"><h3>'+svgIcon('doc-new',16)+' Build a client’s pack</h3>'
+      +'<div class="cardhead"><h3>'+svgIcon('doc-new',16)+' Build a client’s pack '+infoTip('Apply a ready-made checklist to a client and every item lands on their register as "requested" — then attach files as they come in.')+'</h3>'
         +'<button class="btn sm" onclick="openAddDoc()">+ Add document</button></div>'
-      +'<p class="muted" style="font-size:12.5px;margin:-2px 0 11px">Apply a ready-made checklist to a client and every item lands on their register as "requested" — then attach files as they come in.</p>'
       +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">'
         +'<div style="min-width:190px"><label class="flabel">Client</label><select id="packClient" class="finput">'
           +(names.map(function(n){ return '<option>'+ctEsc(n)+'</option>'; }).join('')||'<option value="">No clients yet</option>')+'</select></div>'
@@ -11530,8 +11547,7 @@ function bvat201PageHTML(){
   + pfFiguresCardHTML('vat')
 
   + '<div class="card mt18 v201" style="border-color:var(--accent)">'
-    + '<div class="cardhead"><h3>'+svgIcon('file-text',16)+' VAT201 — FTA boxes</h3><span class="pill p-teal">EmaraTax-ready</span></div>'
-    + '<p class="muted" style="font-size:12.5px;margin:-2px 0 12px">Fill it from the period figures above, or type each box by hand. Nothing is submitted from HisabOne — you transcribe the final figures into EmaraTax yourself.</p>'
+    + '<div class="cardhead"><h3>'+svgIcon('file-text',16)+' VAT201 — FTA boxes '+infoTip('Fill it from the period figures above, or type each box by hand. Nothing is submitted from HisabOne — you transcribe the final figures into EmaraTax yourself.')+'</h3><span class="pill p-teal">EmaraTax-ready</span></div>'
     + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px">'
       + '<div><label class="flabel">Allocate standard-rated sales to</label>'
         + '<select id="v2Emirate" class="finput" style="min-width:190px">'

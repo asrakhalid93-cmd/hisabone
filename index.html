@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://hisabone.ae/og.png">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0073fc">
+<meta name="theme-color" content="#5a3fff">
 <link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,19 +32,19 @@
     /* dark base */
     --text:#e8eef6; --muted:#8ea3bd; --line:rgba(255,255,255,.09);
     --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.07);
-    --green:#1e9bff; --amber:#fbbf24; --red:#f87171;
-    --green-bg:rgba(30,155,255,.15); --amber-bg:rgba(251,191,36,.15); --red-bg:rgba(248,113,113,.15);
+    --green:#8a75ff; --amber:#fbbf24; --red:#f87171;
+    --green-bg:rgba(138,117,255,.15); --amber-bg:rgba(251,191,36,.15); --red-bg:rgba(248,113,113,.15);
     /* defaults (business / blue) */
-    --bg1:#071326; --bg2:#0b2244; --accent:#1e9bff; --accent-d:#0073fc;
-    --accent-bg:rgba(30,155,255,.15); --topbar:rgba(7,17,34,.85);
+    --bg1:#071326; --bg2:#0b2244; --accent:#8a75ff; --accent-d:#5a3fff;
+    --accent-bg:rgba(138,117,255,.15); --topbar:rgba(7,17,34,.85);
   }
   body[data-role="business"]{
-    --bg1:#06122a; --bg2:#0c2750; --accent:#1e9bff; --accent-d:#0073fc;
-    --accent-bg:rgba(30,155,255,.15); --topbar:rgba(6,18,42,.85);
+    --bg1:#06122a; --bg2:#0c2750; --accent:#8a75ff; --accent-d:#5a3fff;
+    --accent-bg:rgba(138,117,255,.15); --topbar:rgba(6,18,42,.85);
   }
   body[data-role="firm"]{
-    --bg1:#150a26; --bg2:#2c1252; --accent:#d27bff; --accent-d:#b455f5;
-    --accent-bg:rgba(210,123,255,.16); --topbar:rgba(21,10,38,.85);
+    --bg1:#150a26; --bg2:#2c1252; --accent:#c7b9ff; --accent-d:#7c5cff;
+    --accent-bg:rgba(199,185,255,.16); --topbar:rgba(21,10,38,.85);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -119,7 +119,7 @@
     background:var(--h1logo) center/cover no-repeat;
     box-shadow:0 16px 40px rgba(17,28,48,.22),0 5px 14px rgba(17,28,48,.14)}
   .llogo-word{font-size:50px;font-weight:800;letter-spacing:-1.5px;color:#fff;display:flex;align-items:center;line-height:1}
-  .llogo-word .llogo-one{margin-left:4px;background:linear-gradient(135deg,#38a3ff,#7cb5ff,#bd8cff);
+  .llogo-word .llogo-one{margin-left:4px;background:linear-gradient(135deg,#8a75ff,#7cb5ff,#bd8cff);
     -webkit-background-clip:text;background-clip:text;color:transparent}
   .llogo-tag{color:rgba(255,255,255,.6);font-size:15px;letter-spacing:.4px}
   .lprompt{color:rgba(255,255,255,.5);font-size:15px;text-align:center;margin-bottom:30px}
@@ -336,7 +336,7 @@
   .modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(3,8,20,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px}
   .modal{background:#0e1b34;border:1px solid var(--line);border-radius:16px;padding:26px;max-width:410px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5)}
   .modal h3{font-size:18px;margin-bottom:8px}.modal p{color:var(--muted);font-size:13.5px;margin-bottom:16px;line-height:1.5}
-  .lf-btn{width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px;color:#fff;background:linear-gradient(135deg,#38a3ff,#0073fc,#8a3df2)}
+  .lf-btn{width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px;color:#fff;background:linear-gradient(135deg,#8a75ff,#5a3fff,#7c5cff)}
   .lf-btn:hover{filter:brightness(1.07)}
   .lfield{margin-bottom:12px}
   .pw-wrap{position:relative}
@@ -374,38 +374,39 @@
 
   /* ===================== LIGHT THEME (polished) ===================== */
   :root{
-    --ink:#111c30; --text:#22304a; --muted:#5f6e88; --line:#e7ebf2;
-    --panel:#ffffff; --panel2:#f2f5f9;
+    --ink:#232336; --text:#3a3a4a; --muted:#6e6e85; --line:#e8e5f4;
+    --panel:#ffffff; --panel2:#f3f1fb;
     --green:#0d9256; --amber:#b7791f; --red:#dd3a53;
     --green-bg:rgba(13,146,86,.11); --amber-bg:rgba(183,121,31,.12); --red-bg:rgba(221,58,83,.10);
-    --bg1:#f1f4f9; --bg2:#fafbfd; --accent:#0073fc; --accent-d:#0053d6;
-    --accent-bg:rgba(0,115,252,.10); --accent-bg2:rgba(0,115,252,.16); --topbar:rgba(255,255,255,.88);
-    --brand-grad:linear-gradient(120deg,#008efe,#0059f9 52%,#7a2ff0);
+    --bg1:#f9fafb; --bg2:#f4f1fd; --accent:#5a3fff; --accent-d:#4326c9;
+    --accent-bg:rgba(90,63,255,.10); --accent-bg2:rgba(90,63,255,.16); --topbar:rgba(255,255,255,.88);
+    --cyan:#00e5ff; --lav:#c7b9ff; --lilac:#ede7ff;
+    --brand-grad:linear-gradient(120deg,#00e5ff,#5a3fff 52%,#7a2ff0);
     --shadow-1:0 1px 2px rgba(17,28,48,.05);
     --shadow-2:0 1px 2px rgba(17,28,48,.04),0 8px 24px rgba(17,28,48,.06);
   }
   body[data-role="business"]{
-    --bg1:#eef4f3; --bg2:#f8fbfa; --accent:#0073fc; --accent-d:#0053d6;
-    --accent-bg:rgba(0,115,252,.10); --accent-bg2:rgba(0,115,252,.16); --topbar:rgba(255,255,255,.9);
+    --bg1:#f7fbfc; --bg2:#f2fbfd; --accent:#5a3fff; --accent-d:#4326c9;
+    --accent-bg:rgba(90,63,255,.10); --accent-bg2:rgba(90,63,255,.16); --topbar:rgba(255,255,255,.9);
   }
   body[data-role="firm"]{
-    --bg1:#f2f1fa; --bg2:#fbfaff; --accent:#6444d8; --accent-d:#4f30bd;
-    --accent-bg:rgba(100,68,216,.10); --accent-bg2:rgba(100,68,216,.16); --topbar:rgba(255,255,255,.9);
+    --bg1:#f8f6fe; --bg2:#f4f0fe; --accent:#5a3fff; --accent-d:#4326c9;
+    --accent-bg:rgba(90,63,255,.10); --accent-bg2:rgba(90,63,255,.16); --topbar:rgba(255,255,255,.9);
   }
   body{ background:
-    radial-gradient(760px 520px at 6% -6%, rgba(0,115,252,.14), transparent 56%),
-    radial-gradient(820px 560px at 94% -4%, rgba(122,90,248,.15), transparent 56%),
-    linear-gradient(180deg,#f7f9fc,#f3f4fb);
+    radial-gradient(760px 520px at 6% -6%, rgba(90,63,255,.12), transparent 56%),
+    radial-gradient(820px 560px at 94% -4%, rgba(199,185,255,.30), transparent 56%),
+    linear-gradient(180deg,#f9fafb,#f2effb);
     background-attachment:fixed; }
   body[data-role="business"]{ background:
-    radial-gradient(720px 520px at 4% -6%, rgba(0,115,252,.20), transparent 55%),
-    radial-gradient(780px 560px at 97% 0%, rgba(122,90,248,.10), transparent 58%),
-    linear-gradient(180deg,#f5faf9,#eff6f4);
+    radial-gradient(720px 520px at 4% -6%, rgba(0,229,255,.13), transparent 55%),
+    radial-gradient(780px 560px at 97% 0%, rgba(90,63,255,.11), transparent 58%),
+    linear-gradient(180deg,#f9fbfc,#f0f6fa);
     background-attachment:fixed; }
   body[data-role="firm"]{ background:
-    radial-gradient(720px 520px at 4% -6%, rgba(0,115,252,.09), transparent 58%),
-    radial-gradient(800px 560px at 97% -2%, rgba(122,90,248,.21), transparent 54%),
-    linear-gradient(180deg,#f8f6fd,#f2f0fb);
+    radial-gradient(720px 520px at 4% -6%, rgba(199,185,255,.34), transparent 56%),
+    radial-gradient(800px 560px at 97% -2%, rgba(90,63,255,.12), transparent 54%),
+    linear-gradient(180deg,#f8f6fe,#f1ecfc);
     background-attachment:fixed; }
   .card{ box-shadow:0 1px 2px rgba(16,32,60,.04),0 8px 24px rgba(16,32,60,.05); }
   .topbar{ color:var(--text); box-shadow:0 1px 0 var(--line); }
@@ -437,9 +438,9 @@
   .drow.clk:hover{ background:var(--panel2); border-radius:8px; }
   /* login light */
   #login{ background:
-    radial-gradient(820px 560px at 8% -8%, rgba(0,115,252,.16), transparent 55%),
-    radial-gradient(880px 600px at 92% -4%, rgba(122,90,248,.18), transparent 55%),
-    linear-gradient(160deg,#f5faf9 0%,#f1f5fb 45%,#f4f1fc 100%); }
+    radial-gradient(820px 560px at 8% -8%, rgba(0,229,255,.12), transparent 55%),
+    radial-gradient(880px 600px at 92% -4%, rgba(199,185,255,.34), transparent 55%),
+    linear-gradient(160deg,#f9fafb 0%,#f3f1fb 45%,#efe9fc 100%); }
   .ltopbar{ border-bottom:1px solid var(--line); }
   .ltopbar-logo{ color:var(--text); } .ltopbar-logo .one{ color:var(--accent); }
   .ltab{ color:var(--muted); }
@@ -451,15 +452,15 @@
   .lportal-card{ background:#fff; backdrop-filter:none; box-shadow:0 1px 2px rgba(16,32,60,.04),0 10px 30px rgba(16,32,60,.06); }
   .lportal-card:hover{ background:#fff; box-shadow:0 16px 42px rgba(16,32,60,.12); transform:translateY(-3px); }
   .lportal-card{ border-width:1px; border-color:var(--line); }
-  .lportal-card.biz{ border-color:rgba(0,115,252,.35); }
-  .lportal-card.firm{ border-color:rgba(122,90,248,.35); }
+  .lportal-card.biz{ border-color:rgba(90,63,255,.35); }
+  .lportal-card.firm{ border-color:rgba(124,92,255,.35); }
   .lportal-card h2{ color:var(--text); } .lportal-card p{ color:var(--muted); }
-  .lpc-ic.biz{ background:rgba(0,115,252,.10); color:#0053d6; }
-  .lpc-ic.firm{ background:rgba(122,90,248,.10); color:#6445e6; }
-  .lportal-label.biz{ color:#0053d6; } .lportal-label.firm{ color:#6445e6; }
-  .enter.biz{ color:#0073fc; } .enter.firm{ color:#7a5af8; }
+  .lpc-ic.biz{ background:rgba(90,63,255,.10); color:#4326c9; }
+  .lpc-ic.firm{ background:rgba(124,92,255,.10); color:#5a3fff; }
+  .lportal-label.biz{ color:#4326c9; } .lportal-label.firm{ color:#5a3fff; }
+  .enter.biz{ color:#5a3fff; } .enter.firm{ color:#7c5cff; }
   .finput{ background:#fff; }
-  .lf-btn{ color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-d)); box-shadow:0 8px 22px rgba(0,115,252,.26); }
+  .lf-btn{ color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent-d)); box-shadow:0 8px 22px rgba(90,63,255,.26); }
   /* ===== refinement layer ===== */
   .ai{ background:var(--accent-bg); border:0; }
   .ai h3{ color:var(--ink); }
@@ -521,7 +522,7 @@
     border-radius:11px;background:#fff;color:var(--text);padding:0}
   .pinrow input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-bg)}
   /* demo-preview chooser */
-  .demo-pick:hover{border-color:#0073fc !important;box-shadow:0 10px 26px rgba(16,32,60,.10);transform:translateY(-2px)}
+  .demo-pick:hover{border-color:#5a3fff !important;box-shadow:0 10px 26px rgba(16,32,60,.10);transform:translateY(-2px)}
   @media(max-width:560px){ #demoChooserGrid{grid-template-columns:1fr !important} }
   /* notifications */
   .notifwrap{position:relative;display:inline-flex}
@@ -631,7 +632,7 @@
   .homesect{margin-top:28px;text-align:center;scroll-margin-top:80px}
   /* section-to-section flow connector */
   .sectflow{display:flex;flex-direction:column;align-items:center;justify-content:center;height:74px;margin:6px 0 0}
-  .sectflow .l{width:2px;height:40px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(0,115,252,.65))}
+  .sectflow .l{width:2px;height:40px;border-radius:2px;background:linear-gradient(180deg,transparent,rgba(90,63,255,.65))}
   .sectflow .c{margin-top:2px;color:var(--accent);display:flex;animation:flowbob 1.9s ease-in-out infinite}
   @keyframes flowbob{0%,100%{transform:translateY(-1px);opacity:.5}50%{transform:translateY(3px);opacity:1}}
   @media(prefers-reduced-motion:reduce){.sectflow .c{animation:none}}
@@ -651,7 +652,7 @@
     color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
   .step3 h3{font-size:15px;color:var(--text);margin-bottom:6px}
   .step3 p{font-size:13px;color:var(--muted);line-height:1.6}
-  .ctaband{margin:34px 0 8px;background:radial-gradient(900px 420px at 85% -30%,rgba(122,90,248,.35),transparent 60%),linear-gradient(135deg,#101c38,#1c1440);border-radius:22px;padding:44px 30px;text-align:center;
+  .ctaband{margin:34px 0 8px;background:radial-gradient(900px 420px at 85% -30%,rgba(124,92,255,.35),transparent 60%),linear-gradient(135deg,#101c38,#1c1440);border-radius:22px;padding:44px 30px;text-align:center;
     box-shadow:0 20px 50px rgba(16,32,60,.18)}
   .ctaband h2{color:#fff;font-size:26px;letter-spacing:-.5px;margin-bottom:8px}
   .ctaband p{color:rgba(255,255,255,.72);font-size:14.5px;margin-bottom:20px}
@@ -659,15 +660,15 @@
   .ctaband .hero-ghost:hover{background:rgba(255,255,255,.18);color:#fff}
   .homefoot{text-align:center;color:var(--muted);font-size:12.5px;padding:26px 0 8px}
   .homefoot a{color:var(--accent-d);text-decoration:none;font-weight:600}
-  .footcontact{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:11px 22px;border-radius:12px;font-weight:700;font-size:13.5px;color:#fff;text-decoration:none;background:linear-gradient(120deg,#0073fc,#4f7ef0 60%,#8a5cf6);box-shadow:0 10px 26px rgba(79,126,240,.26);transition:transform .16s ease,box-shadow .16s ease}
-  .footcontact:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(79,126,240,.34);color:#fff}
+  .footcontact{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:11px 22px;border-radius:12px;font-weight:700;font-size:13.5px;color:#fff;text-decoration:none;background:linear-gradient(120deg,#5a3fff,#7c5cff 60%,#7c5cff);box-shadow:0 10px 26px rgba(124,92,255,.26);transition:transform .16s ease,box-shadow .16s ease}
+  .footcontact:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(124,92,255,.34);color:#fff}
   /* pricing */
-  .annualpromo{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 22px;max-width:600px;padding:13px 22px;border-radius:14px;color:#fff;font-weight:700;font-size:13.5px;letter-spacing:.2px;text-align:center;background:linear-gradient(120deg,#0073fc,#4f7ef0 55%,#8a5cf6);box-shadow:0 12px 30px rgba(79,126,240,.28)}
+  .annualpromo{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 22px;max-width:600px;padding:13px 22px;border-radius:14px;color:#fff;font-weight:700;font-size:13.5px;letter-spacing:.2px;text-align:center;background:linear-gradient(120deg,#5a3fff,#7c5cff 55%,#7c5cff);box-shadow:0 12px 30px rgba(124,92,255,.28)}
   .annualpromo::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);transform:translateX(-130%);animation:promoshine 3.3s ease-in-out infinite}
   @keyframes promoshine{0%{transform:translateX(-130%)}62%,100%{transform:translateX(130%)}}
   .annualpromo .g{display:flex;flex-shrink:0}
   .billtoggle{display:flex;justify-content:center;margin-bottom:18px}
-  .billsave{display:inline-block;margin-left:7px;font-size:10px;font-weight:800;color:#0073fc;background:rgba(0,115,252,.14);border-radius:999px;padding:2px 8px;vertical-align:middle;letter-spacing:.3px}
+  .billsave{display:inline-block;margin-left:7px;font-size:10px;font-weight:800;color:#5a3fff;background:rgba(90,63,255,.14);border-radius:999px;padding:2px 8px;vertical-align:middle;letter-spacing:.3px}
   .seg button.on .billsave{color:#fff;background:rgba(255,255,255,.24)}
   .pcard{display:flex;flex-direction:column;text-align:left;transition:transform .16s ease,box-shadow .16s ease}
   .pcard:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(16,32,60,.12)}
@@ -716,8 +717,8 @@
   .snap-av{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;
     font-size:13px;font-weight:800;color:#fff;flex:0 0 auto}
   .snap-av.biz{background:linear-gradient(135deg,#3aa0ff,#1f7ae0)}
-  .snap-av.firm{background:linear-gradient(135deg,#a97cf0,#7a5af8)}
-  .snap-wire{flex:1;height:2px;background:linear-gradient(90deg,#3aa0ff,#7a5af8);margin:0 -2px;border-radius:2px}
+  .snap-av.firm{background:linear-gradient(135deg,#a97cf0,#7c5cff)}
+  .snap-wire{flex:1;height:2px;background:linear-gradient(90deg,#3aa0ff,#7c5cff);margin:0 -2px;border-radius:2px}
   .snap-ok{font-size:11px;color:var(--text);display:flex;align-items:center;gap:6px;line-height:1.35}
   .snap-ok.green{color:var(--green)}
   .snap-tick{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;
@@ -742,8 +743,8 @@
   @keyframes barfill{from{width:0}to{width:24%}}
   /* aurora glow behind the marketing shell */
   #login::before,#login::after{content:"";position:absolute;border-radius:50%;filter:blur(64px);pointer-events:none;z-index:0;opacity:.5}
-  #login::before{width:520px;height:520px;left:-130px;top:-150px;background:radial-gradient(circle,rgba(0,115,252,.55),transparent 70%);animation:auroraA 18s ease-in-out infinite}
-  #login::after{width:560px;height:560px;right:-150px;top:-120px;background:radial-gradient(circle,rgba(122,90,248,.5),transparent 70%);animation:auroraB 22s ease-in-out infinite}
+  #login::before{width:520px;height:520px;left:-130px;top:-150px;background:radial-gradient(circle,rgba(90,63,255,.55),transparent 70%);animation:auroraA 18s ease-in-out infinite}
+  #login::after{width:560px;height:560px;right:-150px;top:-120px;background:radial-gradient(circle,rgba(124,92,255,.5),transparent 70%);animation:auroraB 22s ease-in-out infinite}
   #login>*{position:relative;z-index:1}
   /* That rule makes every child of #login its own stacking context at the
      same level, so the view — a later sibling — painted over the whole top
@@ -762,7 +763,7 @@
   .flow .flowstep:nth-of-type(7){transition-delay:.24s}
   /* primary button: lift + shine sweep */
   .lf-btn{position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}
-  .lf-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,115,252,.38)}
+  .lf-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(90,63,255,.38)}
   .lf-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.42) 50%,transparent 70%);transform:translateX(-135%);transition:transform .6s ease;pointer-events:none}
   .lf-btn:hover::after{transform:translateX(135%)}
   /* card hover depth */
@@ -789,13 +790,13 @@
   .calcell.has{background:linear-gradient(180deg,#fff,var(--accent-bg))}
   .caldots{display:flex;gap:3px;flex-wrap:wrap;margin-top:auto}
   .caldot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--muted);flex-shrink:0}
-  .caldot.vat{background:var(--accent)}.caldot.ct{background:#7a5af8}.caldot.other{background:var(--amber)}
+  .caldot.vat{background:var(--accent)}.caldot.ct{background:#7c5cff}.caldot.other{background:var(--amber)}
   .callegend{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:11.5px;color:var(--muted)}
   .callegend span{display:inline-flex;align-items:center;gap:6px}
   .certbox{border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:var(--panel2)}
   .certbox.drop{cursor:pointer;border-style:dashed;transition:.15s}
   .certbox.drop:hover{border-color:var(--accent);background:var(--accent-bg)}
-  .certbox.done{border-color:rgba(0,115,252,.32);background:var(--accent-bg)}
+  .certbox.done{border-color:rgba(90,63,255,.32);background:var(--accent-bg)}
   .certtop{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--text)}
   .lfremember{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:-2px 0 12px;cursor:pointer;user-select:none}
   .lfremember input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto;margin:0}
@@ -844,13 +845,13 @@
   /* -- cards: consistent depth + lift on interactive ones -- */
   .card{transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease)}
   .card.clk,.card.stat.clk,tr.clickable{cursor:pointer}
-  .card.clk:hover,.card.stat.clk:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(16,32,60,.06),0 16px 34px rgba(16,32,60,.12);border-color:rgba(0,115,252,.35)}
+  .card.clk:hover,.card.stat.clk:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(16,32,60,.06),0 16px 34px rgba(16,32,60,.12);border-color:rgba(90,63,255,.35)}
   .card.stat .ic{transition:transform .22s var(--ease)}
   .card.stat.clk:hover .ic{transform:scale(1.1)}
 
   /* -- buttons: hover lift + press feedback everywhere -- */
   .btn,.iconbtn,.logout,.seg button,.hero-ghost,.lf-btn{transition:transform .16s var(--ease),box-shadow .16s var(--ease),background .16s var(--ease),color .16s var(--ease),border-color .16s var(--ease),filter .16s var(--ease)}
-  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,115,252,.28)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(90,63,255,.28)}
   .btn:active,.lf-btn:active,.seg button:active{transform:translateY(0) scale(.97)}
   .btn.ghost:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,32,60,.10)}
   .iconbtn:hover{transform:translateY(-1px)}
@@ -872,7 +873,7 @@
 
   /* -- inputs: focus glow -- */
   .finput{transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
-  .finput:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,115,252,.14)}
+  .finput:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(90,63,255,.14)}
 
   /* -- modals & popovers: pop-in entrance -- */
   @keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
@@ -932,14 +933,14 @@
   .chatmsg .cwhen{font-size:10px;opacity:.55;margin-top:3px;text-align:right}
   @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   #chatFab{position:fixed;right:22px;bottom:22px;z-index:300;width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
-    background:linear-gradient(135deg,#0073fc,#4f7ef0);color:#fff;display:none;align-items:center;justify-content:center;
-    box-shadow:0 10px 28px rgba(0,115,252,.4);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
-  #chatFab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 14px 34px rgba(0,115,252,.5)}
+    background:linear-gradient(135deg,#5a3fff,#7c5cff);color:#fff;display:none;align-items:center;justify-content:center;
+    box-shadow:0 10px 28px rgba(90,63,255,.4);transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+  #chatFab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 14px 34px rgba(90,63,255,.5)}
   #chatFab .fabbadge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;min-width:19px;height:19px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff}
   #chatPanel{position:fixed;right:22px;bottom:88px;z-index:300;width:min(370px,calc(100vw - 30px));height:min(480px,calc(100vh - 130px));
     background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px rgba(8,20,40,.25);display:none;flex-direction:column;overflow:hidden;
     animation:modalIn .28s var(--ease) both;transform-origin:bottom right}
-  #chatPanel .chead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,rgba(0,115,252,.08),rgba(79,126,240,.07))}
+  #chatPanel .chead{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);background:linear-gradient(120deg,rgba(90,63,255,.08),rgba(124,92,255,.07))}
   #chatPanel .chatlog{flex:1;border-radius:0;background:var(--panel2)}
   .chatsend{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
   .chatsend .finput{flex:1}
@@ -986,16 +987,16 @@
 
   /* ================= COMMAND CENTRE (owner-only, /admin) ================= */
   #adminRoot{position:fixed;inset:0;z-index:500;overflow-y:auto;display:none;color:#e6edf6;
-    background:radial-gradient(900px 600px at 8% -10%, rgba(0,115,252,.25), transparent 55%),
-               radial-gradient(900px 620px at 95% -8%, rgba(122,90,248,.22), transparent 55%),
+    background:radial-gradient(900px 600px at 8% -10%, rgba(90,63,255,.25), transparent 55%),
+               radial-gradient(900px 620px at 95% -8%, rgba(124,92,255,.22), transparent 55%),
                linear-gradient(180deg,#0b1526,#0e1830);font-family:'Inter',system-ui,sans-serif}
   .adm-wrap{max-width:1180px;margin:0 auto;padding:26px 22px 60px}
   .adm-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
   .adm-top h1{font-size:22px;letter-spacing:-.3px;color:#fff}
-  .adm-badge{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#7cc0ff;background:rgba(30,155,255,.13);border:1px solid rgba(30,155,255,.3);padding:4px 10px;border-radius:20px}
+  .adm-badge{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#7cc0ff;background:rgba(138,117,255,.13);border:1px solid rgba(138,117,255,.3);padding:4px 10px;border-radius:20px}
   .adm-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;background:rgba(255,255,255,.05);padding:5px;border-radius:13px;border:1px solid rgba(255,255,255,.08)}
   .adm-tabs button{flex:1;min-width:110px;background:transparent;border:0;color:#9fb0c8;font-weight:700;font-size:12.5px;padding:9px 12px;border-radius:9px;cursor:pointer;transition:.18s}
-  .adm-tabs button.on{background:linear-gradient(120deg,#0073fc,#4f7ef0);color:#fff;box-shadow:0 6px 18px rgba(0,115,252,.35)}
+  .adm-tabs button.on{background:linear-gradient(120deg,#5a3fff,#7c5cff);color:#fff;box-shadow:0 6px 18px rgba(90,63,255,.35)}
   .adm-card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:15px;padding:18px;margin-bottom:16px;backdrop-filter:blur(6px)}
   .adm-card h3{font-size:14px;color:#fff;margin-bottom:10px;display:flex;align-items:center;gap:8px}
   .adm-grid{display:grid;gap:14px}
@@ -1008,37 +1009,37 @@
   .adm-row:last-child{border-bottom:0}
   .adm-in{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#e6edf6;border-radius:9px;padding:9px 12px;font-size:13px}
   .adm-in::placeholder{color:#71809a}
-  .adm-in:focus{outline:none;border-color:#1e9bff}
+  .adm-in:focus{outline:none;border-color:#8a75ff}
   select.adm-in option{color:#0d1b24}
-  .adm-btn{background:linear-gradient(120deg,#0073fc,#4f7ef0);border:0;color:#fff;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:.16s}
-  .adm-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,115,252,.4)}
+  .adm-btn{background:linear-gradient(120deg,#5a3fff,#7c5cff);border:0;color:#fff;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:.16s}
+  .adm-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(90,63,255,.4)}
   .adm-btn.ghost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
   .adm-x{background:transparent;border:0;color:#7a8aa3;cursor:pointer;font-size:14px;padding:4px 7px;border-radius:7px}
   .adm-x:hover{color:#ff8f8f;background:rgba(255,80,80,.12)}
   .adm-pill{font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:12px;cursor:pointer;user-select:none}
   .adm-pill.todo{background:rgba(255,255,255,.1);color:#9fb0c8}
   .adm-pill.doing{background:rgba(255,190,70,.16);color:#ffd27a}
-  .adm-pill.done{background:rgba(30,155,255,.16);color:#7cc0ff}
+  .adm-pill.done{background:rgba(138,117,255,.16);color:#7cc0ff}
   .adm-pill.open{background:rgba(255,190,70,.16);color:#ffd27a}
-  .adm-pill.filled{background:rgba(30,155,255,.16);color:#7cc0ff}
+  .adm-pill.filled{background:rgba(138,117,255,.16);color:#7cc0ff}
   .adm-pill.idea{background:rgba(255,255,255,.1);color:#9fb0c8}
-  .adm-pill.active{background:rgba(30,155,255,.16);color:#7cc0ff}
+  .adm-pill.active{background:rgba(138,117,255,.16);color:#7cc0ff}
   .adm-pill.paused{background:rgba(255,190,70,.16);color:#ffd27a}
   .adm-bar{display:flex;align-items:flex-end;gap:6px;height:90px;padding-top:6px}
-  .adm-bar .b{flex:1;background:linear-gradient(180deg,#1e9bff,#4f7ef0);border-radius:5px 5px 2px 2px;min-height:3px;position:relative}
+  .adm-bar .b{flex:1;background:linear-gradient(180deg,#8a75ff,#7c5cff);border-radius:5px 5px 2px 2px;min-height:3px;position:relative}
   .adm-bar .b span{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:9.5px;color:#9fb0c8}
   .adm-bar .b i{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:9px;color:#71809a;font-style:normal;white-space:nowrap}
   .adm-muted{color:#8fa0ba;font-size:12px}
-  .adm-note{font-size:11.5px;color:#8fa0ba;background:rgba(255,255,255,.04);border-left:3px solid #1e9bff;padding:9px 12px;border-radius:0 9px 9px 0}
+  .adm-note{font-size:11.5px;color:#8fa0ba;background:rgba(255,255,255,.04);border-left:3px solid #8a75ff;padding:9px 12px;border-radius:0 9px 9px 0}
   .adm-pill.high{background:rgba(255,90,90,.18);color:#ff9a9a}
   .adm-pill.med{background:rgba(255,190,70,.16);color:#ffd27a}
   .adm-pill.low{background:rgba(255,255,255,.1);color:#9fb0c8}
   .adm-pill.review{background:rgba(124,196,255,.18);color:#9ecfff}
   .adm-prog{height:7px;background:rgba(255,255,255,.09);border-radius:5px;overflow:hidden;min-width:60px}
-  .adm-prog>div{height:100%;background:linear-gradient(90deg,#1e9bff,#4f7ef0);transition:width .4s var(--ease)}
+  .adm-prog>div{height:100%;background:linear-gradient(90deg,#8a75ff,#7c5cff);transition:width .4s var(--ease)}
   .adm-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#cdd9ea;border-radius:20px;padding:7px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:.16s}
-  .adm-chip:hover{border-color:#1e9bff;color:#fff}
-  .adm-chip.on{background:linear-gradient(120deg,#0073fc,#4f7ef0);color:#fff;border-color:transparent}
+  .adm-chip:hover{border-color:#8a75ff;color:#fff}
+  .adm-chip.on{background:linear-gradient(120deg,#5a3fff,#7c5cff);color:#fff;border-color:transparent}
   .adm-md{font-size:13px;line-height:1.6;color:#dbe5f2}
   .adm-md b{color:#fff}
   .adm-md ul{margin:6px 0 6px 4px;padding-left:18px}
@@ -1131,11 +1132,11 @@
   #accessGate > div{animation:gateIn .55s cubic-bezier(.16,1,.3,1) both}
   @keyframes gateIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
   #gateInput{transition:border-color .18s var(--ease),box-shadow .18s var(--ease),background .18s var(--ease)}
-  #gateInput:focus{border-color:#0073fc !important;box-shadow:0 0 0 3px rgba(0,115,252,.14)}
+  #gateInput:focus{border-color:#5a3fff !important;box-shadow:0 0 0 3px rgba(90,63,255,.14)}
   #gateInput.shake{animation:gateShake .4s var(--ease)}
   @keyframes gateShake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
   #accessGate button{transition:transform .16s var(--ease),box-shadow .16s var(--ease),filter .16s var(--ease)}
-  #accessGate button:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,115,252,.4);filter:brightness(1.05)}
+  #accessGate button:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(90,63,255,.4);filter:brightness(1.05)}
   #accessGate button:active{transform:translateY(0) scale(.97)}
 
   /* -- hero visual: a slow breath, paused for anyone who asked for stillness -- */
@@ -1257,7 +1258,7 @@
 
   /* -- the AI band: the one place the gradient speaks first -- */
   .ai{position:relative;overflow:hidden;border-radius:var(--r-lg);
-    background:linear-gradient(110deg, color-mix(in srgb, var(--accent) 7%, #fff), color-mix(in srgb, #7a5af8 9%, #fff));
+    background:linear-gradient(110deg, color-mix(in srgb, var(--accent) 8%, #fff), color-mix(in srgb, #00e5ff 10%, #fff));
     border:1px solid color-mix(in srgb, var(--accent) 20%, var(--line))}
   .ai::after{content:"";position:absolute;top:-60px;right:-30px;width:280px;height:200px;border-radius:50%;
     background:radial-gradient(closest-side, rgba(255,255,255,.55), transparent 70%);pointer-events:none}
@@ -1282,6 +1283,23 @@
     border:2px solid var(--accent-bg2);border-top-color:var(--accent);animation:v7spin .7s linear infinite}
   @keyframes v7spin{to{transform:rotate(360deg)}}
 
+  /* -- client-file: pack groups and the activity timeline -- */
+  .packgrp{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;background:#fff}
+  .packhead{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;background:color-mix(in srgb, var(--accent) 4%, #fff);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .packgrp.closed .packhead{border-bottom:0}
+  .packhead:hover{background:color-mix(in srgb, var(--accent) 7%, #fff)}
+  .packcaret{color:var(--muted);font-size:12px;width:12px}
+  .packname{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:13px;color:var(--ink);flex:1;min-width:150px}
+  .packbody{padding:2px 13px}
+  .packchip{display:inline-block;background:var(--accent-bg);color:var(--accent-d);border-radius:20px;padding:1px 8px;font-size:10.5px;font-weight:700}
+  .tl{position:relative;padding-left:6px}
+  .tl::before{content:"";position:absolute;left:14px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--line)}
+  .tlitem{position:relative;display:flex;gap:12px;padding:7px 0 7px 2px;align-items:flex-start}
+  .tldot{position:relative;z-index:1;width:26px;height:26px;border-radius:50%;background:#fff;border:1.5px solid var(--line);display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .tlbody{flex:1;min-width:0;padding-top:2px}
+  .tltxt{font-size:13px;color:var(--text)}
+  .tlmeta{font-size:11.5px;color:var(--muted);margin-top:1px}
+
   /* -- reduced motion: v7 obeys the same contract -- */
   @media(prefers-reduced-motion:reduce){
     .card,.btn,.btn.ghost,.navitem,.ftab,.finput,.calcell,tbody tr,.drow{transition:none !important}
@@ -1294,21 +1312,21 @@
 
 <!-- ================= PRIVATE PREVIEW ACCESS GATE ================= -->
 <div id="accessGate" style="position:fixed;inset:0;z-index:99999;background:
-    radial-gradient(820px 560px at 8% -8%, rgba(0,115,252,.16), transparent 55%),
-    radial-gradient(880px 600px at 92% -4%, rgba(122,90,248,.18), transparent 55%),
-    linear-gradient(160deg,#f5faf9 0%,#f1f5fb 45%,#f4f1fc 100%);display:flex;align-items:center;justify-content:center;padding:22px;font-family:Inter,system-ui,-apple-system,sans-serif">
-  <div style="max-width:400px;width:100%;text-align:center;background:#fff;border:1px solid #e7ebf2;border-radius:18px;padding:34px 30px 28px;box-shadow:0 1px 2px rgba(17,28,48,.05),0 24px 60px rgba(17,28,48,.10)">
-    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 16px;background:linear-gradient(135deg,#0073fc,#4f7ef0 52%,#7a5af8);display:flex;align-items:center;justify-content:center">
+    radial-gradient(820px 560px at 8% -8%, rgba(0,229,255,.12), transparent 55%),
+    radial-gradient(880px 600px at 92% -4%, rgba(199,185,255,.34), transparent 55%),
+    linear-gradient(160deg,#f9fafb 0%,#f3f1fb 45%,#efe9fc 100%);display:flex;align-items:center;justify-content:center;padding:22px;font-family:Inter,system-ui,-apple-system,sans-serif">
+  <div style="max-width:400px;width:100%;text-align:center;background:#fff;border:1px solid #e8e5f4;border-radius:18px;padding:34px 30px 28px;box-shadow:0 1px 2px rgba(17,28,48,.05),0 24px 60px rgba(17,28,48,.10)">
+    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 16px;background:linear-gradient(135deg,#5a3fff,#7c5cff 52%,#7c5cff);display:flex;align-items:center;justify-content:center">
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
     </div>
-    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px;color:#111c30">Hisab<span style="color:#0073fc">One</span></div>
-    <div style="font-size:14px;color:#5f6e88;margin-bottom:22px">Private preview — enter your access code to continue.</div>
+    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px;color:#232336">Hisab<span style="color:#5a3fff">One</span></div>
+    <div style="font-size:14px;color:#6e6e85;margin-bottom:22px">Private preview — enter your access code to continue.</div>
     <input id="gateInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Access code"
-      style="width:100%;padding:13px 15px;border-radius:11px;border:1.5px solid #e7ebf2;background:#fff;color:#111c30;font-size:15px;text-align:center;letter-spacing:3px;outline:none"
+      style="width:100%;padding:13px 15px;border-radius:11px;border:1.5px solid #e8e5f4;background:#fff;color:#232336;font-size:15px;text-align:center;letter-spacing:3px;outline:none"
       onkeydown="if(event.key==='Enter')gateCheck()">
     <div id="gateErr" style="color:#dd3a53;font-size:12.5px;height:16px;margin:9px 0 4px"></div>
-    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#fff;background:#0073fc;box-shadow:0 1px 2px rgba(17,28,48,.10)">Enter &rarr;</button>
-    <div style="font-size:11.5px;color:#8b98ad;margin-top:16px">Access by invitation only</div>
+    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#fff;background:#5a3fff;box-shadow:0 1px 2px rgba(17,28,48,.10)">Enter &rarr;</button>
+    <div style="font-size:11.5px;color:#8a8aa0;margin-top:16px">Access by invitation only</div>
   </div>
 </div>
 <script>
@@ -1332,12 +1350,12 @@
 
 <!-- ================= LOGIN (full-page gradient portal selector) ================= -->
 <div id="login">
-  <div id="betaStrip" style="background:linear-gradient(90deg,#008efe,#0059f9 55%,#7a2ff0);color:#fff;text-align:center;font-size:12px;font-weight:600;letter-spacing:.3px;padding:7px 14px">HisabOne is in beta — new features ship weekly &middot; free for accounting firms up to 30 clients</div>
+  <div id="betaStrip" style="background:linear-gradient(90deg,#00e5ff,#5a3fff 55%,#7a2ff0);color:#fff;text-align:center;font-size:12px;font-weight:600;letter-spacing:.3px;padding:7px 14px">HisabOne is in beta — new features ship weekly &middot; free for accounting firms up to 30 clients</div>
   <div class="ltopbar">
     <div class="ltopbar-logo">
       <span class="mk" role="img" aria-label="HisabOne logo"></span>
       <span class="word">Hisab<span class="one">One</span></span>
-      <span style="font-size:9.5px;font-weight:800;letter-spacing:.8px;background:rgba(0,115,252,.14);color:#0073fc;border:1px solid rgba(0,115,252,.35);padding:3px 8px;border-radius:12px;margin-left:6px;align-self:center">BETA</span>
+      <span style="font-size:9.5px;font-weight:800;letter-spacing:.8px;background:rgba(90,63,255,.14);color:#5a3fff;border:1px solid rgba(90,63,255,.35);padding:3px 8px;border-radius:12px;margin-left:6px;align-self:center">BETA</span>
     </div>
     <div class="ltabs">
       <button id="tabHome" class="ltab on" onclick="switchView('home')">Home</button>
@@ -3260,7 +3278,7 @@ function certStatusHTML(kind){
   const doc=vaultDocs.find(d=>d.typeId===typeId);
   const meta=kind==='vat'?vatCertMeta:ctCertMeta;
   const label=kind==='vat'?'VAT Registration Certificate':'Corporate Tax Certificate';
-  const accent=kind==='vat'?'var(--accent)':'#7a5af8';
+  const accent=kind==='vat'?'var(--accent)':'#7c5cff';
   if(companyDocReading[typeId]){
     return '<div class="certbox"><div class="certtop"><span style="color:'+accent+'">'+svgIcon('file-text',18)+'</span><b>'+label+'</b></div><div class="muted" style="font-size:12.5px;display:flex;align-items:center;gap:7px;margin-top:7px"><span style="color:var(--accent)">'+svgIcon('sparkles',15)+'</span> Reading filing dates…</div></div>';
   }
@@ -3308,7 +3326,7 @@ async function shareStoredDoc(d, name){
   let fileUrl=null;
   try{ const su=await sb.storage.from('vault').createSignedUrl(d.storagePath, 60*60*24*365); if(su&&su.data&&su.data.signedUrl) fileUrl=su.data.signedUrl; }catch(e){}
   if(!fileUrl){ toast('Couldn’t prepare the file link — please try Share again in a moment.'); return false; }
-  const rep={ id:'DOC-'+Date.now().toString(36).toUpperCase(), type:'document', accent:'#0073fc',
+  const rep={ id:'DOC-'+Date.now().toString(36).toUpperCase(), type:'document', accent:'#5a3fff',
     title:'Shared document: '+name, from:currentAccount.name, forName:linkedFirm,
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
     sharedAt:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
@@ -5514,11 +5532,11 @@ function bizEmailByName(name){ const c=myClients.find(x=>x.business_name===name)
 function buildEmailHTML(text){
   const body = String(text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
   return '<div style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f1f33">'
-    +'<div style="font-weight:800;font-size:20px;color:#0e1733;margin-bottom:2px">Hisab<span style="color:#0073fc">One</span></div>'
+    +'<div style="font-weight:800;font-size:20px;color:#0e1733;margin-bottom:2px">Hisab<span style="color:#5a3fff">One</span></div>'
     +'<div style="font-size:12px;color:#64748b;margin-bottom:20px">Tax &amp; Compliance, Simplified</div>'
     +'<div style="font-size:14px;line-height:1.7">'+body+'</div>'
-    +'<div style="margin:26px 0 8px"><a href="https://hisabone.ae" style="display:inline-block;background:#0073fc;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 26px;border-radius:10px">Sign in &amp; upload &rarr;</a></div>'
-    +'<div style="font-size:12px;color:#94a3b8;margin-top:20px;border-top:1px solid #e2e8f0;padding-top:14px">You received this because your business is linked on HisabOne. Visit <a href="https://hisabone.ae" style="color:#0073fc">hisabone.ae</a> to sign in and upload your documents securely.</div>'
+    +'<div style="margin:26px 0 8px"><a href="https://hisabone.ae" style="display:inline-block;background:#5a3fff;color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 26px;border-radius:10px">Sign in &amp; upload &rarr;</a></div>'
+    +'<div style="font-size:12px;color:#94a3b8;margin-top:20px;border-top:1px solid #e2e8f0;padding-top:14px">You received this because your business is linked on HisabOne. Visit <a href="https://hisabone.ae" style="color:#5a3fff">hisabone.ae</a> to sign in and upload your documents securely.</div>'
     +'</div>';
 }
 async function sendAppEmail(to,subject,text){
@@ -5588,7 +5606,7 @@ function buildComplianceReport(){
   const deadlineRows=upcoming.slice(0,8).map(e=>{ const dl=calDaysUntil(e.date); return [e.title, e.detail, calFmt(e.date), dl<0?'Overdue':('in '+dl+' days')]; });
   return {
     id:'CR-'+Date.now().toString(36).toUpperCase(),
-    type:'compliance', accent:'#0073fc',
+    type:'compliance', accent:'#5a3fff',
     title:'Compliance Report',
     from:name, forName:linkedFirm||name,
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
@@ -5622,7 +5640,7 @@ function buildAuditTrailReport(){
   const open=[...firmTaxReqs,...firmAuditReqs].filter(r=>!/Received/.test(r.st)).length;
   return {
     id:'AT-'+Date.now().toString(36).toUpperCase(),
-    type:'audit', accent:'#7a5af8',
+    type:'audit', accent:'#7c5cff',
     title:'Audit Trail Report',
     from:firm, forName:clients.length?clients.join(', '):firm,
     date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),
@@ -5636,7 +5654,7 @@ function buildAuditTrailReport(){
 }
 /* themed report document (inline-styled so the PDF matches the in-app view exactly) */
 function reportDocHTML(rep){
-  const A=rep.accent||'#0073fc';
+  const A=rep.accent||'#5a3fff';
   const sum=(rep.summary||[]).map(s=>'<div style="flex:1;min-width:140px;background:#f6fafc;border:1px solid #e5ecf1;border-radius:10px;padding:13px 15px"><div style="font-size:10.5px;color:#64748b;text-transform:uppercase;letter-spacing:.5px">'+s[0]+'</div><div style="font-size:19px;font-weight:700;color:#0d1b24;margin-top:4px;word-break:break-word">'+s[1]+'</div></div>').join('');
   const tables=(rep.tables||[]).map(t=>'<div style="margin-top:22px"><div style="font-size:12.5px;font-weight:700;color:'+A+';text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">'+t.title+'</div><table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr>'+t.headers.map(h=>'<th style="text-align:left;background:'+A+';color:#fff;padding:8px 10px;font-weight:600">'+h+'</th>').join('')+'</tr>'+(t.rows.length?t.rows.map((r,ri)=>'<tr>'+r.map(c=>'<td style="padding:8px 10px;border-bottom:1px solid #e8eef3;color:#22313d;background:'+(ri%2?'#f8fbfd':'#ffffff')+'">'+(c==null?'—':c)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+t.headers.length+'" style="padding:14px;color:#8aa0ae;text-align:center;border-bottom:1px solid #e8eef3">No records yet</td></tr>')+'</table></div>').join('');
   return '<div style="background:#ffffff;color:#0d1b24;font-family:Inter,system-ui,-apple-system,sans-serif">'
@@ -6869,7 +6887,7 @@ function fClientRow(c){
   const meta=clientMeta[c.name]||{};
   const who=meta.assignee?ctEsc(meta.assignee):'Unassigned';
   const sub=[c.trn&&c.trn!=='—'?ctEsc(c.trn):'No TRN yet', who, c.registered?fmtRegDate(c.registered):''].filter(Boolean).join(' · ');
-  return `<tr>
+  return `<tr class="clickable" onclick="openClientProfile('${c.id}')" title="Open ${ctEsc(c.name)}'s client file">
     <td class="csel" onclick="event.stopPropagation()"><input type="checkbox" ${_selClients[c.id]?'checked':''} onclick="toggleClientSel('${c.id}')" style="width:16px;height:16px;cursor:pointer"></td>
     <td class="cname"><span class="link" style="font-weight:700" onclick="openClientProfile('${c.id}')">${ctEsc(c.name)}</span><div class="muted" style="font-size:11px">${sub}</div></td>
     <td data-l="Status"><span style="display:inline-flex;align-items:center;gap:7px;white-space:nowrap" title="${a.hint}"><span class="abub" style="background:${a.col}"></span>${a.label}</span></td>
@@ -6966,7 +6984,7 @@ function clientFocusCardHTML(c){
              : '<button class="btn sm ghost" onclick="go(\'taxdocs\')">Open</button>')});
   });
   (returnsList||[]).filter(function(r){ return r.business_id===c.id && r.status!=='approved'; }).forEach(function(r){
-    items.push({col:'#7a5af8', icon:'clipboard',
+    items.push({col:'#7c5cff', icon:'clipboard',
       title:(r.status==='changes_requested'?'Changes requested — ':'Awaiting client approval — ')+ctEsc(r.title||'Return'),
       meta:ctEsc(r.period||'Draft shared with the client'),
       btn:'<button class="btn sm ghost" onclick="viewReturn(\''+r.id+'\')">Open</button>'});
@@ -7005,6 +7023,35 @@ function findFirmClient(key){
 }
 function openClientProfile(id){
   _viewClientId=id; go('clientprofile');
+}
+async function chaseClient(id){
+  var c=findFirmClient(id); if(!c) return;
+  var asks=clientOutstandingAsks(c.name);
+  if(!asks.length){ toast('Nothing outstanding to chase for '+c.name+'.'); return; }
+  var firmName=(currentAccount&&(currentAccount.firmName||currentAccount.name))||'Your accountant';
+  var lines=asks.slice(0,10).map(function(a){ return '\u2022 '+a.name+(a.due?(' (due '+a.due+')'):''); }).join('\n');
+  var msg='Hello '+c.name+' — a reminder from '+firmName+'. We are still waiting on '+asks.length
+    +' document'+(asks.length===1?'':'s')+':\n'+lines+'\nYou can upload them in your HisabOne portal under Documents. Thank you!';
+  var delivered=false;
+  if(sb && !_sampleMode && c.linked){
+    try{
+      var r=await sb.from('messages').insert({business_id:c.id, firm_id:effFirmId(), sender_id:currentAccount.id,
+        sender_name:currentAccount.name||firmName, sender_role:'firm', body:msg});
+      if(!r.error) delivered=true;
+    }catch(e){}
+  }
+  var meta=clientMeta[c.name]||{};
+  var email=(c.email||meta.email||'').trim();
+  if(email && !_sampleMode){ try{ sendAppEmail(email, 'Documents still needed — '+firmName, msg); }catch(e){} }
+  clientMeta[c.name]=clientMeta[c.name]||{};
+  clientMeta[c.name].lastChase=new Date().toISOString();
+  try{ logActivity('chase','Chased '+c.name+' for '+asks.length+' outstanding document'+(asks.length===1?'':'s')); }catch(e){}
+  saveAccountData();
+  toast(asks.length+' item'+(asks.length===1?'':'s')+' chased'
+    +(delivered?' — message sent to their portal':'')
+    +(email&&!_sampleMode?' + email':'')+'.');
+  if(typeof loadChat==='function' && delivered) loadChat(true);
+  renderPage();
 }
 function saveClientMeta(field, value){
   var c=findFirmClient(_viewClientId); if(!c) return;
@@ -7052,6 +7099,7 @@ function clientProfileHTML(){
       <button class="btn sm" onclick="openClientDossier('${c.id}')">${svgIcon('file-text',14)} Client dossier</button>
       <button class="btn ghost sm" onclick="downloadClientDossier('${c.id}')">${svgIcon('download',14)} Download PDF</button>
       <button class="btn ghost sm" onclick="openAddDoc('${jsq(c.name)}')">${svgIcon('paperclip',14)} Request a document</button>
+      ${clientOutstandingAsks(c.name).length?`<button class="btn ghost sm" style="color:var(--amber)" title="One reminder covering everything still outstanding — in-app message plus email if we hold an address" onclick="chaseClient('${c.id}')">${svgIcon('bell',14)} Chase outstanding (${clientOutstandingAsks(c.name).length})</button>`:''}
       ${c.manual?`<button class="btn ghost sm" onclick="editManualClient('${c.id}')">${svgIcon('clipboard',14)} Edit details</button>
       <button class="btn ghost sm" onclick="deleteManualClient('${c.id}')">${svgIcon('trash',14)} Remove</button>`:''}
     </div>
@@ -7088,11 +7136,16 @@ function clientProfileHTML(){
         <select class="finput" style="max-width:230px" onchange="saveClientMeta('risk',this.value)">${['high','medium','low'].map(v=>`<option value="${v}" ${(meta.risk||'medium')===v?'selected':''}>${v[0].toUpperCase()+v.slice(1)}</option>`).join('')}</select></div>
       <div class="drow"><span class="muted" style="min-width:140px">Urgency</span>
         <select class="finput" style="max-width:230px" onchange="saveClientMeta('urgency',this.value)">${[['overdue','Overdue'],['soon','Due soon'],['ok','On track']].map(v=>`<option value="${v[0]}" ${(meta.urgency||'soon')===v[0]?'selected':''}>${v[1]}</option>`).join('')}</select></div>
+      <div style="padding:12px 0 2px">
+        <div class="flabel" style="margin-bottom:6px">Internal notes <span style="text-transform:none;letter-spacing:0;font-weight:500">— your team only, never the client</span></div>
+        <textarea class="finput" rows="3" style="height:auto;resize:vertical;font-family:inherit" placeholder="e.g. Prefers WhatsApp. FY end Dec. Waiting on new trade licence from DED."
+          onchange="saveClientMeta('notes',this.value)">${ctEsc(meta.notes||'')}</textarea>
+      </div>
     </div>
     <div class="card">
       <div class="cardhead"><h3>${svgIcon('chat',16)} Communication log</h3><span style="display:flex;gap:12px"><span class="link" onclick="waClient()">WhatsApp</span><span class="link" onclick="chatSelectPeer('${c.id}');go('fchat')">Open chat</span></span></div>
       ${recent.length?recent.map(function(m){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon(m.sender_role==='firm'?'share':'inbox',15)+'</div><div style="flex:1;min-width:0"><div style="font-size:12.5px">'+ctEsc(m.body.length>90?m.body.slice(0,90)+'…':m.body)+'</div><div class="muted" style="font-size:10.5px">'+ctEsc(m.sender_name||'')+' · '+chatTimeFmt(m.created_at)+'</div></div></div>'; }).join(''):'<div class="muted emptybox">No messages yet — open the chat to start the conversation.</div>'}
-      ${acts.length?'<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px"><div class="muted" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Firm activity involving this client</div>'+acts.map(function(a){ return '<div class="drow" style="padding:6px 2px"><div style="color:var(--accent)">'+svgIcon('activity',13)+'</div><div style="flex:1;font-size:12px">'+ctEsc(a.detail)+'<span class="muted" style="font-size:10.5px"> · '+new Date(a.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+'</span></div></div>'; }).join('')+'</div>':''}
+
     </div>
   </div>
   <div class="grid g2 mb14">
@@ -7102,10 +7155,63 @@ function clientProfileHTML(){
     </div>
     <div class="card">
       <div class="cardhead"><h3>${svgIcon('clipboard',16)} Draft returns &amp; shared documents</h3></div>
-      ${rets.length?rets.map(function(rt){ var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>'); return '<div class="drow" style="cursor:pointer" onclick="viewReturn(\''+rt.id+'\')"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7a5af8')+'"></div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(rt.title||'Return')+'</div><div class="dmeta">'+ctEsc(rt.period||'')+'</div></div>'+st+'</div>'; }).join(''):'<div class="muted" style="font-size:12.5px;padding:8px 2px">No draft returns shared yet.</div>'}
+      ${rets.length?rets.map(function(rt){ var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>'); return '<div class="drow" style="cursor:pointer" onclick="viewReturn(\''+rt.id+'\')"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7c5cff')+'"></div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(rt.title||'Return')+'</div><div class="dmeta">'+ctEsc(rt.period||'')+'</div></div>'+st+'</div>'; }).join(''):'<div class="muted" style="font-size:12.5px;padding:8px 2px">No draft returns shared yet.</div>'}
       ${shared.length?'<div style="margin-top:8px;border-top:1px solid var(--line);padding-top:8px">'+shared.slice(0,5).map(function(r){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('file',15)+'</div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc((r.title||'').replace(/^Shared document:\\s*/,''))+'</div><div class="dmeta">Shared '+(r.sharedAt||'')+'</div></div>'+(r.fileUrl?('<a class="btn ghost sm" href="'+r.fileUrl+'" target="_blank" rel="noopener">'+svgIcon('download',13)+' Open</a>'):'')+'</div>'; }).join('')+'</div>':''}
     </div>
-  </div>`;
+  </div>
+  ${clientTimelineHTML(c)}`;
+}
+/* ---- everything that ever happened to this client, one timeline ----
+   Documents, returns, messages, shares and firm actions land as dated
+   events; newest first. The register says where things stand — this
+   says how they got there. */
+var _tlShowAll=false;
+function toggleTimelineAll(){ _tlShowAll=!_tlShowAll; renderPage(); }
+function clientTimelineHTML(c){
+  var ev=[];
+  function push(t, ic, col, txt, sub){
+    var d=(t instanceof Date)?t:new Date(t);
+    if(!t||isNaN(d.getTime())) return;
+    ev.push({t:d, ic:ic, col:col, txt:txt, sub:sub||''});
+  }
+  docsFor(c.name).forEach(function(d){
+    var packTag=d.pack?(' · '+d.pack):'';
+    push(d.addedAt,'plus','var(--muted)', (d.status==='requested'?'Requested':'Added')+' “'+d.name+'”', d.category+packTag);
+    push(d.receivedAt,'inbox','var(--accent)','Received “'+d.name+'”', d.reviewer?('with '+d.reviewer):'');
+    push(d.reviewedAt,'eye','var(--accent)','Reviewed “'+d.name+'”', d.reviewer||'');
+    push(d.signedAt,'check','var(--green)','Signed off “'+d.name+'”','');
+  });
+  (returnsList||[]).filter(function(r){return r.business_id===c.id;}).forEach(function(r){
+    push(r.created_at,'clipboard','var(--accent)','Draft shared: '+(r.title||'Return'), r.period||'');
+    if(r.status==='approved') push(r.updated_at,'check','var(--green)','Return approved & signed: '+(r.title||'Return'),'');
+    else if(r.status==='changes_requested') push(r.updated_at,'warn','var(--amber)','Changes requested: '+(r.title||'Return'),'');
+  });
+  (chatMsgs||[]).filter(function(m){return m.business_id===c.id;}).forEach(function(m){
+    var b=String(m.body||''); if(b.length>72) b=b.slice(0,72)+'…';
+    push(m.created_at,'chat','var(--muted)',(m.sender_role==='firm'?'You wrote':'Client wrote')+': '+b, m.sender_name||'');
+  });
+  (typeof docShares==='function'?docShares():[]).filter(function(r){return r.from===c.name;}).forEach(function(r){
+    push(r.created_at||r.sharedAt,'share','var(--accent)','Client shared “'+String(r.title||'Document').replace(/^Shared document:\s*/,'')+'”','');
+  });
+  (activityLog||[]).filter(function(a){return (a.detail||'').indexOf(c.name)>-1;}).forEach(function(a){
+    push(a.created_at,'activity','var(--muted)',a.detail,'');
+  });
+  ev.sort(function(a,b){ return b.t-a.t; });
+  if(!ev.length) return '';
+  var CAP=12;
+  var shown=_tlShowAll?ev:ev.slice(0,CAP);
+  var fmt=function(d){ return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:(d.getFullYear()===new Date().getFullYear()?undefined:'numeric')}); };
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('activity',16)+' Activity timeline</h3>'
+    +'<span class="pill p-gray">'+ev.length+' event'+(ev.length===1?'':'s')+'</span></div>'
+    +'<div class="tl">'
+    +shown.map(function(e){
+      return '<div class="tlitem"><span class="tldot" style="color:'+e.col+'">'+svgIcon(e.ic,13)+'</span>'
+        +'<div class="tlbody"><div class="tltxt">'+e.txt+'</div>'
+        +'<div class="tlmeta">'+fmt(e.t)+(e.sub?(' · '+ctEsc(e.sub)):'')+'</div></div></div>';
+    }).join('')
+    +'</div>'
+    +(ev.length>CAP?'<div style="text-align:center;margin-top:8px"><span class="link" onclick="toggleTimelineAll()">'+(_tlShowAll?'Show recent only':'Show all '+ev.length+' events')+'</span></div>':'')
+    +'</div>';
 }
 /* firm: documents proactively shared by clients (from their Company Information tab) */
 function docShares(){ return (sharedReports||[]).filter(function(r){return r && r.type==='document';}); }
@@ -7506,7 +7612,7 @@ function returnsPanelHTML(side){
     var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>');
     var who=side==='firm'?('For '+ctEsc(bizNameById(rt.business_id))):('From '+ctEsc(rt.created_by||'your accountant'));
     var cta=(side==='business'&&rt.status!=='approved')?'Review':'View';
-    return '<div class="drow"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7a5af8')+'"></div>'
+    return '<div class="drow"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7c5cff')+'"></div>'
       +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(rt.title||'Return')+'</div>'
       +'<div class="dmeta">'+who+' · '+ctEsc(rt.period||'')+' · '+new Date(rt.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+'</div></div>'
       +st+'<button class="btn sm ghost" onclick="viewReturn(\''+rt.id+'\')">'+svgIcon('eye',13)+' '+cta+'</button></div>';
@@ -7965,7 +8071,7 @@ function renderReturnModal(){
   if(!host){ host=document.createElement('div'); host.id='retModal'; host.className='modal-overlay'; host.style.alignItems='flex-start'; document.body.appendChild(host); host.addEventListener('click',function(e){ if(e.target===host) closeReturn(); }); }
   var isBiz=currentAccount&&currentAccount.role==='business';
   var stPill=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>');
-  var accent=rt.kind==='vat'?'var(--accent)':'#7a5af8';
+  var accent=rt.kind==='vat'?'var(--accent)':'#7c5cff';
   _retPages=returnPages(rt);
   if(_retPage>=_retPages.length) _retPage=0;
   _retWm=(rt.status!=='approved');
@@ -8162,7 +8268,7 @@ function showSampleBanner(show){
       el.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:350;background:#132033;color:#fff;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:13px;box-shadow:0 -6px 22px rgba(0,0,0,.22);flex-wrap:wrap'; }
     el.innerHTML = _demoMode
       ? '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Demo — sample data</b> — you\'re exploring a read-only preview of HisabOne. Nothing is saved and no account is created.</span>'
-        +'<span style="display:inline-flex;gap:9px"><button class="btn sm" style="background:#0073fc;color:#fff;border:0;font-weight:700" onclick="demoStartTrial()">Create your account &rarr;</button>'
+        +'<span style="display:inline-flex;gap:9px"><button class="btn sm" style="background:#5a3fff;color:#fff;border:0;font-weight:700" onclick="demoStartTrial()">Create your account &rarr;</button>'
         +'<button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="exitDemo()">Exit demo</button></span>'
       : '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Sample data</b> — this is a preview. Nothing here is saved to your account.</span><button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="clearSampleData()">Exit preview</button>';
     el.style.display='flex';
@@ -8212,19 +8318,19 @@ function loadSampleData(){
     var _t=function(h){ return new Date(Date.now()-h*3600000).toISOString(); };
     clientDocs={
       'Al Noor Trading LLC':[
-        {id:'dd01',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2026-07-31',addedAt:_t(720),receivedAt:_t(700),reviewedAt:_t(690),signedAt:_t(688),reviewer:'Omar Aziz'},
-        {id:'dd02',name:'Emirates ID — Mr Al Noor.pdf',category:'Emirates ID / Passport',period:'',status:'reviewed',due:'',note:'',expiry:'2026-09-12',addedAt:_t(715),receivedAt:_t(698),reviewedAt:_t(680),reviewer:'Omar Aziz',autoTagged:true},
-        {id:'dd03',name:'June sales invoices',category:'Sales invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
-        {id:'dd04',name:'Bank statements — Apr to Jun',category:'Bank statements',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
-        {id:'dd05',name:'Purchase invoices — Q2',category:'Purchase invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)}
+        {id:'dd01',pack:'Client onboarding (KYC)',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2026-07-31',addedAt:_t(720),receivedAt:_t(700),reviewedAt:_t(690),signedAt:_t(688),reviewer:'Omar Aziz'},
+        {id:'dd02',pack:'Client onboarding (KYC)',name:'Emirates ID — Mr Al Noor.pdf',category:'Emirates ID / Passport',period:'',status:'reviewed',due:'',note:'',expiry:'2026-09-12',addedAt:_t(715),receivedAt:_t(698),reviewedAt:_t(680),reviewer:'Omar Aziz',autoTagged:true},
+        {id:'dd03',pack:'VAT return pack',name:'June sales invoices',category:'Sales invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
+        {id:'dd04',pack:'VAT return pack',name:'Bank statements — Apr to Jun',category:'Bank statements',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)},
+        {id:'dd05',pack:'VAT return pack',name:'Purchase invoices — Q2',category:'Purchase invoices',period:'Q2 2026',status:'requested',due:'28 Jul 2026',note:'',addedAt:_t(96)}
       ],
       'Falcon Logistics':[
-        {id:'dd06',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2026-09-28',addedAt:_t(600),receivedAt:_t(590),reviewedAt:_t(585),signedAt:_t(584),reviewer:'Layla Hassan'},
-        {id:'dd07',name:'MOA and AOA.pdf',category:'Memorandum & Articles',period:'',status:'reviewed',due:'',note:'',addedAt:_t(598),receivedAt:_t(588),reviewedAt:_t(560),reviewer:'Layla Hassan',autoTagged:true},
-        {id:'dd08',name:'ENBD bank statement Apr-Jun.pdf',category:'Bank statements',period:'Q2 2026',status:'received',due:'28 Jul 2026',note:'',addedAt:_t(120),receivedAt:_t(20),reviewer:'Layla Hassan',autoTagged:true},
+        {id:'dd06',pack:'Client onboarding (KYC)',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2026-09-28',addedAt:_t(600),receivedAt:_t(590),reviewedAt:_t(585),signedAt:_t(584),reviewer:'Layla Hassan'},
+        {id:'dd07',pack:'Client onboarding (KYC)',name:'MOA and AOA.pdf',category:'Memorandum & Articles',period:'',status:'reviewed',due:'',note:'',addedAt:_t(598),receivedAt:_t(588),reviewedAt:_t(560),reviewer:'Layla Hassan',autoTagged:true},
+        {id:'dd08',pack:'VAT return pack',name:'ENBD bank statement Apr-Jun.pdf',category:'Bank statements',period:'Q2 2026',status:'received',due:'28 Jul 2026',note:'',addedAt:_t(120),receivedAt:_t(20),reviewer:'Layla Hassan',autoTagged:true},
         {id:'dd09',name:'Ejari tenancy contract.pdf',category:'Lease agreement',period:'',status:'received',due:'',note:'',expiry:'2026-06-30',addedAt:_t(140),receivedAt:_t(9),reviewer:'Layla Hassan',autoTagged:true},
-        {id:'dd10',name:'Sales invoices — Q2',category:'Sales invoices',period:'Q2 2026',status:'reviewed',due:'28 Jul 2026',note:'',addedAt:_t(150),receivedAt:_t(60),reviewedAt:_t(40),reviewer:'Layla Hassan'},
-        {id:'dd11',name:'Payroll WPS — June',category:'Payroll records',period:'Jun 2026',status:'requested',due:'31 Jul 2026',note:'',addedAt:_t(72)}
+        {id:'dd10',pack:'VAT return pack',name:'Sales invoices — Q2',category:'Sales invoices',period:'Q2 2026',status:'reviewed',due:'28 Jul 2026',note:'',addedAt:_t(150),receivedAt:_t(60),reviewedAt:_t(40),reviewer:'Layla Hassan'},
+        {id:'dd11',pack:'VAT return pack',name:'Payroll WPS — June',category:'Payroll records',period:'Jun 2026',status:'requested',due:'31 Jul 2026',note:'',addedAt:_t(72)}
       ],
       'Zenith Consulting':[
         {id:'dd12',name:'Trade Licence 2026.pdf',category:'Trade licence',period:'',status:'signed',due:'',note:'',expiry:'2027-03-01',addedAt:_t(400),receivedAt:_t(390),reviewedAt:_t(380),signedAt:_t(379),reviewer:''},
@@ -8286,15 +8392,15 @@ function openDemoChooser(){
     +'<div style="display:flex;align-items:flex-start;gap:12px">'
       +'<div style="flex:1"><h3 style="font-size:19px;margin:0 0 5px">Which side would you like to see?</h3>'
       +'<p style="font-size:13.3px;color:#61708a;line-height:1.6;margin:0">HisabOne is one workspace with two portals. Pick the one that matches you — the demo opens instantly with sample data, no sign-up and nothing saved.</p></div>'
-      +'<button onclick="closeDemoChooser()" aria-label="Close" style="background:transparent;border:0;font-size:20px;line-height:1;color:#8b98ad;cursor:pointer;padding:2px 4px">&times;</button>'
+      +'<button onclick="closeDemoChooser()" aria-label="Close" style="background:transparent;border:0;font-size:20px;line-height:1;color:#8a8aa0;cursor:pointer;padding:2px 4px">&times;</button>'
     +'</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:19px" id="demoChooserGrid">'
       +'<button class="demo-pick" style="'+card+'" onclick="startDemo(\'business\')">'
-        +'<span style="display:inline-flex;width:38px;height:38px;border-radius:11px;background:rgba(0,115,252,.12);color:#0073fc;align-items:center;justify-content:center;margin-bottom:11px">'
+        +'<span style="display:inline-flex;width:38px;height:38px;border-radius:11px;background:rgba(90,63,255,.12);color:#5a3fff;align-items:center;justify-content:center;margin-bottom:11px">'
         +'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6.5 8-6.5s8 2.5 8 6.5"/></svg></span>'
         +'<div style="font-weight:800;font-size:15px;margin-bottom:4px">I run a business</div>'
         +'<div style="font-size:12.6px;color:#61708a;line-height:1.55">Deadlines, document requests, VAT &amp; corporate-tax returns to review and sign off.</div>'
-        +'<div style="margin-top:11px;font-size:12.6px;font-weight:700;color:#0073fc">Open business demo &rarr;</div>'
+        +'<div style="margin-top:11px;font-size:12.6px;font-weight:700;color:#5a3fff">Open business demo &rarr;</div>'
       +'</button>'
       +'<button class="demo-pick" style="'+card+'" onclick="startDemo(\'firm\')">'
         +'<span style="display:inline-flex;width:38px;height:38px;border-radius:11px;background:rgba(95,75,174,.13);color:#5f4bae;align-items:center;justify-content:center;margin-bottom:11px">'
@@ -8304,7 +8410,7 @@ function openDemoChooser(){
         +'<div style="margin-top:11px;font-size:12.6px;font-weight:700;color:#5f4bae">Open accountant demo &rarr;</div>'
       +'</button>'
     +'</div>'
-    +'<div style="margin-top:16px;font-size:12.2px;color:#8b98ad;text-align:center">Read-only preview &middot; no account created &middot; leave any time</div>'
+    +'<div style="margin-top:16px;font-size:12.2px;color:#8a8aa0;text-align:center">Read-only preview &middot; no account created &middot; leave any time</div>'
     +'</div>';
 }
 function startDemo(role){
@@ -8358,7 +8464,7 @@ var bizRevenueBand = null;   /* 'lt50m' | 'ge50m' | null */
 function fmtAED(n){ return 'AED '+Math.round(n||0).toLocaleString('en-US'); }
 /* a plan price is money and should be grouped like money */
 function nfmt(n){ return Number(n||0).toLocaleString('en-US'); }
-function healthBand(s){ return s>=80?{label:'Healthy',cls:'p-green',col:'#0053d6'}:(s>=55?{label:'Needs attention',cls:'p-amber',col:'#b45309'}:{label:'At risk',cls:'p-red',col:'#c0392b'}); }
+function healthBand(s){ return s>=80?{label:'Healthy',cls:'p-green',col:'#4326c9'}:(s>=55?{label:'Needs attention',cls:'p-amber',col:'#b45309'}:{label:'At risk',cls:'p-red',col:'#c0392b'}); }
 function scoreGauge(score, col, size){
   size=size||96; var deg=Math.max(0,Math.min(100,score))*3.6;
   return '<div class="hring" style="--hdeg:'+deg+'deg;width:'+size+'px;height:'+size+'px;border-radius:50%;flex-shrink:0;background:conic-gradient('+col+' var(--hdeg,'+deg+'deg),var(--panel2) 0deg);display:flex;align-items:center;justify-content:center">'
@@ -8372,7 +8478,7 @@ function setRevenueBand(b){
 function einvoiceCountdownHTML(){
   if(!currentAccount || currentAccount.role!=='business') return '';
   if(!bizRevenueBand){
-    return '<div class="card mb14" style="border-color:#7a5af8">'
+    return '<div class="card mb14" style="border-color:#7c5cff">'
       +'<div class="cardhead"><h3>'+svgIcon('calendar',16)+' UAE e-invoicing countdown</h3><span class="pill" style="background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">New mandate</span></div>'
       +'<p class="muted" style="font-size:13px;margin:-2px 0 12px">Mandatory e-invoicing is rolling out in phases by company size. Tell us your annual revenue and we’ll show your exact deadlines.</p>'
       +'<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" onclick="setRevenueBand(\'lt50m\')">Under AED 50M revenue</button><button class="btn ghost" onclick="setRevenueBand(\'ge50m\')">AED 50M or more</button></div></div>';
@@ -8386,7 +8492,7 @@ function einvoiceCountdownHTML(){
       +'<div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.5px">'+lbl+'</div>'
       +'<div style="font-size:19px;font-weight:800;margin:3px 0 7px">'+calFmt(iso)+'</div>'+pill+'</div>';
   };
-  return '<div class="card mb14" style="border-color:#7a5af8">'
+  return '<div class="card mb14" style="border-color:#7c5cff">'
     +'<div class="cardhead"><h3>'+svgIcon('calendar',16)+' UAE e-invoicing countdown</h3>'
     +'<button class="btn ghost sm" onclick="setRevenueBand(null)">Change revenue</button></div>'
     +'<p style="font-size:13.3px;margin:-2px 0 12px">You’re <b>'+bandLbl+' business</b> — appoint an accredited service provider (ASP) by <b>'+calFmt(ph.asp)+'</b> and go live with e-invoicing by <b>'+calFmt(ph.live)+'</b>.</p>'
@@ -8440,7 +8546,7 @@ function businessHealthCard(){
   var n=h.atRisk.length;
   var expLine = h.exposure>0
     ? '<div style="font-size:14px;margin-top:6px"><b style="color:#c0392b">'+fmtAED(h.exposure)+'</b> <span class="muted">exposed across '+n+' deadline'+(n===1?'':'s')+'</span></div>'
-    : '<div style="font-size:13.5px;margin-top:6px;color:#0053d6;font-weight:600;display:inline-flex;align-items:center;gap:5px">'+svgIcon('success',14)+' No penalties currently at risk</div>';
+    : '<div style="font-size:13.5px;margin-top:6px;color:#4326c9;font-weight:600;display:inline-flex;align-items:center;gap:5px">'+svgIcon('success',14)+' No penalties currently at risk</div>';
   var list = h.atRisk.length? '<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px">'+h.atRisk.map(function(r){return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:4px 0"><span style="display:inline-flex;align-items:center;gap:6px;color:var(--text)"><span style="color:#c0392b">'+svgIcon('warn',12)+'</span>'+ctEsc(r.label)+'</span><b style="color:#c0392b">'+fmtAED(r.amount)+'</b></div>';}).join('')+'</div>' : '';
   return '<div class="card mb14" style="border-color:color-mix(in srgb, '+h.band.col+' 28%, #fff);background:linear-gradient(180deg, color-mix(in srgb, '+h.band.col+' 3.5%, #fff), #fff)">'
     +'<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'
@@ -8455,7 +8561,7 @@ function businessHealthCard(){
 function firmHealthCard(){
   var a=firmAggregateHealth();
   if(a.avg==null) return '';
-  var expLine=a.exposure>0?'<b style="color:#c0392b">'+fmtAED(a.exposure)+'</b> <span class="muted">estimated exposure across '+a.atRiskClients+' client'+(a.atRiskClients===1?'':'s')+' at risk</span>':'<span style="color:#0053d6;font-weight:600">No penalties currently at risk</span>';
+  var expLine=a.exposure>0?'<b style="color:#c0392b">'+fmtAED(a.exposure)+'</b> <span class="muted">estimated exposure across '+a.atRiskClients+' client'+(a.atRiskClients===1?'':'s')+' at risk</span>':'<span style="color:#4326c9;font-weight:600">No penalties currently at risk</span>';
   return '<div class="card mb14" style="border-color:color-mix(in srgb, '+a.band.col+' 28%, #fff);background:linear-gradient(180deg, color-mix(in srgb, '+a.band.col+' 3.5%, #fff), #fff)"><div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">'
     +scoreGauge(a.avg,a.band.col,96)
     +'<div style="flex:1;min-width:220px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="font-size:16px;margin:0">Practice Compliance Health</h3><span class="pill '+a.band.cls+'">'+a.band.label+'</span></div>'
@@ -8482,12 +8588,12 @@ function penaltyCheck(){
   if(ctFiled==='overdue') score-=20;
   score=Math.max(0,score);
   var band=healthBand(score);
-  var itemsHtml=items.length?items.map(function(it){return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)"><span>'+it[0]+'</span><b style="color:#c0392b">'+fmtAED(it[1])+'</b></div>';}).join(''):'<div style="color:#0053d6;font-weight:600;font-size:13.5px">No obvious penalty exposure from your answers — well done. HisabOne keeps it that way.</div>';
+  var itemsHtml=items.length?items.map(function(it){return '<div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)"><span>'+it[0]+'</span><b style="color:#c0392b">'+fmtAED(it[1])+'</b></div>';}).join(''):'<div style="color:#4326c9;font-weight:600;font-size:13.5px">No obvious penalty exposure from your answers — well done. HisabOne keeps it that way.</div>';
   var out=document.getElementById('pcResult'); if(!out) return;
   out.style.display='block';
   out.innerHTML='<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:12px">'+scoreGauge(score,band.col,104)
     +'<div style="flex:1;min-width:200px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0;font-size:17px">Your Compliance Health Score</h3><span class="pill '+band.cls+'">'+band.label+'</span></div>'
-    +'<div style="font-size:16px;margin-top:8px">'+(exposure>0?'<b style="color:#c0392b">'+fmtAED(exposure)+'</b> <span class="muted">estimated penalty exposure</span>':'<span style="color:#0053d6;font-weight:700">No estimated penalty exposure</span>')+'</div></div></div>'
+    +'<div style="font-size:16px;margin-top:8px">'+(exposure>0?'<b style="color:#c0392b">'+fmtAED(exposure)+'</b> <span class="muted">estimated penalty exposure</span>':'<span style="color:#4326c9;font-weight:700">No estimated penalty exposure</span>')+'</div></div></div>'
     +itemsHtml
     +'<div style="margin-top:16px;background:var(--accent-bg);border-radius:12px;padding:16px;text-align:center"><div style="font-weight:700;margin-bottom:6px">Fix these before they cost you.</div><div class="muted" style="font-size:12.5px;margin-bottom:12px">Create a free HisabOne account — we’ll track every deadline and chase every document so these fines never land.</div><button class="lf-btn" style="width:auto;padding:12px 28px" onclick="switchView(\'signin\');openLogin(\'business\')">Create your free account &rarr;</button></div>'
     +'<div class="muted" style="font-size:11px;margin-top:10px;text-align:center">Estimate only, based on published FTA fixed penalties. Not tax advice.</div>';
@@ -8539,12 +8645,12 @@ function einvReadinessHTML(){
   var rows=items.map(function(it){
     var done=it[1]===true, na=it[1]===null;
     var box = done
-      ? '<span style="flex:none;width:20px;height:20px;border-radius:6px;background:#0053d6;color:#fff;display:inline-flex;align-items:center;justify-content:center">'+svgIcon('check',13)+'</span>'
+      ? '<span style="flex:none;width:20px;height:20px;border-radius:6px;background:#4326c9;color:#fff;display:inline-flex;align-items:center;justify-content:center">'+svgIcon('check',13)+'</span>'
       : '<span style="flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid '+(na?'#c0392b':'var(--line)')+';display:inline-block"></span>';
     return '<div style="display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)">'+box
       +'<div><div style="font-weight:600;font-size:13.5px">'+it[0]+'</div><div class="muted" style="font-size:12.5px;margin-top:2px">'+it[2]+'</div></div></div>';
   }).join('');
-  return '<div class="card mb14" style="border-color:#7a5af8">'
+  return '<div class="card mb14" style="border-color:#7c5cff">'
     +'<div class="cardhead"><h3>'+svgIcon('check',16)+' E-invoicing readiness</h3><span class="pill" style="background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Get ahead</span></div>'
     +'<p class="muted" style="font-size:13px;margin:-2px 0 10px">The software is the easy part — clean data is what makes structured e-invoicing work. Here’s your run-up to go-live:</p>'
     +rows
@@ -8786,7 +8892,7 @@ async function adminBoot(){
     admShow('<div class="adm-login"><div style="font-size:30px;margin-bottom:10px">🔒</div><h1 style="color:#fff;font-size:19px">Not authorised</h1>'
       +'<p class="adm-muted" style="margin-top:10px">The Command Centre is restricted to the owner account. You are signed in as '+ctEsc(em)+'.</p>'
       +'<button class="adm-btn ghost" style="margin-top:16px" onclick="admSwitchAccount()">Sign in with a different account</button>'
-      +'<div style="margin-top:12px"><a href="/" style="color:#1e9bff;font-size:12.5px">← Back to HisabOne</a></div></div>');
+      +'<div style="margin-top:12px"><a href="/" style="color:#8a75ff;font-size:12.5px">← Back to HisabOne</a></div></div>');
     return;
   }
   _admSession=s;
@@ -8803,7 +8909,7 @@ function admLoginForm(msg){
     +'<input id="admEmail" class="adm-in" type="email" placeholder="Email" style="width:100%;margin-bottom:10px" autocomplete="username">'
     +'<input id="admPass" class="adm-in" type="password" placeholder="Password" style="width:100%;margin-bottom:14px" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')admDoLogin()">'
     +'<button class="adm-btn" style="width:100%;padding:12px" onclick="admDoLogin()">Enter →</button>'
-    +'<div style="margin-top:14px"><a href="/" style="color:#1e9bff;font-size:12.5px">← Back to HisabOne</a></div></div>');
+    +'<div style="margin-top:14px"><a href="/" style="color:#8a75ff;font-size:12.5px">← Back to HisabOne</a></div></div>');
 }
 async function admDoLogin(){
   var em=(document.getElementById('admEmail')||{}).value||'', pw=(document.getElementById('admPass')||{}).value||'';
@@ -8877,7 +8983,7 @@ function admStatDetail(){
   else if(_admStatSel==='vault'){ title='Document vault — detail';
     body=split([['Files stored',s.vault_files||0],['Document requests fulfilled',s.doc_requests_done||0],['Requests total',s.doc_requests||0]])
       +'<div class="adm-note" style="margin-top:10px">'+(s.vault_bytes?(s.vault_bytes/1048576).toFixed(1):'0')+' MB of private, owner-scoped storage in use.</div>'; }
-  return '<div class="adm-card" style="margin-top:14px;border-color:rgba(30,155,255,.35)"><h3>🔍 '+title+' <span style="flex:1"></span><button class="adm-x" onclick="admShowStat(\''+_admStatSel+'\')" title="Close">✕</button></h3>'+body+'</div>';
+  return '<div class="adm-card" style="margin-top:14px;border-color:rgba(138,117,255,.35)"><h3>🔍 '+title+' <span style="flex:1"></span><button class="adm-x" onclick="admShowStat(\''+_admStatSel+'\')" title="Close">✕</button></h3>'+body+'</div>';
 }
 function admBars(arr,keyL,keyN){
   if(!arr||!arr.length) return '<div class="adm-muted" style="padding:14px 2px">No data yet.</div>';
@@ -10068,7 +10174,7 @@ function addClientDoc(name, fields){
   clientDocs[name]=clientDocs[name]||[];
   var d={ id:docId(), name:fields.name||'Untitled document', category:fields.category||'Other',
           period:fields.period||'', status:fields.status||'requested', due:fields.due||'',
-          note:fields.note||'', addedAt:new Date().toISOString(), expiry:fields.expiry||'' };
+          note:fields.note||'', addedAt:new Date().toISOString(), expiry:fields.expiry||'', pack:fields.pack||'' };
   clientDocs[name].push(d); saveAccountData();
   return d;
 }
@@ -10096,7 +10202,7 @@ function applyDocPack(name, packName){
   var added=0;
   items.forEach(function(cat){
     if(have.indexOf(cat+'|'+cat)>-1) return;
-    addClientDoc(name,{name:cat, category:cat, status:'requested', note:'From the '+packName});
+    addClientDoc(name,{name:cat, category:cat, status:'requested', note:'From the '+packName, pack:packName});
     added++;
   });
   flushAccountData();
@@ -10158,6 +10264,7 @@ function clientDocRow(name, d, showClient){
   var st=docStatusObj(d.status);
   var sub=[];
   if(showClient) sub.push(ctEsc(name));
+  if(showClient && d.pack) sub.push('<span class="packchip" title="Part of the '+ctEsc(d.pack)+'">'+ctEsc(d.pack)+'</span>');
   /* if we read the category off the filename, say so — a guess the reader
      cannot see is a guess they cannot correct */
   sub.push(ctEsc(d.category||'')+(d.autoTagged?' <span class="muted" title="Read from the file name — change it if it guessed wrong">(auto)</span>':''));
@@ -10398,21 +10505,52 @@ function applyPackFromForm(){
 }
 
 /* per-client document card, shown inside the client profile */
+var _packCollapsed={};
+function togglePack(name, pack){
+  var k=name+'|'+pack; _packCollapsed[k]=!_packCollapsed[k]; renderPage();
+}
+function packGroupHTML(name, pack, docs){
+  var done=docs.filter(function(d){return d.status!=='requested';}).length;
+  var pct=docs.length?Math.round(done/docs.length*100):0;
+  var closed=!!_packCollapsed[name+'|'+pack];
+  return '<div class="packgrp'+(closed?' closed':'')+'">'
+    +'<div class="packhead" onclick="togglePack(\''+jsq(name)+'\',\''+jsq(pack)+'\')" title="'+(closed?'Expand':'Collapse')+' this pack">'
+      +'<span class="packcaret">'+(closed?'▸':'▾')+'</span>'
+      +'<span class="packname">'+svgIcon('clipboard',14)+' '+ctEsc(pack)+'</span>'
+      +'<span class="minibar" style="width:76px"><i style="width:'+pct+'%"></i></span>'
+      +'<span class="frac">'+done+' / '+docs.length+'</span>'
+      +(done===docs.length?'<span class="pill p-green">Complete</span>':'<span class="pill p-amber">'+(docs.length-done)+' to chase</span>')
+    +'</div>'
+    +(closed?'':'<div class="packbody">'+docs.map(function(d){ return clientDocRow(name,d,false); }).join('')+'</div>')
+    +'</div>';
+}
 function clientDocCardHTML(name){
   var ds=docsFor(name);
   var req=ds.filter(function(d){return d.status==='requested';}).length;
+  var meta=clientMeta[name]||{};
+  /* clubbed: pack groups first, loose documents after */
+  var packs={}, loose=[];
+  ds.forEach(function(d){ if(d.pack){ (packs[d.pack]=packs[d.pack]||[]).push(d); } else loose.push(d); });
+  var packNames=Object.keys(packs);
+  var body = ds.length
+    ? packNames.map(function(p){ return packGroupHTML(name,p,packs[p]); }).join('')
+      +(loose.length
+        ? (packNames.length?'<div class="navlabel" style="padding:12px 2px 4px">Individual documents</div>':'')
+          +loose.map(function(d){ return clientDocRow(name,d,false); }).join('')
+        : '')
+    : '<div class="muted emptybox">Nothing on this client’s register yet — apply a pack above to create their checklist in one click.</div>';
   return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('folder',16)+' Document register</h3>'
     +'<div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">'
       +docProgressHTML(name,86)
       +(req?'<span class="pill p-amber">'+req+' outstanding</span>':'<span class="pill p-green">Nothing outstanding</span>')
+      +(meta.lastChase?'<span class="muted" style="font-size:11px" title="Last time this client was chased for outstanding documents">chased '+fmtRegDate(meta.lastChase)+'</span>':'')
       +'<button class="btn sm" onclick="openAddDoc(\''+jsq(name)+'\')">+ Add</button></div></div>'
     +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin:-2px 0 12px">'
       +Object.keys(DOC_PACKS).map(function(p){
         return '<button class="btn ghost sm" onclick="applyDocPack(\''+jsq(name)+'\',\''+jsq(p)+'\')">'+svgIcon('plus',12)+' '+p+'</button>';
       }).join('')
     +'</div>'
-    +(ds.length ? ds.map(function(d){ return clientDocRow(name,d,false); }).join('')
-                : '<div class="muted" style="text-align:center;padding:22px;font-size:13px">Nothing on this client’s register yet — apply a pack above to create their checklist in one click.</div>')
+    +body
     +'</div>';
 }
 
@@ -10420,7 +10558,7 @@ function clientDocCardHTML(name){
    FULL-LENGTH REPORTS — multi-section, print-ready PDF
    ================================================================== */
 function fullDocHTML(rep){
-  var A=rep.accent||'#0073fc';
+  var A=rep.accent||'#5a3fff';
   var pageStyle='background:#fff;padding:30px 34px 34px;box-sizing:border-box;';
   var cover='<div class="pgbrk" style="'+pageStyle+'min-height:1050px;display:flex;flex-direction:column">'
     +'<div style="background:'+A+';color:#fff;margin:-30px -34px 0;padding:34px;border-radius:0">'
@@ -10577,7 +10715,7 @@ function buildClientDossier(clientId){
   var firm=(currentAccount&&(currentAccount.firmName||currentAccount.name))||'Your firm';
 
   return {
-    id:repId('CD'), accent:'#0073fc',
+    id:repId('CD'), accent:'#5a3fff',
     kicker:'Client compliance dossier',
     title:c.name,
     subtitle:'A complete record of the compliance position, documents held and work performed for this client, prepared by '+firm+'.',
@@ -10667,7 +10805,7 @@ function buildPracticeReport(){
     return [s.label, String(n), acts.length?Math.round(n/acts.length*100)+'%':'0%'];
   });
   return {
-    id:repId('PR'), accent:'#7a5af8',
+    id:repId('PR'), accent:'#7c5cff',
     kicker:'Practice management report',
     title:'Practice Report',
     subtitle:'A complete view of the client portfolio, document position and outstanding work across '+firm+'.',
@@ -11517,7 +11655,7 @@ function buildBizCTReport(){
   ];
   return {
     id: repId('CT'),
-    accent: '#7a5af8',
+    accent: '#7c5cff',
     kicker: 'Corporate Tax',
     title: 'Corporate Tax Return — working paper',
     subtitle: pfPeriodLabel(),
@@ -11804,7 +11942,7 @@ function v2AfterRender(p){
     }
     h.style.display='flex';
     h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:460px;width:100%;padding:24px;box-shadow:0 24px 60px rgba(8,20,40,.3);color:#1a2338">'
-      +'<div style="display:flex;align-items:center;gap:10px"><span style="color:#0073fc">'
+      +'<div style="display:flex;align-items:center;gap:10px"><span style="color:#5a3fff">'
       +'<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 20h16"/></svg>'
       +'</span><h3 style="font-size:16.5px;margin:0">'+(already?'Already installed':'Install HisabOne on this device')+'</h3></div>'
       +steps

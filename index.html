@@ -3442,9 +3442,9 @@ const NAV = {
     {id:'secFreturns', ic:'fta', label:'Returns', children:[
       {id:'vat', ic:'calc', label:'VAT'},
       {id:'ct',  ic:'calc', label:'Corporate Tax'}]},
-    {id:'team', ic:'users', label:'Team'},
     {id:'secPractice', ic:'building', label:'Practice', children:[
       {id:'freports',  ic:'chart', label:'Reports'},
+      {id:'team',      ic:'users', label:'Team'},
       {id:'reminders', ic:'mail',  label:'Email Reminders'}]},
     {id:'fguides', ic:'sparkles', label:'AI Assist'},
     {id:'fchat', ic:'chat', label:'Messages'},
@@ -5454,7 +5454,24 @@ async function addTeamMember(){
     lastInvite={name:name, link:'https://hisabone.ae/?join='+token, role:role};
     logActivity('member_invited', 'Invited '+name+' as '+(role==='manager'?'Manager / Reviewer':'Tax Consultant'));
     renderPage();
-    toast(name+' invited — share their join link');
+    /* the join link goes to their inbox, not just the clipboard */
+    if(email){
+      var firmName=currentAccount.firmName||currentAccount.name||'your firm';
+      var roleLbl=(role==='manager'?'Manager / Reviewer':'Tax Consultant');
+      var subject='You are invited to join '+firmName+' on HisabOne';
+      var body='Hello '+name+',\n\n'
+        +firmName+' has invited you to join their practice on HisabOne as '+roleLbl+'.\n\n'
+        +'Open your personal join link to set a password and sign in:\n'
+        +lastInvite.link+'\n\n'
+        +'The link is unique to you — please do not forward it.';
+      toast(name+' invited — emailing their join link…');
+      sendAppEmail(email, subject, body).then(function(ok){
+        toast(ok ? ('Invite emailed to '+email)
+                 : (name+' invited — the email could not be sent, so copy their join link from the Team page and share it directly.'));
+      });
+    } else {
+      toast(name+' invited — share their join link');
+    }
   }catch(e){ toast('Could not create the invite — please try again'); }
 }
 async function rmTeamMember(id){

@@ -2232,11 +2232,11 @@ async function loadWorkspace(){
   try{
     const [{data:blob},{data:reps}] = await Promise.all([
       sb.from('account_data').select('data').eq('user_id',fid).maybeSingle(),
-      sb.from('shared_reports').select('report').eq('to_id',fid).order('created_at',{ascending:false})
+      sb.from('shared_reports').select('id,report').eq('to_id',fid).order('created_at',{ascending:false})
     ]);
     const d=(blob&&blob.data)||{};
     onboardDismissed=!!d.onboardDismissed;
-    sharedReports=(reps||[]).map(r=>r.report);
+    sharedReports=(reps||[]).map(r=>{ var rep=r.report||{}; rep._dbId=r.id; return rep; });
     if(currentAccount.role==='business'){
       vaultDocs=d.vaultDocs||[]; notifSeen=d.notifSeen||[];
       calendarEvents=d.calendarEvents||[]; vatCertMeta=d.vatCertMeta||null; ctCertMeta=d.ctCertMeta||null; calYear=null; calMonth=null;
@@ -2414,6 +2414,20 @@ async function submitReq(kind){
       toast('Saved on this device only — the request did not reach the server, so '+obj.client+' cannot see it yet.'); }
   }
   (kind==='tax'?firmTaxReqs:firmAuditReqs).unshift(obj);
+  /* the auto-chase block on the form becomes a scheduled reminder */
+  try{
+    var gv=function(id){ var e=document.getElementById(pfx+id); return e?e.value:''; };
+    if(gv('ChaseOn')==='On'){
+      var cDays=Math.max(1,Math.min(60,parseInt(gv('ChaseDays'),10)||3));
+      var cEvery=Math.max(1,Math.min(30,parseInt(gv('ChaseEvery'),10)||3));
+      var cNow=gv('ChaseWhen')==='now';
+      firmReminders.unshift({client:obj.client, app:obj.app, doc:obj.doc,
+        last:'Just scheduled', next:cNow?'Today':('In '+cDays+' day'+(cDays===1?'':'s')),
+        days:cNow?0:cDays, every:cEvery, auto:'green'});
+      logActivity('reminder_set','Auto-chase scheduled for '+obj.client+' — '+obj.doc+(cNow?' (immediate':' (first in '+cDays+'d')+', every '+cEvery+'d)');
+      saveAccountData();
+    }
+  }catch(e){}
   rebuildFirmClients();
   logActivity('request_sent', 'Requested "'+obj.doc+'" from '+obj.client);
   formOpen[kind]=false;renderPage();
@@ -4106,6 +4120,16 @@ vat:()=>{
   <div class="sub">Calculate VAT at the UAE standard 5% rate, build the client's VAT201 boxes and share the draft return for their sign-off.</div>
 
   <div class="card mb14" style="border-color:var(--accent)">
+    <div class="grid g2" style="align-items:end">
+      <div><label class="flabel">Preparing for client</label>
+        <select class="finput" onchange="vatSelectClient(this.value)">
+          <option value="">— No client selected —</option>
+          ${activeFirmClients().map(c=>`<option value="${c.id}" ${vatClient===c.id?'selected':''}>${ctEsc(c.name)}${c.manual?' · managed by you':''}</option>`).join('')}
+        </select></div>
+      <div class="muted" id="vatClientNote" style="font-size:12px;padding-bottom:9px">${vatClient?'':'Pick the client this VAT return is for — the invoice import and share flow follow it.'}</div>
+    </div>
+  </div>
+  <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('sparkles',16)} Invoice upload — AI autofill</h3><span class="pill p-teal">OCR</span></div>
     <p class="muted" style="font-size:13px;margin-bottom:12px">Upload one or many tax invoices (photos, scans or PDFs). HisabOne reads each one with AI and fills a transaction line per invoice — vendor, invoice number, net amount, VAT and rate. Rows are added automatically as needed.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
@@ -4254,7 +4278,7 @@ ct:()=>`
       <div><label class="flabel">Prepare for client</label>
         <select id="ctClientSel" class="finput" onchange="ctSelectClient(this.value)">
           <option value="">— No client selected (manual entry) —</option>
-          ${activeMyClients().map(c=>`<option value="${c.business_id}" ${ctClient===c.business_id?'selected':''}>${ctEsc(c.business_name)}</option>`).join('')}
+          ${activeFirmClients().map(c=>`<option value="${c.id}" ${ctClient===c.id?'selected':''}>${ctEsc(c.name)}${c.manual?' · managed by you':''}</option>`).join('')}
         </select></div>
       <div class="muted" id="ctTPsrcNote" style="font-size:12px;padding-bottom:9px">${ctTPsourceNote()}</div>
     </div>
@@ -4832,7 +4856,9 @@ function ctHasData(){
 function ctDraftSave(manual){
   if(!ctHasData()) return;
   var r=computeCT(ctReadInputs());
-  var c=(myClients||[]).find(function(x){return x.business_id===ctClient;});
+  var c=(firmClients||[]).find(function(x){return x.id===ctClient;});
+  if(c) return c.name;
+  c=(myClients||[]).find(function(x){return x.business_id===ctClient;});
   ctDrafts[ctDraftKey()]={
     savedAt:new Date().toISOString(),
     clientName:c?c.business_name:(ctTP.legal||'Unassigned draft'),
@@ -4889,10 +4915,23 @@ function ctDraftsCardHTML(){
 function ctSelectClient(id){
   if(ctHasData()) ctDraftSave(false);
   ctClient=id||'';
-  var c=(myClients||[]).find(function(x){return x.business_id===id;});
-  var name=c?c.business_name:'';
+  var fc=(firmClients||[]).find(function(x){return x.id===id;});
+  var name=fc?fc.name:'';
+  var mc=(typeof findManualClient==='function')?findManualClient(id):null;
   if(ctDrafts[ctDraftKey()]){
     ctDraftRestore(ctDraftKey());
+  } else if(mc){
+    /* a client the firm added by hand — their record IS the taxpayer detail */
+    ctR={}; ctStep=0;
+    ctTP={legal:mc.name, entityType:mc.entityType||'', license:mc.license||'', authority:mc.authority||'',
+          jurisdiction:mc.jurisdiction||jurisdictionForAuthority(mc.authority)||'',
+          vatTrn:mc.trn||'', ctTrn:mc.ctTrn||'', fyEnd:mc.fyEnd||'',
+          country:'United Arab Emirates', email:mc.email||'', mobile:mc.phone||'',
+          cName:mc.contact||'', cEmail:mc.email||'', cPhone:mc.phone||''};
+    ctTPsource='firm';
+    ctEntity=/free zone/i.test(mc.entityType||'')?'freezone':'mainland';
+    ctR.fzReg=(ctEntity==='freezone')?'Yes':'No';
+    if(ctEntity!=='mainland') ctSBRon=false;
   } else {
     ctR={}; ctStep=0;
     var p=id?clientProfiles[id]:null;
@@ -5403,6 +5442,21 @@ function logActivity(type, detail){
 }
 var lastInvite=null;
 var atClient='all';   /* audit-trail report scope */
+var vatClient='';     /* firm VAT page: the client the return is being prepared for */
+function vatSelectClient(id){
+  vatClient=id||'';
+  var fc=(firmClients||[]).find(function(x){return x.id===id;});
+  var linkedSel=document.getElementById('impClient');
+  if(linkedSel && id && [].some.call(linkedSel.options,function(o){return o.value===id;})) linkedSel.value=id;
+  var sh=document.getElementById('shareClient');
+  if(sh && id && [].some.call(sh.options,function(o){return o.value===id;})){ sh.value=id; if(typeof prefillShareContact==='function') prefillShareContact('vat'); }
+  var note=document.getElementById('vatClientNote');
+  if(note){
+    note.textContent = !id ? 'No client selected — the draft is unlabelled.'
+      : (fc&&fc.manual ? fc.name+' is managed by you — share the return as a PDF (no linked portal for in-app sign-off).'
+                       : 'Preparing for '+(fc?fc.name:'client')+' — invoice import and the in-app share are set to them.');
+  }
+}
 function roleBadge(tr){
   if(tr==='owner') return '<span class="pill p-teal" style="font-size:10px">Owner</span>';
   if(tr==='manager') return '<span class="pill" style="font-size:10px;background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Manager / Reviewer</span>';
@@ -5759,7 +5813,24 @@ function viewSharedReport(i){
   setTimeout(function(){var el=document.getElementById('reportViewer');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},60);
 }
 function closeReport(){ viewingReport=null; renderPage(); }
-function removeSharedReport(i){ const rem=sharedReports[i]; sharedReports.splice(i,1); if(viewingReport===rem)viewingReport=null; renderPage(); }
+function removeSharedReport(i){
+  const rem=sharedReports[i]; if(!rem) return;
+  sharedReports.splice(i,1); if(viewingReport===rem) viewingReport=null; renderPage();
+  /* remove the row server-side too, or it returns next sign-in */
+  if(sb && !_sampleMode && rem._dbId){ try{ sb.from('shared_reports').delete().eq('id', rem._dbId).then(function(){}); }catch(e){} }
+}
+function clearSharedDocLog(){
+  var docs=docShares();
+  if(!docs.length){ toast('The log is already empty.'); return; }
+  openConfirm({title:'Clear shared-document log', confirmLabel:'Clear log',
+    message:'Remove all '+docs.length+' entr'+(docs.length===1?'y':'ies')+' from "Documents shared by clients"? The clients\u2019 own copies are not affected — only your log is cleared. This cannot be undone.',
+    onYes:function(){
+      var ids=docs.map(function(r){return r._dbId;}).filter(Boolean);
+      sharedReports=sharedReports.filter(function(r){ return !r || r.type!=='document'; });
+      renderPage(); toast('Shared-document log cleared.');
+      if(sb && !_sampleMode && ids.length){ try{ sb.from('shared_reports').delete().in('id', ids).then(function(){}); }catch(e){} }
+    }});
+}
 /* PDF download via html2pdf (lazy-loaded from cdnjs) */
 var H2P_SOURCES=[
   'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
@@ -6836,9 +6907,11 @@ function setDense(on){
   renderPage();
 }
 function densityToggleHTML(){
-  return '<span class="seg" title="How tightly the lists are packed">'
+  return '<span style="display:inline-flex;align-items:center;gap:7px">'
+    +infoTip('List density. Comfortable gives every row breathing room; Compact shrinks the rows so roughly a third more fit on screen — useful when you live in these lists all day. It only changes spacing, never the data.')
+    +'<span class="seg" title="How tightly the lists are packed">'
     +'<button class="'+(isDense()?'':'on')+'" onclick="setDense(false)">Comfortable</button>'
-    +'<button class="'+(isDense()?'on':'')+'" onclick="setDense(true)">Compact</button></span>';
+    +'<button class="'+(isDense()?'on':'')+'" onclick="setDense(true)">Compact</button></span></span>';
 }
 
 /* --- progress as a fraction, not a percentage ---------------------
@@ -7269,17 +7342,20 @@ function reportShares(){ return (sharedReports||[]).filter(function(r){return !r
 function receivedDocRow(r){
   var client=r.from||'Client';
   var docName=(r.title||'Shared document').replace(/^Shared document:\s*/,'');
+  var idx=sharedReports.indexOf(r);
   var file=r.fileUrl
     ? '<a class="btn ghost sm" href="'+r.fileUrl+'" target="_blank" rel="noopener" title="Open the original file">'+svgIcon('download',13)+' Open</a>'
     : '<span class="muted" title="Shared before file attachments were reliable — ask the client to re-share">No file</span>';
-  return '<tr><td><b>'+ctEsc(client)+'</b></td><td>'+ctEsc(docName)+(r.fileName?'<div class="muted" style="font-size:11.5px">'+ctEsc(r.fileName)+'</div>':'')+'</td><td class="muted">'+(r.sharedAt||r.date||'—')+'</td><td>'+file+'</td></tr>';
+  return '<tr><td><b>'+ctEsc(client)+'</b></td><td>'+ctEsc(docName)+(r.fileName?'<div class="muted" style="font-size:11.5px">'+ctEsc(r.fileName)+'</div>':'')+'</td><td class="muted">'+(r.sharedAt||r.date||'—')+'</td><td>'+file+'</td>'
+    +'<td><button class="iconbtn" title="Remove from this log" onclick="removeSharedReport('+idx+')">'+svgIcon('trash',14)+'</button></td></tr>';
 }
 function receivedDocsCard(){
   var docs=docShares();
   return '<div class="card mb14" style="padding:0;overflow-x:auto">'
-    +'<div style="padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 style="font-size:15px">'+svgIcon('inbox',16)+' Documents shared by clients</h3>'+(docs.length?'<span class="pill p-teal">'+docs.length+'</span>':'')+'</div>'
+    +'<div style="padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 style="font-size:15px">'+svgIcon('inbox',16)+' Documents shared by clients</h3>'
+      +'<div style="display:flex;gap:8px;align-items:center">'+(docs.length?'<span class="pill p-teal">'+docs.length+'</span><button class="btn ghost sm" onclick="clearSharedDocLog()">'+svgIcon('trash',13)+' Clear log</button>':'')+'</div></div>'
     +(docs.length
-      ? '<table><tr><th>Client</th><th>Document</th><th>Shared</th><th>File</th></tr>'+docs.map(receivedDocRow).join('')+'</table>'
+      ? '<table><tr><th>Client</th><th>Document</th><th>Shared</th><th>File</th><th></th></tr>'+docs.map(receivedDocRow).join('')+'</table>'
       : '<div class="muted" style="text-align:center;padding:22px;font-size:13px">No documents shared by clients yet. When a client shares a document from their Company Information tab, it appears here with a link to the original file.</div>')
     +'</div>';
 }
@@ -7323,12 +7399,23 @@ function reqForm(kind){
   return `<div class="card mb14" style="border-color:var(--accent)">
     <div class="cardhead"><h3>New ${tax?'tax':'audit'} document request</h3></div>
     <div class="grid g2" style="margin-bottom:14px">
-      <div><label class="flabel">Client</label>${sel('Client',clients)}</div>
+      <div><label class="flabel">Client</label>${sel('Client',activeFirmClients().map(c=>c.name))}</div>
       <div><label class="flabel">Document needed</label><input id="${pfx}Doc" class="finput" placeholder="${tax?'e.g. June sales invoices':'e.g. Fixed asset register'}"></div>
       <div><label class="flabel">${appLabel}</label>${sel('App',appOpts)}</div>
       <div><label class="flabel">Deadline</label><input id="${pfx}Due" class="finput" placeholder="e.g. 28 Jul 2026"></div>
       <div><label class="flabel">Urgency</label>${sel('Urg',['Low','Medium','High','Urgent'])}</div>
       <div><label class="flabel">Risk level</label>${sel('Risk',['Low','Medium','High'])}</div>
+    </div>
+    <div style="border-top:1px dashed var(--line);padding-top:12px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px"><b style="font-size:12.5px">${svgIcon('refresh',14)} Auto-chase</b>${infoTip('HisabOne emails the client automatically until the document is uploaded. Set when the first reminder goes and how often to repeat — or switch it off to chase manually. The schedule appears under Practice → Email Reminders.')}</div>
+      <div class="grid g4" style="gap:11px">
+        <div><label class="flabel">Auto-chase</label><select id="${pfx}ChaseOn" class="finput" onchange="var w=document.getElementById('${pfx}ChaseFields');if(w)w.style.display=this.value==='On'?'contents':'none'"><option>On</option><option>Off</option></select></div>
+        <div id="${pfx}ChaseFields" style="display:contents">
+          <div><label class="flabel">First reminder</label><select id="${pfx}ChaseWhen" class="finput" onchange="var d=document.getElementById('${pfx}ChaseDaysWrap');if(d)d.style.display=this.value==='days'?'block':'none'"><option value="now">Immediately</option><option value="days" selected>After a number of days</option></select></div>
+          <div id="${pfx}ChaseDaysWrap"><label class="flabel">Days until first reminder</label><input id="${pfx}ChaseDays" class="finput" type="number" min="1" max="60" value="3" style="text-align:right"></div>
+          <div><label class="flabel">Then chase every (days)</label><input id="${pfx}ChaseEvery" class="finput" type="number" min="1" max="30" value="3" style="text-align:right"></div>
+        </div>
+      </div>
     </div>
     <button class="btn" onclick="submitReq('${kind}')">Send request</button>
     <button class="btn ghost" style="margin-left:8px" onclick="toggleReqForm('${kind}')">Cancel</button>

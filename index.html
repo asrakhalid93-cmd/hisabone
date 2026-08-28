@@ -1178,6 +1178,51 @@
     html{scroll-behavior:auto}
   }
 
+  /* ============ COLOUR & MOTION v17 — pastel tints, living gradients ============ */
+  @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+  /* stat cards cycle the brand's pastel family — cyan, purple, lavender, mint */
+  .grid > .stat:nth-child(4n+1){background:linear-gradient(165deg,#fff 45%, rgba(0,229,255,.09))}
+  .grid > .stat:nth-child(4n+2){background:linear-gradient(165deg,#fff 45%, rgba(90,63,255,.07))}
+  .grid > .stat:nth-child(4n+3){background:linear-gradient(165deg,#fff 45%, rgba(199,185,255,.18))}
+  .grid > .stat:nth-child(4n+4){background:linear-gradient(165deg,#fff 45%, rgba(13,146,86,.07))}
+
+  /* hero cards: a living cyan→purple→lavender border instead of a flat line */
+  .card[style*="border-color:var(--accent)"]{
+    border:1.5px solid transparent !important;
+    background:linear-gradient(var(--panel),var(--panel)) padding-box,
+      linear-gradient(120deg, rgba(0,229,255,.65), var(--accent) 42%, #c7b9ff 90%) border-box;
+  }
+
+  /* the AI band breathes */
+  .ai{background-size:170% 170%;animation:gradShift 9s ease infinite}
+
+  /* the active tab's underline goes two-tone */
+  .secitem.active{border-bottom-color:transparent}
+  .secitem.active::after{background:linear-gradient(90deg, var(--accent), #00c8e8) !important}
+
+  /* the rail's active item picks up the same sweep */
+  .navitem.active{background:linear-gradient(90deg, var(--accent-bg), rgba(0,229,255,.10))}
+  .navitem.active::before{background:linear-gradient(180deg, var(--accent), #00c8e8)}
+
+  /* selection chips and fills join the family */
+  .ftab.on{background:linear-gradient(120deg, var(--accent-bg), rgba(0,229,255,.12));border-color:var(--accent)}
+  .bar > div,.minibar i{background:linear-gradient(90deg, var(--accent), #7c5cff 70%, #00c8e8)}
+  .seg button.on{background:linear-gradient(135deg, var(--accent), #4b2fe0)}
+
+  /* avatars carry the gradient — a person, not a flat disc */
+  .avatar{background:linear-gradient(135deg, var(--accent), #7c5cff)}
+
+  /* pack and folder heads: a whisper of the wash */
+  .packhead{background:linear-gradient(90deg, color-mix(in srgb, var(--accent) 5%, #fff), rgba(0,229,255,.05))}
+
+  /* toast arrives on-brand */
+  #toast{background:linear-gradient(120deg,#2a2440,#232336)}
+
+  @media(prefers-reduced-motion:reduce){
+    .ai{animation:none !important}
+  }
+
   /* ============ TYPE v16 — Manrope voice over an Inter body ============ */
   :root{ --font-display:'Manrope',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
   body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
@@ -10295,7 +10340,7 @@ function openAddClient(){
     +'<div class="note" style="margin-top:12px">'+svgIcon('users',13)+' '+firmClientCount()+' of '+firmCapLabel()+' client places used on your '+firmPlanObj().name+' plan.</div>'
     +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">'
       +'<button class="btn ghost" onclick="closeAddClient()">Cancel</button>'
-      +'<button class="btn" onclick="submitAddClient()">Add client</button></div>'
+      +'<button class="btn" id="acSubmitBtn" onclick="submitAddClient()">Add client</button></div>'
     +'</div>';
   /* The authority list depends on the jurisdiction, so populate it once the
      markup exists rather than baking a combined list into the template. */
@@ -10470,9 +10515,10 @@ function editManualClient(id){
     set('acRisk',meta.risk||'medium');
     var st=CLIENT_STAGES.find(function(s){return s.id===(meta.stage||'onboarding');});
     set('acStage',st?st.label:'Onboarding');
-    var btn=h&&h.querySelector('.btn:not(.ghost)');
-    if(btn){ btn.textContent='Save changes'; btn.setAttribute('onclick','saveManualClient(\''+id+'\')'); }
-    var head=h&&h.querySelector('h3'); if(head) head.textContent='Edit client';
+    var btn=document.getElementById('acSubmitBtn');
+    if(btn){ btn.textContent='Update client'; btn.setAttribute('onclick','saveManualClient(\''+id+'\')'); }
+    var hh=document.getElementById('addClientModal');
+    var head=hh&&hh.querySelector('h3'); if(head) head.textContent='Edit client';
   },60);
 }
 function saveManualClient(id){

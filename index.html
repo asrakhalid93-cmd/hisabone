@@ -23,7 +23,7 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <style>
@@ -1178,6 +1178,22 @@
     html{scroll-behavior:auto}
   }
 
+  /* ============ TYPE v16 — Manrope voice over an Inter body ============ */
+  :root{ --font-display:'Manrope',Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+  body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+  h1,h2,h3,h4,.logo,.llogo-word,.lviewhead h1,.hero-h1,.homeh2{font-family:var(--font-display)}
+  h1{font-size:27px;font-weight:800;letter-spacing:-.035em}
+  .sub{max-width:64ch;margin-bottom:25px}
+  .stat .num{font-family:var(--font-display);font-weight:800;letter-spacing:-.02em}
+  .btn{font-family:var(--font-display);font-weight:700;letter-spacing:.01em}
+  .secitem{font-family:var(--font-display);font-weight:600;letter-spacing:.01em}
+  .ftab{font-family:var(--font-display);font-weight:600}
+  .pill{font-family:var(--font-display);font-weight:700;font-size:11px;letter-spacing:.02em}
+  .seg button{font-family:var(--font-display);font-weight:600}
+  .navlabel{letter-spacing:1.5px}
+  .ctwfoot b{font-family:var(--font-display)}
+  .cardhead h3{font-weight:700}
+
   /* -- (i) header tooltips: the card explains itself on demand -- */
   .itip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;
     border-radius:50%;border:1.5px solid color-mix(in srgb, var(--muted) 45%, transparent);color:var(--muted);
@@ -2155,7 +2171,7 @@ async function flushAccountData(){
   const data = currentAccount.role==='business'
     ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, companyProfile:bizCompany,
        invoiceInbox:invoiceInbox, renewals:bizRenewals, companies:snapshotCompanies(cleanVault), activeCompany:bizActiveCo, signoffPin:signoffPin}
-    : {firmReminders, clientMeta, ctScenarios, ctDrafts, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
+    : {firmReminders, clientMeta, ctScenarios, ctDrafts, vatDrafts, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   /* v2: working mode, period figures, firm plan, manual clients, document register */
   try{
     var v2 = currentAccount.role==='business'
@@ -2264,7 +2280,7 @@ async function loadWorkspace(){
         (r.kind==='tax'?bizTaxDocs:bizAuditDocs).push(row);
       });
     } else {
-      firmReminders=d.firmReminders||[]; clientMeta=d.clientMeta||{}; ctScenarios=d.ctScenarios||[]; ctDrafts=d.ctDrafts||{}; notifSeen=d.notifSeen||[];
+      firmReminders=d.firmReminders||[]; clientMeta=d.clientMeta||{}; ctScenarios=d.ctScenarios||[]; ctDrafts=d.ctDrafts||{}; vatDrafts=d.vatDrafts||{}; notifSeen=d.notifSeen||[];
       if(currentAccount.teamRole==='owner') currentAccount.digestFreq=d.ownerDigest||'off';
       if(typeof firmV2Unpack==='function') firmV2Unpack(d);
       inviteCode=currentAccount.inviteCode||'';
@@ -3223,7 +3239,7 @@ function logout(){
   _blobDirty=true; flushAccountData();
   try{ if(sb) sb.auth.signOut(); }catch(e){}
   currentAccount=null; myClients=[]; clientMeta={};
-  clients=[]; firmClients=[]; firmTaxReqs=[]; firmAuditReqs=[]; firmReminders=[]; ctScenarios=[]; ctEntity='mainland'; teamMembers=[]; activityLog=[]; notifSeen=[]; lastInvite=null;
+  clients=[]; firmClients=[]; firmTaxReqs=[]; firmAuditReqs=[]; firmReminders=[]; ctScenarios=[]; vatDrafts={}; ctEntity='mainland'; teamMembers=[]; activityLog=[]; notifSeen=[]; lastInvite=null;
   bizTaxDocs=[]; bizAuditDocs=[]; vaultDocs=[]; sharedReports=[];
   returnsList=[]; returnEvents={}; viewingReturn=null; _accessLogged={}; _pendingChangeDoc=null;
   signoffPin=null; _retPage=0; _retSeen={}; _retPages=[];
@@ -4124,9 +4140,15 @@ vat:()=>{
           <option value="">— No client selected —</option>
           ${activeFirmClients().map(c=>`<option value="${c.id}" ${vatClient===c.id?'selected':''}>${ctEsc(c.name)}${c.manual?' · managed by you':''}</option>`).join('')}
         </select></div>
-      <div class="muted" id="vatClientNote" style="font-size:12px;padding-bottom:9px">${vatClient?'':'Pick the client this VAT return is for — the invoice import and share flow follow it.'}</div>
+      <div style="display:flex;gap:8px;align-items:end;justify-content:flex-end;flex-wrap:wrap;padding-bottom:2px">
+        <button class="btn ghost sm" onclick="vatDraftSave(true)">${svgIcon('download',13)} Save draft</button>
+        <button class="btn ghost sm" onclick="vatStartNew()">${svgIcon('doc-new',13)} Start new</button>
+        <span class="muted" style="font-size:11.5px;align-self:center" id="vatDraftStatus"></span>
+      </div>
     </div>
+    <div class="muted" id="vatClientNote" style="font-size:12px;margin-top:6px">${vatClient?'':'Pick the client this VAT return is for — the invoice import and share flow follow it. Figures save automatically as you type.'}</div>
   </div>
+  ${vatDraftsCardHTML()}
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('sparkles',16)} Invoice upload — AI autofill</h3><span class="pill p-teal">OCR</span></div>
     <p class="muted" style="font-size:13px;margin-bottom:12px">Upload one or many tax invoices (photos, scans or PDFs). HisabOne reads each one with AI and fills a transaction line per invoice — vendor, invoice number, net amount, VAT and rate. Rows are added automatically as needed.</p>
@@ -4289,6 +4311,7 @@ ct:()=>`
       <button class="btn sm" id="ctWizNext" onclick="ctGoStep(1)">${ctWizNextLabel()}</button>
       <span style="flex:1"></span>
       <button class="btn ghost sm" onclick="ctDraftSave(true)">${svgIcon('download',13)} Save draft</button>
+      <button class="btn ghost sm" onclick="ctStartNew()">${svgIcon('doc-new',13)} Start new</button>
       <span class="muted" style="font-size:11.5px" id="ctDraftStatus"></span>
     </div>
     <div class="ctwfoot">
@@ -4855,12 +4878,11 @@ function ctHasData(){
 function ctDraftSave(manual){
   if(!ctHasData()) return;
   var r=computeCT(ctReadInputs());
-  var c=(firmClients||[]).find(function(x){return x.id===ctClient;});
-  if(c) return c.name;
-  c=(myClients||[]).find(function(x){return x.business_id===ctClient;});
+  var fc=(firmClients||[]).find(function(x){return x.id===ctClient;});
+  var lc=(myClients||[]).find(function(x){return x.business_id===ctClient;});
   ctDrafts[ctDraftKey()]={
     savedAt:new Date().toISOString(),
-    clientName:c?c.business_name:(ctTP.legal||'Unassigned draft'),
+    clientName:fc?fc.name:(lc?lc.business_name:(ctTP.legal||'Unassigned draft')),
     step:ctStep, entity:ctEntity, sbr:ctSBRon, mne:ctMNEon,
     basis:ctBasis, realisation:ctRealisation, transitional:ctTransitional,
     tp:Object.assign({},ctTP), data:Object.assign({},ctR),
@@ -4893,6 +4915,20 @@ function ctDeleteDraft(k){
   openConfirm({title:'Delete draft return', confirmLabel:'Delete',
     message:'Are you sure you want to delete the saved Corporate Tax draft for "'+ctEsc(d.clientName)+'"? This cannot be undone.',
     onYes:function(){ delete ctDrafts[k]; saveAccountData(); if(page==='ct') renderPage(); }});
+}
+function ctStartNew(){
+  openConfirm({title:'Start a new return', confirmLabel:'Start new',
+    message:'Clear every figure on this Corporate Tax return and start fresh'+(ctDrafts[ctDraftKey()]?' — the saved draft for this client is discarded too':'')+'? This cannot be undone.',
+    onYes:function(){
+      delete ctDrafts[ctDraftKey()];
+      ctR={}; ctTP={}; ctStep=0; ctTPsource='';
+      saveAccountData();
+      /* render the emptied form FIRST — ctSelectClient auto-saves from the DOM,
+         and the old figures must be gone before it looks */
+      renderPage();
+      setTimeout(function(){ ctSelectClient(ctClient); renderPage(); },60);
+      toast('Fresh return — nothing carried over.');
+    }});
 }
 function ctDraftsCardHTML(){
   var keys=Object.keys(ctDrafts);
@@ -5442,6 +5478,80 @@ function logActivity(type, detail){
 var lastInvite=null;
 var atClient='all';   /* audit-trail report scope */
 var vatClient='';     /* firm VAT page: the client the return is being prepared for */
+var vatDrafts={};     /* firm VAT drafts, one per client — {key:{savedAt,clientName,vals}} */
+var _vatDraftT=null;
+function vatDraftKey(){ return vatClient||'_manual'; }
+function vatDraftSave(manual){
+  if(page!=='vat') return;
+  var vals={}, any=false;
+  document.querySelectorAll('#main input[id], #main select[id]').forEach(function(el){
+    if(el.type==='file'||el.type==='checkbox'||el.type==='radio') return;
+    vals[el.id]=el.value;
+    if(el.value && /^(s|p)_(desc|amt)/.test(el.id)) any=true;
+    if(el.value && /^v2/.test(el.id) && parseFloat(el.value)) any=true;
+  });
+  if(!any && !manual) return;   /* nothing typed yet — nothing worth saving */
+  var fc=(firmClients||[]).find(function(x){return x.id===vatClient;});
+  vatDrafts[vatDraftKey()]={ savedAt:new Date().toISOString(), clientName:fc?fc.name:'Unassigned draft', vals:vals };
+  saveAccountData();
+  var el=document.getElementById('vatDraftStatus');
+  if(el) el.innerHTML=svgIcon('success',11)+' Draft saved '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  if(manual) toast('VAT draft saved — resume any time from Saved drafts');
+  var dc=document.getElementById('vatDraftsCard'); if(dc) dc.outerHTML=vatDraftsCardHTML();
+}
+function vatDraftRestore(k){
+  var d=vatDrafts[k]; if(!d) return;
+  vatClient=(k==='_manual')?'':k;
+  if(page!=='vat') go('vat'); else renderPage();
+  setTimeout(function(){
+    ['s','p'].forEach(function(pfx){
+      var i=0;
+      while(d.vals[pfx+'_amt'+i]!==undefined){ if(!document.getElementById(pfx+'_amt'+i)) addVatRow(pfx); i++; }
+    });
+    Object.keys(d.vals).forEach(function(id){ var el=document.getElementById(id); if(el) el.value=d.vals[id]; });
+    if(typeof vatSelectClient==='function') vatSelectClient(vatClient);
+    if(typeof recalcVAT==='function') try{ recalcVAT(); }catch(e){}
+    if(typeof recalcVat201==='function') try{ recalcVat201(); }catch(e){}
+    toast('Draft restored'+(d.clientName&&d.clientName!=='Unassigned draft'?(' — '+d.clientName):''));
+  },180);
+}
+function vatDeleteDraft(k){
+  var d=vatDrafts[k]; if(!d) return;
+  openConfirm({title:'Delete draft', confirmLabel:'Delete',
+    message:'Delete the saved VAT draft for '+(d.clientName||'this client')+'? This cannot be undone.',
+    onYes:function(){ delete vatDrafts[k]; saveAccountData(); renderPage(); toast('Draft deleted.'); }});
+}
+function vatStartNew(){
+  openConfirm({title:'Start a new VAT return', confirmLabel:'Start new',
+    message:'Clear every figure on this VAT return and start fresh'+(vatDrafts[vatDraftKey()]?' — the saved draft for this client is discarded too':'')+'? This cannot be undone.',
+    onYes:function(){ delete vatDrafts[vatDraftKey()]; saveAccountData(); renderPage(); toast('Fresh VAT return — nothing carried over.'); }});
+}
+function vatDraftsCardHTML(){
+  var keys=Object.keys(vatDrafts);
+  if(!keys.length) return '<div id="vatDraftsCard"></div>';
+  keys.sort(function(a,b){ return (vatDrafts[b].savedAt||'').localeCompare(vatDrafts[a].savedAt||''); });
+  var rows=keys.map(function(k){
+    var d=vatDrafts[k];
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);flex-wrap:wrap">'
+      +'<span style="display:inline-flex;color:var(--accent-d)">'+svgIcon('calc',16)+'</span>'
+      +'<div style="flex:1;min-width:150px"><div style="font-weight:600;font-size:13px">'+ctEsc(d.clientName||'Unassigned draft')+'</div>'
+      +'<div class="muted" style="font-size:11.5px">Saved '+timeAgo(d.savedAt)+'</div></div>'
+      +'<button class="btn sm" onclick="vatDraftRestore(\''+jsq(k)+'\')">Resume</button>'
+      +'<button class="btn sm ghost" onclick="vatDeleteDraft(\''+jsq(k)+'\')">'+svgIcon('trash',13)+'</button>'
+      +'</div>';
+  }).join('');
+  return '<div class="card mb14" id="vatDraftsCard"><div class="cardhead"><h3>'+svgIcon('clock',16)+' Saved drafts '+infoTip('VAT returns save automatically as you type — one draft per client. Resume exactly where you left off, on any device.')+'</h3><span class="pill p-teal">'+keys.length+'</span></div>'+rows+'</div>';
+}
+/* auto-save as the accountant types, without them thinking about it */
+if(!window.__vatAutoSave){ window.__vatAutoSave=true;
+  document.addEventListener('input', function(e){
+    if(page!=='vat') return;
+    if(!currentAccount||currentAccount.role!=='firm') return;
+    if(!e.target||!e.target.id) return;
+    clearTimeout(_vatDraftT);
+    _vatDraftT=setTimeout(function(){ try{ vatDraftSave(false); }catch(err){} }, 1500);
+  });
+}
 function vatSelectClient(id){
   vatClient=id||'';
   var fc=(firmClients||[]).find(function(x){return x.id===id;});

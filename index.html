@@ -23,7 +23,7 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 <style>
@@ -47,7 +47,7 @@
     --accent-bg:rgba(199,185,255,.16); --topbar:rgba(21,10,38,.85);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  body{font-family:'Manrope','Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     color:var(--text);font-size:14px;line-height:1.5;
     background:radial-gradient(1200px 700px at 80% -10%, var(--bg2), var(--bg1) 60%), var(--bg1);
     background-attachment:fixed;min-height:100vh}
@@ -1178,6 +1178,25 @@
     html{scroll-behavior:auto}
   }
 
+  /* ============ BRAND MARK & TYPE v18 ============ */
+  /* the logo marks draw themselves — a gradient tile with the brand lock,
+     never an image that can fail into an empty box */
+  .llogo-mark,.logo .mark,.ltopbar-logo .mk,.mock-mk{
+    background:linear-gradient(135deg,#00c8e8 -25%,#5a3fff 55%,#7c5cff) !important;
+    position:relative;
+  }
+  .llogo-mark::after,.logo .mark::after,.ltopbar-logo .mk::after,.mock-mk::after{
+    content:"";position:absolute;inset:0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='10.5' width='14' height='10' rx='2'/%3E%3Cpath d='M8 10.5V7a4 4 0 0 1 8 0v3.5'/%3E%3C/svg%3E") center/52% no-repeat;
+  }
+  .ltopbar-logo .mk svg{display:none}
+  /* the sign-in wordmark speaks like the top-left landing logo: flat two-tone */
+  .llogo-word{color:var(--ink) !important}
+  .llogo-word .llogo-one{background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;color:var(--accent) !important;animation:none !important}
+  /* italics where a quiet aside is a quiet aside */
+  .note,.llogo-tag,.lprompt{font-style:italic}
+  b,strong{font-weight:700}
+
   /* ============ COLOUR & MOTION v17 — pastel tints, living gradients ============ */
   @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
@@ -1471,7 +1490,7 @@
         <div class="hero-note" id="heroNote">Beta &middot; free for accounting firms up to 30 clients &middot; built for the era of VAT, Corporate Tax &amp; e-invoicing</div>
         <div id="in5Line" style="display:flex;align-items:center;gap:9px;margin-top:16px;font-size:12.5px;color:var(--muted)">
           <span style="font-weight:800;font-size:13px;letter-spacing:.5px;background:#0b1226;color:#fff;border-radius:8px;padding:4px 9px">in5</span>
-          <span>Backed by <b style="color:var(--text)">in5 tech</b> — Dubai's technology startup incubator (TECOM Group)</span>
+          <span>Backed by <b style="color:var(--text)">in5 tech</b></span>
         </div>
       </div>
       <div class="hero-visual reveal" aria-hidden="true">
@@ -1624,7 +1643,7 @@
     <div class="homefoot">
       <a class="footcontact" href="mailto:info@hisabone.ae"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg> Contact us</a>
       <div>HisabOne &middot; Tax &amp; Compliance, Simplified &middot; <a href="mailto:info@hisabone.ae">info@hisabone.ae</a></div>
-      <div style="margin-top:7px;color:rgba(255,255,255,.6);font-size:12px">Beta phase &middot; Backed by <b style="color:rgba(255,255,255,.85)">in5 tech</b>, Dubai (TECOM Group)</div>
+      <div style="margin-top:7px;color:rgba(255,255,255,.6);font-size:12px">Beta phase &middot; Backed by <b style="color:rgba(255,255,255,.85)">in5 tech</b>, Dubai</div>
       <div style="margin-top:7px"><a href="#" onclick="switchView('security');return false">Security</a> &middot; <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> &middot; <a href="#" onclick="switchView('terms');return false">Terms of Service</a></div></div>
   </div>
   </div><!-- /viewHome -->
@@ -12572,7 +12591,7 @@ function v2AfterRender(p){
     'Contact us':'تواصل معنا',
     'HisabOne · Tax & Compliance, Simplified ·':'هيساب ون · الضرائب والامتثال ببساطة ·',
     'Beta phase · Backed by':'مرحلة تجريبية · بدعم من',
-    ', Dubai (TECOM Group)':'، دبي (مجموعة تيكوم)',
+    ', Dubai':'، دبي',
     'Security':'الأمان','Privacy Policy':'سياسة الخصوصية','Terms of Service':'شروط الاستخدام',
     'Create your account →':'أنشئ حسابك ←'
   };

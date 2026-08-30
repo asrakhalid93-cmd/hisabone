@@ -7186,7 +7186,9 @@ function clearClientFilters(){ actFilter='all'; riskFilter='all'; urgFilter='all
 /* the businesses that linked their own portal to this firm, with the
    unlink control kept out of the main working area */
 function linkedPortalsCardHTML(){
-  var live=(clients||[]).filter(function(c){ return !isArchived(c); });
+  /* only businesses that linked their own portal belong here — clients the
+     firm added by hand are managed records, not linked portals */
+  var live=(firmClients||[]).filter(function(c){ return c.linked && !isArchived(c.name); }).map(function(c){ return c.name; });
   if(!live.length) return '';
   var chips=live.map(function(c){
     return '<span style="background:var(--accent-bg);color:var(--accent);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px">'
@@ -7356,7 +7358,10 @@ var _reqPresetClient='';
 function openReqFor(kind,name){ _reqPresetClient=name||''; formOpen[kind]=true; go(kind==='tax'?'taxdocs':'auditdocs'); }
 /* the calculators open with this client selected, and know the way back */
 function prepareReturnFor(kind,id){
-  if(kind==='vat'){ vatClient=id||''; go('vat'); setTimeout(function(){ if(typeof vatSelectClient==='function') vatSelectClient(id); },140); }
+  if(kind==='vat'){
+    if(vatDrafts && vatDrafts[id]){ vatDraftRestore(id); return; }   /* pick up where they left off */
+    vatClient=id||''; go('vat'); setTimeout(function(){ if(typeof vatSelectClient==='function') vatSelectClient(id); },140);
+  }
   else { go('ct'); setTimeout(function(){ if(typeof ctSelectClient==='function'){ ctSelectClient(id); var sel=document.getElementById('ctClientSel'); if(sel) sel.value=id||''; } },140); }
 }
 function cpCrumb(){
@@ -7449,7 +7454,6 @@ function clientProfileHTML(){
   ${cpTabsHTML(c)}
   ${_cpTab!=='overview'?'':`
   ${clientFocusCardHTML(c)}
-  ${clientStageBarHTML(c.name)}
   <div class="grid g4 mb14">
     <div class="card stat clk" onclick="cpTab('docs')"><div class="ic">${svgIcon('inbox',20)}</div><div class="num">${openCount}</div><div class="lbl">Open requests</div></div>
     <div class="card stat clk" onclick="cpTab('docs')"><div class="ic">${svgIcon('check',20)}</div><div class="num">${inCount}</div><div class="lbl">Documents received</div></div>
@@ -7514,7 +7518,18 @@ function clientProfileHTML(){
         <button class="btn sm" onclick="prepareReturnFor('vat','${c.id}')">${svgIcon('calc',13)} Prepare VAT return</button>
         <button class="btn ghost sm" onclick="prepareReturnFor('ct','${c.id}')">${svgIcon('calc',13)} Prepare Corporate Tax</button>
       </div></div>
-    ${rets.length?rets.map(function(rt){ var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>'); return '<div class="drow" style="cursor:pointer" onclick="viewReturn(\''+rt.id+'\')"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7c5cff')+'"></div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(rt.title||'Return')+'</div><div class="dmeta">'+ctEsc(rt.period||'')+'</div></div>'+st+'</div>'; }).join(''):'<div class="muted emptybox">No draft returns yet — prepare one above and share it for the client\u2019s sign-off.</div>'}
+    ${(vatDrafts[c.id]||ctDrafts[c.id])?`<div style="margin-bottom:12px">
+      <div class="navlabel" style="padding:0 2px 6px">In progress — continue where you left off</div>
+      ${vatDrafts[c.id]?`<div class="drow"><div class="dbar" style="background:var(--accent)"></div>
+        <div style="flex:1"><div class="dtitle" style="font-size:13px">VAT return — draft in progress</div>
+        <div class="dmeta">Saved ${timeAgo(vatDrafts[c.id].savedAt)}</div></div>
+        <button class="btn sm" onclick="prepareReturnFor('vat','${c.id}')">Continue</button></div>`:''}
+      ${ctDrafts[c.id]?`<div class="drow"><div class="dbar" style="background:#7c5cff"></div>
+        <div style="flex:1"><div class="dtitle" style="font-size:13px">Corporate Tax — draft in progress</div>
+        <div class="dmeta">Page ${ctDrafts[c.id].pageAt||1} of ${ctDrafts[c.id].pages||9} · payable ${ctFmtA(ctDrafts[c.id].payable||0)} · saved ${timeAgo(ctDrafts[c.id].savedAt)}</div></div>
+        <button class="btn sm" onclick="prepareReturnFor('ct','${c.id}')">Continue</button></div>`:''}
+    </div>`:''}
+    ${rets.length?rets.map(function(rt){ var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>'); return '<div class="drow" style="cursor:pointer" onclick="viewReturn(\''+rt.id+'\')"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7c5cff')+'"></div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(rt.title||'Return')+'</div><div class="dmeta">'+ctEsc(rt.period||'')+'</div></div>'+st+'</div>'; }).join(''):((vatDrafts[c.id]||ctDrafts[c.id])?'':'<div class="muted emptybox">No draft returns yet — prepare one above and share it for the client\u2019s sign-off.</div>')}
   </div>`}
   ${_cpTab!=='invoices'?'':cpInvoicesHTML(c)}`;
 }

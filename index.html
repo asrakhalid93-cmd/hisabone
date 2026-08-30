@@ -1178,21 +1178,11 @@
     html{scroll-behavior:auto}
   }
 
-  /* ============ BRAND MARK & TYPE v18 ============ */
-  /* the logo marks draw themselves — a gradient tile with the brand lock,
-     never an image that can fail into an empty box */
-  .llogo-mark,.logo .mark,.ltopbar-logo .mk,.mock-mk{
-    background:linear-gradient(135deg,#00c8e8 -25%,#5a3fff 55%,#7c5cff) !important;
-    position:relative;
-  }
-  .llogo-mark::after,.logo .mark::after,.ltopbar-logo .mk::after,.mock-mk::after{
-    content:"";position:absolute;inset:0;
-    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='10.5' width='14' height='10' rx='2'/%3E%3Cpath d='M8 10.5V7a4 4 0 0 1 8 0v3.5'/%3E%3C/svg%3E") center/52% no-repeat;
-  }
-  .ltopbar-logo .mk svg{display:none}
-  /* the sign-in wordmark speaks like the top-left landing logo: flat two-tone */
-  .llogo-word{color:var(--ink) !important}
-  .llogo-word .llogo-one{background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;color:var(--accent) !important;animation:none !important}
+  /* ============ BRAND MARK & TYPE v18 (r2) ============ */
+  /* the H1 monogram (logo.png) is the logo, everywhere it always was.
+     The file is already transparent — the "box" was the tile's own
+     drop-shadow drawn around a transparent image. No shadow, no box. */
+  .llogo-mark{box-shadow:none}
   /* italics where a quiet aside is a quiet aside */
   .note,.llogo-tag,.lprompt{font-style:italic}
   b,strong{font-weight:700}

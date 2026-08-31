@@ -1262,6 +1262,21 @@
   .cardhead h3 .itip{margin-left:4px}
   /* cards are stacking contexts — the one holding an open tooltip must win */
   .card:has(.itip:hover),.card:has(.itip:focus-visible){position:relative;z-index:96}
+  /* v20: an open tooltip outranks every sibling card, even outside a .card */
+  .itip:hover,.itip:focus-visible{z-index:130}
+
+  /* ============ DENSITY v20 — Compact must LOOK compact ============ */
+  body.dense td{padding:6px 10px;font-size:12.5px}
+  body.dense th{padding:7px 10px}
+  body.dense .ctbl .avatar,body.dense .avatar{width:26px;height:26px;font-size:10.5px}
+  body.dense .drow{padding:6px 0}
+  body.dense .drow .dbar{height:24px}
+  body.dense .packhead{padding:7px 11px}
+  body.dense .packbody .drow{padding:5px 0}
+  body.dense .minibar{height:5px}
+  body.dense .pill{padding:2px 8px;font-size:10px}
+  body.dense .dtitle{font-size:12.5px}
+  body.dense .dmeta{font-size:11px}
 
   /* ================= DESIGN SYSTEM v7 — tokens, surfaces, polish ================= */
   :root{
@@ -2350,6 +2365,7 @@ async function loadWorkspace(){
         const row={id:r.id,client:r.client_name,doc:r.doc,app:r.app,due:r.due||'—',urg:r.urgency,risk:r.risk,
                    st:r.state==='done'?'Received ✓':'Just sent', cls:r.state==='done'?'p-green':'p-teal',
                    file:r.file_url||null, fileName:r.file_name||null};
+        if(r.state==='done'){ try{ markReminderDone(r.client_name, r.doc); }catch(e){} }
         (r.kind==='tax'?firmTaxReqs:firmAuditReqs).push(row);
       });
       rebuildFirmClients();
@@ -3666,6 +3682,7 @@ function countUpStats(scope){
   });
 }
 function renderPage(){ var m=document.getElementById('main');
+  try{ document.body.classList.toggle('dense', typeof isDense==='function' && isDense()); }catch(e){}
   /* A plan change can pull the ground out from under whatever is on screen.
      Rather than paint a page the account no longer carries, fall back to the
      dashboard quietly — go() already handles the deliberate click. */
@@ -7681,9 +7698,9 @@ function reqForm(kind){
   </div>`;}
 /* email reminder row */
 function remRow(r,i){
-  const on=r.auto==='green';
-  return `<tr><td><b>${r.client}</b></td><td>${r.app||'—'}</td><td>${r.doc}</td><td class="muted">${r.last}</td><td>${r.next}</td>
-    <td><span class="pill ${on?'p-green':'p-gray'}">${on?'On':'Off'}${r.every?(' · every '+r.every+'d'):''}</span></td>
+  const on=r.auto==='green', done=r.auto==='done';
+  return `<tr${done?' style="opacity:.62"':''}><td><b>${r.client}</b></td><td>${r.app||'—'}</td><td>${r.doc}</td><td class="muted">${r.last}</td><td>${r.next}</td>
+    <td>${done?'<span class="pill p-teal">Done ✓</span>':`<span class="pill ${on?'p-green':'p-gray'}">${on?'On':'Off'}${r.every?(' · every '+r.every+'d'):''}</span>`}</td>
     <td style="white-space:nowrap"><button class="btn ghost sm" onclick="sendReminderNow(${i})">Send now</button>
     <button class="iconbtn" title="Send via WhatsApp" onclick="waRemind(${i})">${svgIcon('chat',14)}</button>
     <button class="iconbtn" title="Delete reminder" onclick="deleteReminder(${i})">${svgIcon('trash',15)}</button></td></tr>`;}
@@ -10751,12 +10768,23 @@ function assignDocTo(name, id, member){
   toast(member?(d.name+' assigned to '+member):'Assignment cleared');
   renderPage();
 }
+function markReminderDone(client, doc){
+  var hit=false;
+  (firmReminders||[]).forEach(function(r){
+    if(r.auto!=='done' && r.client===client && r.doc===doc){
+      r.auto='done'; r.next='\u2014'; r.last='Document received \u2014 chase complete'; hit=true;
+    }
+  });
+  if(hit) saveAccountData();
+  return hit;
+}
 function setDocStatus(name, id, status){
   var d=docsFor(name).find(function(x){return x.id===id;}); if(!d) return;
   d.status=status;
   if(status==='received'&&!d.receivedAt) d.receivedAt=new Date().toISOString();
   /* arriving work joins somebody's queue rather than closing itself */
   if(status==='received'&&!d.reviewer) d.reviewer=docReviewer(name)||'';
+  if(status!=='requested'){ try{ markReminderDone(name, d.name); }catch(e){} }
   if(status==='reviewed') d.reviewedAt=new Date().toISOString();
   if(status==='signed') d.signedAt=new Date().toISOString();
   saveAccountData();
@@ -10902,6 +10930,14 @@ function openAddDoc(preName){
       +'<div><label class="flabel">Expiry (if any)</label><input id="adExpiry" class="finput" type="date"></div>'
       +'<div><label class="flabel">Note</label><input id="adNote" class="finput" placeholder="Optional"></div>'
     +'</div>'
+    +'<div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px">'
+      +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:9px"><b style="font-size:13px">Auto-chase</b>'
+        +infoTip('While this document stays outstanding, HisabOne emails the client on the cadence below. The schedule appears under Practice \u2192 Email reminders, and stops when the document arrives.')+'</div>'
+      +'<div class="grid g3" style="gap:11px">'
+        +'<div><label class="flabel">Auto-chase</label><select id="adChaseOn" class="finput"><option>On</option><option>Off</option></select></div>'
+        +'<div><label class="flabel">First chase (days)</label><input id="adChaseDays" class="finput" type="number" min="1" max="60" value="3" style="text-align:right"></div>'
+        +'<div><label class="flabel">Then every (days)</label><input id="adChaseEvery" class="finput" type="number" min="1" max="30" value="3" style="text-align:right"></div>'
+      +'</div></div>'
     +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">'
       +'<button class="btn ghost" onclick="document.getElementById(\'addDocModal\').style.display=\'none\'">Cancel</button>'
       +'<button class="btn" onclick="submitAddDoc()">Add to register</button></div></div>';
@@ -10910,11 +10946,24 @@ function submitAddDoc(){
   var g=function(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; };
   var client=g('adClient'); if(!client) return;
   var cat=g('adCat');
-  addClientDoc(client,{ name:g('adName')||cat, category:cat, period:g('adPeriod'),
-                        status:g('adStatus')||'requested', due:g('adDue'), expiry:g('adExpiry'), note:g('adNote') });
+  var docName=g('adName')||cat;
+  var st=g('adStatus')||'requested';
+  addClientDoc(client,{ name:docName, category:cat, period:g('adPeriod'),
+                        status:st, due:g('adDue'), expiry:g('adExpiry'), note:g('adNote') });
+  /* a requested document with auto-chase ON becomes a scheduled reminder,
+     so Email reminders always mirrors what is actually being chased */
+  var chased=false;
+  if(st==='requested' && g('adChaseOn')!=='Off'){
+    var cD=Math.max(1,Math.min(60,parseInt(g('adChaseDays'),10)||3));
+    var cE=Math.max(1,Math.min(30,parseInt(g('adChaseEvery'),10)||3));
+    firmReminders.unshift({client:client, app:cat, doc:docName,
+      last:'Just scheduled', next:'In '+cD+' day'+(cD===1?'':'s'), days:cD, every:cE, auto:'green'});
+    if(typeof logActivity==='function'){ try{ logActivity('reminder_set','Auto-chase scheduled for '+client+' — '+docName+' (first in '+cD+'d, every '+cE+'d)'); }catch(e){} }
+    chased=true;
+  }
   flushAccountData();
   var h=document.getElementById('addDocModal'); if(h) h.style.display='none';
-  toast('Added to '+client+'’s document register.');
+  toast('Added to '+client+'’s document register'+(chased?' — auto-chase scheduled.':'.'));
   renderPage();
 }
 
@@ -11114,6 +11163,20 @@ function applyPackFromForm(){
 }
 
 /* per-client document card, shown inside the client profile */
+function deletePack(name, pack){
+  var ds=docsFor(name).filter(function(d){return d.pack===pack;});
+  if(!ds.length) return;
+  openConfirm({title:'Delete the '+pack+'?', confirmLabel:'Delete pack',
+    message:'This removes all '+ds.length+' item'+(ds.length===1?'':'s')+' of the '+pack+' from '+name+'\u2019s register, including anything already received. Documents outside this pack are untouched.',
+    onYes:function(){
+      clientDocs[name]=docsFor(name).filter(function(d){return d.pack!==pack;});
+      delete _packCollapsed[name+'|'+pack];
+      saveAccountData();
+      if(typeof logActivity==='function'){ try{ logActivity('pack_deleted', name+' \u2014 deleted the '+pack+' ('+ds.length+' items)'); }catch(e){} }
+      toast('The '+pack+' was removed from '+name+'\u2019s register.');
+      renderPage();
+    }});
+}
 var _packCollapsed={};
 function togglePack(name, pack){
   var k=name+'|'+pack; _packCollapsed[k]=!_packCollapsed[k]; renderPage();
@@ -11131,6 +11194,8 @@ function packGroupHTML(name, pack, docs){
       +'<span class="minibar" style="width:76px"><i style="width:'+pct+'%"></i></span>'
       +'<span class="frac">'+done+' / '+rel.length+'</span>'
       +(chase?'<span class="pill p-amber">'+chase+' to chase</span>':'<span class="pill p-green">Complete</span>')
+      +'<button class="iconbtn" title="Delete this whole pack" style="margin-left:auto" '
+        +'onclick="event.stopPropagation();deletePack(\''+jsq(name)+'\',\''+jsq(pack)+'\')">'+svgIcon('trash',14)+'</button>'
     +'</div>'
     +(closed?'':'<div class="packbody">'+docs.map(function(d){ return clientDocRow(name,d,false); }).join('')+'</div>')
     +'</div>';

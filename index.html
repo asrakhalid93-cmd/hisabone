@@ -9918,6 +9918,14 @@ async function doDeleteAccount(){
   if(btn){ btn.disabled=true; btn.textContent='Deleting…'; }
   try{
     if(sb && currentAccount){
+      /* best-effort: clear this user's uploaded files first (storage cannot be
+         emptied from SQL any more), then let the RPC erase every row */
+      try{
+        var fl=await sb.storage.from('vault').list(currentAccount.id,{limit:1000});
+        if(fl && fl.data && fl.data.length){
+          await sb.storage.from('vault').remove(fl.data.map(function(f){ return currentAccount.id+'/'+f.name; }));
+        }
+      }catch(e){}
       var r=await sb.rpc('delete_my_account');
       if(r && r.error) throw r.error;
       try{ await sb.auth.signOut(); }catch(e){}

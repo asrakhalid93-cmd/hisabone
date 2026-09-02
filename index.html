@@ -2239,7 +2239,7 @@ async function flushAccountData(){
   const cleanVault=(vaultDocs||[]).map(function(d){ var o={}; for(var k in d){ if(k!=='_up'&&k!=='uploading'&&k!=='uploadError'&&Object.prototype.hasOwnProperty.call(d,k)) o[k]=d[k]; } return o; });
   const data = currentAccount.role==='business'
     ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, bizEinv:bizEinv, companyProfile:bizCompany,
-       invoiceInbox:invoiceInbox, renewals:bizRenewals, companies:snapshotCompanies(cleanVault), activeCompany:bizActiveCo, signoffPin:signoffPin, signedLetterIds:signedLetterIds, bankImports:bankImports}
+       invoiceInbox:invoiceInbox, renewals:bizRenewals, companies:snapshotCompanies(cleanVault), activeCompany:bizActiveCo, signoffPin:signoffPin, signedLetterIds:signedLetterIds, bankImports:bankImports, bizSalesInvoices:bizSalesInvoices, vatDrafts:vatDrafts, ctDrafts:ctDrafts}
     : {firmReminders, clientMeta, ctScenarios, ctDrafts, vatDrafts, notifSeen, onboardDismissed, recurringJobs:recurringJobs, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   /* v2: working mode, period figures, firm plan, manual clients, document register */
   try{
@@ -2325,7 +2325,8 @@ async function loadWorkspace(){
     if(currentAccount.role==='business'){
       vaultDocs=d.vaultDocs||[]; notifSeen=d.notifSeen||[];
       calendarEvents=d.calendarEvents||[]; vatCertMeta=d.vatCertMeta||null; ctCertMeta=d.ctCertMeta||null; calYear=null; calMonth=null;
-      bizEinv=d.bizEinv||null; signedLetterIds=d.signedLetterIds||[]; bankImports=d.bankImports||[];
+      bizEinv=d.bizEinv||null; signedLetterIds=d.signedLetterIds||[]; bankImports=d.bankImports||[]; bizSalesInvoices=d.bizSalesInvoices||[];
+      vatDrafts=d.vatDrafts||{}; ctDrafts=d.ctDrafts||{};
       bizRevenueBand=d.bizRevenueBand||null;
       bizCompany=d.companyProfile||{};
       signoffPin=d.signoffPin||null;
@@ -3423,7 +3424,7 @@ function logout(){
   onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null; bizRevenueBand=null;
   bizCompany={}; clientProfiles={}; ctR={}; ctDrafts={};
-  invoiceInbox=[]; bizRenewals=[]; bizCompanies=null; bizActiveCo='c1'; bankImports=[];
+  invoiceInbox=[]; bizRenewals=[]; bizCompanies=null; bizActiveCo='c1'; bankImports=[]; bizSalesInvoices=[];
   ctSBRon=false; ctMNEon=false; ctStep=0; ctClient=''; ctTP={}; ctTPsource='';
   linkedFirm=''; linkedFirmId=''; inviteCode=''; firmPlanVal=null;
   clearRememberedLogins();
@@ -3836,6 +3837,7 @@ dash:()=>{
   ${bizSignCardHTML()}
   ${bizSvcInvoicesCardHTML()}
   ${businessHealthCard()}
+  ${bizComplianceCardHTML()}
   ${urgent.length ? `
   <div class="banner">
     <div style="color:var(--amber)">${svgIcon('warn',30)}</div>
@@ -4400,24 +4402,26 @@ reminders:()=>`
 vat:()=>{
   const N=5;
   return `
-  ${cpCrumb()}
+  ${_isBiz()?'':cpCrumb()}
   <h1>VAT</h1>
   <div class="sub">Calculate VAT at the UAE standard 5% rate, build the client's VAT201 boxes and share the draft return for their sign-off.</div>
 
   <div class="card mb14" style="border-color:var(--accent)">
     <div class="grid g2" style="align-items:end">
-      <div><label class="flabel">Preparing for client</label>
+      <div>${_isBiz()
+        ? `<label class="flabel">Preparing for</label><div style="font-size:15px;font-weight:700;padding:8px 0 3px">${ctEsc(bizCompany.legal||currentAccount.name||'Your company')} <span class="pill p-teal" style="font-size:10px">You</span></div>`
+        : `<label class="flabel">Preparing for client</label>
         <select class="finput" onchange="vatSelectClient(this.value)">
           <option value="">— No client selected —</option>
           ${activeFirmClients().map(c=>`<option value="${c.id}" ${vatClient===c.id?'selected':''}>${ctEsc(c.name)}${c.manual?' · managed by you':''}</option>`).join('')}
-        </select></div>
+        </select>`}</div>
       <div style="display:flex;gap:8px;align-items:end;justify-content:flex-end;flex-wrap:wrap;padding-bottom:2px">
         <button class="btn ghost sm" onclick="vatDraftSave(true)">${svgIcon('download',13)} Save draft</button>
         <button class="btn ghost sm" onclick="vatStartNew()">${svgIcon('doc-new',13)} Start new</button>
         <span class="muted" style="font-size:11.5px;align-self:center" id="vatDraftStatus"></span>
       </div>
     </div>
-    <div class="muted" id="vatClientNote" style="font-size:12px;margin-top:6px">${vatClient?'':'Pick the client this VAT return is for — the invoice import and share flow follow it. Figures save automatically as you type.'}</div>
+    <div class="muted" id="vatClientNote" style="font-size:12px;margin-top:6px">${_isBiz()?'Your own VAT return \u2014 figures save automatically as you type, and you can leave and resume any time.':(vatClient?'':'Pick the client this VAT return is for — the invoice import and share flow follow it. Figures save automatically as you type.')}</div>
   </div>
   ${vatDraftsCardHTML()}
   <div class="card mb14">
@@ -4431,13 +4435,21 @@ vat:()=>{
     <input type="file" id="invFile" multiple accept="image/png,image/jpeg,image/webp,application/pdf" style="display:none" onchange="handleInvoiceFile(this)">
     <div id="invStatus" style="display:none;margin-top:12px"></div>
     <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)">
+      ${_isBiz()?`
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+        <div><label class="flabel">Or import from your Invoice inbox</label>
+          <input id="impQuarter" class="finput" placeholder="Quarter — e.g. Q3 2026 (blank = all)" style="min-width:220px"></div>
+        <button class="btn ghost" onclick="importOwnInvoices()">${svgIcon('inbox',15)} Import my invoices</button>
+      </div>
+      <p class="muted" style="font-size:11.5px;margin-top:7px">Everything you dropped into your Invoices tab all period — already read and categorised — lands straight in the tables below.</p>
+      `:`
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
         <div><label class="flabel">Or import from a client's Invoice inbox</label>
           <select id="impClient" class="finput" style="min-width:190px">${activeMyClients().map(c=>`<option value="${c.business_id}">${ctEsc(c.business_name)}</option>`).join('')||'<option value="">No linked clients</option>'}</select></div>
         <div><label class="flabel">Quarter (blank = all)</label><input id="impQuarter" class="finput" placeholder="e.g. Q3 2026" style="max-width:130px"></div>
         <button class="btn ghost" onclick="importClientInvoices()">${svgIcon('inbox',15)} Import client invoices</button>
       </div>
-      <p class="muted" style="font-size:11.5px;margin-top:7px">Pulls the invoices your client has dropped into their Invoices tab all period — already OCR-read and categorised — straight into the tables below.</p>
+      <p class="muted" style="font-size:11.5px;margin-top:7px">Pulls the invoices your client has dropped into their Invoices tab all period — already OCR-read and categorised — straight into the tables below.</p>`}
     </div>
   </div>
 
@@ -4543,7 +4555,7 @@ vat:()=>{
     <div class="cardhead"><h3>Export &amp; share</h3><span class="muted" style="font-size:12px">Your typed figures are kept</span></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn" onclick="exportVAT()">${svgIcon('download',15)} Export to Excel</button>
-      <button class="btn ghost" onclick="toggleShareVAT()">${svgIcon('share',15)} Share report to Business</button>
+      ${_isBiz()?'':`<button class="btn ghost" onclick="toggleShareVAT()">${svgIcon('share',15)} Share report to Business</button>`}
     </div>
     <div id="shareVATPanel" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
       <div class="grid g3" style="margin-bottom:12px">
@@ -4560,18 +4572,20 @@ vat:()=>{
   </div>`;
 },
 ct:()=>`
-  ${cpCrumb()}
+  ${_isBiz()?'':cpCrumb()}
   <h1>Corporate Tax</h1>
   <div class="sub">Prepare the Corporate Tax return page by page, mirroring the EmaraTax filing — Taxpayer Details through Tax Liability &amp; Credits. Pick the client and their company profile fills the details automatically; every return saves as a draft per client so you can resume where you left off.</div>
 
   <div class="card mb14" style="border-color:var(--accent)">
     <div class="cardhead"><h3>${svgIcon('file-text',16)} Corporate Tax return — FTA structure</h3><span class="pill p-teal">EmaraTax-ready</span></div>
     <div class="grid g2" style="margin-bottom:12px;align-items:end">
-      <div><label class="flabel">Prepare for client</label>
+      <div>${_isBiz()
+        ? `<label class="flabel">Preparing for</label><div style="font-size:15px;font-weight:700;padding:8px 0 3px">${ctEsc(bizCompany.legal||currentAccount.name||'Your company')} <span class="pill p-teal" style="font-size:10px">You</span></div>`
+        : `<label class="flabel">Prepare for client</label>
         <select id="ctClientSel" class="finput" onchange="ctSelectClient(this.value)">
           <option value="">— No client selected (manual entry) —</option>
           ${activeFirmClients().map(c=>`<option value="${c.id}" ${ctClient===c.id?'selected':''}>${ctEsc(c.name)}${c.manual?' · managed by you':''}</option>`).join('')}
-        </select></div>
+        </select>`}</div>
       <div class="muted" id="ctTPsrcNote" style="font-size:12px;padding-bottom:9px">${ctTPsourceNote()}</div>
     </div>
     <div id="ctWizChips">${ctWizChipsHTML()}</div>
@@ -4606,6 +4620,7 @@ ct:()=>`
     </div>
   </div>
 
+  ${_isBiz()?'':`
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('share',16)} Share draft return to Business</h3><span class="muted" style="font-size:12px">Send this return for review &amp; sign-off</span></div>
     <div class="grid g3" style="margin-bottom:10px">
@@ -4617,7 +4632,7 @@ ct:()=>`
     <p class="muted" style="font-size:12px;margin:-2px 0 10px">The business reviews the draft — including the Taxable Person details — then approves &amp; signs or requests changes, with a full audit trail.</p>
     <button class="btn" onclick="shareCTReturn()">${svgIcon('share',14)} Share draft return in-app</button>
     <div id="ctShareMsg" style="display:none;margin-top:14px"></div>
-  </div>
+  </div>`}
 
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('calc',16)} Quick estimate</h3><span class="muted" style="font-size:12px">What-if — does not touch the return</span></div>
@@ -5753,7 +5768,8 @@ var vatDrafts={};     /* firm VAT drafts, one per client — {key:{savedAt,clien
 var _vatDraftT=null;
 function vatDraftKey(){ return vatClient||'_manual'; }
 function vatDraftSave(manual){
-  if(page!=='vat') return;
+  var vatOpen = page==='vat' || ((page==='bvat'||page==='bvat201') && typeof bizFullReturns==='function' && bizFullReturns());
+  if(!vatOpen) return;
   var vals={}, any=false;
   document.querySelectorAll('#main input[id], #main select[id]').forEach(function(el){
     if(el.type==='file'||el.type==='checkbox'||el.type==='radio') return;
@@ -5763,7 +5779,8 @@ function vatDraftSave(manual){
   });
   if(!any && !manual) return;   /* nothing typed yet — nothing worth saving */
   var fc=(firmClients||[]).find(function(x){return x.id===vatClient;});
-  vatDrafts[vatDraftKey()]={ savedAt:new Date().toISOString(), clientName:fc?fc.name:'Unassigned draft', vals:vals };
+  var dn=fc?fc.name:(typeof _isBiz==='function'&&_isBiz()?((bizCompany&&bizCompany.legal)||(currentAccount&&currentAccount.name)||'My return'):'Unassigned draft');
+  vatDrafts[vatDraftKey()]={ savedAt:new Date().toISOString(), clientName:dn, vals:vals };
   saveAccountData();
   var el=document.getElementById('vatDraftStatus');
   if(el) el.innerHTML=svgIcon('success',11)+' Draft saved '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
@@ -5816,8 +5833,9 @@ function vatDraftsCardHTML(){
 /* auto-save as the accountant types, without them thinking about it */
 if(!window.__vatAutoSave){ window.__vatAutoSave=true;
   document.addEventListener('input', function(e){
-    if(page!=='vat') return;
-    if(!currentAccount||currentAccount.role!=='firm') return;
+    var vatOpen = page==='vat' || ((page==='bvat'||page==='bvat201') && typeof bizFullReturns==='function' && bizFullReturns());
+    if(!vatOpen) return;
+    if(!currentAccount||(currentAccount.role!=='firm'&&!bizFullReturns())) return;
     if(!e.target||!e.target.id) return;
     clearTimeout(_vatDraftT);
     _vatDraftT=setTimeout(function(){ try{ vatDraftSave(false); }catch(err){} }, 1500);
@@ -6475,10 +6493,10 @@ var PLANS={
   business:[
     {id:'biz_free', name:'Free', sub:'Stay compliant', price:0, seats:1, segment:'business', maxCo:1,
      blurb:'The compliance dashboard, calendar and your accountant link, with your figures typed in by hand.',
-     features:{ binv:false, bvat:true,  baudit:false, bank:false, multiCo:false, approveReturns:true, vault:false, ai:false, advSec:false }},
+     features:{ binv:false, bvat:true,  baudit:false, bank:false, multiCo:false, approveReturns:true, vault:false, ai:false, advSec:false, fullReturns:false }},
     {id:'biz_essentials', name:'Essentials', sub:'The whole workflow', price:49, seats:4, segment:'business', maxCo:1,
-     blurb:'The document vault, AI document and invoice reading, the bank statement drop and the advanced security controls.',
-     features:{ binv:true,  bvat:true,  baudit:false, bank:true,  multiCo:false, approveReturns:true, vault:true,  ai:true,  advSec:true }},
+     blurb:'The full FTA return templates, document vault, AI document and invoice reading, the bank statement drop and the advanced security controls.',
+     features:{ binv:true,  bvat:true,  baudit:false, bank:true,  multiCo:false, approveReturns:true, vault:true,  ai:true,  advSec:true, fullReturns:true }},
     {id:'biz_complete', name:'Complete', sub:'Everything, one company', price:99, seats:10, segment:'business', maxCo:1,
      blurb:'Every feature HisabOne has, including full audit processes, for a single company.',
      features:{ binv:true,  bvat:true,  baudit:true,  bank:true,  multiCo:false, approveReturns:true, vault:true,  ai:true,  advSec:true }},
@@ -6537,6 +6555,19 @@ var PLAN_FEATURES=(function(){
 })();
 function bizPlanObj(){ return normalisePlan('business', currentAccount&&currentAccount.plan); }
 function bizPlan(){ return bizPlanObj().id; }
+/* v23: a business with no linked firm works standalone; Essentials+ opens the
+   same full FTA return templates the accountant portal uses. */
+function _isBiz(){ return !!(currentAccount&&currentAccount.role==='business'); }
+function bizStandalone(){ return _isBiz() && !linkedFirm; }
+function bizFullReturns(){ return bizStandalone() && planAllows('fullReturns'); }
+function bizFullReturnsBannerHTML(kind){
+  if(!bizStandalone() || planAllows('fullReturns')) return '';
+  return '<div class="banner mb14" style="border-color:var(--accent)">'
+    +'<div style="color:var(--accent)">'+svgIcon('sparkles',28)+'</div>'
+    +'<div style="flex:1"><div class="big">Working without an accountant?</div>'
+    +'<div style="opacity:.75;font-size:13px">Essentials opens the full FTA '+(kind==='ct'?'Corporate Tax return, page by page as filed on EmaraTax':'VAT201 template with AI invoice reading')+' \u2014 the same one accounting firms use on HisabOne \u2014 with drafts that save as you type.</div></div>'
+    +'<button class="btn" onclick="upsell(\'fullReturns\',\'the full FTA return templates\')">See plans</button></div>';
+}
 function planAllows(f){
   if(!currentAccount||currentAccount.role!=='business') return true;
   var fe=bizPlanObj().features;
@@ -6763,6 +6794,93 @@ function invPosition(q){
 function invSetUpType(t){ invUpType=t; var a=document.getElementById('invTypP'), b=document.getElementById('invTypS'); if(a&&b){ a.classList.toggle('on',t==='purchase'); b.classList.toggle('on',t==='sale'); } }
 function invSetFilter(q){ invFilterQ=q; renderPage(); }
 function invMoney(n){ return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+/* ---- sales invoices the business issues to ITS customers (v22) ---- */
+var bizSalesInvoices=[];   /* [{id,number,customer,items:[{d,amt}],subtotal,vat,total,date,note}] persisted in biz blob */
+var siFormOpen=false, _siItems=[{d:'',amt:''}];
+function siToggleForm(){ siFormOpen=!siFormOpen; _siItems=[{d:'',amt:''}]; renderPage(); }
+function _siReadItems(){ _siItems=_siItems.map(function(it,i){ var d=document.getElementById('siD'+i), a=document.getElementById('siA'+i); return {d:d?d.value:it.d, amt:a?a.value:it.amt}; }); }
+function siAddItem(){ _siReadItems(); _siItems.push({d:'',amt:''}); renderPage(); }
+function siNextNumber(){ return 'INV-'+new Date().getFullYear()+'-'+String((bizSalesInvoices||[]).length+1).padStart(3,'0'); }
+function siCreate(){
+  if(!bizGuard()) return;
+  _siReadItems();
+  var g=function(id){ var e=document.getElementById(id); return e?e.value:''; };
+  var customer=(g('siCust')||'').trim(); if(!customer){ toast('Who is the invoice for? Enter the customer\u2019s name.'); return; }
+  var items=_siItems.map(function(it){ return {d:(it.d||'').trim(), amt:Math.max(0,parseFloat(it.amt)||0)}; }).filter(function(it){ return it.d&&it.amt>0; });
+  if(!items.length){ toast('Add at least one line with a description and an amount.'); return; }
+  var sub=items.reduce(function(a,it){return a+it.amt;},0);
+  var vat=(g('siVat')==='yes')?+(sub*0.05).toFixed(2):0;
+  var inv={ id:'si_'+Date.now().toString(36), number:g('siNum')||siNextNumber(), customer:customer,
+    items:items, subtotal:+sub.toFixed(2), vat:vat, total:+(sub+vat).toFixed(2),
+    date:new Date().toISOString().slice(0,10), note:g('siNote')||'' };
+  bizSalesInvoices.unshift(inv);
+  /* the sale flows straight into the invoice inbox, so the VAT position updates itself */
+  invoiceInbox.unshift({ id:'inv_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), type:'sale',
+    vendor:customer, date:inv.date, net:inv.subtotal, vat:inv.vat, rate:inv.vat>0?5:0, cat:'Sales', q:invQuarterOf(inv.date) });
+  saveAccountData(); siFormOpen=false;
+  toast('Invoice '+inv.number+' created \u2014 added to your VAT position automatically.');
+  renderPage();
+}
+function siDelete(id){
+  var inv=(bizSalesInvoices||[]).find(function(x){return x.id===id;}); if(!inv) return;
+  openConfirm({title:'Delete invoice', confirmLabel:'Delete',
+    message:'Delete '+inv.number+' to '+inv.customer+'? Its entry in the invoice inbox is not removed automatically \u2014 take it out there too if the sale never happened.',
+    onYes:function(){ bizSalesInvoices=bizSalesInvoices.filter(function(x){return x.id!==id;}); saveAccountData(); toast('Invoice deleted.'); renderPage(); }});
+}
+function siPrint(id){
+  var inv=(bizSalesInvoices||[]).find(function(x){return x.id===id;}); if(!inv) return;
+  var co=bizCompany||{};
+  var rows=inv.items.map(function(it){ return '<tr><td style="padding:8px 10px;border-bottom:1px solid #eee">'+ctEsc(it.d)+'</td><td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:right">'+it.amt.toFixed(2)+'</td></tr>'; }).join('');
+  var html='<!doctype html><html><head><meta charset="utf-8"><title>'+ctEsc(inv.number)+'</title></head>'
+    +'<body style="font-family:Segoe UI,Arial,sans-serif;color:#232336;max-width:680px;margin:40px auto;padding:0 20px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
+    +'<div><div style="font-size:22px;font-weight:800">'+ctEsc(co.legal||(currentAccount&&currentAccount.name)||'')+'</div>'
+    +'<div style="font-size:12px;color:#6e6e85">'+ctEsc(co.address||'')+(co.emirate?(' \u00b7 '+ctEsc(co.emirate)):'')+'</div>'
+    +(co.vatTrn?'<div style="font-size:12px;color:#6e6e85">TRN: '+ctEsc(co.vatTrn)+'</div>':'')
+    +'</div><div style="text-align:right"><div style="font-size:19px;font-weight:800;color:#5a3fff">TAX INVOICE</div>'
+    +'<div style="font-size:13px">'+ctEsc(inv.number)+'</div><div style="font-size:12px;color:#6e6e85">'+ctEsc(inv.date)+'</div></div></div>'
+    +'<div style="margin-top:26px;font-size:13px"><b>Billed to:</b> '+ctEsc(inv.customer)+'</div>'
+    +'<table style="width:100%;border-collapse:collapse;margin-top:14px;font-size:13px"><tr style="background:#f3f1fb"><th style="text-align:left;padding:8px 10px">Description</th><th style="text-align:right;padding:8px 10px">AED</th></tr>'+rows+'</table>'
+    +'<table style="width:280px;margin-left:auto;margin-top:10px;font-size:13px">'
+    +'<tr><td style="padding:4px 10px">Subtotal</td><td style="text-align:right;padding:4px 10px">'+inv.subtotal.toFixed(2)+'</td></tr>'
+    +'<tr><td style="padding:4px 10px">VAT (5%)</td><td style="text-align:right;padding:4px 10px">'+inv.vat.toFixed(2)+'</td></tr>'
+    +'<tr style="font-weight:800;font-size:15px"><td style="padding:6px 10px;border-top:2px solid #232336">Total AED</td><td style="text-align:right;padding:6px 10px;border-top:2px solid #232336">'+inv.total.toFixed(2)+'</td></tr></table>'
+    +(inv.note?'<div style="margin-top:16px;font-size:12px;color:#6e6e85">'+ctEsc(inv.note)+'</div>':'')
+    +'<div style="margin-top:34px;font-size:10.5px;color:#9a9ab0">Generated with HisabOne \u00b7 hisabone.ae</div>'
+    +'<script>window.print()<\/script></body></html>';
+  var w=window.open('','_blank'); if(!w){ toast('Allow pop-ups to print the invoice.'); return; }
+  w.document.write(html); w.document.close();
+}
+function salesInvoicesCardHTML(){
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('share',16)+' Invoices you issue '+infoTip('Create numbered, VAT-compliant invoices for your own customers. Each sale drops straight into the inbox below, so your running VAT position includes it instantly. From 2027 these must travel as structured e-invoices \u2014 HisabOne is building for that.')+'</h3>'
+    +'<button class="btn sm" onclick="siToggleForm()">'+(siFormOpen?'Close':'+ New invoice')+'</button></div>'
+    +(siFormOpen?
+      '<div style="background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px">'
+      +'<div class="grid g3" style="gap:11px">'
+      +'<div><label class="flabel">Customer</label><input id="siCust" class="finput" placeholder="e.g. Desert Rose Caf\u00e9 LLC"></div>'
+      +'<div><label class="flabel">Invoice number</label><input id="siNum" class="finput" value="'+siNextNumber()+'"></div>'
+      +'<div><label class="flabel">Add 5% VAT</label><select id="siVat" class="finput"><option value="yes">Yes</option><option value="no">No (zero-rated / exempt)</option></select></div>'
+      +'</div>'
+      +'<label class="flabel" style="margin-top:11px">Lines</label>'
+      +_siItems.map(function(it,i){ return '<div style="display:flex;gap:9px;margin-bottom:7px">'
+        +'<input id="siD'+i+'" class="finput" style="flex:1" placeholder="e.g. Consulting \u2014 September" value="'+ctEsc(it.d||'')+'">'
+        +'<input id="siA'+i+'" class="finput" style="max-width:130px;text-align:right" type="number" min="0" step="0.01" placeholder="AED" value="'+ctEsc(String(it.amt||''))+'"></div>'; }).join('')
+      +'<button class="btn ghost sm" onclick="siAddItem()">+ Line</button>'
+      +'<div style="margin-top:10px"><label class="flabel">Note (bank details, PO ref\u2026)</label><input id="siNote" class="finput" placeholder="Optional"></div>'
+      +'<button class="btn" style="margin-top:12px" onclick="siCreate()">Create invoice</button></div>'
+      :'')
+    +((bizSalesInvoices||[]).length ? bizSalesInvoices.map(function(inv){
+        return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('file-text',15)+'</div>'
+          +'<div style="flex:1;min-width:0"><div class="dtitle" style="font-size:13px">'+ctEsc(inv.number)+' \u2014 '+ctEsc(inv.customer)+'</div>'
+          +'<div class="dmeta">'+ctEsc(inv.date)+' \u00b7 '+inv.items.length+' line'+(inv.items.length===1?'':'s')+(inv.vat?' \u00b7 incl. 5% VAT':'')+'</div></div>'
+          +'<b style="font-size:13.5px">AED '+inv.total.toLocaleString('en-US',{minimumFractionDigits:2})+'</b>'
+          +'<button class="btn ghost sm" onclick="siPrint(\''+inv.id+'\')">'+svgIcon('download',13)+' Print / PDF</button>'
+          +'<button class="iconbtn" title="Delete" onclick="siDelete(\''+inv.id+'\')">'+svgIcon('trash',14)+'</button></div>';
+      }).join('')
+      : '<div class="muted emptybox">Nothing issued yet \u2014 your first invoice takes under a minute, and lands in your VAT position by itself.</div>')
+    +'</div>';
+}
 /* ---- bank statement drop: CSV in, a readable quarter summary out ---- */
 var bankImports=[];   /* [{name, at, rows, inflow, outflow, largest:[{d,desc,amt}]}] persisted in biz blob */
 function filingHistoryCardHTML(){
@@ -6779,6 +6897,7 @@ function filingHistoryCardHTML(){
     }).join('')+'</div>';
 }
 function bankHandleFile(inp){
+  if(!bizGuard()) return;
   var f=inp.files&&inp.files[0]; if(!f) return;
   var reader=new FileReader();
   reader.onload=function(){
@@ -6826,6 +6945,11 @@ function bankParseCSV(txt){
 }
 function bankDeleteImport(i){ bankImports.splice(i,1); saveAccountData(); renderPage(); }
 function bankDropCardHTML(){
+  if(_isBiz()&&!planAllows('bank')){
+    return '<div class="card mb14" style="opacity:.85"><div class="cardhead"><h3>'+svgIcon('inbox',16)+' Bank statement drop</h3><span class="pill p-gray">'+planNeededFor('bank')+' plan</span></div>'
+      +'<div class="muted" style="font-size:12.5px">Drop a CSV export from your bank and HisabOne totals the money in and out for the period \u2014 a sanity check before every return. Part of the '+planNeededFor('bank')+' plan.</div>'
+      +'<button class="btn sm" style="margin-top:10px" onclick="upsell(\'bank\',\'the bank statement drop\')">Unlock</button></div>';
+  }
   return '<div class="card mb14">'
     +'<div class="cardhead"><h3>'+svgIcon('inbox',16)+' Bank statement drop '+infoTip('Upload a CSV export from your bank \u2014 HisabOne reads the dates and amounts, totals the money in and out, and lists the largest movements. A quick sanity check next to your invoice inbox before a return is filed. Only the summary is kept, never your full statement.')+'</h3>'
     +'<button class="btn sm" onclick="document.getElementById(\'bankFile\').click()">'+svgIcon('plus',13)+' Upload CSV</button>'
@@ -6856,6 +6980,7 @@ function invPageHTML(){
   }).join('');
   return '<h1>Invoices</h1>'
   +'<div class="sub">Drop invoices in all period long — HisabOne reads each one with AI, categorises it and keeps a running VAT position. At filing time your accountant imports the whole set in one click.</div>'
+  +salesInvoicesCardHTML()
   +bankDropCardHTML()
   +'<div class="grid g4 mb14">'
   +'<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Output VAT (sales)</div><div style="font-size:19px;font-weight:700">'+invMoney(pos.out)+'</div></div>'
@@ -6939,6 +7064,33 @@ function invDelete(id){
   if(!bizGuard()) return;
   var it=(invoiceInbox||[]).find(function(x){return x.id===id;}); if(!it) return;
   openConfirm({title:'Remove invoice', confirmLabel:'Remove', message:'Remove "'+ctEsc(it.vendor||'this invoice')+'" from your inbox?', onYes:function(){ invoiceInbox=invoiceInbox.filter(function(x){return x.id!==id;}); saveAccountData(); renderPage(); }});
+}
+function importOwnInvoices(){
+  var q=((document.getElementById('impQuarter')||{}).value||'').trim();
+  var items=(invoiceInbox||[]);
+  if(!items.length){ toast('Your Invoice inbox is empty \u2014 drop invoices in on the Invoices tab first.'); return; }
+  var n=0;
+  items.forEach(function(it){
+    if(q && (it.q||'').toLowerCase()!==q.toLowerCase()) return;
+    var inv={vendor:it.vendor, netAmount:it.net, vatAmount:it.vat, vatRatePercent:it.rate, category:it.cat, description:it.vendor};
+    var out=applyInvoiceToCalculator(inv, it.type==='sale'?'s':'p', it.vendor||'invoice');
+    if(out.ok) n++;
+  });
+  toast(n? (n+' invoice'+(n===1?'':'s')+' imported \u2014 verify against the originals') : ('No invoices matched '+(q||'the filter')));
+}
+function bizPrefillCtTP(){
+  if(ctTP&&ctTP.legal) return;                    /* a draft or typed data wins */
+  var p=bizCompany||{};
+  if(!p.legal&&!p.vatTrn&&!p.fyEnd) return;       /* nothing to prefill from */
+  ctR=ctR||{}; 
+  ctTP={legal:p.legal||'', entityType:p.entityType||'', license:p.license||'', authority:p.authority||'',
+        jurisdiction:p.jurisdiction||jurisdictionForAuthority(p.authority)||'',
+        vatTrn:p.vatTrn||'', ctTrn:p.ctTrn||'', fyEnd:p.fyEnd||'', emirate:p.emirate||'', address:p.address||'', street:p.address||'',
+        country:'United Arab Emirates', email:p.cEmail||'', mobile:p.cPhone||'',
+        cName:p.cName||'', cRole:p.cRole||'', cEmail:p.cEmail||'', cPhone:p.cPhone||''};
+  ctTPsource='profile';
+  ctEntity=(p.authority&&typeof FREEZONE_AUTHORITIES!=='undefined'&&FREEZONE_AUTHORITIES.indexOf(p.authority)>-1)?'freezone':'mainland';
+  ctR.fzReg=(ctEntity==='freezone')?'Yes':'No';
 }
 async function importClientInvoices(){
   var sel=document.getElementById('impClient'); var bizId=sel?sel.value:'';
@@ -9678,6 +9830,52 @@ async function signLetter(dbId){
     renderPage();
   }catch(e){ toast('Could not record the signature \u2014 '+((e&&e.message)||'try again.')); }
 }
+/* ---- the business's own auto-derived compliance timeline (v22) ---- */
+function bizAuditRequirement(){
+  var fz=!!(bizCompany&&bizCompany.authority && typeof FREEZONE_AUTHORITIES!=='undefined' && FREEZONE_AUTHORITIES.indexOf(bizCompany.authority)>-1);
+  if(fz) return {req:true, why:'Free-zone licensee \u2014 every Qualifying Free Zone Person must file audited financial statements, regardless of size (FY2025 rules)'};
+  if(bizRevenueBand==='ge50m') return {req:true, why:'Revenue above AED 50m \u2014 audited financial statements are mandatory'};
+  return {req:false, why:'Mainland with revenue below AED 50m \u2014 no mandatory audit unless part of a tax group'};
+}
+function bizComplianceEvents(){
+  var ev=[];
+  var fye=_fyEndDate(bizCompany&&bizCompany.fyEnd);
+  if(fye){
+    var ctDue=_isoAddMonths(fye,9);
+    ev.push({type:'ct', ic:'clipboard', label:'Corporate Tax return + payment (FY ended '+calFmt(fye)+')', date:ctDue, hint:'Due nine months after your financial year end. Late payment accrues a flat 14% annual interest (FTA rules from 14 Apr 2026).'});
+    var ar=bizAuditRequirement();
+    if(ar.req) ev.push({type:'audit', ic:'shield', label:'Audited financial statements', date:ctDue, hint:ar.why+' \u2014 filed with the CT return.'});
+  }
+  var certVat=(calendarEvents||[]).some(function(e){return e.type==='vat';});
+  var trn=String((bizCompany&&bizCompany.vatTrn)||'').replace(/\D/g,'');
+  if(!certVat && trn.length>=5){
+    var now=new Date(todayISO()+'T00:00:00Z');
+    var q=Math.floor(now.getUTCMonth()/3);
+    var qEnd=new Date(Date.UTC(now.getUTCFullYear(), q*3+3, 0));
+    var due=new Date(Date.UTC(qEnd.getUTCFullYear(), qEnd.getUTCMonth()+1, 28));
+    if(due<now){ qEnd=new Date(Date.UTC(now.getUTCFullYear(), q*3+6, 0)); due=new Date(Date.UTC(qEnd.getUTCFullYear(), qEnd.getUTCMonth()+1, 28)); }
+    ev.push({type:'vat', ic:'file-text', label:'VAT return \u2014 Q'+(Math.floor(qEnd.getUTCMonth()/3)+1)+' '+qEnd.getUTCFullYear(), date:due.toISOString().slice(0,10), hint:'Assumed calendar-quarter stagger \u2014 upload your VAT certificate in Company Information and the exact dates take over.'});
+  }
+  var lic=(vaultDocs||[]).find(function(d){return d.typeId==='trade_license'&&d.expiryDate;});
+  if(lic) ev.push({type:'licence', ic:'building', label:'Trade licence renewal', date:lic.expiryDate, hint:'Read from the licence in your document vault.'});
+  ev=ev.filter(function(e){return !!e.date;});
+  ev.sort(function(a,b){ return a.date<b.date?-1:1; });
+  return ev;
+}
+function bizComplianceCardHTML(){
+  var ev=bizComplianceEvents();
+  var ar=bizAuditRequirement();
+  if(!ev.length) return '';
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('calendar',16)+' Your compliance timeline '+infoTip('Generated automatically from your company profile \u2014 financial year end, TRN, licence expiry and licensing authority. Keep the profile complete and the dates keep themselves. Estimates, not tax advice.')+'</h3>'
+    +'<span class="pill '+(ar.req?'p-amber':'p-gray')+'" title="'+ctEsc(ar.why)+'">'+(ar.req?'Audit required':'No mandatory audit')+'</span></div>'
+    +ev.map(function(e){
+      return '<div class="drow"><div style="color:var(--accent)">'+svgIcon(e.ic,16)+'</div>'
+        +'<div style="flex:1;min-width:0"><div class="dtitle" style="display:flex;align-items:center;gap:6px">'+ctEsc(e.label)+(e.hint?infoTip(e.hint):'')+'</div>'
+        +'<div class="dmeta">'+calFmt(e.date)+'</div></div>'+compliancePill(e.date)+'</div>';
+    }).join('')
+    +'</div>';
+}
 var bizEinv=null; /* {phase, asp, steps:{}} — persisted in the business blob */
 function bizEinvCardHTML(){
   var e=bizEinv||{phase:'',asp:'',steps:{}};
@@ -10673,6 +10871,7 @@ async function mfaVerifiedFactor(){
 }
 async function mfaOpen(){
   if(_sampleMode||!sb||!currentAccount){ toast('Two-factor auth is set up from a real account.'); return; }
+  if(_isBiz()&&!planAllows('advSec')){ upsell('advSec','Two-factor authentication'); return; }
   var h=document.getElementById('mfaModal');
   if(!h){ h=document.createElement('div'); h.id='mfaModal'; h.className='modal-overlay'; document.body.appendChild(h);
     h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
@@ -13295,9 +13494,9 @@ function bctPageHTML(){
 PAGES.settings = function(){ return settingsPageHTML(); };
 /* The VAT sub-tab is the calculator and the VAT201 return on one page.
    'bvat201' is kept as an alias so every existing link still lands correctly. */
-PAGES.bvat     = function(){ return bvat201PageHTML(); };
-PAGES.bvat201  = function(){ return bvat201PageHTML(); };
-PAGES.bct      = function(){ return bctPageHTML(); };
+PAGES.bvat     = function(){ return bizFullReturns() ? PAGES.vat() : (bizFullReturnsBannerHTML('vat')+bvat201PageHTML()); };
+PAGES.bvat201  = function(){ return bizFullReturns() ? PAGES.vat() : (bizFullReturnsBannerHTML('vat')+bvat201PageHTML()); };
+PAGES.bct      = function(){ if(bizFullReturns()){ bizPrefillCtTP(); return PAGES.ct(); } return bizFullReturnsBannerHTML('ct')+bctPageHTML(); };
 PAGES.fdocs    = function(){ return fdocsPageHTML(); };
 
 /* ---------- Persistence: pack / unpack the v2 state ---------- */

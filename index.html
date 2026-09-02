@@ -2238,9 +2238,9 @@ async function flushAccountData(){
   if(!currentAccount||!sb||!_blobDirty||_sampleMode) return; _blobDirty=false;
   const cleanVault=(vaultDocs||[]).map(function(d){ var o={}; for(var k in d){ if(k!=='_up'&&k!=='uploading'&&k!=='uploadError'&&Object.prototype.hasOwnProperty.call(d,k)) o[k]=d[k]; } return o; });
   const data = currentAccount.role==='business'
-    ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, companyProfile:bizCompany,
-       invoiceInbox:invoiceInbox, renewals:bizRenewals, companies:snapshotCompanies(cleanVault), activeCompany:bizActiveCo, signoffPin:signoffPin}
-    : {firmReminders, clientMeta, ctScenarios, ctDrafts, vatDrafts, notifSeen, onboardDismissed, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
+    ? {vaultDocs:cleanVault, notifSeen, calendarEvents, vatCertMeta, ctCertMeta, onboardDismissed, bizRevenueBand, bizEinv:bizEinv, companyProfile:bizCompany,
+       invoiceInbox:invoiceInbox, renewals:bizRenewals, companies:snapshotCompanies(cleanVault), activeCompany:bizActiveCo, signoffPin:signoffPin, signedLetterIds:signedLetterIds, bankImports:bankImports}
+    : {firmReminders, clientMeta, ctScenarios, ctDrafts, vatDrafts, notifSeen, onboardDismissed, recurringJobs:recurringJobs, ownerDigest:(currentAccount.teamRole==='owner'?(currentAccount.digestFreq||'off'):undefined)};
   /* v2: working mode, period figures, firm plan, manual clients, document register */
   try{
     var v2 = currentAccount.role==='business'
@@ -2325,6 +2325,7 @@ async function loadWorkspace(){
     if(currentAccount.role==='business'){
       vaultDocs=d.vaultDocs||[]; notifSeen=d.notifSeen||[];
       calendarEvents=d.calendarEvents||[]; vatCertMeta=d.vatCertMeta||null; ctCertMeta=d.ctCertMeta||null; calYear=null; calMonth=null;
+      bizEinv=d.bizEinv||null; signedLetterIds=d.signedLetterIds||[]; bankImports=d.bankImports||[];
       bizRevenueBand=d.bizRevenueBand||null;
       bizCompany=d.companyProfile||{};
       signoffPin=d.signoffPin||null;
@@ -2348,8 +2349,11 @@ async function loadWorkspace(){
         const row={id:r.id,name:r.doc,note:r.app?('For: '+r.app):'',due:r.due||'—',urg:r.urgency,risk:r.risk,state:r.state==='done'?'done':'req',file:r.file_url||null,fileName:r.file_name||null};
         (r.kind==='tax'?bizTaxDocs:bizAuditDocs).push(row);
       });
+      try{ const {data:si}=await sb.from('service_invoices').select('*').eq('business_id',fid).neq('status','draft').order('created_at',{ascending:false}); svcInvoices=si||[]; }catch(e){ svcInvoices=[]; }
     } else {
       firmReminders=d.firmReminders||[]; clientMeta=d.clientMeta||{}; ctScenarios=d.ctScenarios||[]; ctDrafts=d.ctDrafts||{}; vatDrafts=d.vatDrafts||{}; notifSeen=d.notifSeen||[];
+      recurringJobs=d.recurringJobs||[];
+      setTimeout(function(){ try{ processRecurringJobs(); }catch(e){} }, 400);
       if(currentAccount.teamRole==='owner') currentAccount.digestFreq=d.ownerDigest||'off';
       if(typeof firmV2Unpack==='function') firmV2Unpack(d);
       inviteCode=currentAccount.inviteCode||'';
@@ -2369,6 +2373,10 @@ async function loadWorkspace(){
         (r.kind==='tax'?firmTaxReqs:firmAuditReqs).push(row);
       });
       rebuildFirmClients();
+      try{ const {data:si}=await sb.from('service_invoices').select('*').eq('firm_id',fid).order('created_at',{ascending:false}); svcInvoices=si||[]; }catch(e){ svcInvoices=[]; }
+      try{ const {data:sl}=await sb.from('shared_reports').select('id,report,created_at').eq('from_id',fid).order('created_at',{ascending:false});
+        sentLetters=(sl||[]).filter(r=>r.report&&r.report.kind==='letter').map(r=>{ var x=r.report; x._dbId=r.id; x._at=r.created_at; return x; });
+      }catch(e){ sentLetters=[]; }
       const [{data:tm},{data:al}] = await Promise.all([
         sb.from('team_members').select('*').eq('firm_id',fid).order('created_at',{ascending:true}),
         sb.from('activity_log').select('*').eq('firm_id',fid).order('created_at',{ascending:false}).limit(50)
@@ -2525,6 +2533,102 @@ async function submitReq(kind){
   } else { toast('Request created. Link this client to a HisabOne account to email them automatically.'); }
 }
 
+/* ---- RECURRING JOBS v21: "VAT return, every quarter" sets itself up ---- */
+var recurringJobs=[];   /* [{id,client,type,label,cadence,docs:[],chaseDays,chaseEvery,paused,lastRun}] */
+var RJ_TYPES={
+  vat:  {label:'VAT return',        cadence:'quarterly', docs:['Sales invoices','Purchase invoices','Bank statements']},
+  ct:   {label:'Corporate Tax return', cadence:'annual', docs:['Trial balance','Financial statements','Fixed asset register']},
+  audit:{label:'Audit',             cadence:'annual',    docs:['Trial balance','Bank confirmations','Inventory count sheets']},
+  custom:{label:'Custom job',       cadence:'monthly',   docs:['Document']}
+};
+function rjPeriodKey(cadence){
+  var n=new Date(todayISO()+'T00:00:00Z');
+  if(cadence==='quarterly') return n.getUTCFullYear()+'-Q'+(Math.floor(n.getUTCMonth()/3)+1);
+  if(cadence==='monthly')   return n.getUTCFullYear()+'-'+String(n.getUTCMonth()+1).padStart(2,'0');
+  return String(n.getUTCFullYear());
+}
+function rjPeriodLabel(cadence){
+  var k=rjPeriodKey(cadence);
+  if(cadence==='quarterly') return k.replace('-',' ');
+  if(cadence==='monthly'){ var p=k.split('-'); return new Date(Date.UTC(+p[0],+p[1]-1,1)).toLocaleDateString('en-GB',{month:'short',year:'numeric',timeZone:'UTC'}); }
+  return 'FY'+k;
+}
+function processRecurringJobs(){
+  if(_sampleMode || !currentAccount || currentAccount.role!=='firm') return;
+  var made=0;
+  (recurringJobs||[]).forEach(function(j){
+    if(j.paused) return;
+    var key=rjPeriodKey(j.cadence);
+    if(j.lastRun===key) return;
+    var period=rjPeriodLabel(j.cadence);
+    var packName=j.label+' \u00b7 '+period;
+    (j.docs||[]).forEach(function(doc){
+      addClientDoc(j.client,{name:doc+' \u2014 '+period, category:doc, status:'requested', pack:packName, note:'Created automatically by the recurring job \u201c'+j.label+'\u201d'});
+    });
+    firmReminders.unshift({client:j.client, app:j.label+' '+period, doc:packName,
+      last:'Just scheduled', next:'In '+(j.chaseDays||3)+' days', days:j.chaseDays||3, every:j.chaseEvery||3, auto:'green'});
+    if(typeof logActivity==='function'){ try{ logActivity('recurring_job', packName+' created for '+j.client+' \u2014 '+(j.docs||[]).length+' documents requested, auto-chase on'); }catch(e){} }
+    j.lastRun=key; made++;
+  });
+  if(made){ saveAccountData(); toast(made+' recurring job'+(made===1?'':'s')+' created this period\u2019s requests automatically.'); renderPage(); }
+}
+var rjFormOpen=false;
+function rjToggleForm(){ rjFormOpen=!rjFormOpen; renderPage(); }
+function rjTypePick(v){
+  var t=RJ_TYPES[v]||RJ_TYPES.custom;
+  var d=document.getElementById('rjDocs'); if(d) d.value=t.docs.join(', ');
+  var c=document.getElementById('rjCad'); if(c) c.value=t.cadence;
+  var l=document.getElementById('rjLabel'); if(l) l.value=t.label;
+}
+function rjSubmit(){
+  var g=function(id){ var e=document.getElementById(id); return e?e.value:''; };
+  var client=g('rjClient'); if(!client){ toast('Add a client first.'); return; }
+  var docs=g('rjDocs').split(',').map(function(x){return x.trim();}).filter(Boolean);
+  if(!docs.length){ toast('List at least one document for the job to request.'); return; }
+  recurringJobs.unshift({ id:'rj'+Date.now(), client:client, type:g('rjType'),
+    label:g('rjLabel')||RJ_TYPES[g('rjType')].label, cadence:g('rjCad')||'quarterly',
+    docs:docs, chaseDays:Math.max(1,parseInt(g('rjDays'),10)||3), chaseEvery:Math.max(1,parseInt(g('rjEvery'),10)||3),
+    paused:false, lastRun:null });
+  saveAccountData(); rjFormOpen=false;
+  toast('Recurring job saved \u2014 this period\u2019s requests are being created now.');
+  processRecurringJobs(); renderPage();
+}
+function rjPause(id){ var j=recurringJobs.find(function(x){return x.id===id;}); if(j){ j.paused=!j.paused; saveAccountData(); renderPage(); } }
+function rjDelete(id){
+  var j=recurringJobs.find(function(x){return x.id===id;}); if(!j) return;
+  openConfirm({title:'Delete recurring job', confirmLabel:'Delete',
+    message:'Stop \u201c'+j.label+'\u201d for '+j.client+'? Requests already created stay on their register \u2014 no new ones will be made.',
+    onYes:function(){ recurringJobs=recurringJobs.filter(function(x){return x.id!==j.id;}); saveAccountData(); toast('Recurring job deleted.'); renderPage(); }});
+}
+function recurringJobsCardHTML(){
+  var cadLbl={quarterly:'Every quarter',annual:'Every year',monthly:'Every month'};
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('refresh',16)+' Recurring jobs '+infoTip('Set a job up once \u2014 \u201cVAT return, every quarter\u201d \u2014 and at the start of each period HisabOne creates the document pack on the client\u2019s register, requests everything, and schedules the auto-chase. You review what arrives instead of remembering to ask.')+'</h3>'
+      +'<button class="btn sm" onclick="rjToggleForm()">'+(rjFormOpen?'Close':'+ New job')+'</button></div>'
+    +(rjFormOpen?
+      '<div style="background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px"><div class="grid g3" style="gap:11px">'
+      +'<div><label class="flabel">Client</label><select id="rjClient" class="finput">'+(clients||[]).map(function(c){return '<option>'+ctEsc(c)+'</option>';}).join('')+'</select></div>'
+      +'<div><label class="flabel">Job type</label><select id="rjType" class="finput" onchange="rjTypePick(this.value)">'
+        +Object.keys(RJ_TYPES).map(function(k){return '<option value="'+k+'">'+RJ_TYPES[k].label+'</option>';}).join('')+'</select></div>'
+      +'<div><label class="flabel">Label</label><input id="rjLabel" class="finput" value="VAT return"></div>'
+      +'<div><label class="flabel">Cadence</label><select id="rjCad" class="finput"><option value="quarterly">Every quarter</option><option value="monthly">Every month</option><option value="annual">Every year</option></select></div>'
+      +'<div><label class="flabel">First chase (days)</label><input id="rjDays" class="finput" type="number" min="1" max="60" value="3" style="text-align:right"></div>'
+      +'<div><label class="flabel">Then every (days)</label><input id="rjEvery" class="finput" type="number" min="1" max="30" value="3" style="text-align:right"></div>'
+      +'</div>'
+      +'<div style="margin-top:11px"><label class="flabel">Documents to request each period (comma-separated)</label>'
+      +'<input id="rjDocs" class="finput" value="Sales invoices, Purchase invoices, Bank statements"></div>'
+      +'<button class="btn" style="margin-top:12px" onclick="rjSubmit()">Save recurring job</button></div>'
+      :'')
+    +((recurringJobs||[]).length ? recurringJobs.map(function(j){
+        return '<div class="drow'+(j.paused?'" style="opacity:.55':'')+'"><div style="color:var(--accent)">'+svgIcon('refresh',15)+'</div>'
+          +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(j.label)+' \u2014 '+ctEsc(j.client)+'</div>'
+          +'<div class="dmeta">'+(cadLbl[j.cadence]||j.cadence)+' \u00b7 '+j.docs.length+' documents \u00b7 '+(j.lastRun?('last created '+j.lastRun):'not run yet')+(j.paused?' \u00b7 paused':'')+'</div></div>'
+          +'<button class="btn ghost sm" onclick="rjPause(\''+j.id+'\')">'+(j.paused?'Resume':'Pause')+'</button>'
+          +'<button class="iconbtn" title="Delete job" onclick="rjDelete(\''+j.id+'\')">'+svgIcon('trash',14)+'</button></div>';
+      }).join('')
+      : '<div class="muted emptybox">No recurring jobs yet \u2014 create \u201cVAT return, every quarter\u201d once and stop re-requesting the same documents by hand.</div>')
+    +'</div>';
+}
 /* firm: email reminders */
 const REMINDER_APPS = ['VAT Return Q2 2026','VAT Return Q3 2026','VAT Registration','Corporate Tax Return FY2025','Corporate Tax Registration','FTA Profile Amendment','Audit FY2025','Excise Tax Registration'];
 let firmReminders = [];
@@ -3102,6 +3206,8 @@ async function doLogin(){
   try{
     const {data,error}=await sb.auth.signInWithPassword({email:email,password:pass});
     if(error){ showLoginErr(friendlyAuthError(error)); return; }
+    const mfaOk=await mfaLoginGate();
+    if(!mfaOk){ showLoginErr('Sign-in cancelled at the two-factor step.'); return; }
     saveRememberedLogin(loginRole, email);
     await enterFromSession(data.session, loginRole);
   }catch(e){ showLoginErr('Could not sign in — please try again.'); }
@@ -3308,7 +3414,7 @@ function enterApp(r){
 function logout(){
   _blobDirty=true; flushAccountData();
   try{ if(sb) sb.auth.signOut(); }catch(e){}
-  currentAccount=null; myClients=[]; clientMeta={};
+  currentAccount=null; myClients=[]; clientMeta={}; recurringJobs=[]; sentLetters=[]; signedLetterIds=[]; svcInvoices=[];
   clients=[]; firmClients=[]; firmTaxReqs=[]; firmAuditReqs=[]; firmReminders=[]; ctScenarios=[]; vatDrafts={}; ctEntity='mainland'; teamMembers=[]; activityLog=[]; notifSeen=[]; lastInvite=null;
   bizTaxDocs=[]; bizAuditDocs=[]; vaultDocs=[]; sharedReports=[];
   returnsList=[]; returnEvents={}; viewingReturn=null; _accessLogged={}; _pendingChangeDoc=null;
@@ -3317,7 +3423,7 @@ function logout(){
   onboardDismissed=false; if(_sampleMode){ _sampleMode=false; if(typeof showSampleBanner==='function') showSampleBanner(false); }
   calendarEvents=[]; vatCertMeta=null; ctCertMeta=null; calYear=null; calMonth=null; bizRevenueBand=null;
   bizCompany={}; clientProfiles={}; ctR={}; ctDrafts={};
-  invoiceInbox=[]; bizRenewals=[]; bizCompanies=null; bizActiveCo='c1';
+  invoiceInbox=[]; bizRenewals=[]; bizCompanies=null; bizActiveCo='c1'; bankImports=[];
   ctSBRon=false; ctMNEon=false; ctStep=0; ctClient=''; ctTP={}; ctTPsource='';
   linkedFirm=''; linkedFirmId=''; inviteCode=''; firmPlanVal=null;
   clearRememberedLogins();
@@ -3503,6 +3609,8 @@ const IC = {
   refund:'<circle cx="12" cy="12" r="9"/><path d="M15 9.3c-.7-.9-1.8-1.3-3-1.3-1.9 0-3 .9-3 2s1 1.5 3 2 3 1 3 2.1-1.1 2-3 2c-1.2 0-2.3-.5-3-1.4"/><path d="M12 6.2v11.6"/>',
   shield:'<rect x="5.5" y="10" width="13" height="9.5" rx="2"/><path d="M8.5 10V7a3.5 3.5 0 0 1 7 0v3"/>',
   trash:'<path d="M4 7h16"/><path d="M9.5 7V5h5v2"/><path d="M6.5 7l1 13h9l1-13"/><path d="M10 11v6M14 11v6"/>',
+  zap:'<path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/>',
+  card:'<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6 15h4"/>',
   paperclip:'<path d="M19 11l-7.5 7.5a4.5 4.5 0 0 1-6.4-6.4l7.7-7.7a3 3 0 0 1 4.3 4.3l-7.6 7.6a1.5 1.5 0 0 1-2.2-2.1l6.8-6.8"/>',
   download:'<path d="M12 4v11"/><path d="M8 11l4 4 4-4"/><path d="M5 20h14"/>',
   share:'<path d="M12 15V4"/><path d="M8 8l4-4 4 4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/>',
@@ -3560,7 +3668,9 @@ const NAV = {
     {id:'secPractice', ic:'building', label:'Practice', children:[
       {id:'freports',  ic:'chart', label:'Reports'},
       {id:'team',      ic:'users', label:'Team'},
-      {id:'reminders', ic:'mail',  label:'Email Reminders'}]},
+      {id:'reminders', ic:'mail',  label:'Email Reminders'},
+      {id:'einvoice',  ic:'zap',   label:'E-invoicing'},
+      {id:'billing',   ic:'card',  label:'Billing'}]},
     {id:'fguides', ic:'sparkles', label:'AI Assist'},
     {id:'fchat', ic:'chat', label:'Messages'},
   ]
@@ -3723,6 +3833,8 @@ dash:()=>{
   <h1>Welcome back, ${firstName}</h1>
   <div class="sub">Here's your compliance status.</div>
   ${typeof legacyBooksBannerHTML==='function'?legacyBooksBannerHTML():''}
+  ${bizSignCardHTML()}
+  ${bizSvcInvoicesCardHTML()}
   ${businessHealthCard()}
   ${urgent.length ? `
   <div class="banner">
@@ -3951,6 +4063,7 @@ docs:()=>{
 calendar:()=>`
   <h1>Compliance Calendar</h1>
   <div class="sub">Your VAT and Corporate Tax filing deadlines, read automatically from the certificates you upload in Company Information.</div>
+  ${bizEinvCardHTML()}
   <div class="grid calwrap mb14" style="grid-template-columns:1.5fr 1fr;gap:16px;align-items:start">
     <div class="card">${calGridHTML()}</div>
     <div>
@@ -3968,6 +4081,7 @@ breports:()=>{
   return `
   <h1>Reports</h1>
   <div class="sub">View, download and share polished compliance reporting — all inside HisabOne.</div>
+  ${filingHistoryCardHTML()}
   ${returnsPanelHTML('business')}
   <div class="grid g2 mb14">
     <div class="card" style="border-color:var(--accent)">
@@ -4031,6 +4145,7 @@ fdash:()=>{
   ${typeof legacyBooksBannerHTML==='function'?legacyBooksBannerHTML():''}
   ${onboardingHTML()}
   ${firmHealthCard()}
+  ${upcomingDeadlinesCardHTML()}
   <div class="grid g3 mb14">
     <div class="card stat clk" onclick="go('clients')"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Active clients</div></div>
     <div class="card stat clk" onclick="go('taxdocs')"><div class="ic ${overdue>0?'ic-red':'ic-teal'}">${svgIcon('clock',20)}</div><div class="num">${overdue}</div><div class="lbl">Overdue requests</div></div>
@@ -4149,6 +4264,88 @@ clientprofile:()=>clientProfileHTML(),
 taxdocs:()=>reqDocPage('tax'),
 auditdocs:()=>reqDocPage('audit'),
 
+billing:()=>{
+  var list=svcInvoices||[];
+  var outAmt=list.filter(i=>i.status==='sent').reduce((a,i)=>a+(+i.total||0),0);
+  var mon=new Date().toISOString().slice(0,7);
+  var paidMon=list.filter(i=>i.status==='paid'&&(i.paid_at||'').slice(0,7)===mon).reduce((a,i)=>a+(+i.total||0),0);
+  var drafts=list.filter(i=>i.status==='draft').length;
+  return `
+  <h1>Billing</h1>
+  <div class="sub">Invoice your clients for your own services \u2014 issued here, visible in their portal, chased and settled without leaving HisabOne.</div>
+  <div class="grid g4 mb14">
+    <div class="card stat"><div class="ic ${outAmt>0?'ic-amber':'ic-teal'}">${svgIcon('clock',20)}</div><div class="num" style="font-size:20px">${fmtAED2(outAmt)}</div><div class="lbl">Awaiting payment</div></div>
+    <div class="card stat"><div class="ic ic-green">${svgIcon('check',20)}</div><div class="num" style="font-size:20px">${fmtAED2(paidMon)}</div><div class="lbl">Paid this month</div></div>
+    <div class="card stat"><div class="ic ic-teal">${svgIcon('file-text',20)}</div><div class="num">${list.length}</div><div class="lbl">Invoices issued</div></div>
+    <div class="card stat"><div class="ic ic-teal">${svgIcon('clipboard',20)}</div><div class="num">${drafts}</div><div class="lbl">Drafts</div></div>
+  </div>
+  <div class="card mb14">
+    <div class="cardhead"><h3>${svgIcon('card',16)} Your invoices ${infoTip('Service invoices from your practice to your clients. Sending one emails the client and shows it in their portal; you mark it paid when the transfer lands. Sent invoices are voided, never deleted, so numbering stays continuous.')}</h3>
+      <button class="btn sm" onclick="blToggleForm()">${blFormOpen?'Close':'+ New invoice'}</button></div>
+    ${blFormOpen?`
+    <div style="background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px">
+      <div class="grid g4" style="gap:11px">
+        <div><label class="flabel">Client</label><select id="blClient" class="finput">${(clients||[]).map(c=>`<option>${ctEsc(c)}</option>`).join('')}</select></div>
+        <div><label class="flabel">Invoice number</label><input id="blNum" class="finput" value="${blNextNumber()}"></div>
+        <div><label class="flabel">Due</label><input id="blDue" class="finput" placeholder="e.g. 14 days / 30 Sep"></div>
+        <div><label class="flabel">Add 5% VAT</label><select id="blVat" class="finput"><option value="yes">Yes</option><option value="no">No</option></select></div>
+      </div>
+      <label class="flabel" style="margin-top:11px">Lines</label>
+      ${_blItems.map((it,i)=>`<div style="display:flex;gap:9px;margin-bottom:7px">
+        <input id="blD${i}" class="finput" style="flex:1" placeholder="e.g. VAT return preparation \u2014 Q3 2026" value="${ctEsc(it.d||'')}">
+        <input id="blA${i}" class="finput" style="max-width:130px;text-align:right" type="number" min="0" step="0.01" placeholder="AED" value="${ctEsc(String(it.amt||''))}">
+      </div>`).join('')}
+      <button class="btn ghost sm" onclick="blAddItem()">+ Line</button>
+      <div style="margin-top:10px"><label class="flabel">Note on the invoice</label><input id="blNote" class="finput" placeholder="Optional \u2014 e.g. bank details or PO reference"></div>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button class="btn" onclick="blCreate('sent')">${svgIcon('share',14)} Send to client</button>
+        <button class="btn ghost" onclick="blCreate('draft')">Save as draft</button>
+      </div>
+    </div>`:''}
+    ${list.length?svcInvRowsHTML(list,true):'<div class="muted emptybox">No invoices yet \u2014 issue your first from \u201c+ New invoice\u201d. Your client sees it instantly in their portal.</div>'}
+  </div>`;
+},
+
+einvoice:()=>{
+  var cs=activeFirmClients();
+  var p1=cs.filter(c=>einvPhase(c.name)==='1');
+  var withAsp=cs.filter(c=>!!einvFor(c.name).asp);
+  var ready=cs.filter(c=>{var p=einvProgress(c.name);return p.done===p.total;});
+  var started=cs.filter(c=>{var p=einvProgress(c.name);return p.done>0&&p.done<p.total;});
+  return `
+  <h1>E-invoicing readiness</h1>
+  <div class="sub">The UAE moves to mandatory structured e-invoicing (Peppol PINT-AE). Track every client\u2019s readiness here \u2014 the deadlines come from their phase automatically.</div>
+  <div class="ai mb14"><div class="sparkle">${svgIcon('zap',22)}</div>
+    <div><h3>The mandate in one line</h3><p>B2B and B2G invoices must become structured XML sent through an FTA-accredited provider \u2014 pilot from <b>Jul 2026</b>; revenue \u2265 AED 50m appoint by <b>31 Oct 2026</b>, live <b>1 Jan 2027</b>; everyone else appoint by <b>31 Mar 2027</b>, live <b>1 Jul 2027</b>. Missing it costs AED 5,000/month.</p></div></div>
+  <div class="grid g4 mb14">
+    <div class="card stat"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${cs.length}</div><div class="lbl">Clients in scope</div></div>
+    <div class="card stat"><div class="ic ${p1.length?'ic-amber':'ic-teal'}">${svgIcon('warn',20)}</div><div class="num">${p1.length}</div><div class="lbl">Phase 1 (\u2265 AED 50m)</div></div>
+    <div class="card stat"><div class="ic ic-teal">${svgIcon('link',20)}</div><div class="num">${withAsp.length}</div><div class="lbl">ASP appointed</div></div>
+    <div class="card stat"><div class="ic ic-green">${svgIcon('check',20)}</div><div class="num">${ready.length}</div><div class="lbl">Fully ready</div></div>
+  </div>
+  <div class="card">
+    <div class="cardhead"><h3>${svgIcon('zap',16)} Client readiness ${infoTip('Phase 1 = revenue AED 50m or more (set the revenue band on each client\u2019s profile, or override the phase here). Click a client to open their six-step checklist. Progress is saved to your practice automatically.')}</h3>
+      ${started.length?`<span class="pill p-amber">${started.length} in progress</span>`:''}</div>
+    ${cs.length?cs.map(c=>{
+      var pr=einvProgress(c.name), e=einvFor(c.name), open=(_einvOpenClient===c.name);
+      var dl=einvDeadline(c.name);
+      return `<div class="drow" style="cursor:pointer;flex-wrap:wrap" onclick="einvOpen('${jsq(c.name)}')">
+        <span class="packcaret">${open?'\u25be':'\u25b8'}</span>
+        <div style="flex:1;min-width:160px"><div class="dtitle">${ctEsc(c.name)}</div>
+          <div class="dmeta">${e.asp?('ASP: '+ctEsc(e.asp)):'No provider appointed yet'} \u00b7 live ${calFmt(einvGoLive(c.name))}</div></div>
+        <select class="finput" style="max-width:120px;height:30px;font-size:12px" onclick="event.stopPropagation()" onchange="einvSetPhase('${jsq(c.name)}',this.value)">
+          <option value="" ${!e.phase?'selected':''}>Auto \u00b7 P${einvPhase(c.name)}</option>
+          <option value="1" ${e.phase==='1'?'selected':''}>Phase 1</option>
+          <option value="2" ${e.phase==='2'?'selected':''}>Phase 2</option></select>
+        <span style="display:inline-flex;align-items:center;gap:8px"><span class="minibar" style="width:70px"><i style="width:${Math.round(pr.done/pr.total*100)}%"></i></span><span class="frac">${pr.done} / ${pr.total}</span></span>
+        ${compliancePill(dl)}
+        <div style="flex-basis:100%;display:${open?'block':'none'}" onclick="event.stopPropagation()">${open?einvChecklistHTML(c.name):''}</div>
+      </div>`;
+    }).join(''):'<div class="muted emptybox">Add clients and their e-invoicing readiness appears here.</div>'}
+    <div class="muted" style="font-size:11px;margin-top:10px">Appoint-by dates: Phase 1 \u2014 31 Oct 2026 (live 1 Jan 2027) \u00b7 Phase 2 \u2014 31 Mar 2027 (live 1 Jul 2027). Late implementation: AED 5,000/month; late transmission AED 100/invoice. Based on published FTA guidance \u2014 confirm each client\u2019s phase with their revenue.</div>
+  </div>`;
+},
+
 reminders:()=>`
   <h1>Email Reminders</h1>
   <div class="sub">Automated reminder emails sent to clients for outstanding documents. Set the cadence, preview, or send one now.</div>
@@ -4160,6 +4357,7 @@ reminders:()=>`
     <div class="card stat"><div class="ic ic-green">${svgIcon('refresh',20)}</div><div class="num">${firmReminders.filter(r=>r.auto==='green').length}</div><div class="lbl">Auto-chase active</div></div>
     <div class="card stat"><div class="ic ic-teal">${svgIcon('users',20)}</div><div class="num">${clients.length}</div><div class="lbl">Linked clients</div></div>
   </div>
+  ${recurringJobsCardHTML()}
   ${reminderFormOpen?`
   <div class="card mb14" style="border-color:var(--accent)">
     <div class="cardhead"><h3>New email reminder</h3></div>
@@ -4185,13 +4383,15 @@ reminders:()=>`
     </table>
   </div>
   <div class="card mt18">
-    <div class="cardhead"><h3>${svgIcon('mail',16)} Email preview</h3><span class="pill p-gray">Auto-generated</span></div>
+    <div class="cardhead"><h3>${svgIcon('mail',16)} Email preview</h3>
+      <span style="display:flex;gap:9px;align-items:center">${firmReminders.length&&firmReminders[0].body?'<span class="pill p-teal">AI wording</span>':'<span class="pill p-gray">Auto-generated</span>'}
+      ${firmReminders.length?`<button class="btn ghost sm" id="aiPolishBtn" onclick="aiPolishReminder(0)">${svgIcon('sparkles',13)} Rewrite with AI</button>`:''}</span></div>
     ${firmReminders.length ? (()=>{ const r=firmReminders[0]; const firm=currentAccount?currentAccount.name:'Your firm'; return `
     <div style="background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px;line-height:1.7">
       <div class="muted" style="font-size:11.5px;margin-bottom:8px">To: ${r.client} · From: ${firm} via HisabOne</div>
       <div style="font-weight:700;margin-bottom:8px">Reminder: ${r.doc} needed${r.app?' for '+r.app:''}</div>
-      Dear ${r.client},<br><br>
-      We still need <b>${r.doc}</b> from you${r.app?` for your <b>${r.app}</b>`:''}. Please sign in to your HisabOne portal and upload it securely — no email attachments needed.<br><br>
+      ${r.body ? r.body.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')+'<br><br>' : `Dear ${r.client},<br><br>
+      We still need <b>${r.doc}</b> from you${r.app?` for your <b>${r.app}</b>`:''}. Please sign in to your HisabOne portal and upload it securely — no email attachments needed.<br><br>`}
       <a href="https://hisabone.ae" target="_blank" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:9px">Sign in &amp; upload →</a><br><br>
       Thank you,<br>${firm}
     </div>`; })() : `<div class="muted emptybox">Schedule a reminder above to see a live preview here.</div>`}
@@ -5824,13 +6024,27 @@ async function sendAppEmail(to,subject,text){
     return !!(r.ok && d && d.ok);
   }catch(e){ return false; }
 }
+async function aiPolishReminder(i){
+  var r=firmReminders[i||0]; if(!r){ toast('Schedule a reminder first.'); return; }
+  var btn=document.getElementById('aiPolishBtn'); if(btn){ btn.disabled=true; btn.textContent='Drafting\u2026'; }
+  try{
+    var prompt='Write a short, warm but professional reminder email (under 120 words, no subject line) from '+((currentAccount&&currentAccount.name)||'an accounting firm')+' to their client '+r.client+', asking them to upload "'+r.doc+'"'+(r.app?(' for '+r.app):'')+' to their HisabOne portal (https://hisabone.ae). UAE business tone, no emojis, sign off with the firm name.';
+    var res=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}], role:'firm', context:''})});
+    var data=await res.json().catch(function(){return {};});
+    if(res.ok && data && data.ok && data.reply){
+      r.body=data.reply.trim(); saveAccountData(); toast('Reminder rewritten \u2014 this wording will be used when it sends.'); renderPage();
+    } else { toast('AI drafting is not available \u2014 the standard wording will be used.'); }
+  }catch(e){ toast('AI drafting failed \u2014 the standard wording will be used.'); }
+  if(btn){ btn.disabled=false; btn.textContent='Rewrite with AI'; }
+}
 function sendReminderNow(i){
   const r=firmReminders[i]; if(!r) return;
   const email=bizEmailByName(r.client);
   r.last='Just now';
   if(!email){ toast('No registered HisabOne email found for '+r.client); renderPage(); return; }
   const subject='Reminder: '+r.doc+' still needed'+(r.app?' for '+r.app:'');
-  const text='Hello '+r.client+',\n\nThis is a reminder that we still need "'+r.doc+'"'+(r.app?' for your '+r.app:'')+'. Please sign in to your HisabOne portal and upload it securely.\n\nThank you,\n'+(currentAccount?currentAccount.name:'Your accountant');
+  const text=r.body ? r.body : ('Hello '+r.client+',\n\nThis is a reminder that we still need "'+r.doc+'"'+(r.app?' for your '+r.app:'')+'. Please sign in to your HisabOne portal and upload it securely.\n\nThank you,\n'+(currentAccount?currentAccount.name:'Your accountant'));
   toast('Sending reminder to '+email+'…');
   sendAppEmail(email,subject,text).then(ok=>{ toast(ok?('Reminder emailed to '+email):('Reminder logged — add RESEND_API_KEY in Vercel to email '+email)); renderPage(); });
 }
@@ -6229,7 +6443,7 @@ function waRemind(i){
   var r=(firmReminders||[])[i]; if(!r) return;
   var c=(myClients||[]).find(function(x){return x.business_name===r.client;});
   var p=c&&clientProfiles[c.business_id]?(clientProfiles[c.business_id].cPhone||''):'';
-  var txt='Hello '+r.client+' — a reminder from '+((currentAccount&&currentAccount.firmName)||'your accountant')+': please send "'+r.doc+'"'+(r.app?(' for '+r.app):'')+' via your HisabOne portal. Thank you!';
+  var txt='Hello '+r.client+' — a reminder from '+((currentAccount&&currentAccount.firmName)||'your accountant')+': please send "'+r.doc+'"'+(r.app?(' for '+r.app):'')+'. Upload securely here: https://hisabone.ae (sign in and it\u2019s waiting in your Documents tab). Thank you!';
   waOpen(txt, p);
 }
 function waClient(){
@@ -6510,7 +6724,7 @@ function regulationRadarHTML(){
   var items=[
     ['E-invoicing is coming','Larger businesses appoint an accredited provider by 30 Oct 2026 (go-live 1 Jan 2027); smaller by 31 Mar 2027 (go-live 1 Jul 2027). Clean TRNs and customer records now.','Am I ready for UAE e-invoicing and which wave am I in?'],
     ['Corporate Tax returns','Your CT return is due within 9 months of financial year-end. Small Business Relief (revenue ≤ AED 3M) is scheduled to end for periods after 31 Dec 2026.','Explain my Corporate Tax filing deadline and whether Small Business Relief applies to me'],
-    ['Penalty exposure','Late VAT/CT registration carries an AED 10,000 penalty; late returns compound monthly. Keep registrations and filings current.','What FTA penalties am I exposed to and how do I avoid them?']
+    ['Penalty exposure','Late VAT/CT registration carries an AED 10,000 penalty; late returns compound monthly, and from 14 Apr 2026 late payment accrues flat 14% annual interest (voluntary disclosures: 1%/month). Keep registrations and filings current.','What FTA penalties am I exposed to and how do I avoid them?']
   ];
   var rows=items.map(function(x){
     return '<div style="padding:10px 2px;border-bottom:1px solid var(--line)"><div style="font-weight:600;font-size:13px">'+x[0]+'</div>'
@@ -6549,6 +6763,85 @@ function invPosition(q){
 function invSetUpType(t){ invUpType=t; var a=document.getElementById('invTypP'), b=document.getElementById('invTypS'); if(a&&b){ a.classList.toggle('on',t==='purchase'); b.classList.toggle('on',t==='sale'); } }
 function invSetFilter(q){ invFilterQ=q; renderPage(); }
 function invMoney(n){ return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+/* ---- bank statement drop: CSV in, a readable quarter summary out ---- */
+var bankImports=[];   /* [{name, at, rows, inflow, outflow, largest:[{d,desc,amt}]}] persisted in biz blob */
+function filingHistoryCardHTML(){
+  var appr=(returnsList||[]).filter(function(r){return r.status==='approved';});
+  if(!appr.length) return '';
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('check',16)+' Filing history '+infoTip('Every return approved and signed through HisabOne, newest first \u2014 your permanent record of what was filed, when, and under whose signature.')+'</h3><span class="pill p-green">'+appr.length+' filed</span></div>'
+    +appr.map(function(r){
+      var evs=(returnEvents&&returnEvents[r.id])||[];
+      var sig=evs.filter(function(e){return e.type==='approved'&&e.signature;}).slice(-1)[0];
+      return '<div class="drow"><div style="color:var(--green)">'+svgIcon('success',15)+'</div>'
+        +'<div style="flex:1;min-width:0"><div class="dtitle" style="font-size:13px">'+(r.kind==='vat'?'VAT':'Corporate Tax')+' \u2014 '+ctEsc(r.title||r.period||'Return')+'</div>'
+        +'<div class="dmeta">'+(sig?('Signed by '+ctEsc(sig.signature)+' \u00b7 '+new Date(sig.signed_at||sig.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})):('Approved '+new Date(r.updated_at||r.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})))+'</div></div>'
+        +'<span class="pill p-green">Approved \u2713</span></div>';
+    }).join('')+'</div>';
+}
+function bankHandleFile(inp){
+  var f=inp.files&&inp.files[0]; if(!f) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var res=bankParseCSV(String(reader.result||''));
+      if(!res.rows){ toast('Could not find date / amount columns in that file \u2014 export a standard CSV from your bank and try again.'); return; }
+      res.name=f.name; res.at=new Date().toISOString();
+      bankImports.unshift(res); bankImports=bankImports.slice(0,12);
+      saveAccountData(); toast(res.rows+' transactions read \u2014 summary added below.'); renderPage();
+    }catch(e){ toast('Could not read that CSV \u2014 '+(e.message||'try a different export.')); }
+  };
+  reader.readAsText(f); inp.value='';
+}
+function bankParseCSV(txt){
+  var lines=txt.split(/\r?\n/).filter(function(l){return l.trim();});
+  if(lines.length<2) return {rows:0};
+  var delim=(lines[0].match(/;/g)||[]).length>(lines[0].match(/,/g)||[]).length?';':',';
+  function cells(l){
+    var out=[],cur='',q=false;
+    for(var i=0;i<l.length;i++){ var ch=l[i];
+      if(ch==='"'){ q=!q; continue; }
+      if(ch===delim&&!q){ out.push(cur); cur=''; continue; }
+      cur+=ch; }
+    out.push(cur); return out.map(function(x){return x.trim();});
+  }
+  var head=cells(lines[0]).map(function(h){return h.toLowerCase();});
+  function col(names){ for(var i=0;i<head.length;i++){ for(var j=0;j<names.length;j++){ if(head[i].indexOf(names[j])>-1) return i; } } return -1; }
+  var iDate=col(['date']), iDesc=col(['desc','narra','detail','particular','reference','remark']);
+  var iAmt=col(['amount']), iDeb=col(['debit','withdraw']), iCre=col(['credit','deposit']);
+  if(iDate<0 || (iAmt<0 && iDeb<0 && iCre<0)) return {rows:0};
+  var rows=0, inflow=0, outflow=0, largest=[];
+  for(var r=1;r<lines.length;r++){
+    var cs=cells(lines[r]); if(cs.length<2) continue;
+    var amt=0;
+    var num=function(v){ return parseFloat(String(v||'').replace(/[^0-9.\-]/g,''))||0; };
+    if(iAmt>-1){ amt=num(cs[iAmt]); }
+    else { amt=num(cs[iCre>-1?iCre:-1]) - num(cs[iDeb>-1?iDeb:-1]); }
+    if(!amt) continue;
+    rows++;
+    if(amt>0) inflow+=amt; else outflow+=-amt;
+    largest.push({d:cs[iDate]||'', desc:(iDesc>-1?cs[iDesc]:'').slice(0,60), amt:amt});
+  }
+  largest.sort(function(a,b){ return Math.abs(b.amt)-Math.abs(a.amt); });
+  return {rows:rows, inflow:+inflow.toFixed(2), outflow:+outflow.toFixed(2), largest:largest.slice(0,5)};
+}
+function bankDeleteImport(i){ bankImports.splice(i,1); saveAccountData(); renderPage(); }
+function bankDropCardHTML(){
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('inbox',16)+' Bank statement drop '+infoTip('Upload a CSV export from your bank \u2014 HisabOne reads the dates and amounts, totals the money in and out, and lists the largest movements. A quick sanity check next to your invoice inbox before a return is filed. Only the summary is kept, never your full statement.')+'</h3>'
+    +'<button class="btn sm" onclick="document.getElementById(\'bankFile\').click()">'+svgIcon('plus',13)+' Upload CSV</button>'
+    +'<input type="file" id="bankFile" accept=".csv,text/csv" style="display:none" onchange="bankHandleFile(this)"></div>'
+    +((bankImports||[]).length ? bankImports.map(function(b,i){
+        return '<div class="drow" style="flex-wrap:wrap"><div style="color:var(--accent)">'+svgIcon('file',15)+'</div>'
+          +'<div style="flex:1;min-width:180px"><div class="dtitle" style="font-size:13px">'+ctEsc(b.name)+'</div>'
+          +'<div class="dmeta">'+b.rows+' transactions \u00b7 in '+invMoney(b.inflow)+' \u00b7 out '+invMoney(b.outflow)+'</div>'
+          +(b.largest&&b.largest.length?('<div class="muted" style="font-size:11px;margin-top:3px">Largest: '+b.largest.map(function(t){return ctEsc(t.desc||t.d)+' ('+invMoney(t.amt)+')';}).join(' \u00b7 ')+'</div>'):'')
+          +'</div>'
+          +'<span class="pill '+(b.inflow-b.outflow>=0?'p-green':'p-amber')+'">net '+invMoney(Math.abs(b.inflow-b.outflow))+(b.inflow-b.outflow>=0?' in':' out')+'</span>'
+          +'<button class="iconbtn" title="Remove summary" onclick="bankDeleteImport('+i+')">'+svgIcon('trash',14)+'</button></div>';
+      }).join('')
+      : '<div class="muted emptybox">No statements dropped yet \u2014 a CSV export from any UAE bank works.</div>')
+    +'</div>';
+}
 function invPageHTML(){
   var q=invFilterQ||invCurrentQ();
   var pos=invPosition(q);
@@ -6563,6 +6856,7 @@ function invPageHTML(){
   }).join('');
   return '<h1>Invoices</h1>'
   +'<div class="sub">Drop invoices in all period long — HisabOne reads each one with AI, categorises it and keeps a running VAT position. At filing time your accountant imports the whole set in one click.</div>'
+  +bankDropCardHTML()
   +'<div class="grid g4 mb14">'
   +'<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Output VAT (sales)</div><div style="font-size:19px;font-weight:700">'+invMoney(pos.out)+'</div></div>'
   +'<div class="card" style="text-align:center"><div class="muted" style="font-size:12px">Recoverable input VAT</div><div style="font-size:19px;font-weight:700">'+invMoney(pos.inRec)+'</div></div>'
@@ -7521,8 +7815,10 @@ function clientProfileHTML(){
 
     </div>
   </div>
+  ${complianceCardHTML(c)}
   ${clientTimelineHTML(c)}`}
   ${_cpTab!=='docs'?'':`
+  ${firmLettersCardHTML(c)}
   ${clientDocCardHTML(c.name)}
   <div class="card mb14">
     <div class="cardhead"><h3>${svgIcon('file-text',16)} Document requests ${infoTip('Formal tax and audit requests sent to this client — each lands in their portal, can auto-chase by email, and shows its status here.')}</h3>
@@ -7530,6 +7826,7 @@ function clientProfileHTML(){
         ${openReqs.length?`<span class="pill p-amber">${openReqs.length} open</span>`:'<span class="pill p-green">All received</span>'}
         <button class="btn sm" onclick="openReqFor('tax','${jsq(c.name)}')">+ Tax request</button>
         <button class="btn ghost sm" onclick="openReqFor('audit','${jsq(c.name)}')">+ Audit request</button>
+        <button class="btn ghost sm" onclick="openEngagementLetter('${jsq(c.id)}')">${svgIcon('file-text',13)} Engagement letter</button>
       </div></div>
     ${reqs.length?reqs.map(function(r){ return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('inbox',15)+'</div><div style="flex:1"><div class="dtitle" style="font-size:13px">'+ctEsc(r.doc)+'</div><div class="dmeta">'+r.kind+' · '+ctEsc(r.app||'')+(r.due&&r.due!=='—'?' · due '+ctEsc(r.due):'')+'</div></div><span class="pill '+r.cls+'">'+r.st+'</span></div>'; }).join(''):'<div class="muted emptybox">No requests yet for this client.</div>'}
   </div>
@@ -8953,6 +9250,463 @@ function firmAggregateHealth(){
   var atRiskClients=(firmClients||[]).filter(function(c){return c.urgency==='overdue'||c.urgency==='soon';}).length;
   return {avg:avg, exposure:exposure, atRiskClients:atRiskClients, count:cs.length, band:healthBand(avg)};
 }
+/* ============ COMPLIANCE ENGINE v21 — deadlines the firm never types ============
+   Everything below is derived from what the firm already recorded: the client's
+   financial year end, their TRN, the licence expiry read off the uploaded licence,
+   and the licensing authority. No manual calendar keeping. */
+function _monIdx(nm){ return ['january','february','march','april','may','june','july','august','september','october','november','december'].findIndex(function(m){return m.indexOf(String(nm||'').toLowerCase().replace(/[^a-z]/g,''))===0||String(nm||'').toLowerCase().indexOf(m.slice(0,3))>-1;}); }
+function _fyEndDate(fyEnd){
+  /* '31 December' → the most recent 31 Dec that has already passed */
+  if(!fyEnd) return null;
+  var m=String(fyEnd).match(/(\d{1,2})[^a-zA-Z]*([A-Za-z]+)/); if(!m) return null;
+  var day=parseInt(m[1],10), mon=_monIdx(m[2]); if(mon<0) return null;
+  var now=new Date(todayISO()+'T00:00:00Z');
+  var d=new Date(Date.UTC(now.getUTCFullYear(), mon, Math.min(day,28)===day?day:day));
+  if(d>now) d=new Date(Date.UTC(now.getUTCFullYear()-1, mon, day));
+  return d.toISOString().slice(0,10);
+}
+function _isoAddMonths(iso, months){
+  var d=new Date(iso+'T00:00:00Z'); if(isNaN(d.getTime())) return null;
+  var day=d.getUTCDate();
+  d.setUTCDate(1); d.setUTCMonth(d.getUTCMonth()+months);
+  var last=new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth()+1, 0)).getUTCDate();
+  d.setUTCDate(Math.min(day,last));
+  return d.toISOString().slice(0,10);
+}
+function clientLicenceExpiry(name){
+  var best=null;
+  (typeof docsFor==='function'?docsFor(name):[]).forEach(function(d){
+    if(!d.expiry) return;
+    if(/licen[cs]e/i.test(d.category||'') || /licen[cs]e/i.test(d.name||'')){
+      if(!best || d.expiry>best) best=d.expiry;
+    }
+  });
+  return best;
+}
+function clientRecord(name){ return (manualClients||[]).find(function(x){return x.name===name;})||{}; }
+function auditRequirementFor(name){
+  var meta=clientMeta[name]||{};
+  if(meta.auditReq==='yes') return {req:true, why:'Marked as required by your firm'};
+  if(meta.auditReq==='no')  return {req:false, why:'Marked as not required by your firm'};
+  var mc=clientRecord(name);
+  var fz=!!(mc.authority && typeof FREEZONE_AUTHORITIES!=='undefined' && FREEZONE_AUTHORITIES.indexOf(mc.authority)>-1);
+  if(fz) return {req:true, why:'Free-zone licensee — every Qualifying Free Zone Person must file audited financial statements, regardless of size (FY2025 rules)'};
+  if(meta.revenueBand==='ge50m') return {req:true, why:'Revenue above AED 50m — audited financial statements are mandatory'};
+  return {req:false, why:'Mainland with revenue below AED 50m — no mandatory audit unless part of a tax group'};
+}
+function complianceEventsFor(name){
+  var mc=clientRecord(name), meta=clientMeta[name]||{}, ev=[];
+  var fye=_fyEndDate(mc.fyEnd);
+  if(fye){
+    var ctDue=_isoAddMonths(fye,9);
+    ev.push({type:'ct', ic:'clipboard', label:'Corporate Tax return + payment (FY ended '+calFmt(fye)+')', date:ctDue, hint:'Due nine months after the financial year end. Late payment now accrues a flat 14% annual interest (FTA rules from 14 Apr 2026).'});
+    var ar=auditRequirementFor(name);
+    if(ar.req) ev.push({type:'audit', ic:'shield', label:'Audited financial statements', date:ctDue, hint:ar.why+' — filed with the CT return.'});
+  }
+  var trn=String((meta.trn&&meta.trn!=='—'?meta.trn:'')||mc.trn||'').replace(/\D/g,'');
+  if(trn.length>=5){
+    var now=new Date(todayISO()+'T00:00:00Z');
+    var q=Math.floor(now.getUTCMonth()/3);            /* current quarter 0-3 */
+    var qEnd=new Date(Date.UTC(now.getUTCFullYear(), q*3+3, 0));
+    var due=new Date(Date.UTC(qEnd.getUTCFullYear(), qEnd.getUTCMonth()+1, 28));
+    if(due<now){ qEnd=new Date(Date.UTC(now.getUTCFullYear(), q*3+6, 0)); due=new Date(Date.UTC(qEnd.getUTCFullYear(), qEnd.getUTCMonth()+1, 28)); }
+    var qn=Math.floor(qEnd.getUTCMonth()/3)+1;
+    ev.push({type:'vat', ic:'file-text', label:'VAT return — Q'+qn+' '+qEnd.getUTCFullYear(), date:due.toISOString().slice(0,10), hint:'Due the 28th of the month after the quarter ends (calendar-quarter stagger assumed — adjust if the FTA assigned a different period).'});
+  }
+  var lex=clientLicenceExpiry(name);
+  if(lex) ev.push({type:'licence', ic:'building', label:'Trade licence renewal', date:lex, hint:'Read from the licence on this client\u2019s register.'});
+  var einv=meta.einv||{};
+  if(!einv.asp){
+    var p1=einv.phase==='1';
+    ev.push({type:'einv', ic:'sparkles', label:'Appoint e-invoicing service provider'+(p1?' (Phase 1)':''), date:p1?'2026-10-31':'2027-03-31',
+      hint:p1?'Revenue \u2265 AED 50m: appoint an FTA-accredited provider, live from 1 Jan 2027.':'Appoint an FTA-accredited provider; e-invoicing is mandatory for all businesses from 1 Jul 2027.'});
+  }
+  ev=ev.filter(function(e){return !!e.date;});
+  ev.sort(function(a,b){ return a.date<b.date?-1:1; });
+  return ev;
+}
+/* ---- E-invoicing readiness (UAE Peppol 5-corner mandate) ---- */
+var EINV_STEPS=[
+  ['asp','Appoint an FTA-accredited service provider (ASP)'],
+  ['erp','Invoicing / ERP system can produce structured XML (PINT-AE)'],
+  ['map','Invoice fields mapped to the FTA data dictionary'],
+  ['pilot','Tested during the voluntary pilot (from Jul 2026)'],
+  ['archive','Compliant e-invoice archive & retention in place'],
+  ['staff','Team trained on the new invoicing flow']
+];
+function einvFor(name){ var m=clientMeta[name]||{}; return m.einv||{phase:'',asp:'',steps:{}}; }
+function einvPhase(name){
+  var e=einvFor(name); if(e.phase) return e.phase;
+  var meta=clientMeta[name]||{};
+  return meta.revenueBand==='ge50m' ? '1' : '2';
+}
+function einvDeadline(name){ return einvPhase(name)==='1' ? '2026-10-31' : '2027-03-31'; }
+function einvGoLive(name){ return einvPhase(name)==='1' ? '2027-01-01' : '2027-07-01'; }
+function einvProgress(name){
+  var e=einvFor(name); var done=0;
+  EINV_STEPS.forEach(function(st){ if(st[0]==='asp'?(e.asp||e.steps.asp):e.steps[st[0]]) done++; });
+  return {done:done, total:EINV_STEPS.length};
+}
+function einvSave(name, patch){
+  clientMeta[name]=clientMeta[name]||{};
+  var e=clientMeta[name].einv||{phase:'',asp:'',steps:{}};
+  Object.keys(patch).forEach(function(k){ e[k]=patch[k]; });
+  clientMeta[name].einv=e;
+  saveAccountData();
+}
+function einvToggleStep(name, key, on){ var e=einvFor(name); e.steps[key]=!!on; einvSave(name,{steps:e.steps}); renderPage(); }
+function einvSetAsp(name, v){ einvSave(name,{asp:v.trim(), aspDate:v.trim()?todayISO():''}); renderPage(); }
+function einvSetPhase(name, v){ einvSave(name,{phase:v}); renderPage(); }
+function einvOpen(name){ _einvOpenClient=(_einvOpenClient===name?null:name); renderPage(); }
+var _einvOpenClient=null;
+function einvChecklistHTML(name){
+  var e=einvFor(name);
+  return '<div style="background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:6px 0 10px">'
+    +EINV_STEPS.map(function(st){
+      var key=st[0];
+      if(key==='asp'){
+        return '<div style="display:flex;align-items:center;gap:9px;padding:5px 0;flex-wrap:wrap">'
+          +'<input type="checkbox" '+(e.asp?'checked disabled':'disabled')+' style="width:15px;height:15px">'
+          +'<span style="font-size:12.5px;flex:1;min-width:180px">'+st[1]+'</span>'
+          +'<input class="finput" style="max-width:220px;height:30px;font-size:12px" placeholder="Provider name \u2014 ticks itself" value="'+ctEsc(e.asp||'')+'" onchange="einvSetAsp(\''+jsq(name)+'\',this.value)">'
+          +'</div>';
+      }
+      return '<label style="display:flex;align-items:center;gap:9px;padding:5px 0;cursor:pointer">'
+        +'<input type="checkbox" '+(e.steps[key]?'checked':'')+' onchange="einvToggleStep(\''+jsq(name)+'\',\''+key+'\',this.checked)" style="width:15px;height:15px;accent-color:var(--accent)">'
+        +'<span style="font-size:12.5px">'+st[1]+'</span></label>';
+    }).join('')
+    +'</div>';
+}
+function compliancePill(dt){
+  var d=calDaysUntil(dt);
+  if(d<0)  return '<span class="pill p-red">'+(-d)+'d overdue</span>';
+  if(d===0)return '<span class="pill p-red">today</span>';
+  if(d<=30)return '<span class="pill p-amber">in '+d+'d</span>';
+  return '<span class="pill p-gray">in '+d+'d</span>';
+}
+function saveClientCompliance(name, key, val){
+  clientMeta[name]=clientMeta[name]||{}; clientMeta[name][key]=val;
+  saveAccountData(); renderPage();
+}
+function complianceCardHTML(c){
+  var meta=clientMeta[c.name]||{};
+  var ev=complianceEventsFor(c.name);
+  var ar=auditRequirementFor(c.name);
+  var mc=clientRecord(c.name);
+  var rows=ev.length?ev.map(function(e){
+    return '<div class="drow"><div style="color:var(--accent)">'+svgIcon(e.ic,16)+'</div>'
+      +'<div style="flex:1;min-width:0"><div class="dtitle" style="display:flex;align-items:center;gap:6px">'+ctEsc(e.label)+(e.hint?infoTip(e.hint):'')+'</div>'
+      +'<div class="dmeta">'+calFmt(e.date)+'</div></div>'+compliancePill(e.date)+'</div>';
+  }).join(''):'<div class="muted emptybox">Add a financial year end, TRN or licence for this client and their deadlines appear here automatically.</div>';
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('calendar',16)+' Compliance timeline '+infoTip('Generated automatically from this client\u2019s financial year end, TRN, licence expiry and licensing authority \u2014 nothing here is typed by hand. Estimates, not tax advice.')+'</h3>'
+      +'<span class="pill '+(ar.req?'p-amber':'p-gray')+'" title="'+ctEsc(ar.why)+'">'+(ar.req?'Audit required':'No mandatory audit')+'</span></div>'
+    +rows
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;border-top:1px solid var(--line);padding-top:11px;align-items:center">'
+      +'<span class="muted" style="font-size:11.5px">Annual revenue</span>'
+      +'<select class="finput" style="max-width:170px;height:30px;font-size:12px" onchange="saveClientCompliance(\''+jsq(c.name)+'\',\'revenueBand\',this.value)">'
+        +[['','Not set'],['lt3m','Under AED 3m'],['3to50m','AED 3m \u2013 50m'],['ge50m','AED 50m +']].map(function(o){return '<option value="'+o[0]+'" '+((meta.revenueBand||'')===o[0]?'selected':'')+'>'+o[1]+'</option>';}).join('')+'</select>'
+      +'<span class="muted" style="font-size:11.5px">Audit requirement</span>'
+      +'<select class="finput" style="max-width:150px;height:30px;font-size:12px" onchange="saveClientCompliance(\''+jsq(c.name)+'\',\'auditReq\',this.value)">'
+        +[['','Auto ('+(ar.req?'required':'not required')+')'],['yes','Required'],['no','Not required']].map(function(o){return '<option value="'+o[0]+'" '+((meta.auditReq||'')===o[0]?'selected':'')+'>'+o[1]+'</option>';}).join('')+'</select>'
+    +'</div></div>';
+}
+function upcomingDeadlinesCardHTML(){
+  var all=[];
+  (activeFirmClients()||[]).forEach(function(c){
+    complianceEventsFor(c.name).forEach(function(e){
+      var d=calDaysUntil(e.date);
+      if(d<=120) all.push({c:c, e:e, d:d});
+    });
+  });
+  if(!all.length) return '';
+  all.sort(function(a,b){ return a.e.date<b.e.date?-1:1; });
+  var overdue=all.filter(function(x){return x.d<0;}).length;
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('calendar',16)+' Upcoming deadlines '+infoTip('Every derived deadline across your clients for the next 120 days \u2014 Corporate Tax, VAT quarters, audits, licence renewals and e-invoicing, generated from each client\u2019s own dates. Click a row to open the client.')+'</h3>'
+      +(overdue?'<span class="pill p-red">'+overdue+' overdue</span>':'<span class="pill p-green">Nothing overdue</span>')+'</div>'
+    +all.slice(0,8).map(function(x){
+      return '<div class="drow" style="cursor:pointer" onclick="openClientProfile(\''+jsq(x.c.id)+'\')">'
+        +'<div style="color:var(--accent)">'+svgIcon(x.e.ic,15)+'</div>'
+        +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(x.c.name)+'</div><div class="dmeta">'+ctEsc(x.e.label)+' \u00b7 '+calFmt(x.e.date)+'</div></div>'
+        +compliancePill(x.e.date)+'</div>';
+    }).join('')
+    +(all.length>8?'<div class="muted" style="font-size:11.5px;margin-top:8px">'+(all.length-8)+' more inside each client\u2019s profile.</div>':'')
+    +'</div>';
+}
+/* ============ BILLING v21 — the firm's own fees, invoiced from the same place ============ */
+var svcInvoices=[];
+var blFormOpen=false, _blItems=[{d:'',amt:''}];
+function blToggleForm(){ blFormOpen=!blFormOpen; _blItems=[{d:'',amt:''}]; renderPage(); }
+function blAddItem(){ _blReadItems(); _blItems.push({d:'',amt:''}); renderPage(); }
+function _blReadItems(){
+  _blItems=_blItems.map(function(it,i){
+    var d=document.getElementById('blD'+i), a=document.getElementById('blA'+i);
+    return {d:d?d.value:it.d, amt:a?a.value:it.amt};
+  });
+}
+function blNextNumber(){
+  var yr=new Date().getFullYear();
+  return 'INV-'+yr+'-'+String((svcInvoices||[]).length+1).padStart(3,'0');
+}
+function fmtAED2(n){ return 'AED '+(+n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+async function blCreate(status){
+  _blReadItems();
+  var g=function(id){ var e=document.getElementById(id); return e?e.value:''; };
+  var client=g('blClient'); if(!client){ toast('Add a client first.'); return; }
+  var items=_blItems.map(function(it){ return {d:(it.d||'').trim(), amt:Math.max(0,parseFloat(it.amt)||0)}; }).filter(function(it){ return it.d&&it.amt>0; });
+  if(!items.length){ toast('Add at least one line with a description and an amount.'); return; }
+  var sub=items.reduce(function(a,it){return a+it.amt;},0);
+  var vat=(g('blVat')==='yes')?+(sub*0.05).toFixed(2):0;
+  var rec={ client_name:client, number:g('blNum')||blNextNumber(), items:items,
+    subtotal:+sub.toFixed(2), vat:vat, total:+(sub+vat).toFixed(2),
+    status:status, due:g('blDue')||'', note:g('blNote')||'' };
+  if(_sampleMode||!sb||!currentAccount){
+    rec.id='demo'+Date.now(); rec.created_at=new Date().toISOString();
+    svcInvoices.unshift(rec); blFormOpen=false; toast('Demo \u2014 invoice created locally only.'); renderPage(); return;
+  }
+  var biz=(myClients||[]).find(function(x){return x.business_name===client;});
+  rec.firm_id=currentAccount.id; rec.business_id=biz?biz.business_id:null;
+  try{
+    var r=await sb.from('service_invoices').insert(rec).select('*').single();
+    if(r.error) throw r.error;
+    svcInvoices.unshift(r.data); blFormOpen=false;
+    if(typeof logActivity==='function'){ try{ logActivity('invoice_'+status, rec.number+' \u2014 '+fmtAED2(rec.total)+' to '+client+(status==='sent'?' (sent)':' (draft)')); }catch(e){} }
+    toast(status==='sent'?('Invoice sent \u2014 '+client+' sees it in their portal.'):'Draft saved.');
+    if(status==='sent'){
+      var em=bizEmailByName(client);
+      if(em) sendAppEmail(em,'Invoice '+rec.number+' from '+(currentAccount.name||'your accountant'),
+        'Hello '+client+',\n\n'+(currentAccount.name||'Your accountant')+' has issued invoice '+rec.number+' for '+fmtAED2(rec.total)+(rec.due?(', due '+rec.due):'')+'.\n\nView it in your HisabOne portal: https://hisabone.ae\n\nThank you.');
+    }
+    renderPage();
+  }catch(e){ toast('Could not save the invoice \u2014 '+((e&&e.message)||'try again.')); }
+}
+async function blSetStatus(id, status){
+  var inv=(svcInvoices||[]).find(function(x){return String(x.id)===String(id);}); if(!inv) return;
+  var patch={status:status}; if(status==='paid') patch.paid_at=new Date().toISOString();
+  if(!_sampleMode&&sb&&!String(id).startsWith('demo')){
+    var r=await sb.from('service_invoices').update(patch).eq('id',id);
+    if(r&&r.error){ toast('Could not update \u2014 '+r.error.message); return; }
+  }
+  Object.assign(inv,patch);
+  if(status==='sent'){
+    var em=bizEmailByName(inv.client_name);
+    if(em&&!_sampleMode) sendAppEmail(em,'Invoice '+inv.number+' from '+(currentAccount.name||'your accountant'),
+      'Hello '+inv.client_name+',\n\nInvoice '+inv.number+' for '+fmtAED2(inv.total)+(inv.due?(', due '+inv.due):'')+' is ready in your HisabOne portal: https://hisabone.ae\n\nThank you.');
+  }
+  if(typeof logActivity==='function'){ try{ logActivity('invoice_'+status, inv.number+' marked '+status); }catch(e){} }
+  saveAccountData(); toast('Invoice '+inv.number+' \u2014 '+status+'.'); renderPage();
+}
+async function blDelete(id){
+  var inv=(svcInvoices||[]).find(function(x){return String(x.id)===String(id);}); if(!inv) return;
+  openConfirm({title:'Delete draft', confirmLabel:'Delete',
+    message:'Delete draft invoice '+inv.number+'? Only drafts can be deleted \u2014 sent invoices are voided instead, so the numbering stays honest.',
+    onYes:async function(){
+      if(!_sampleMode&&sb&&!String(id).startsWith('demo')){ await sb.from('service_invoices').delete().eq('id',id).then(function(){}); }
+      svcInvoices=svcInvoices.filter(function(x){return String(x.id)!==String(id);});
+      toast('Draft deleted.'); renderPage();
+    }});
+}
+function blStatusPill(st){
+  return st==='paid'?'<span class="pill p-green">Paid \u2713</span>'
+    : st==='sent'?'<span class="pill p-amber">Awaiting payment</span>'
+    : st==='void'?'<span class="pill p-gray">Void</span>'
+    : '<span class="pill p-gray">Draft</span>';
+}
+function svcInvRowsHTML(list, firmSide){
+  return list.map(function(inv){
+    var lines=(inv.items||[]).map(function(it){return ctEsc(it.d)+' \u2014 '+fmtAED2(it.amt);}).join(' \u00b7 ');
+    return '<div class="drow" style="flex-wrap:wrap"><div style="color:var(--accent)">'+svgIcon('card',15)+'</div>'
+      +'<div style="flex:1;min-width:200px"><div class="dtitle" style="font-size:13px">'+ctEsc(inv.number)+' \u2014 '+(firmSide?ctEsc(inv.client_name):'from '+ctEsc((typeof linkedFirm!=='undefined'&&linkedFirm)||'your accountant'))+'</div>'
+      +'<div class="dmeta">'+lines+(inv.due?(' \u00b7 due '+ctEsc(inv.due)):'')+(inv.vat?' \u00b7 incl. 5% VAT':'')+'</div></div>'
+      +'<b style="font-size:13.5px">'+fmtAED2(inv.total)+'</b>'
+      +blStatusPill(inv.status)
+      +(firmSide?('<span style="display:inline-flex;gap:6px">'
+        +(inv.status==='draft'?'<button class="btn ghost sm" onclick="blSetStatus(\''+inv.id+'\',\'sent\')">Send</button><button class="iconbtn" title="Delete draft" onclick="blDelete(\''+inv.id+'\')">'+svgIcon('trash',14)+'</button>':'')
+        +(inv.status==='sent'?'<button class="btn ghost sm" onclick="blSetStatus(\''+inv.id+'\',\'paid\')">Mark paid</button><button class="btn ghost sm" onclick="blSetStatus(\''+inv.id+'\',\'void\')">Void</button>':'')
+        +'</span>'):'')
+      +'</div>';
+  }).join('');
+}
+function bizSvcInvoicesCardHTML(){
+  var list=(svcInvoices||[]).filter(function(i){return i.status!=='draft';});
+  if(!list.length||!currentAccount||currentAccount.role!=='business') return '';
+  var owed=list.filter(function(i){return i.status==='sent';}).reduce(function(a,i){return a+(+i.total||0);},0);
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('card',16)+' Invoices from your accountant</h3>'
+    +(owed>0?'<span class="pill p-amber">'+fmtAED2(owed)+' outstanding</span>':'<span class="pill p-green">All settled</span>')+'</div>'
+    +svcInvRowsHTML(list,false)
+    +'<div class="muted" style="font-size:11px;margin-top:8px">Pay by bank transfer as agreed with your accountant \u2014 they mark it paid here once received.</div>'
+    +'</div>';
+}
+/* ============ ENGAGEMENT LETTERS + E-SIGNATURE v21 ============ */
+var sentLetters=[];        /* firm: letters this practice has sent */
+var signedLetterIds=[];    /* business: shared_reports ids already signed */
+function letterTemplate(clientName){
+  var firm=(currentAccount&&currentAccount.name)||'Our firm';
+  var today=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  return 'ENGAGEMENT LETTER\n\nDate: '+today+'\nFrom: '+firm+'\nTo: '+clientName+'\n\nDear Sir/Madam,\n\nWe are pleased to confirm our engagement to provide the following services:\n\n\u2022 Preparation and filing of UAE VAT returns\n\u2022 Preparation and filing of the UAE Corporate Tax return\n\u2022 Maintenance of the compliance document register\n\u2022 Advisory on FTA notices and correspondence\n\nOur professional fees will be agreed separately and invoiced as work proceeds. Either party may end this engagement with 30 days\u2019 written notice.\n\nWe will rely on the information and records you provide. You remain responsible for the completeness and accuracy of your books and records.\n\nPlease sign below to confirm your acceptance of these terms.\n\nYours faithfully,\n'+firm;
+}
+function openEngagementLetter(clientId){
+  var c=findFirmClient(clientId); if(!c) return;
+  var h=document.getElementById('elModal');
+  if(!h){ h=document.createElement('div'); h.id='elModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:var(--panel,#fff);border-radius:16px;max-width:640px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3);max-height:90vh;overflow:auto">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="color:var(--accent)">'+svgIcon('file-text',20)+'</span><h3 style="font-size:17px;margin:0">Engagement letter \u2014 '+ctEsc(c.name)+'</h3></div>'
+    +'<p class="muted" style="font-size:12.5px;margin:0 0 10px">'+(c.manual?'This client has no linked portal \u2014 download the letter and collect the signature offline, then mark it signed on their register.':'Sent straight to their portal, where they sign electronically \u2014 typed name plus a drawn signature, both timestamped.')+'</p>'
+    +'<label class="flabel">Title</label><input id="elTitle" class="finput" value="Engagement letter \u2014 '+ctEsc(new Date().getFullYear())+'" style="margin-bottom:9px">'
+    +'<label class="flabel">Letter</label><textarea id="elBody" class="finput" rows="14" style="height:auto;resize:vertical;font-family:inherit;line-height:1.55">'+ctEsc(letterTemplate(c.name))+'</textarea>'
+    +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap">'
+      +'<button class="btn ghost" onclick="document.getElementById(\'elModal\').style.display=\'none\'">Cancel</button>'
+      +(c.manual
+        ? '<button class="btn ghost" onclick="elDownload(\''+jsq(c.name)+'\')">'+svgIcon('download',14)+' Download</button>'
+          +'<button class="btn" onclick="elMarkSignedOffline(\''+jsq(c.name)+'\')">Mark signed offline</button>'
+        : '<button class="btn" onclick="elSend(\''+jsq(clientId)+'\')">'+svgIcon('share',14)+' Send for signature</button>')
+    +'</div></div>';
+}
+function elDownload(name){
+  var body=(document.getElementById('elBody')||{}).value||'';
+  var blob=new Blob([body],{type:'text/plain'}); var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='Engagement letter - '+name+'.txt';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+function elMarkSignedOffline(name){
+  addClientDoc(name,{name:(document.getElementById('elTitle')||{}).value||'Engagement letter', category:'Engagement letter', status:'received', note:'Signed offline \u2014 recorded by your firm'});
+  saveAccountData(); document.getElementById('elModal').style.display='none';
+  toast('Recorded as signed on '+name+'\u2019s register.'); renderPage();
+}
+async function elSend(clientId){
+  var c=findFirmClient(clientId); if(!c) return;
+  var title=(document.getElementById('elTitle')||{}).value||'Engagement letter';
+  var body=(document.getElementById('elBody')||{}).value||'';
+  if(_sampleMode||!sb||!currentAccount){ toast('Demo \u2014 letters send from a real account.'); return; }
+  var rec={kind:'letter', title:title, body:body, client:c.name, firm:(currentAccount.name||''), firmId:currentAccount.id, status:'sent', sentAt:new Date().toISOString()};
+  try{
+    var r=await sb.from('shared_reports').insert({from_id:currentAccount.id, to_id:clientId, report:rec}).select('id').single();
+    if(r.error) throw r.error;
+    rec._dbId=r.data.id; sentLetters.unshift(rec);
+    if(typeof logActivity==='function'){ try{ logActivity('letter_sent','Engagement letter sent to '+c.name+' for signature'); }catch(e){} }
+    document.getElementById('elModal').style.display='none';
+    toast('Letter sent \u2014 '+c.name+' will find it in their portal to sign.');
+    var em=bizEmailByName(c.name);
+    if(em) sendAppEmail(em,'Engagement letter to sign \u2014 '+(currentAccount.name||'your accountant'),'Hello '+c.name+',\n\n'+(currentAccount.name||'Your accountant')+' has sent you an engagement letter to review and sign. Please sign in to your HisabOne portal \u2014 it is waiting on your dashboard.\n\nhttps://hisabone.ae\n\nThank you.');
+    renderPage();
+  }catch(e){ toast('Could not send the letter \u2014 '+((e&&e.message)||'try again.')); }
+}
+function firmLettersCardHTML(c){
+  var mine=(sentLetters||[]).filter(function(l){return l.client===c.name;});
+  var signed={};
+  (sharedReports||[]).forEach(function(r){ if(r.kind==='letter_signed'&&r.ref) signed[r.ref]=r; });
+  if(!mine.length) return '';
+  return '<div class="card mb14"><div class="cardhead"><h3>'+svgIcon('file-text',16)+' Engagement letters</h3><span class="pill p-gray">'+mine.length+'</span></div>'
+    +mine.map(function(l){
+      var sg=signed[l._dbId];
+      return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('file-text',15)+'</div>'
+        +'<div style="flex:1;min-width:0"><div class="dtitle" style="font-size:13px">'+ctEsc(l.title)+'</div>'
+        +'<div class="dmeta">Sent '+(l.sentAt?calFmt(l.sentAt.slice(0,10)):'')+(sg?(' \u00b7 signed by '+ctEsc(sg.name||'')+' on '+calFmt((sg.signedAt||'').slice(0,10))):'')+'</div></div>'
+        +(sg?'<span class="pill p-green">Signed \u2713</span>':'<span class="pill p-amber">Awaiting signature</span>')
+        +(sg&&sg.sig?'<img src="'+sg.sig+'" alt="signature" style="height:30px;border:1px solid var(--line);border-radius:6px;background:#fff">':'')
+        +'</div>';
+    }).join('')+'</div>';
+}
+/* ---- business side: sign ---- */
+function bizLettersToSign(){
+  return (sharedReports||[]).filter(function(r){ return r.kind==='letter' && signedLetterIds.indexOf(r._dbId)===-1; });
+}
+function bizSignCardHTML(){
+  var ls=bizLettersToSign();
+  if(!ls.length) return '';
+  return '<div class="card mb14" style="border-color:var(--accent)">'
+    +'<div class="cardhead"><h3>'+svgIcon('file-text',16)+' For your signature</h3><span class="pill p-amber">'+ls.length+'</span></div>'
+    +ls.map(function(l){
+      return '<div class="drow"><div style="color:var(--accent)">'+svgIcon('file-text',15)+'</div>'
+        +'<div style="flex:1;min-width:0"><div class="dtitle" style="font-size:13px">'+ctEsc(l.title||'Engagement letter')+'</div>'
+        +'<div class="dmeta">From '+ctEsc(l.firm||'your accountant')+'</div></div>'
+        +'<button class="btn sm" onclick="openSignLetter(\''+jsq(String(l._dbId))+'\')">Review &amp; sign</button></div>';
+    }).join('')+'</div>';
+}
+var _sigDrawn=false;
+function openSignLetter(dbId){
+  var l=(sharedReports||[]).find(function(r){return String(r._dbId)===String(dbId);}); if(!l) return;
+  var h=document.getElementById('signModal');
+  if(!h){ h=document.createElement('div'); h.id='signModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:var(--panel,#fff);border-radius:16px;max-width:640px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3);max-height:92vh;overflow:auto">'
+    +'<h3 style="font-size:17px;margin:0 0 10px">'+ctEsc(l.title||'Engagement letter')+'</h3>'
+    +'<div style="background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:12.8px;line-height:1.6;white-space:pre-wrap;max-height:300px;overflow:auto">'+ctEsc(l.body||'')+'</div>'
+    +'<label class="flabel" style="margin-top:13px">Your full legal name (this is your electronic signature)</label>'
+    +'<input id="sgName" class="finput" placeholder="e.g. Ahmed Al Noor">'
+    +'<label class="flabel" style="margin-top:11px">Draw your signature <span style="text-transform:none;letter-spacing:0;font-weight:500">\u2014 optional, with a mouse or finger</span></label>'
+    +'<canvas id="sigPad" width="560" height="130" style="width:100%;height:110px;border:1.5px dashed var(--line);border-radius:10px;background:#fff;touch-action:none;cursor:crosshair"></canvas>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px;flex-wrap:wrap">'
+      +'<button class="btn ghost sm" onclick="sigClear()">Clear drawing</button>'
+      +'<span style="display:flex;gap:10px"><button class="btn ghost" onclick="document.getElementById(\'signModal\').style.display=\'none\'">Not now</button>'
+      +'<button class="btn" onclick="signLetter(\''+jsq(String(dbId))+'\')">Agree &amp; sign</button></span></div>'
+    +'<p class="muted" style="font-size:11px;margin:10px 0 0">Your typed name, drawn signature and the exact time are recorded and shown to '+ctEsc(l.firm||'your accountant')+'.</p>'
+    +'</div>';
+  setTimeout(initSigPad,50);
+}
+function initSigPad(){
+  var cv=document.getElementById('sigPad'); if(!cv) return;
+  var ctx=cv.getContext('2d'); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.strokeStyle='#232336';
+  _sigDrawn=false; var drawing=false;
+  function pos(e){ var r=cv.getBoundingClientRect(); var t=e.touches?e.touches[0]:e;
+    return {x:(t.clientX-r.left)*(cv.width/r.width), y:(t.clientY-r.top)*(cv.height/r.height)}; }
+  function down(e){ drawing=true; var p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
+  function move(e){ if(!drawing) return; var p=pos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); _sigDrawn=true; e.preventDefault(); }
+  function up(){ drawing=false; }
+  cv.addEventListener('pointerdown',down); cv.addEventListener('pointermove',move);
+  window.addEventListener('pointerup',up);
+}
+function sigClear(){ var cv=document.getElementById('sigPad'); if(cv){ cv.getContext('2d').clearRect(0,0,cv.width,cv.height); _sigDrawn=false; } }
+async function signLetter(dbId){
+  var l=(sharedReports||[]).find(function(r){return String(r._dbId)===String(dbId);}); if(!l) return;
+  var name=(document.getElementById('sgName')||{}).value.trim();
+  if(!name){ toast('Type your full name \u2014 that is the signature.'); return; }
+  if(_sampleMode||!sb||!currentAccount){ toast('Demo \u2014 signing works from a real account.'); return; }
+  var cv=document.getElementById('sigPad');
+  var sig=(_sigDrawn&&cv)?cv.toDataURL('image/png'):null;
+  try{
+    var rec={kind:'letter_signed', ref:l._dbId, title:l.title, name:name, sig:sig, signedAt:new Date().toISOString(), client:(currentAccount.name||'')};
+    var r=await sb.from('shared_reports').insert({from_id:currentAccount.id, to_id:l.firmId, report:rec});
+    if(r.error) throw r.error;
+    signedLetterIds.push(l._dbId); saveAccountData();
+    document.getElementById('signModal').style.display='none';
+    toast('Signed \u2014 '+(l.firm||'your accountant')+' has been notified.');
+    renderPage();
+  }catch(e){ toast('Could not record the signature \u2014 '+((e&&e.message)||'try again.')); }
+}
+var bizEinv=null; /* {phase, asp, steps:{}} — persisted in the business blob */
+function bizEinvCardHTML(){
+  var e=bizEinv||{phase:'',asp:'',steps:{}};
+  var phase=e.phase||((bizRevenueBand==='ge50m')?'1':'2');
+  var dl=phase==='1'?'2026-10-31':'2027-03-31';
+  var live=phase==='1'?'2027-01-01':'2027-07-01';
+  var done=0; EINV_STEPS.forEach(function(st){ if(st[0]==='asp'?e.asp:e.steps[st[0]]) done++; });
+  var pct=Math.round(done/EINV_STEPS.length*100);
+  return '<div class="card mb14">'
+    +'<div class="cardhead"><h3>'+svgIcon('zap',16)+' E-invoicing readiness '+infoTip('From 2027 the UAE requires B2B invoices as structured XML through an FTA-accredited service provider \u2014 ordinary PDFs stop counting. Work through this checklist before your go-live date. Your accountant can help with every step.')+'</h3>'
+    +'<span style="display:inline-flex;align-items:center;gap:8px"><span class="minibar" style="width:76px"><i style="width:'+pct+'%"></i></span><span class="frac">'+done+' / '+EINV_STEPS.length+'</span>'+compliancePill(dl)+'</span></div>'
+    +'<div class="muted" style="font-size:12px;margin:-3px 0 8px">Appoint a provider by <b>'+calFmt(dl)+'</b> \u00b7 mandatory from <b>'+calFmt(live)+'</b>'+(phase==='1'?' (Phase 1 \u2014 revenue \u2265 AED 50m)':'')+'</div>'
+    +EINV_STEPS.map(function(st){
+      var key=st[0];
+      if(key==='asp'){
+        return '<div style="display:flex;align-items:center;gap:9px;padding:5px 0;flex-wrap:wrap">'
+          +'<input type="checkbox" '+(e.asp?'checked':'')+' disabled style="width:15px;height:15px">'
+          +'<span style="font-size:12.5px;flex:1;min-width:170px">'+st[1]+'</span>'
+          +'<input class="finput" style="max-width:210px;height:30px;font-size:12px" placeholder="Provider name" value="'+ctEsc(e.asp||'')+'" onchange="bizEinvSet(\'asp\',this.value.trim())">'
+          +'</div>';
+      }
+      return '<label style="display:flex;align-items:center;gap:9px;padding:5px 0;cursor:pointer">'
+        +'<input type="checkbox" '+(e.steps&&e.steps[key]?'checked':'')+' onchange="bizEinvStep(\''+key+'\',this.checked)" style="width:15px;height:15px;accent-color:var(--accent)">'
+        +'<span style="font-size:12.5px">'+st[1]+'</span></label>';
+    }).join('')
+    +'</div>';
+}
+function bizEinvSet(k,v){ bizEinv=bizEinv||{phase:'',asp:'',steps:{}}; bizEinv[k]=v; saveAccountData(); renderPage(); }
+function bizEinvStep(k,on){ bizEinv=bizEinv||{phase:'',asp:'',steps:{}}; bizEinv.steps=bizEinv.steps||{}; bizEinv.steps[k]=!!on; saveAccountData(); renderPage(); }
 function businessHealthCard(){
   var h=businessHealth();
   var n=h.atRisk.length;
@@ -8967,7 +9721,7 @@ function businessHealthCard(){
     +expLine
     +'<div class="muted" style="font-size:12px;margin-top:6px">'+h.overdue+' overdue · '+h.soon+' due soon · '+h.outstanding+' document'+(h.outstanding===1?'':'s')+' outstanding</div>'
     +'</div></div>'+list
-    +'<div class="muted" style="font-size:11px;margin-top:10px">Estimated from published FTA fixed penalties (VAT late return '+fmtAED(PENALTY.vatLateReturn)+'; CT late filing from '+fmtAED(PENALTY.ctFileMo)+'/month). Excludes late-payment interest — not tax advice.</div>'
+    +'<div class="muted" style="font-size:11px;margin-top:10px">Estimated from published FTA fixed penalties (VAT late return '+fmtAED(PENALTY.vatLateReturn)+'; CT late filing from '+fmtAED(PENALTY.ctFileMo)+'/month). From 14 Apr 2026 late payment also accrues a flat 14% annual interest, and voluntary disclosures carry 1% per month — not included above. Not tax advice.</div>'
     +'</div>';
 }
 function firmHealthCard(){
@@ -9882,6 +10636,8 @@ function settingsDataCardHTML(){
         '<button class="btn ghost sm" onclick="exportAccountData()">'+svgIcon('download',13)+' Download</button>')
     +setRow('Where your data lives', 'Stored in the EU (Frankfurt) and never sold or shared with anyone you have not linked yourself.',
         '<button class="btn ghost sm" onclick="switchView(\'privacy\')">Privacy</button>')
+    +setRow('Two-factor authentication', 'A six-digit code from an authenticator app is asked for at every sign-in. Protects the account even if the password leaks.',
+        '<button class="btn ghost sm" id="mfaBtn" onclick="mfaOpen()">'+svgIcon('shield',13)+' Manage</button>')
     +setRow('Sign out', 'Ends this session on this device.',
         '<button class="btn ghost sm" onclick="logout()">Log out</button>')
     +setRow('Delete your account', 'Permanently removes this account and everything in it — profile, documents, returns, drafts, messages and links. This cannot be undone.',
@@ -9908,6 +10664,102 @@ function exportAccountData(){
     document.body.appendChild(el); el.click(); el.remove(); URL.revokeObjectURL(url);
     toast('Your data has been downloaded.');
   }catch(e){ toast('Could not build the export — try again.'); }
+}
+/* ---- Two-factor authentication (TOTP via authenticator app) ---- */
+async function mfaVerifiedFactor(){
+  try{ var r=await sb.auth.mfa.listFactors();
+    return (r.data&&r.data.totp||[]).find(function(f){return f.status==='verified';})||null;
+  }catch(e){ return null; }
+}
+async function mfaOpen(){
+  if(_sampleMode||!sb||!currentAccount){ toast('Two-factor auth is set up from a real account.'); return; }
+  var h=document.getElementById('mfaModal');
+  if(!h){ h=document.createElement('div'); h.id='mfaModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:var(--panel,#fff);border-radius:16px;max-width:440px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3)"><div class="muted">Checking\u2026</div></div>';
+  var f=await mfaVerifiedFactor();
+  if(f){
+    h.innerHTML='<div style="background:var(--panel,#fff);border-radius:16px;max-width:440px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3)">'
+      +'<h3 style="font-size:17px;margin:0 0 8px">'+svgIcon('shield',17)+' Two-factor is on</h3>'
+      +'<p class="muted" style="font-size:13px;line-height:1.55">Every sign-in asks for a code from your authenticator app. Turning it off removes that protection.</p>'
+      +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">'
+      +'<button class="btn ghost" onclick="document.getElementById(\'mfaModal\').style.display=\'none\'">Close</button>'
+      +'<button class="btn" style="background:var(--red);border-color:var(--red)" onclick="mfaDisable(\''+f.id+'\')">Turn off</button></div></div>';
+    return;
+  }
+  try{
+    var r=await sb.auth.mfa.enroll({factorType:'totp', friendlyName:'HisabOne '+new Date().toISOString().slice(0,10)});
+    if(r.error) throw r.error;
+    var qr=r.data.totp.qr_code;   /* SVG string or data URI */
+    var src=qr.indexOf('data:')===0?qr:('data:image/svg+xml;utf8,'+encodeURIComponent(qr));
+    h.innerHTML='<div style="background:var(--panel,#fff);border-radius:16px;max-width:440px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3)">'
+      +'<h3 style="font-size:17px;margin:0 0 8px">Set up two-factor authentication</h3>'
+      +'<p class="muted" style="font-size:12.5px;line-height:1.5;margin:0 0 10px">Scan this with Google Authenticator, 1Password, Authy or any TOTP app, then type the six-digit code it shows.</p>'
+      +'<div style="text-align:center"><img src="'+src+'" style="width:190px;height:190px;border:1px solid var(--line);border-radius:12px;background:#fff"></div>'
+      +'<div class="muted" style="font-size:10.5px;text-align:center;word-break:break-all;margin-top:6px">Secret: '+ctEsc(r.data.totp.secret||'')+'</div>'
+      +'<label class="flabel" style="margin-top:11px">Six-digit code</label>'
+      +'<input id="mfaCode" class="finput" inputmode="numeric" maxlength="6" placeholder="123456" style="letter-spacing:4px;text-align:center;font-size:17px">'
+      +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">'
+      +'<button class="btn ghost" onclick="mfaCancelEnroll(\''+r.data.id+'\')">Cancel</button>'
+      +'<button class="btn" onclick="mfaVerifyEnroll(\''+r.data.id+'\')">Turn on</button></div></div>';
+    var i=document.getElementById('mfaCode'); if(i) i.focus();
+  }catch(e){
+    h.innerHTML='<div style="background:var(--panel,#fff);border-radius:16px;max-width:440px;width:100%;padding:22px"><p style="font-size:13.5px">Could not start setup \u2014 '+ctEsc((e&&e.message)||'try again.')+'</p><div style="text-align:right;margin-top:10px"><button class="btn ghost" onclick="document.getElementById(\'mfaModal\').style.display=\'none\'">Close</button></div></div>';
+  }
+}
+async function mfaCancelEnroll(fid){ try{ await sb.auth.mfa.unenroll({factorId:fid}); }catch(e){} document.getElementById('mfaModal').style.display='none'; }
+async function mfaVerifyEnroll(fid){
+  var code=(document.getElementById('mfaCode')||{}).value.trim();
+  if(!/^\d{6}$/.test(code)){ toast('Type the six-digit code from the app.'); return; }
+  try{
+    var ch=await sb.auth.mfa.challenge({factorId:fid}); if(ch.error) throw ch.error;
+    var vr=await sb.auth.mfa.verify({factorId:fid, challengeId:ch.data.id, code:code}); if(vr.error) throw vr.error;
+    document.getElementById('mfaModal').style.display='none';
+    toast('Two-factor authentication is on \u2014 you\u2019ll be asked for a code at every sign-in.');
+    if(typeof logActivity==='function'){ try{ logActivity('security','Two-factor authentication enabled'); }catch(e){} }
+  }catch(e){ toast('That code did not verify \u2014 check the app and try again.'); }
+}
+async function mfaDisable(fid){
+  try{
+    var r=await sb.auth.mfa.unenroll({factorId:fid}); if(r.error) throw r.error;
+    document.getElementById('mfaModal').style.display='none';
+    toast('Two-factor authentication is off.');
+  }catch(e){ toast('Could not turn it off \u2014 '+((e&&e.message)||'try again.')); }
+}
+/* sign-in challenge: password alone is not enough once a factor exists */
+async function mfaLoginGate(){
+  try{
+    var aal=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if(!aal.data || aal.data.nextLevel!=='aal2' || aal.data.currentLevel==='aal2') return true;
+    var lf=await sb.auth.mfa.listFactors();
+    var f=(lf.data&&lf.data.totp||[]).find(function(x){return x.status==='verified';});
+    if(!f) return true;
+    return await new Promise(function(resolve){
+      var h=document.getElementById('mfaGate');
+      if(!h){ h=document.createElement('div'); h.id='mfaGate'; h.className='modal-overlay'; document.body.appendChild(h); }
+      h.style.display='flex';
+      h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:400px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(8,20,40,.3)">'
+        +'<h3 style="font-size:16px;margin:0 0 6px">'+svgIcon('shield',16)+' Two-factor check</h3>'
+        +'<p class="muted" style="font-size:12.5px;margin:0 0 10px">Type the six-digit code from your authenticator app to finish signing in.</p>'
+        +'<input id="mfaGateCode" class="finput" inputmode="numeric" maxlength="6" placeholder="123456" style="letter-spacing:4px;text-align:center;font-size:17px">'
+        +'<div id="mfaGateErr" style="display:none;color:var(--red);font-size:12px;margin-top:7px"></div>'
+        +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px">'
+        +'<button class="btn ghost" id="mfaGateCancel">Cancel</button>'
+        +'<button class="btn" id="mfaGateGo">Verify \u2192</button></div></div>';
+      document.getElementById('mfaGateCancel').onclick=async function(){ try{ await sb.auth.signOut(); }catch(e){} h.style.display='none'; resolve(false); };
+      document.getElementById('mfaGateGo').onclick=async function(){
+        var code=(document.getElementById('mfaGateCode')||{}).value.trim();
+        if(!/^\d{6}$/.test(code)) return;
+        try{
+          var ch=await sb.auth.mfa.challenge({factorId:f.id}); if(ch.error) throw ch.error;
+          var vr=await sb.auth.mfa.verify({factorId:f.id, challengeId:ch.data.id, code:code}); if(vr.error) throw vr.error;
+          h.style.display='none'; resolve(true);
+        }catch(e){ var el=document.getElementById('mfaGateErr'); if(el){ el.textContent='That code did not verify \u2014 try the next one the app shows.'; el.style.display='block'; } }
+      };
+      var i=document.getElementById('mfaGateCode'); if(i){ i.focus(); i.addEventListener('keydown',function(ev){ if(ev.key==='Enter') document.getElementById('mfaGateGo').click(); }); }
+    });
+  }catch(e){ return true; }
 }
 /* ---- Delete account: typed confirmation, RPC does the erasing ---- */
 function openDeleteAccount(){

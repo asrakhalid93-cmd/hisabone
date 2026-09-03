@@ -1265,18 +1265,41 @@
   /* v20: an open tooltip outranks every sibling card, even outside a .card */
   .itip:hover,.itip:focus-visible{z-index:130}
 
-  /* ============ DENSITY v20 — Compact must LOOK compact ============ */
-  body.dense td{padding:6px 10px;font-size:12.5px}
-  body.dense th{padding:7px 10px}
-  body.dense .ctbl .avatar,body.dense .avatar{width:26px;height:26px;font-size:10.5px}
-  body.dense .drow{padding:6px 0}
-  body.dense .drow .dbar{height:24px}
-  body.dense .packhead{padding:7px 11px}
-  body.dense .packbody .drow{padding:5px 0}
+  /* ============ DENSITY v24 — Compact tightens the WHOLE page ============
+     Not just table rows: cards, gaps, headings, stats and buttons all pull in,
+     so a screen fits roughly a third more work. Comfortable stays untouched. */
+  body.dense td{padding:5px 9px;font-size:12.5px}
+  body.dense th{padding:6px 9px;font-size:10px}
+  body.dense .ctbl .avatar,body.dense .avatar{width:24px;height:24px;font-size:10px}
+  body.dense .drow{padding:5px 0;gap:10px}
+  body.dense .drow .dbar{height:22px}
+  body.dense .packhead{padding:6px 10px}
+  body.dense .packbody .drow{padding:4px 0}
   body.dense .minibar{height:5px}
-  body.dense .pill{padding:2px 8px;font-size:10px}
+  body.dense .pill{padding:2px 7px;font-size:10px}
   body.dense .dtitle{font-size:12.5px}
-  body.dense .dmeta{font-size:11px}
+  body.dense .dmeta{font-size:10.5px}
+  /* surfaces & rhythm */
+  body.dense .card{padding:12px 14px;border-radius:12px}
+  body.dense .cardhead{margin-bottom:8px}
+  body.dense .cardhead h3{font-size:13.5px}
+  body.dense .grid{gap:10px}
+  body.dense .mb14{margin-bottom:9px}
+  body.dense .mt18{margin-top:11px}
+  body.dense h1{font-size:20px;margin-bottom:2px}
+  body.dense .sub{font-size:12.5px;margin-bottom:13px}
+  /* stat tiles shrink from posters to gauges */
+  body.dense .stat .num{font-size:21px}
+  body.dense .stat .ic{width:29px;height:29px;font-size:14px;margin-bottom:7px;border-radius:8px}
+  body.dense .stat .lbl{font-size:11px}
+  /* controls */
+  body.dense .btn{padding:7px 13px}
+  body.dense .btn.sm{padding:4px 10px;font-size:11.5px}
+  body.dense .finput{padding:6px 10px;font-size:12.5px}
+  body.dense .banner{padding:12px 14px;gap:12px}
+  body.dense .ai{padding:12px 14px}
+  body.dense .emptybox{padding:14px}
+  body.dense .sechead{margin:14px 0 8px}
 
   /* ================= DESIGN SYSTEM v7 — tokens, surfaces, polish ================= */
   :root{

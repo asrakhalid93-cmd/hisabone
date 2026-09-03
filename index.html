@@ -10206,7 +10206,7 @@ function chatTeardown(){
 
 /* ================= COMMAND CENTRE — owner-only app manager at /admin ================= */
 var APP_ADMIN_EMAIL='asrakhalid.93@gmail.com';   /* UI hint only — real security is RLS in the database */
-var _admSession=null, _admData=null, _admStats=null, _admTab='overview', _admSaveT=null;
+var _admSession=null, _admData=null, _admStats=null, _admTab='overview', _admSaveT=null, _admAccounts=[];
 
 function admEl(){
   var r=document.getElementById('adminRoot');
@@ -10327,6 +10327,7 @@ async function admLoadAll(){
   (_admData.depts||[]).forEach(function(d){ d.tasks=d.tasks||[]; });
   if(changed) admSave();
   try{ var st=await sb.rpc('admin_stats'); if(!st.error) _admStats=st.data; }catch(e){}
+  try{ var ac=await sb.rpc('admin_accounts'); _admAccounts=(!ac.error&&Array.isArray(ac.data))?ac.data:[]; }catch(e){ _admAccounts=[]; }
 }
 function admStatTiles(){
   var s=_admStats||{};
@@ -10569,7 +10570,68 @@ function admTabHTML(){
     +'<div class="adm-card"><h3>🆕 Recent sign-ups</h3>'
       +((s.recent_signups&&s.recent_signups.length)?s.recent_signups.map(function(r){ return '<div class="adm-row"><span style="flex:1">'+ctEsc(r.name)+'</span><span class="adm-pill '+(r.role==='firm'?'doing':'done')+'">'+(r.role==='firm'?'Accountant':'Business')+'</span><span class="adm-muted">'+ctEsc(r.at)+'</span></div>'; }).join(''):'<div class="adm-muted" style="padding:12px 2px">No sign-ups yet.</div>')
     +'</div></div>'
+    +admAccountsCardHTML()
     +'<div class="adm-note">Counting is anonymous — one visit event per browser session, no cookies, no personal data. Returns: '+(s.returns_pending||0)+' pending · '+(s.returns_approved||0)+' approved · '+(s.returns_changes||0)+' changes requested. Documents: '+(s.doc_requests_done||0)+' of '+(s.doc_requests||0)+' requests fulfilled.</div>';
+}
+function admAccountsCardHTML(){
+  var rows=(_admAccounts||[]).map(function(a){
+    var quiet=(a.quiet_days||0)>=14 && !a.team_seat;
+    return '<div class="adm-row">'
+      +'<span style="flex:1;min-width:0"><b>'+ctEsc(a.name||'—')+'</b>'
+        +'<span class="adm-muted" style="margin-left:8px;font-size:11.5px">'+ctEsc(a.email||'')+'</span></span>'
+      +'<span class="adm-pill '+(a.role==='firm'?'doing':'done')+'">'+(a.role==='firm'?(a.team_seat?'Team seat':'Accountant'):'Business')+'</span>'
+      +(a.plan?'<span class="adm-muted" style="font-size:11px">'+ctEsc(a.plan.replace(/^biz_|^mne_/,''))+'</span>':'')
+      +'<span class="adm-muted" style="font-size:11.5px;min-width:120px;text-align:right">'
+        +(a.quiet_days===0?'today':(a.quiet_days===999?'never signed in':('seen '+a.quiet_days+'d ago')))+'</span>'
+      +(quiet?'<span class="adm-pill" style="background:#4a2530;color:#ff8fa3">💤 quiet</span>':'')
+      +'<button class="adm-btn ghost" style="font-size:11px;padding:3px 9px;color:#ff8fa3" title="Delete this account permanently" onclick="admDeleteAccount(\''+jsq(String(a.id||''))+'\',\''+jsq(a.email||'')+'\',\''+jsq(a.name||'')+'\')">🗑</button>'
+      +'</div>';
+  }).join('');
+  return '<div class="adm-card" style="margin-top:16px"><h3>👥 Manage accounts — who\u2019s in, who\u2019s gone quiet'
+    +'<span style="float:right"><button class="adm-btn ghost" style="font-size:12px;padding:5px 12px" onclick="admSendDigest(this)">📬 Send weekly digest now</button></span></h3>'
+    +(rows||'<div class="adm-muted" style="padding:12px 2px">No accounts yet.</div>')
+    +'<div class="adm-muted" style="font-size:11px;margin-top:10px">💤 marks an account with no sign-in for 14+ days \u2014 the same list the Monday digest flags for a nudge. 🗑 deletes an account and everything it owns, permanently \u2014 you\u2019ll be asked to type the email to confirm. Your own signed-in account can\u2019t be deleted from here.</div>'
+    +'</div>';
+}
+function admDeleteAccount(id, email, name){
+  if(!id){ toast('Missing account id \u2014 refresh and try again.'); return; }
+  var h=document.getElementById('admDelModal');
+  if(!h){ h=document.createElement('div'); h.id='admDelModal'; h.className='modal-overlay'; document.body.appendChild(h);
+    h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#232336;color:#fff;border-radius:16px;max-width:460px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.5)">'
+    +'<h3 style="font-size:17px;margin:0 0 8px;color:#ff8fa3">Delete '+ctEsc(name||email)+'?</h3>'
+    +'<p style="font-size:13px;color:#b9b9cc;line-height:1.55;margin:0 0 12px">This permanently erases the account <b style="color:#fff">'+ctEsc(email)+'</b> and everything it owns \u2014 profile, documents, returns, messages and links \u2014 exactly as if they deleted it themselves. <b style="color:#ff8fa3">There is no undo.</b> Files they uploaded to storage stay behind (harmless, but not auto-removed).</p>'
+    +'<label style="font-size:12px;font-weight:700;display:block;margin-bottom:5px;color:#c7b9ff">Type the account\u2019s email to confirm</label>'
+    +'<input id="admDelEmail" class="finput" autocomplete="off" placeholder="'+ctEsc(email)+'" style="width:100%;background:#2a2440;border-color:#3a3454;color:#fff" oninput="var b=document.getElementById(\'admDelGo\'); if(b) b.disabled=(this.value.trim().toLowerCase()!==\''+jsq(String(email).toLowerCase())+'\');">'
+    +'<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px">'
+      +'<button class="adm-btn ghost" onclick="document.getElementById(\'admDelModal\').style.display=\'none\'">Keep it</button>'
+      +'<button class="adm-btn" id="admDelGo" disabled style="background:#dd3a53" onclick="admDeleteAccountGo(\''+jsq(String(id))+'\',\''+jsq(email)+'\')">Delete account</button>'
+    +'</div></div>';
+  var i=document.getElementById('admDelEmail'); if(i) i.focus();
+}
+async function admDeleteAccountGo(id, email){
+  var btn=document.getElementById('admDelGo');
+  if(btn){ btn.disabled=true; btn.textContent='Deleting\u2026'; }
+  try{
+    var r=await sb.rpc('admin_delete_account',{p_user:id});
+    if(r&&r.error) throw r.error;
+    var m=document.getElementById('admDelModal'); if(m) m.style.display='none';
+    toast(email+' deleted.');
+    await admLoadAll(); admRender();
+  }catch(e){
+    if(btn){ btn.disabled=false; btn.textContent='Delete account'; }
+    toast('Could not delete \u2014 '+((e&&e.message)||'try again.'));
+  }
+}
+async function admSendDigest(btn){
+  if(btn){ btn.disabled=true; btn.textContent='Sending\u2026'; }
+  try{
+    var r=await fetch('/api/admin-digest'); var d=await r.json().catch(function(){return {};});
+    if(r.ok&&d.ok) toast('Digest sent to '+(d.sent||'the owner inbox'));
+    else toast('Digest failed \u2014 '+((d&&d.error)||('HTTP '+r.status)));
+  }catch(e){ toast('Digest failed \u2014 '+(e.message||'network error')); }
+  if(btn){ btn.disabled=false; btn.textContent='📬 Send weekly digest now'; }
 }
 function admRender(){
   var tabs=[['overview','Overview'],['costs','Costs'],['depts','Departments'],['marketing','Marketing'],['insights','Insights']];

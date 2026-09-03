@@ -10609,6 +10609,7 @@ function admDeleteAccount(id, email, name){
   var h=document.getElementById('admDelModal');
   if(!h){ h=document.createElement('div'); h.id='admDelModal'; h.className='modal-overlay'; document.body.appendChild(h);
     h.addEventListener('click',function(e){ if(e.target===h) h.style.display='none'; }); }
+  h.style.zIndex='2000';   /* above the Command Centre (#adminRoot z:500) */
   h.style.display='flex';
   h.innerHTML='<div style="background:#232336;color:#fff;border-radius:16px;max-width:460px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.5)">'
     +'<h3 style="font-size:17px;margin:0 0 8px;color:#ff8fa3">Delete '+ctEsc(name||email)+'?</h3>'

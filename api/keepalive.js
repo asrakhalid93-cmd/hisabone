@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
 
   const headers = { apikey: key, Authorization: `Bearer ${key}`, Prefer: 'count=exact' };
   // A handful of cheap, read-only requests across real tables = "user activity"
-  const tables = ['profiles', 'site_events', 'businesses'];
+    const tables = ['profiles', 'site_events', 'returns'];
   const results = {};
 
   for (const t of tables) {

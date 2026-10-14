@@ -1128,17 +1128,6 @@
   body:has(#sampleBanner[style*="display: flex"]) #chatPanel,
   body:has(#sampleBanner[style*="display:flex"]) #chatPanel{bottom:152px}
 
-  /* -- access gate: an entrance, a focus ring, and a shake that answers back -- */
-  #accessGate > div{animation:gateIn .55s cubic-bezier(.16,1,.3,1) both}
-  @keyframes gateIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
-  #gateInput{transition:border-color .18s var(--ease),box-shadow .18s var(--ease),background .18s var(--ease)}
-  #gateInput:focus{border-color:#5a3fff !important;box-shadow:0 0 0 3px rgba(90,63,255,.14)}
-  #gateInput.shake{animation:gateShake .4s var(--ease)}
-  @keyframes gateShake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
-  #accessGate button{transition:transform .16s var(--ease),box-shadow .16s var(--ease),filter .16s var(--ease)}
-  #accessGate button:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(90,63,255,.4);filter:brightness(1.05)}
-  #accessGate button:active{transform:translateY(0) scale(.97)}
-
   /* -- hero visual: a slow breath, paused for anyone who asked for stillness -- */
   @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
   .hero-visual{animation:heroFloat 7s ease-in-out infinite}
@@ -1164,9 +1153,8 @@
 
   /* -- reduced motion: the new layer obeys the same contract as the old -- */
   @media(prefers-reduced-motion:reduce){
-    .secitem.active::after,#accessGate > div,.btn.loading::after,.hring{animation:none !important}
+    .secitem.active::after,.btn.loading::after,.hring{animation:none !important}
     .secitem.active::after{transform:scaleX(1);opacity:1}
-    #gateInput.shake{animation:none}
     .hero-visual{animation:none}
     tbody tr,#toast{transition:none}
   }
@@ -1433,44 +1421,6 @@
 </head>
 <body data-role="business">
 
-<!-- ================= PRIVATE PREVIEW ACCESS GATE ================= -->
-<div id="accessGate" style="position:fixed;inset:0;z-index:99999;background:
-    radial-gradient(820px 560px at 8% -8%, rgba(0,229,255,.12), transparent 55%),
-    radial-gradient(880px 600px at 92% -4%, rgba(199,185,255,.34), transparent 55%),
-    linear-gradient(160deg,#f9fafb 0%,#f3f1fb 45%,#efe9fc 100%);display:flex;align-items:center;justify-content:center;padding:22px;font-family:Inter,system-ui,-apple-system,sans-serif">
-  <div style="max-width:400px;width:100%;text-align:center;background:#fff;border:1px solid #e8e5f4;border-radius:18px;padding:34px 30px 28px;box-shadow:0 1px 2px rgba(17,28,48,.05),0 24px 60px rgba(17,28,48,.10)">
-    <div style="width:56px;height:56px;border-radius:15px;margin:0 auto 16px;background:linear-gradient(135deg,#5a3fff,#7c5cff 52%,#7c5cff);display:flex;align-items:center;justify-content:center">
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
-    </div>
-    <div style="font-weight:800;font-size:21px;letter-spacing:.2px;margin-bottom:4px;color:#232336">Hisab<span style="color:#5a3fff">One</span></div>
-    <div style="font-size:14px;color:#6e6e85;margin-bottom:22px">Private preview — enter your access code to continue.</div>
-    <input id="gateInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Access code"
-      style="width:100%;padding:13px 15px;border-radius:11px;border:1.5px solid #e8e5f4;background:#fff;color:#232336;font-size:15px;text-align:center;letter-spacing:3px;outline:none"
-      onkeydown="if(event.key==='Enter')gateCheck()">
-    <div id="gateErr" style="color:#dd3a53;font-size:12.5px;height:16px;margin:9px 0 4px"></div>
-    <button onclick="gateCheck()" style="width:100%;border:0;border-radius:11px;padding:13px;font-weight:700;font-size:14.5px;cursor:pointer;color:#fff;background:#5a3fff;box-shadow:0 1px 2px rgba(17,28,48,.10)">Enter &rarr;</button>
-    <div style="font-size:11.5px;color:#8a8aa0;margin-top:16px">Access by invitation only</div>
-  </div>
-</div>
-<script>
-  (function(){
-    var CODE='180025';
-    /* No persistence — the access code is required on every load and every refresh. */
-    window.gateCheck=function(){
-      var inp=document.getElementById('gateInput'), err=document.getElementById('gateErr');
-      var v=(inp&&inp.value||'').trim();
-      if(v===CODE){
-        var g=document.getElementById('accessGate'); if(g){ g.style.transition='opacity .3s ease'; g.style.opacity='0'; setTimeout(function(){ if(g.parentNode) g.parentNode.removeChild(g); if(window._pwRecoveryPending && typeof maybeShowRecovery==='function') maybeShowRecovery(); },300); }
-      } else {
-        if(err) err.textContent='Incorrect code — try again.';
-        if(inp){ inp.value=''; inp.focus();
-          inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake'); }
-      }
-    };
-    var t=setInterval(function(){ var i=document.getElementById('gateInput'); if(i){ i.focus(); clearInterval(t); } },60);
-  })();
-</script>
-
 <!-- ================= LOGIN (full-page gradient portal selector) ================= -->
 <div id="login">
   <div id="betaStrip" style="background:linear-gradient(90deg,#00e5ff,#5a3fff 55%,#7a2ff0);color:#fff;text-align:center;font-size:12px;font-weight:600;letter-spacing:.3px;padding:7px 14px">HisabOne is in beta — new features ship weekly &middot; free for accounting firms up to 30 clients</div>
@@ -1665,7 +1615,7 @@
         <button class="lf-btn" style="width:auto;padding:13px 30px" onclick="startTrial()">Sign in &rarr;</button>
         <button class="hero-ghost" onclick="switchView('pricing')">See pricing</button>
       </div>
-      <div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:14px">Private preview &middot; access by invitation</div>
+      <div style="color:rgba(255,255,255,.55);font-size:12px;margin-top:14px">Open beta &middot; free for accounting firms up to 30 clients</div>
     </div>
 
     <div class="homefoot">
@@ -1992,7 +1942,7 @@
 
       <div class="lportal-card about-card">
         <h2>Honest about our stage</h2>
-        <p>HisabOne is in private preview. We follow security best practices — encryption, least-privilege access and full audit logging — but we don't yet hold formal certifications such as ISO 27001 or SOC 2. Those are on our roadmap, and we'd rather tell you plainly than display a badge we haven't earned.</p>
+        <p>HisabOne is in open beta. We follow security best practices — encryption, least-privilege access and full audit logging — but we don't yet hold formal certifications such as ISO 27001 or SOC 2. Those are on our roadmap, and we'd rather tell you plainly than display a badge we haven't earned.</p>
       </div>
 
       <div class="lportal-card about-card" id="secAI" style="border-color:rgba(245,180,60,.55)">
@@ -3282,7 +3232,6 @@ async function doForgot(){
 /* ---------- the other half: the reset email lands back here ---------- */
 function maybeShowRecovery(){
   if(!window._pwRecoveryPending) return;
-  if(document.getElementById('accessGate')) return;      /* the gate calls back after the code */
   window._pwRecoveryPending=false;
   var old=document.getElementById('pwRecOverlay'); if(old) old.remove();
   var ov=document.createElement('div');
@@ -13838,7 +13787,7 @@ function v2AfterRender(p){
     'Never be surprised by a penalty again.':'لا تتفاجأ بغرامة بعد اليوم.',
     'One avoided AED 1,000 late-filing penalty covers five months of HisabOne.':'غرامة تأخير واحدة بقيمة ١٬٠٠٠ درهم تتجنبها تغطي خمسة أشهر من هيساب ون.',
     'See pricing':'اطّلع على الأسعار',
-    'Private preview · access by invitation':'معاينة خاصة · الدخول بدعوة',
+    'Open beta · free for accounting firms up to 30 clients':'نسخة تجريبية مفتوحة · مجاني لمكاتب المحاسبة حتى ٣٠ عميلاً',
     'Contact us':'تواصل معنا',
     'HisabOne · Tax & Compliance, Simplified ·':'هيساب ون · الضرائب والامتثال ببساطة ·',
     'Beta phase · Backed by':'مرحلة تجريبية · بدعم من',

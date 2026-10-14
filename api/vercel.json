@@ -1,9 +1,0 @@
-{
-  "crons": [
-    { "path": "/api/admin-digest", "schedule": "0 5 * * 1" },
-    { "path": "/api/keepalive",    "schedule": "0 3 * * *" }
-  ],
-  "rewrites": [
-    { "source": "/admin", "destination": "/index.html" }
-  ]
-}

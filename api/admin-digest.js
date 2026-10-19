@@ -44,14 +44,14 @@ export default async function handler(req, res) {
       +   [['Businesses', t.businesses], ['Firms', t.firms], ['Linked pairs', t.links], ['Returns filed', t.returns_approved]]
           .map(x => '<div style="flex:1;border:1px solid #e8e5f4;border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#5a3fff">' + (x[1] ?? 0) + '</div><div style="font-size:11px;color:#6e6e85">' + x[0] + '</div></div>').join('')
       + '</div>'
-      + '<h3 style="font-size:14px;margin:18px 0 6px">🆕 New this week</h3><ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">'
+      + '<h3 style="font-size:14px;margin:18px 0 6px"><img src="https://hisabone.ae/email/ico-new.png" width="20" height="20" alt="New" style="vertical-align:-5px;margin-right:8px;border:0">New this week</h3><ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">'
       +   li(d.new_7d, x => '<li><b>' + x.name + '</b> (' + x.email + ') ' + pill(x.role) + ' · ' + x.at + '</li>', 'No new sign-ups this week.')
       + '</ul>'
-      + '<h3 style="font-size:14px;margin:18px 0 6px">✅ Active in the last 7 days</h3><ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">'
+      + '<h3 style="font-size:14px;margin:18px 0 6px"><img src="https://hisabone.ae/email/ico-active.png" width="20" height="20" alt="Active" style="vertical-align:-5px;margin-right:8px;border:0">Active in the last 7 days</h3><ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">'
       +   li(d.active_7d, x => '<li><b>' + x.name + '</b> (' + x.email + ') ' + pill(x.role) + '</li>', 'Nobody signed in this week.')
       + '</ul>'
-      + '<h3 style="font-size:14px;margin:18px 0 6px">💤 Gone quiet (14+ days)</h3><ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">'
-      +   li(d.quiet_14d, x => '<li><b>' + x.name + '</b> (' + x.email + ') ' + pill(x.role) + ' · ' + x.days + ' days — worth a nudge</li>', 'Nobody has gone quiet. 🎉')
+      + '<h3 style="font-size:14px;margin:18px 0 6px"><img src="https://hisabone.ae/email/ico-quiet.png" width="20" height="20" alt="Quiet" style="vertical-align:-5px;margin-right:8px;border:0">Gone quiet (14+ days)</h3><ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.8">'
+      +   li(d.quiet_14d, x => '<li><b>' + x.name + '</b> (' + x.email + ') ' + pill(x.role) + ' · ' + x.days + ' days — worth a nudge</li>', '<img src="https://hisabone.ae/email/ico-allclear.png" width="16" height="16" alt="" style="vertical-align:-3px;margin-right:6px;border:0">Nobody has gone quiet — all clear.')
       + '</ul>'
       + '<div style="margin-top:20px;font-size:11.5px;color:#8a8aa0">Full detail in the <a href="https://hisabone.ae/admin" style="color:#5a3fff">Command Centre</a>. Sent automatically every Monday morning.</div>'
       + '</div>';

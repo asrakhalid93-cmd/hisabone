@@ -2003,7 +2003,7 @@
         <h2>2. Your account</h2>
         <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
         <h2>3. Plans &amp; billing</h2>
-        <p>Accounts start on the entry plan for their portal and stay there until you choose to move — nothing expires and no credit card is required to begin. Accounting firms carry up to 30 active clients free of charge, permanently. Moving to a higher plan takes effect immediately and is invoiced separately; prices exclude 5% VAT unless stated otherwise. You can change or reduce your plan at any time from Settings.</p>
+        <p>Accounts start on the entry plan for their portal and stay there until you choose to move — nothing expires and no credit card is required to begin. Accounting firms carry up to 10 active clients free of charge, permanently. Moving to a higher plan takes effect immediately and is invoiced separately; prices exclude 5% VAT unless stated otherwise. You can change or reduce your plan at any time from Settings.</p>
         <h2>4. Your data &amp; consent</h2>
         <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
         <h2>5. AI features — accuracy disclaimer</h2>
@@ -2078,7 +2078,7 @@
         <h2>2. Your account</h2>
         <p>You are responsible for the accuracy of the information you enter, for keeping your password confidential, and for ensuring you are authorised to upload the documents you store. One account per legal entity; accountants may manage multiple linked clients through the accountant portal.</p>
         <h2>3. Plans &amp; billing</h2>
-        <p>Accounts start on the entry plan for their portal and stay there until you choose to move — nothing expires and no credit card is required to begin. Accounting firms carry up to 30 active clients free of charge, permanently. Moving to a higher plan takes effect immediately and is invoiced separately; prices exclude 5% VAT unless stated otherwise. You can change or reduce your plan at any time from Settings.</p>
+        <p>Accounts start on the entry plan for their portal and stay there until you choose to move — nothing expires and no credit card is required to begin. Accounting firms carry up to 10 active clients free of charge, permanently. Moving to a higher plan takes effect immediately and is invoiced separately; prices exclude 5% VAT unless stated otherwise. You can change or reduce your plan at any time from Settings.</p>
         <h2>4. Your data &amp; consent</h2>
         <p>You retain all rights to the data and documents you upload. You grant us only the licence needed to store, process and display them to provide the service, as described in our <a href="#" onclick="switchView('privacy');return false">Privacy Policy</a> — including storage with EU-hosted infrastructure and AI processing by our providers. You may export your data and request deletion at any time.</p>
         <h2>5. AI features — accuracy disclaimer</h2>
@@ -2311,6 +2311,7 @@ async function loadWorkspace(){
     if(currentAccount.role==='business'){
       vaultDocs=d.vaultDocs||[]; notifSeen=d.notifSeen||[];
       calendarEvents=d.calendarEvents||[]; vatCertMeta=d.vatCertMeta||null; ctCertMeta=d.ctCertMeta||null; calYear=null; calMonth=null;
+      if(calHealCertEvents()) _blobDirty=true;
       bizEinv=d.bizEinv||null; signedLetterIds=d.signedLetterIds||[]; bankImports=d.bankImports||[]; bizSalesInvoices=d.bizSalesInvoices||[];
       vatDrafts=d.vatDrafts||{}; ctDrafts=d.ctDrafts||{};
       bizRevenueBand=d.bizRevenueBand||null;
@@ -2356,7 +2357,8 @@ async function loadWorkspace(){
         const row={id:r.id,client:r.client_name,doc:r.doc,app:r.app,due:r.due||'—',urg:r.urgency,risk:r.risk,
                    st:r.state==='done'?'Received ✓':'Just sent', cls:r.state==='done'?'p-green':'p-teal',
                    file:r.file_url||null, fileName:r.file_name||null};
-        if(r.state==='done'){ try{ markReminderDone(r.client_name, r.doc); }catch(e){} }
+        if(r.state==='done'){ try{ markReminderDone(r.client_name, r.doc); }catch(e){}
+          try{ (clientDocs[r.client_name]||[]).forEach(function(x){ if(x.status==='requested' && (x.reqId===r.id || x.name===r.doc)){ x.status='received'; x.receivedAt=x.receivedAt||r.created_at||new Date().toISOString(); if(!x.fileName&&r.file_name) x.fileName=r.file_name; } }); }catch(e){} }
         (r.kind==='tax'?firmTaxReqs:firmAuditReqs).push(row);
       });
       rebuildFirmClients();
@@ -3334,11 +3336,16 @@ async function doSignup(){
     if(error){ showLoginErr(friendlyAuthError(error)); return; }
     if(data.session){ window._joinToken=null; await enterFromSession(data.session, loginRole); }
     else{
-      const n=document.getElementById('lfNotice');
-      n.textContent='Almost there — we\u2019ve emailed you a confirmation link. Click it, then sign in here.';
-      n.style.display='block';
+      /* Order matters: setLfBusy(false) must restore the label BEFORE the mode
+         switch (or the finally{} below puts "Create account" back on the Sign in
+         button), and the notice has to be written AFTER setLfMode, which hides it. */
+      setLfBusy(false);
       setLfMode('signin');
       var em=document.getElementById('lfEmail'); if(em) em.value=email;
+      const n=document.getElementById('lfNotice');
+      n.textContent='Almost there — we\u2019ve emailed a confirmation link to '+email+'. Click it (check spam too), then sign in here.';
+      n.style.display='block';
+      try{ n.scrollIntoView({block:'nearest'}); }catch(_e){}
     }
   }catch(e){ showLoginErr('Could not create the account — please try again.'); }
   finally{ setLfBusy(false); }
@@ -3399,9 +3406,18 @@ function enterApp(r){
   setRole(r);
   if(typeof chatInit==='function') chatInit();
 }
-function logout(){
-  _blobDirty=true; flushAccountData();
-  try{ if(sb) sb.auth.signOut(); }catch(e){}
+async function logout(){
+  /* The farewell save has to land BEFORE the session is torn down: supabase-js
+     fetches the access token asynchronously, so an un-awaited flush followed by
+     signOut() in the same tick went out as anon, was refused by RLS, and the
+     last edit of the day silently vanished. Demo and already-signed-out callers
+     take the synchronous path, exactly as before. */
+  var needFlush=!!(currentAccount && !_sampleMode && sb);
+  if(needFlush){
+    clearTimeout(_saveT); _blobDirty=true;
+    try{ await Promise.race([flushAccountData(), new Promise(function(r){ setTimeout(r,5000); })]); }catch(e){}
+  }
+  try{ if(sb){ var so=sb.auth.signOut(); if(needFlush) await so; } }catch(e){}
   currentAccount=null; myClients=[]; clientMeta={}; recurringJobs=[]; sentLetters=[]; signedLetterIds=[]; svcInvoices=[];
   clients=[]; firmClients=[]; firmTaxReqs=[]; firmAuditReqs=[]; firmReminders=[]; ctScenarios=[]; vatDrafts={}; ctEntity='mainland'; teamMembers=[]; activityLog=[]; notifSeen=[]; lastInvite=null;
   bizTaxDocs=[]; bizAuditDocs=[]; vaultDocs=[]; sharedReports=[];
@@ -3446,8 +3462,11 @@ function calFmt(iso){ if(!iso) return '—'; const d=new Date(iso+'T00:00:00Z');
 function calDaysUntil(iso){ return Math.round((new Date(iso+'T00:00:00Z').getTime()-new Date(todayISO()+'T00:00:00Z').getTime())/86400000); }
 function calRecentFYEnd(month,day){ const t=new Date(todayISO()+'T00:00:00Z'); let y=t.getUTCFullYear(); const mk=function(yy){ const last=new Date(Date.UTC(yy,month,0)).getUTCDate(); return new Date(Date.UTC(yy,month-1,Math.min(day,last))).toISOString().slice(0,10); }; if(mk(y)>todayISO()) y-=1; return mk(y); }
 function computeVatEvents(periodEndIso, months, refIso){
-  const m=months||3; let end=periodEndIso;
-  if(!end){ end=calEndOfQuarter(refIso||todayISO()); while(calAddDays(end,28)<todayISO()) end=calNextPeriodEnd(end,m); }
+  const m=months||3; let end=periodEndIso||calEndOfQuarter(refIso||todayISO());
+  /* A certificate names the FIRST tax period, which for most registrants ended
+     long ago. Those returns are history, not deadlines: roll forward to the
+     first period whose return is still open, whatever the certificate says. */
+  let guard=0; while(calAddDays(end,28)<todayISO() && guard++<240) end=calNextPeriodEnd(end,m);
   const out=[];
   for(let i=0;i<4;i++){ out.push({id:'vat_'+end, type:'vat', title:'VAT return & payment', date:calAddDays(end,28), detail:'For the tax period ending '+calFmt(end), source:'VAT certificate', periodEnd:end}); end=calNextPeriodEnd(end,m); }
   return out;
@@ -3456,6 +3475,32 @@ function computeCtEvents(fyEndIso){
   let fy=fyEndIso, due=calEndOfMonth(calAddMonths(fy,9)), g=0;
   while(due<todayISO() && g<8){ fy=calAddMonths(fy,12); due=calEndOfMonth(calAddMonths(fy,9)); g++; }
   return [{id:'ct_'+fy, type:'ct', title:'Corporate Tax return & payment', date:due, detail:'For the financial year ending '+calFmt(fy), source:'Corporate Tax certificate', periodEnd:fy}];
+}
+/* Calendars built before the roll-forward fix are full of past VAT periods
+   (and an old CT year). Whenever every certificate-derived date is already
+   behind us, rebuild from the certificate. Idempotent; manual events are kept. */
+function calHealCertEvents(){
+  var changed=false;
+  try{
+    var today=todayISO();
+    if(vatCertMeta && vatCertMeta.periodEnd){
+      var vat=(calendarEvents||[]).filter(function(e){return e.type==='vat';});
+      if(!vat.length || !vat.some(function(e){ return e.date>=today; })){
+        var evs=computeVatEvents(vatCertMeta.periodEnd, (vatCertMeta.taxPeriod==='Monthly')?1:3);
+        calendarEvents=(calendarEvents||[]).filter(function(e){return e.type!=='vat';}).concat(evs);
+        vatCertMeta.periodEnd=evs[0].periodEnd; vatCertMeta.next=evs[0].date; changed=true;
+      }
+    }
+    if(ctCertMeta && ctCertMeta.fyEnd){
+      var ct=(calendarEvents||[]).filter(function(e){return e.type==='ct';});
+      if(!ct.length || !ct.some(function(e){ return e.date>=today; })){
+        var cev=computeCtEvents(ctCertMeta.fyEnd);
+        calendarEvents=(calendarEvents||[]).filter(function(e){return e.type!=='ct';}).concat(cev);
+        ctCertMeta.next=cev[0].date; changed=true;
+      }
+    }
+  }catch(e){}
+  return changed;
 }
 /* certificate uploads now happen on the Company Information tab (see uploadCompanyDoc);
    the calendar reads the resulting deadlines from calendarEvents. */
@@ -3766,17 +3811,22 @@ function renderNav(){
 }
 var _reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 function countUpStats(scope){
-  if(_reduceMotion) return;
+  /* A background tab never gets an animation frame, so the counters would sit
+     on "0" until the person switched back. No frames → no animation: show the
+     real number at once, and keep a timer as a safety net either way. */
+  if(_reduceMotion || document.hidden) return;
   var els=scope.querySelectorAll('.stat .num');
   els.forEach(function(el){
     var raw=(el.textContent||'').trim();
     var m=raw.match(/^(\d{1,6})(%?)$/); if(!m) return;
     var target=parseInt(m[1],10), suffix=m[2]||'';
     if(!isFinite(target)||target<=0) return;
-    var t0=null, dur=650;
-    function step(ts){ if(t0===null)t0=ts; var p=Math.min((ts-t0)/dur,1); p=1-Math.pow(1-p,3);
-      el.textContent=Math.round(p*target)+suffix; if(p<1) requestAnimationFrame(step); }
+    var t0=null, dur=650, done=false;
+    function finish(){ if(done) return; done=true; el.textContent=target+suffix; }
+    function step(ts){ if(done) return; if(t0===null)t0=ts; var p=Math.min((ts-t0)/dur,1); p=1-Math.pow(1-p,3);
+      el.textContent=Math.round(p*target)+suffix; if(p<1) requestAnimationFrame(step); else finish(); }
     el.textContent='0'+suffix; requestAnimationFrame(step);
+    setTimeout(finish, dur+150);
   });
 }
 function renderPage(){ var m=document.getElementById('main');
@@ -6048,7 +6098,10 @@ function sendReminderNow(i){
   const email=bizEmailByName(r.client);
   r.last='Just now';
   if(!email){ toast('No registered HisabOne email found for '+r.client); renderPage(); return; }
-  const subject='Reminder: '+r.doc+' still needed'+(r.app?' for '+r.app:'');
+  /* "Trade licence 2026 still needed for Trade licence" read like a stutter —
+     only name the purpose when it is not already the document's own name. */
+  const _appDup=!r.app || String(r.app).trim().toLowerCase()===String(r.doc).trim().toLowerCase() || String(r.doc).toLowerCase().indexOf(String(r.app).trim().toLowerCase())===0;
+  const subject='Reminder: '+r.doc+' still needed'+(_appDup?'':' for '+r.app);
   const text=r.body ? r.body : ('Hello '+r.client+',\n\nThis is a reminder that we still need "'+r.doc+'"'+(r.app?' for your '+r.app:'')+'. Please sign in to your HisabOne portal and upload it securely.\n\nThank you,\n'+(currentAccount?currentAccount.name:'Your accountant'));
   toast('Sending reminder to '+email+'…');
   sendAppEmail(email,subject,text).then(ok=>{ toast(ok?('Reminder emailed to '+email):('Reminder logged — add RESEND_API_KEY in Vercel to email '+email)); renderPage(); });
@@ -6184,7 +6237,7 @@ function reportDocHTML(rep){
 /* Reports tab: rows + inline viewer */
 function sharedReportRow(r,i){
   return '<div class="drow"><div class="dbar" style="background:'+(r.accent||'var(--accent)')+'"></div>'
-    +'<div style="flex:1"><div class="dtitle">'+r.title+'</div><div class="dmeta">From '+r.from+(r.sharedAt?(' · '+r.sharedAt):'')+'</div></div>'
+    +'<div style="flex:1"><div class="dtitle">'+(r.title||'Shared report')+'</div><div class="dmeta">From '+(r.from||r.firm||r.client||'your accountant')+(r.sharedAt?(' · '+r.sharedAt):(r.sentAt?(' · '+calFmt(String(r.sentAt).slice(0,10))):''))+'</div></div>'
     +'<div style="display:flex;gap:6px;align-items:center">'
     +'<button class="btn sm ghost" onclick="viewSharedReport('+i+')">'+svgIcon('eye',13)+' View</button>'
     +'<button class="btn sm ghost" onclick="downloadSharedReportPDF('+i+')">'+svgIcon('download',13)+' PDF</button>'
@@ -7261,6 +7314,7 @@ function switchCompany(id){
   bizCompany=co.profile||{}; vaultDocs=co.vault||[]; calendarEvents=co.calendar||[];
   vatCertMeta=co.vatCert||null; ctCertMeta=co.ctCert||null; bizRevenueBand=co.revBand||null;
   invoiceInbox=co.invoices||[]; bizRenewals=co.renewals||[];
+  calHealCertEvents();
   saveAccountData(); renderPage(); renderCompanySwitch();
   toast('Switched to '+co.name);
 }
@@ -7373,6 +7427,9 @@ function aiContext(scope){
       try{ var up=(calendarEvents||[]).filter(function(e){return e.date>=todayISO();}).sort(function(a,b){return a.date<b.date?-1:1;}).slice(0,6);
         if(up.length) L.push('Upcoming deadlines: '+up.map(function(e){return e.title+' on '+e.date;}).join('; ')+'.'); }catch(e){}
       try{ if(typeof businessHealth==='function'){ var bh=businessHealth(); if(bh) L.push('Compliance health: '+bh.score+'/100, penalty exposure AED '+(bh.exposure||0).toLocaleString()+'.'); } }catch(e){}
+      try{ if(vatCertMeta&&vatCertMeta.next) L.push('VAT registration: '+(vatCertMeta.taxPeriod||'Quarterly')+' returns, next due '+vatCertMeta.next+'.'); }catch(e){}
+      try{ if(typeof invPosition==='function'&&typeof invCurrentQ==='function'){ var q=invCurrentQ(), ip=invPosition(q);
+        if(ip&&ip.n) L.push('Invoice inbox '+q+': '+ip.n+' invoices, output VAT AED '+ip.out.toFixed(2)+', recoverable input VAT AED '+ip.inRec.toFixed(2)+', blocked AED '+ip.blocked.toFixed(2)+', net '+(ip.net>=0?'payable':'refundable')+' AED '+Math.abs(ip.net).toFixed(2)+'.'); } }catch(e){}
     }
   }catch(e){}
   return L.join('\n');
@@ -9321,7 +9378,7 @@ function startDemo(role){
     name: isBiz ? 'Ahmed' : 'Summit Auditors',
     /* Business demo runs on the top tier so nothing looks locked; the practice
        demo stays on the free tier because that is the story worth showing —
-       three clients of thirty, no card, no expiry. */
+       three clients of ten, no card, no expiry. */
     email:'demo@hisabone.ae', plan: isBiz?'biz_complete':'firm_free',
     inviteCode:'DEMO-PREVIEW',
     parentFirmId:null, teamRole:'owner',
@@ -10962,8 +11019,34 @@ function exportAccountData(){
       workMode:workMode(),
       data: biz
         ? {companyProfile:(typeof bizCompany!=='undefined'?bizCompany:{}), vaultDocs:(typeof vaultDocs!=='undefined'?cleanVaultCopy(vaultDocs):[]),
-           calendar:(typeof calendarEvents!=='undefined'?calendarEvents:[]), v2:(typeof bizV2Pack==='function'?bizV2Pack():{})}
+           calendar:(typeof calendarEvents!=='undefined'?calendarEvents:[]),
+           /* A "copy of my data" has to be the whole of it — every list the
+              portal keeps for this company, not just the vault and calendar. */
+           invoiceInbox:(typeof invoiceInbox!=='undefined'?invoiceInbox:[]),
+           salesInvoices:(typeof bizSalesInvoices!=='undefined'?bizSalesInvoices:[]),
+           bankImports:(typeof bankImports!=='undefined'?bankImports:[]),
+           renewals:(typeof bizRenewals!=='undefined'?bizRenewals:[]),
+           companies:(typeof bizCompanies!=='undefined'&&bizCompanies)?bizCompanies.map(function(c){ var o={}; for(var k in c){ if(k!=='vault') o[k]=c[k]; else o.vault=cleanVaultCopy(c.vault); } return o; }):null,
+           returns:(typeof returnsList!=='undefined'?returnsList:[]),
+           returnEvents:(typeof returnEvents!=='undefined'?returnEvents:{}),
+           receivedReports:(typeof sharedReports!=='undefined'?sharedReports:[]),
+           signedLetterIds:(typeof signedLetterIds!=='undefined'?signedLetterIds:[]),
+           invoicesFromAccountant:(typeof svcInvoices!=='undefined'?svcInvoices:[]),
+           documentRequests:{tax:(typeof bizTaxDocs!=='undefined'?bizTaxDocs:[]), audit:(typeof bizAuditDocs!=='undefined'?bizAuditDocs:[])},
+           vatDrafts:(typeof vatDrafts!=='undefined'?vatDrafts:{}), ctDrafts:(typeof ctDrafts!=='undefined'?ctDrafts:{}),
+           linkedFirm:(typeof linkedFirm!=='undefined'?linkedFirm:''),
+           v2:(typeof bizV2Pack==='function'?bizV2Pack():{})}
         : {clientMeta:(typeof clientMeta!=='undefined'?clientMeta:{}), reminders:(typeof firmReminders!=='undefined'?firmReminders:[]),
+           clients:(typeof firmClients!=='undefined'?firmClients:[]),
+           documentRequests:{tax:(typeof firmTaxReqs!=='undefined'?firmTaxReqs:[]), audit:(typeof firmAuditReqs!=='undefined'?firmAuditReqs:[])},
+           recurringJobs:(typeof recurringJobs!=='undefined'?recurringJobs:[]),
+           returns:(typeof returnsList!=='undefined'?returnsList:[]),
+           returnEvents:(typeof returnEvents!=='undefined'?returnEvents:{}),
+           vatDrafts:(typeof vatDrafts!=='undefined'?vatDrafts:{}), ctDrafts:(typeof ctDrafts!=='undefined'?ctDrafts:{}), ctScenarios:(typeof ctScenarios!=='undefined'?ctScenarios:[]),
+           invoicesIssued:(typeof svcInvoices!=='undefined'?svcInvoices:[]),
+           engagementLetters:(typeof sentLetters!=='undefined'?sentLetters:[]),
+           team:(typeof teamMembers!=='undefined'?teamMembers:[]),
+           activityLog:(typeof activityLog!=='undefined'?activityLog:[]),
            v2:(typeof firmV2Pack==='function'?firmV2Pack():{})}
     };
     var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
@@ -11261,7 +11344,7 @@ function openPlanPicker(){
       +'<div><h3 style="font-size:18px;margin:0 0 4px">'+(role==='firm'?'Practice plans':'Your plan')+'</h3>'
       +'<p style="font-size:13px;color:var(--muted);margin:0;max-width:560px;line-height:1.5">'
       +(role==='firm'
-        ? 'Priced on how many active clients sit on your portal, and on nothing else — every tier opens every feature. Your first 30 are free, forever, and archived clients never count towards the total.'
+        ? 'Priced on how many active clients sit on your portal, and on nothing else — every tier opens every feature. Your first 10 are free, forever, and archived clients never count towards the total.'
         : 'Every plan includes the compliance dashboard, the calendar, return drafting and your accountant link. Paid plans add the document vault, AI reading, the security controls and more seats.')
       +'</p></div>'
       +'<button class="iconbtn" title="Close" onclick="closePlanPicker()">&#10005;</button>'
@@ -12110,8 +12193,30 @@ function submitAddDoc(){
   var cat=g('adCat');
   var docName=g('adName')||cat;
   var st=g('adStatus')||'requested';
-  addClientDoc(client,{ name:docName, category:cat, period:g('adPeriod'),
+  var entry=addClientDoc(client,{ name:docName, category:cat, period:g('adPeriod'),
                         status:st, due:g('adDue'), expiry:g('adExpiry'), note:g('adNote') });
+  /* The register is the firm's private view. A linked client only ever sees
+     doc_requests, so a request written here alone was invisible to them —
+     persist it the same way the in-process request form does, and tell them. */
+  var link=(myClients||[]).find(function(c){ return c.business_name===client; });
+  if(st==='requested' && link && sb && currentAccount && !_sampleMode){
+    var kind=/audit/i.test(cat)?'audit':'tax';
+    var row={id:null, client:client, doc:docName, app:cat+(g('adPeriod')?(' \u00b7 '+g('adPeriod')):''), due:g('adDue')||'\u2014',
+             urg:'Medium', risk:'Low', st:'Just sent', cls:'p-teal'};
+    (kind==='tax'?firmTaxReqs:firmAuditReqs).unshift(row);
+    sb.from('doc_requests').insert({ firm_id:currentAccount.id, business_id:link.business_id, client_name:client,
+        kind:kind, doc:docName, app:row.app, due:row.due, urgency:row.urg, risk:row.risk, state:'req' }).select('id').single()
+      .then(function(r){
+        if(r && r.data && !r.error){ row.id=r.data.id; entry.reqId=r.data.id; saveAccountData(); }
+        else { row.st='Not sent'; row.cls='p-red'; toast('Saved on this device only \u2014 the request did not reach the server, so '+client+' cannot see it yet.'); }
+        rebuildFirmClients(); renderPage();
+      }).catch(function(){ row.st='Not sent'; row.cls='p-red'; rebuildFirmClients(); renderPage(); });
+    if(link.business_email && typeof sendAppEmail==='function'){
+      var dueTxt=g('adDue')||'\u2014';
+      sendAppEmail(link.business_email, 'Document requested: '+docName,
+        'Hello '+client+',\n\n'+(currentAccount.name||'Your accountant')+' has requested a document via HisabOne.\n\nDocument: '+docName+'\nFor: '+cat+'\nDeadline: '+dueTxt+'\n\nPlease sign in to your HisabOne portal to upload it.\n\nHisabOne');
+    }
+  }
   /* a requested document with auto-chase ON becomes a scheduled reminder,
      so Email reminders always mirrors what is actually being chased */
   var chased=false;

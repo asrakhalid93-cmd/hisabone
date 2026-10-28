@@ -144,7 +144,7 @@
   @media(max-width:640px){
     .ltopbar{padding:12px 14px;gap:10px;flex-wrap:wrap}
     .ltopbar-logo{font-size:16px}
-    .ltabs{gap:2px;margin-left:0;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .ltabs{gap:2px;margin-left:0;width:100%;flex-wrap:wrap;overflow:visible}  /* two short rows beat a hidden sideways scroll */
     .ltab{padding:7px 11px;font-size:12.5px;white-space:nowrap;flex-shrink:0}
     .lview{padding:22px 14px}
     .lviewhead h1{font-size:23px}
@@ -515,6 +515,7 @@
     .retdoc-bar{padding:9px 11px;gap:8px}
     #sampleBanner{font-size:12px;padding:9px 12px;gap:10px}
     #sampleBanner>span{text-align:center;justify-content:center}
+    #sampleBanner .sb-long{display:none}   /* one line on phones: the label and the two buttons */
   }
   /* sign-off PIN */
   .pinrow{display:flex;gap:8px}
@@ -571,6 +572,10 @@
     .sidebar .navitem{flex:0 0 auto;white-space:nowrap;margin-bottom:0}
     .sidebar .navlabel{display:none}
     .main{padding:16px 14px !important}
+    /* In the stacked (column-flex) shell, margin-inline:auto makes .main
+       shrink-to-fit its widest table, so phones got a sideways-scrolling page.
+       Pin it to the viewport; the tables scroll inside their own cards. */
+    .main{width:100%;max-width:100%;box-sizing:border-box}
     .g4,.g3{grid-template-columns:1fr 1fr !important}
     .topbar{flex-wrap:wrap;row-gap:6px}
     .trial-pill{display:none !important}
@@ -944,7 +949,10 @@
   #chatPanel .chatlog{flex:1;border-radius:0;background:var(--panel2)}
   .chatsend{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#fff}
   .chatsend .finput{flex:1}
-  @media(max-width:700px){#chatFab{right:14px;bottom:14px}#chatPanel{right:8px;bottom:76px}}
+  @media(max-width:700px){#chatFab{right:14px;bottom:14px}#chatPanel{right:8px;bottom:76px}
+    body.has-sample-banner #chatFab{bottom:112px} body.has-sample-banner #chatPanel{bottom:174px}
+    body.has-sample-banner #toast{bottom:118px}
+    body.has-sample-banner .main{padding-bottom:120px !important}}
 
   /* ================= POLISH v5 — professional layout & tabs ================= */
   h1{font-size:24px;letter-spacing:-.45px}
@@ -9217,14 +9225,15 @@ function dismissOnboarding(){ onboardDismissed=true; if(!_sampleMode) saveAccoun
 
 function showSampleBanner(show){
   var el=document.getElementById('sampleBanner');
+  try{ document.body.classList.toggle('has-sample-banner', !!show); }catch(e){}
   if(show){
     if(!el){ el=document.createElement('div'); el.id='sampleBanner'; document.body.appendChild(el);
       el.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:350;background:#132033;color:#fff;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:13px;box-shadow:0 -6px 22px rgba(0,0,0,.22);flex-wrap:wrap'; }
     el.innerHTML = _demoMode
-      ? '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Demo — sample data</b> — you\'re exploring a read-only preview of HisabOne. Nothing is saved and no account is created.</span>'
+      ? '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Demo — sample data</b><span class="sb-long"> — you\'re exploring a read-only preview of HisabOne. Nothing is saved and no account is created.</span></span>'
         +'<span style="display:inline-flex;gap:9px"><button class="btn sm" style="background:#5a3fff;color:#fff;border:0;font-weight:700" onclick="demoStartTrial()">Create your account &rarr;</button>'
         +'<button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="exitDemo()">Exit demo</button></span>'
-      : '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Sample data</b> — this is a preview. Nothing here is saved to your account.</span><button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="clearSampleData()">Exit preview</button>';
+      : '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-flex;color:#7cc0ff">'+svgIcon('sparkles',15)+'</span> <b>Sample data</b><span class="sb-long"> — this is a preview. Nothing here is saved to your account.</span></span><button class="btn sm" style="background:#fff;color:#132033;border:0;font-weight:700" onclick="clearSampleData()">Exit preview</button>';
     el.style.display='flex';
   } else if(el){ el.style.display='none'; }
 }
@@ -13394,7 +13403,16 @@ function bctCompute(){
   var accounting  = T.netProfit;
   var autoAdd     = T.ctAdjust;
   var beforeLoss  = accounting + autoAdd + manual + bctVal('losses');  /* pre loss-relief */
-  var taxable     = accounting + autoAdd + manual;
+  /* Article 37: only 75% of the pre-relief taxable income can be sheltered by
+     brought-forward losses. The warning used to say so while the figures
+     quietly deducted the whole amount; the firm's workbench already capped it. */
+  var lossCapNow  = Math.max(0, beforeLoss) * 0.75;
+  var lossApplied = Math.min(bctVal('losses'), lossCapNow);
+  if(lossApplied < bctVal('losses')){           /* keep the schedule honest too */
+    for(i=0;i<lines.length;i++){ if(lines[i].id==='losses') lines[i].amount = lossApplied; }
+    manual += (bctVal('losses') - lossApplied);
+  }
+  var taxable     = beforeLoss - lossApplied;
   var sbrEligible = T.income <= CT_SBR_CAP;
   var sbr         = !!bctState.sbr && sbrEligible;
   var positive    = Math.max(0, taxable);
@@ -13402,12 +13420,12 @@ function bctCompute(){
   var above       = Math.max(0, positive - CT_NIL_BAND);
   var due         = sbr ? 0 : above * CT_RATE;
   /* Article 37 caps loss relief at 75% of taxable income before that relief. */
-  var lossCap     = Math.max(0, beforeLoss) * 0.75;
+  var lossCap     = lossCapNow;
   var lossOver    = bctVal('losses') > lossCap + 0.005;
   return { T:T, accounting:accounting, autoAdd:autoAdd, manual:manual, lines:lines,
            taxable:taxable, loss:(taxable<0?Math.abs(taxable):0),
            sbrEligible:sbrEligible, sbr:sbr, nilBand:nilBand, above:above, due:due,
-           lossUsed:bctVal('losses'), lossCap:lossCap, lossOver:lossOver };
+           lossUsed:lossApplied, lossCarried:Math.max(0,bctVal('losses')-lossApplied), lossCap:lossCap, lossOver:lossOver };
 }
 
 /* ---------- Input handlers ---------- */
@@ -13565,7 +13583,7 @@ function bctAdjustmentsCardHTML(){
       + '</div>'
       + (a.id==='losses'
           ? '<div id="bctLossWarn" class="note" style="text-align:left;display:'+(C.lossOver?'':'none')+'">'+svgIcon('warn',13)
-            + ' Loss relief is capped at 75% of taxable income before relief — <span id="bctLossCap">'+moneyAED(C.lossCap)+'</span> for this period.</div>'
+            + ' Loss relief is capped at 75% of taxable income before relief — <span id="bctLossCap">'+moneyAED(C.lossCap)+'</span> is used this period and the balance carries forward.</div>'
           : '')
     + '</div>';
   };
@@ -13793,7 +13811,16 @@ function v2AfterRender(p){
     const {data}=await sb.auth.getSession();
     /* The stored session decides the portal — the profile row is the authority
        on which one, not whichever card the visitor happened to click last. */
-    if(data&&data.session){ await enterFromSession(data.session, null); return; }
+    if(data&&data.session){
+      /* A password-only (aal1) session used to be restored straight into the
+         app on reload, which let anyone who knew the password skip the
+         authenticator by refreshing the page at the code prompt. The gate
+         runs here too; cancelling it signs the session out. */
+      var mfaOk=true;
+      try{ if(typeof mfaLoginGate==='function') mfaOk=await mfaLoginGate(); }catch(e){}
+      if(!mfaOk){ try{ switchView('signin'); }catch(e){} return; }
+      await enterFromSession(data.session, null); return;
+    }
   }catch(e){
     if(typeof toast==='function') toast('Could not restore your session — please sign in again.');
   }

@@ -2712,7 +2712,11 @@ function runUploadCompanyDoc(typeId){
         const payload=await fileToOCRPayload(f);
         const r=await fetch('/api/docdates',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
         const d=await r.json().catch(()=>({}));
-        if(r.ok && d && d.ok){ res=d; scanCount(1); }
+        if(r.ok && d && d.ok){ res=d; scanCount(1);
+          /* a certificate read costs the same as an invoice read — count it, or
+             the Command Centre's run-rate quietly understates the AI bill */
+          if(typeof trackEvent==='function') trackEvent('ai_ocr');
+        }
       }catch(e){}
     } else if(planAllows('ai')){
       toast('Filed without AI reading — this month’s scans are used up. Add the dates by hand, or upgrade for more.');
@@ -3380,6 +3384,13 @@ async function enterFromSession(session, expectRole){
     try{await sb.auth.signOut();}catch(e){}
     return;
   }
+  /* One practice, one account. A member whose owner closed (or removed them)
+     is parked until a practice owner links them again — they can claim an
+     invite with this login, log out, or delete the login. Nothing else. */
+  if(prof.role==='firm' && prof.needs_owner){
+    currentAccount={id:uid, role:'firm', name:prof.name, email:prof.email, plan:'firm_free', teamRole:'orphan', needsOwner:true, formerFirm:prof.former_firm_name||''};
+    showParkedMemberScreen(); return;
+  }
   currentAccount={id:uid, role:prof.role, name:prof.name, email:prof.email,
                   plan:normalisePlan(prof.role, prof.plan).id,
                   inviteCode:prof.invite_code||'',
@@ -3420,7 +3431,7 @@ async function logout(){
      signOut() in the same tick went out as anon, was refused by RLS, and the
      last edit of the day silently vanished. Demo and already-signed-out callers
      take the synchronous path, exactly as before. */
-  var needFlush=!!(currentAccount && !_sampleMode && sb);
+  var needFlush=!!(currentAccount && !_sampleMode && sb && !currentAccount.needsOwner);   /* a parked login owns no workspace to save */
   if(needFlush){
     clearTimeout(_saveT); _blobDirty=true;
     try{ await Promise.race([flushAccountData(), new Promise(function(r){ setTimeout(r,5000); })]); }catch(e){}
@@ -5170,7 +5181,7 @@ function ctComputedMap(){
     dmMet: (nqTot<=dmLimit) ? '✓ Met — qualifying income taxed at 0%' : ''+hoIcon('fail',14,'vertical-align:-2px;margin-right:5px;color:#dd3a53')+'NOT met — taxed at 9% on all income',
     emEbitda:fmt(CT_EMIRATE_ROWS.reduce(function(t,e){return t+ctN(e[0]+'_e');},0)),
     emSal:fmt(CT_EMIRATE_ROWS.reduce(function(t,e){return t+ctN(e[0]+'_s');},0)),
-    entSuggest:fmt(entSuggest),
+    entSuggest:fmt(entSuggest), finesSuggest:fmt(ctN('plFines')),
     preLoss:fmt(r.preLoss), lossesUsed:'− '+fmt(r.lossesUsed), lossesCarried:fmt(r.lossesCarried),
     taxable:fmt(r.taxable), band0:fmt(r.band0), band9:fmt(r.band9),
     dmtt:r.dmtt?('+ '+fmt(r.dmtt)):'—', ftcUsed:'− '+fmt(r.ftcUsed), liability:fmt(r.ct+r.ftcUsed), payable:fmt(r.ct),
@@ -5185,6 +5196,9 @@ function ctUpdateComputed(){
   for(var i=0;i<els.length;i++){ var k=els[i].getAttribute('data-ctcalc'); if(m[k]!=null) els[i].innerHTML=m[k]; }
 }
 function ctUseEntSuggest(){ ctR.ndEnt=String(ctN('plEntertain')*0.5); ctWizRefresh(); ctDraftTouch(); }
+/* Article 33 — fines and penalties are never deductible. They are typed on page
+   5 as an expense, so page 8 offers them back the same way entertainment is. */
+function ctUseFinesSuggest(){ ctR.ndOther=String(ctN('plFines')); ctWizRefresh(); ctDraftTouch(); }
 function ctSBRhintText(){
   var inp=ctReadInputs();
   if(inp.entity!=='mainland') return 'Small Business Relief applies to mainland entities only.';
@@ -5618,13 +5632,13 @@ function ctPageOther(){
   return '<p class="muted" style="font-size:12.5px;margin:2px 0 10px">Non-deductible expenditure, interest capping, Related Party and Connected Person adjustments.</p>'
   +ctSub('Adjustments for non-deductible expenditure')
   +ctG2(
-    ctMoney('Non-deductible entertainment expenditure (AED)','ndEnt', ent>0?('Suggested: <b data-ctcalc="entSuggest"></b> — 50% of the client entertainment on page 5. <span class="link" onclick="ctUseEntSuggest()">Use suggestion</span>'):'50% of client entertainment expenditure is non-deductible.')
+    ctMoney('Non-deductible entertainment expenditure (AED)','ndEnt', ent>0?('Suggested: <b data-ctcalc="entSuggest"></b> — 50% of the client entertainment on page 5. <span class="link" role="button" tabindex="0" onclick="ctUseEntSuggest()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();ctUseEntSuggest();}">Use suggestion</span>'):'50% of client entertainment expenditure is non-deductible.')
     +ctMoney('Non-deductible pension contributions (AED)','ndPension')
     +ctMoney('Donations to entities that are not Qualifying Public Benefit Entities (AED)','ndDonation')
     +ctMoney('Expenditure incurred in deriving Exempt Income (non-interest) (AED)','ndExemptExp')
     +ctMoney('Dividends / profit distributions paid to an owner (AED)','ndDivOwner')
     +ctMoney('Expenses not wholly and exclusively for the Business (AED)','ndNonBiz')
-    +ctMoney('Other non-deductible expenditure (AED)','ndOther')
+    +ctMoney('Other non-deductible expenditure (AED)','ndOther', ctN('plFines')>0?('Suggested: <b data-ctcalc="finesSuggest"></b> \u2014 the fines and penalties on page 5, which Article 33 never allows. <span class="link" role="button" tabindex="0" onclick="ctUseFinesSuggest()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();ctUseFinesSuggest();}">Use suggestion</span> \u2014 add anything else on top.'):'')
   )
   +ctSub('Adjustments for interest income / expenditure')
   +ctQ('Is the Taxable Person a Bank or an Insurance Provider?','intBankQ')
@@ -7021,8 +7035,21 @@ function bankParseCSV(txt){
   }
   var head=cells(lines[0]).map(function(h){return h.toLowerCase();});
   function col(names){ for(var i=0;i<head.length;i++){ for(var j=0;j<names.length;j++){ if(head[i].indexOf(names[j])>-1) return i; } } return -1; }
-  var iDate=col(['date']), iDesc=col(['desc','narra','detail','particular','reference','remark']);
-  var iAmt=col(['amount']), iDeb=col(['debit','withdraw']), iCre=col(['credit','deposit']);
+  /* Short abbreviations have to match the WHOLE header: "cr" lives inside
+     "description" and "dr" inside "withdrawal", so a substring test on those
+     would pick the wrong column. Compare letters only, ignoring "(aed)" etc. */
+  function colExact(names){
+    for(var i=0;i<head.length;i++){
+      var h=head[i].replace(/[^a-z]/g,'');
+      for(var j=0;j<names.length;j++){ if(h===names[j]) return i; }
+    } return -1;
+  }
+  function pick(sub, exact){ var i=col(sub); return i>-1?i:colExact(exact); }
+  var iDate=pick(['date'],['dt','valuedate','postingdate','txndate']);
+  var iDesc=pick(['desc','narra','detail','particular','reference','remark'],['memo','payee','transaction']);
+  var iAmt=pick(['amount'],['amt','amtaed','value','transactionamt']);
+  var iDeb=pick(['debit','withdraw'],['dr','dramt','debitamt','paidout']);
+  var iCre=pick(['credit','deposit'],['cr','cramt','creditamt','paidin']);
   if(iDate<0 || (iAmt<0 && iDeb<0 && iCre<0)) return {rows:0};
   var rows=0, inflow=0, outflow=0, largest=[];
   for(var r=1;r<lines.length;r++){
@@ -8573,7 +8600,7 @@ function returnsPanelHTML(side){
   }
   var rows=list.map(function(rt){
     var st=rt.status==='approved'?'<span class="pill p-green">Approved</span>':(rt.status==='changes_requested'?'<span class="pill p-amber">Changes requested</span>':'<span class="pill p-teal">Pending review</span>');
-    var who=side==='firm'?('For '+ctEsc(bizNameById(rt.business_id))):('From '+ctEsc(rt.created_by||'your accountant'));
+    var who=side==='firm'?('For '+ctEsc(bizNameById(rt.business_id))):('From '+ctEsc(rt.created_by||'your accountant')+(rt.firm_id?'':' <span class="pill p-gray" title="Your accountant closed their HisabOne account. This return stays in your records.">account closed</span>'));
     var cta=(side==='business'&&rt.status!=='approved')?'Review':'View';
     return '<div class="drow"><div class="dbar" style="background:'+(rt.kind==='vat'?'var(--accent)':'#7c5cff')+'"></div>'
       +'<div style="flex:1;min-width:0"><div class="dtitle">'+ctEsc(rt.title||'Return')+'</div>'
@@ -8620,7 +8647,7 @@ function returnPages(rt){
     +retRow('Return',rt.title||'—')
     +retRow('Type',rt.kind==='vat'?'VAT return (VAT201)':'Corporate Tax return')
     +retRow('Tax period',rt.period||'—')
-    +retRow('Prepared by',rt.created_by||'your accountant')
+    +retRow('Prepared by',(rt.created_by||'your accountant')+(rt.firm_id?'':' (account closed — kept in your records)'))
     +retRow('Draft shared',shared)
     +(f.signatory?retRow('Sign-off requested from',f.signatory):'');
 
@@ -9075,7 +9102,7 @@ function renderReturnModal(){
       +'<div style="flex:1;min-width:0"><h3 style="font-size:16px;margin:0">'+ctEsc(rt.title||'Return')+'</h3><div class="muted" style="font-size:12px">'+ctEsc(rt.period||'')+' · '+(rt.kind==='vat'?'VAT':'Corporate Tax')+'</div></div>'
       +stPill+'<button class="btn sm ghost" onclick="closeReturn()">Close</button></div>'
     +'<div style="padding:18px 20px">'
-      +'<div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">'+(isBiz?('Shared by '+ctEsc(rt.created_by||'your accountant')):('For '+ctEsc(bizNameById(rt.business_id))))+' · '+new Date(rt.created_at).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+      +'<div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">'+(isBiz?('Shared by '+ctEsc(rt.created_by||'your accountant')+(rt.firm_id?'':' (account closed — this return stays in your records)')):('For '+ctEsc(bizNameById(rt.business_id))))+' · '+new Date(rt.created_at).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
       +((rt.figures&&rt.figures.signatory)?('<div style="margin-top:4px;font-weight:600;color:var(--text)">'+svgIcon('users',13)+' Sign-off requested from: '+ctEsc(rt.figures.signatory)+'</div>'):'')+'</div>'
       +retViewerHTML(rt)+actions
       +'<div style="margin-top:22px"><div style="font-weight:700;font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:7px">'+svgIcon('activity',15)+' Audit trail</div>'
@@ -9179,6 +9206,85 @@ async function handleJoinParam(){
     var note=document.getElementById('lfNotice'); if(note){ note.textContent='You’ve been invited to '+row.firm_name+' as '+roleLbl+'. Set a password to create your own login.'; note.style.display='block'; }
     return true;
   }catch(e){ return false; }
+}
+
+/* A team member whose practice owner has gone. */
+function showParkedMemberScreen(){
+  var h=document.getElementById('parkedScreen');
+  if(!h){ h=document.createElement('div'); h.id='parkedScreen'; h.className='modal-overlay'; h.style.zIndex='900'; document.body.appendChild(h); }
+  var tok=((location.search||'').match(/[?&]join=([^&]+)/)||[])[1]||'';
+  if(tok){ try{ tok=decodeURIComponent(tok); }catch(e){} }
+  var firm=currentAccount&&currentAccount.formerFirm;
+  h.style.display='flex';
+  h.innerHTML='<div style="background:#fff;border-radius:16px;max-width:480px;width:100%;padding:24px;box-shadow:0 24px 60px rgba(8,20,40,.3)">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="color:var(--accent)">'+svgIcon('users',22)+'</span><h3 style="font-size:17px;margin:0">Your seat is waiting for a practice owner</h3></div>'
+    +'<p style="font-size:13.3px;color:var(--muted);line-height:1.6;margin:6px 0 14px">'
+      +(firm?('<b>'+ctEsc(firm)+'</b> has closed its HisabOne account, so the practice you worked in no longer exists. '):'The practice you belonged to is no longer on HisabOne. ')
+      +'Your login (<b>'+ctEsc((currentAccount&&currentAccount.email)||'')+'</b>) is kept, but it cannot open a workspace until a practice owner links it. '
+      +'Ask the new owner to add you from their Team page and paste the invite link or code they send you here.</p>'
+    +'<label class="flabel">Invite link or code</label>'
+    +'<input id="parkedTok" class="finput" autocomplete="off" placeholder="https://hisabone.ae/?join=JOIN-\u2026  or  JOIN-\u2026" value="'+ctEsc(tok)+'" onkeydown="if(event.key===\'Enter\')claimInviteAsParked()">'
+    +'<div id="parkedErr" style="display:none;color:var(--red);font-size:12.5px;margin-top:7px"></div>'
+    +'<div style="display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap">'
+      +'<span style="display:flex;gap:8px"><button class="btn ghost sm" onclick="logout()">Log out</button>'
+      +'<button class="btn ghost sm" style="color:var(--red)" onclick="openDeleteAccount()">Delete this login</button></span>'
+      +'<button class="btn" id="parkedGo" onclick="claimInviteAsParked()">Link to practice \u2192</button>'
+    +'</div></div>';
+  try{ history.replaceState(null,'',location.pathname); }catch(e){}
+  var i=document.getElementById('parkedTok'); if(i&&!tok) i.focus();
+  if(tok) claimInviteAsParked();
+}
+async function claimInviteAsParked(){
+  var inp=document.getElementById('parkedTok'), err=document.getElementById('parkedErr'), btn=document.getElementById('parkedGo');
+  var raw=(inp&&inp.value||'').trim();
+  var tok=(raw.match(/[?&]join=([A-Za-z0-9-]+)/)||[])[1] || (/^JOIN-[A-Za-z0-9]+$/i.test(raw)?raw:null);
+  if(err) err.style.display='none';
+  if(!tok){ if(err){ err.textContent='Paste the whole invite link, or the code that starts with JOIN-.'; err.style.display='block'; } return; }
+  if(btn){ btn.disabled=true; btn.textContent='Linking\u2026'; }
+  try{
+    var r=await sb.rpc('claim_team_invite',{token:tok});
+    if(r.error) throw r.error;
+    var row=(r.data&&r.data[0])||{};
+    toast('Linked to '+(row.firm_name||'your new practice')+' \u2014 opening your workspace\u2026');
+    setTimeout(function(){ location.href='/'; }, 900);     /* fresh load picks up the new parent */
+  }catch(e){
+    if(err){ err.textContent=(e&&e.message)||'Could not use that invite \u2014 check it with the practice owner.'; err.style.display='block'; }
+    if(btn){ btn.disabled=false; btn.textContent='Link to practice \u2192'; }
+  }
+}
+
+/* Someone opened an invite link on a browser that is already signed in. */
+async function offerJoinWhileSignedIn(){
+  var m=(location.search||'').match(/[?&]join=([^&]+)/);
+  if(!m||!sb) return;
+  var token=decodeURIComponent(m[1]);
+  var row=null;
+  try{ var {data}=await sb.rpc('join_info',{token:token}); row=(data&&data[0])||null; }catch(e){}
+  if(!row) return;                       /* unknown or expired token — say nothing */
+  var who=(currentAccount&&currentAccount.email)||'this account';
+  if(row.already){
+    toast('That invite has already been used.');
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
+    return;
+  }
+  var roleLbl=(row.parent_role==='business')
+    ? (row.team_role==='manager'?'Manager (oversight)':'Team member')
+    : (row.team_role==='manager'?'Manager / Reviewer':'Tax Consultant');
+  /* clear the token from the address bar either way, so a later refresh does not
+     re-open this dialog; the copy below keeps the link usable. */
+  try{ history.replaceState(null,'',location.pathname); }catch(e){}
+  openConfirm({
+    danger:false,
+    title:'This invite needs its own login',
+    message:'The link invites '+(row.member_name||row.member_email||'a new member')+' to join '+(row.firm_name||'a practice')+' as '+roleLbl
+           +'. You are signed in as '+who+', and an invite cannot be added to an existing account — it creates a new one. '
+           +'Logging out will open the invite\u2019s sign-up form; otherwise forward the link to '+(row.member_email||'them')+'.',
+    confirmLabel:'Log out and open the invite',
+    onYes:async function(){
+      try{ await logout(); }catch(e){}
+      location.href='/?join='+encodeURIComponent(token);   /* fresh load, no session → handleJoinParam() takes over */
+    }
+  });
 }
 
 /* ================= ONBOARDING CHECKLIST + SAMPLE (DEMO) MODE ================= */
@@ -10576,7 +10682,7 @@ function admTabHTML(){
       +'<div class="adm-stat"><div class="n">'+fmt(tot.annual)+'</div><div class="l">Annualised cost</div></div>'
       +'<div class="adm-stat"><div class="n">AED '+use.cost.toFixed(2)+'</div><div class="l">Claude Console usage · this month</div></div></div>'
       +'<div class="adm-card" style="margin-top:16px"><h3>'+hoIcon('ai',16)+'Claude Console — usage-based estimate <span class="adm-muted" style="font-weight:400">auto-updates from real usage</span></h3>'
-      +'<div class="adm-row"><span style="flex:1">Invoice OCR reads this month</span><b>'+use.ocr+'</b><span class="adm-muted">×</span><input class="adm-in" type="number" step="0.01" value="'+(r.ocr||0)+'" style="width:90px" onchange="admSetRate(\'ocr\',this.value);admRender()"><span class="adm-muted">AED/call</span><b style="min-width:90px;text-align:right">AED '+(use.ocr*(r.ocr||0)).toFixed(2)+'</b></div>'
+      +'<div class="adm-row"><span style="flex:1">Document &amp; invoice AI reads this month</span><b>'+use.ocr+'</b><span class="adm-muted">×</span><input class="adm-in" type="number" step="0.01" value="'+(r.ocr||0)+'" style="width:90px" onchange="admSetRate(\'ocr\',this.value);admRender()"><span class="adm-muted">AED/call</span><b style="min-width:90px;text-align:right">AED '+(use.ocr*(r.ocr||0)).toFixed(2)+'</b></div>'
       +'<div class="adm-row"><span style="flex:1">AI Assist replies this month</span><b>'+use.ask+'</b><span class="adm-muted">×</span><input class="adm-in" type="number" step="0.01" value="'+(r.ask||0)+'" style="width:90px" onchange="admSetRate(\'ask\',this.value);admRender()"><span class="adm-muted">AED/call</span><b style="min-width:90px;text-align:right">AED '+(use.ask*(r.ask||0)).toFixed(2)+'</b></div>'
       +'<div class="adm-note" style="margin-top:10px">Counted live from the app (every invoice read and AI answer is tracked). Default rates are a conservative estimate for Claude Sonnet at ~AED 0.05 per call — adjust to match your Anthropic Console invoice. USD costs converted at 3.67.</div></div>'
       +'<div class="adm-card"><h3>'+hoIcon('cost',16)+'Cost lines</h3>'
@@ -10663,8 +10769,19 @@ function admTabHTML(){
     +'</div></div>'
     +'<div class="adm-note">Counting is anonymous — one visit event per browser session, no cookies, no personal data. Returns: '+(s.returns_pending||0)+' pending · '+(s.returns_approved||0)+' approved · '+(s.returns_changes||0)+' changes requested. Documents: '+(s.doc_requests_done||0)+' of '+(s.doc_requests||0)+' requests fulfilled.</div>';
 }
+var _admAcctQ='';   /* Accounts tab filter */
+function admAccountsFilter(v){ _admAcctQ=String(v||''); admRender();
+  var el=document.getElementById('admAcctQ'); if(el){ el.focus(); try{ el.setSelectionRange(el.value.length, el.value.length); }catch(e){} } }
 function admAccountsCardHTML(){
-  var rows=(_admAccounts||[]).map(function(a){
+  var q=(_admAcctQ||'').trim().toLowerCase();
+  var list=(_admAccounts||[]).filter(function(a){
+    if(!q) return true;
+    return String(a.name||'').toLowerCase().indexOf(q)>-1
+        || String(a.email||'').toLowerCase().indexOf(q)>-1
+        || String(a.plan||'').toLowerCase().indexOf(q)>-1
+        || (a.role==='firm' ? 'accountant firm' : 'business').indexOf(q)>-1;
+  });
+  var rows=list.map(function(a){
     var quiet=(a.quiet_days||0)>=14 && !a.team_seat;
     return '<div class="adm-row">'
       +'<span style="flex:1;min-width:0"><b>'+ctEsc(a.name||'—')+'</b>'
@@ -10679,7 +10796,9 @@ function admAccountsCardHTML(){
   }).join('');
   return '<div class="adm-card" style="margin-top:16px"><h3>'+hoIcon('users',16)+'Manage accounts — who\u2019s in, who\u2019s gone quiet'
     +'<span style="float:right"><button class="adm-btn ghost" style="font-size:12px;padding:5px 12px" onclick="admSendDigest(this)">'+hoIcon('mail',13,'vertical-align:-2px;margin-right:6px')+'Send weekly digest now</button></span></h3>'
-    +(rows||'<div class="adm-muted" style="padding:12px 2px">No accounts yet.</div>')
+    +'<input id="admAcctQ" class="adm-in" style="width:100%;margin:10px 0 4px" placeholder="Filter by name, email or plan\u2026" value="'+ctEsc(_admAcctQ||'')+'" oninput="admAccountsFilter(this.value)">'
+    +(rows||'<div class="adm-muted" style="padding:12px 2px">'+(q?('No account matches \u201c'+ctEsc(_admAcctQ)+'\u201d.'):'No accounts yet.')+'</div>')
+    +(q?('<div class="adm-muted" style="font-size:11px;margin-top:6px">Showing '+list.length+' of '+((_admAccounts||[]).length)+' accounts.</div>'):'')
     +'<div class="adm-muted" style="font-size:11px;margin-top:10px">'+hoIcon('quiet',12,'vertical-align:-2px;margin-right:4px')+'marks an account with no sign-in for 14+ days \u2014 the same list the Monday digest flags for a nudge. '+hoIcon('trash',12,'vertical-align:-2px;margin-right:3px')+'deletes an account and everything it owns, permanently \u2014 you\u2019ll be asked to type the email to confirm. Your own signed-in account can\u2019t be deleted from here.</div>'
     +'</div>';
 }
@@ -10709,6 +10828,13 @@ async function admDeleteAccountGo(id, email){
     if(r&&r.error) throw r.error;
     var m=document.getElementById('admDelModal'); if(m) m.style.display='none';
     toast(email+' deleted.');
+    /* An admin deletion cannot reach the account's vault folder from the browser
+       (storage policy vault_files_own), so nudge the server-side sweep instead of
+       leaving the documents until the 03:00 cron. */
+    try{
+      var sw=await fetch('/api/keepalive').then(function(x){return x.json();}).catch(function(){return null;});
+      if(sw && sw.sweep && sw.sweep.files>0) toast('Removed '+sw.sweep.files+' document'+(sw.sweep.files===1?'':'s')+' belonging to deleted accounts.');
+    }catch(e){}
     await admLoadAll(); admRender();
   }catch(e){
     if(btn){ btn.disabled=false; btn.textContent='Delete account'; }
@@ -10788,6 +10914,10 @@ async function admMkAI(p, force){
     if(r.ok&&d.ok&&d.reply){
       _admData.mkAI[p]={md:d.reply, at:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
       admSave();
+      /* trackEvent() deliberately ignores admin sessions so owner browsing does
+         not pollute the visit stats — but this playbook is a real billed call,
+         so it is recorded directly. */
+      try{ if(sb) sb.from('site_events').insert({kind:'ai_ask'}).then(function(){},function(){}); }catch(e){}
     } else {
       _admData.mkAI[p]={md:'Could not generate the playbook right now — try Regenerate in a moment.', at:''};
     }
@@ -13819,7 +13949,13 @@ function v2AfterRender(p){
       var mfaOk=true;
       try{ if(typeof mfaLoginGate==='function') mfaOk=await mfaLoginGate(); }catch(e){}
       if(!mfaOk){ try{ switchView('signin'); }catch(e){} return; }
-      await enterFromSession(data.session, null); return;
+      await enterFromSession(data.session, null);
+      if(currentAccount && currentAccount.needsOwner) return;   /* parked screen already handles ?join= */
+      /* An invite is for a NEW login. Restoring the session used to swallow the
+         token silently, so the invitee landed on somebody else's dashboard with
+         no idea why. Say so, and offer the one action that works. */
+      try{ if(/[?&]join=/.test(location.search)) await offerJoinWhileSignedIn(); }catch(e){}
+      return;
     }
   }catch(e){
     if(typeof toast==='function') toast('Could not restore your session — please sign in again.');

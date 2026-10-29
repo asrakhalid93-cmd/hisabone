@@ -1687,7 +1687,7 @@
         </select></div>
       <div class="lfield" id="lfJoinWrap" style="display:none"><label class="flabel" for="lfJoinLink">Your invite link</label>
         <input id="lfJoinLink" class="finput" placeholder="Paste the invite link you received">
-        <div class="muted" style="font-size:11.5px;margin-top:4px">The account owner creates invites on the Team tab. Your seat type (Team member or Manager) comes from the invite itself.</div></div>
+        <div class="muted" id="lfJoinHelp" style="font-size:11.5px;margin-top:4px">The account owner creates invites on the Team tab. Your seat type (Team member or Manager) comes from the invite itself.</div></div>
       <div class="lfield" id="lfNameWrap" style="display:none"><label class="flabel" for="lfName" id="lfNameLabel">Company name</label><input id="lfName" class="finput" type="text" placeholder="e.g. Falcon Trading LLC" autocomplete="organization" oninput="lfUnflag(this)"></div>
       <div class="lfield"><label class="flabel" for="lfEmail">Email</label><input id="lfEmail" name="username" class="finput" type="email" placeholder="you@company.ae" autocomplete="username" oninput="lfUnflag(this)"></div>
       <div class="lfield" id="lfPassWrap"><label class="flabel" for="lfPassword">Password</label>
@@ -2200,7 +2200,10 @@ function updatePlanPill(){
 let _saveT=null, _blobDirty=false;
 function blobId(){ if(!currentAccount) return null; return currentAccount.role==='firm' ? (currentAccount.firmId||currentAccount.id) : (currentAccount.bizId||currentAccount.id); }
 function bizWorkspaceId(){ return currentAccount ? (currentAccount.bizId||currentAccount.id) : null; }
-function canManage(){ return currentAccount && currentAccount.role==='firm' && (currentAccount.teamRole==='owner' || currentAccount.teamRole==='manager'); }
+/* A practice has ONE authorised person — its owner. Tax Consultants do the client
+   work; adding clients, sharing the audit trail, assigning documents and the
+   practice digest are the owner's alone. (There is no Manager seat any more.) */
+function canManage(){ return currentAccount && currentAccount.role==='firm' && currentAccount.teamRole==='owner'; }
 function isOwnerRole(){ return currentAccount && currentAccount.role==='firm' && currentAccount.teamRole==='owner'; }
 function isBizOwner(){ return currentAccount && currentAccount.role==='business' && currentAccount.teamRole==='owner'; }
 /* the Manager seat oversees & observes — everything visible, nothing editable */
@@ -2979,6 +2982,7 @@ function openLogin(r){
   const nameInp=document.getElementById('lfName'); if(nameInp) nameInp.value='';
   document.getElementById('lfErr').style.display='none';
   document.getElementById('lfNotice').style.display='none';
+  lfWhoOptions();
   setLfMode(window._pendingLfMode||'signin');
   window._pendingLfMode=null;
   document.getElementById('lfCard').className='lportal-card '+(r==='business'?'biz':'firm');
@@ -3177,6 +3181,24 @@ function setLfBusy(b, label){
   }
 }
 function submitLoginForm(){ if(lfMode==='signup') doSignup(); else if(lfMode==='reset') doForgot(); else doLogin(); }
+/* The "I am…" picker is shared by both portals but the seats differ: a business
+   workspace has Team members and one Manager (oversight) seat; an accounting
+   practice has one owner and Tax Consultants. */
+function lfWhoOptions(){
+  var sel=document.getElementById('lfWho'); if(!sel) return;
+  var firm=(loginRole!=='business'), cur=sel.value;
+  sel.innerHTML = firm
+    ? '<option value="owner">Setting up a new practice (owner)</option>'
+      +'<option value="consultant">Joining my practice \u2014 Tax Consultant</option>'
+    : '<option value="owner">Setting up a new account (owner)</option>'
+      +'<option value="consultant">Joining my company\u2019s workspace \u2014 Team member</option>'
+      +'<option value="manager">Joining my company\u2019s workspace \u2014 Manager (oversight)</option>';
+  if([].some.call(sel.options,function(o){return o.value===cur;})) sel.value=cur;
+  var h=document.getElementById('lfJoinHelp');
+  if(h) h.textContent = firm
+    ? 'The practice owner creates invites on the Team tab. Everyone who joins a practice is a Tax Consultant.'
+    : 'The account owner creates invites on the Team tab. Your seat type (Team member or Manager) comes from the invite itself.';
+}
 function lfWhoChanged(){
   var who=(document.getElementById('lfWho')||{}).value||'owner';
   var joining=(who!=='owner');
@@ -3402,6 +3424,7 @@ async function enterFromSession(session, expectRole){
     let tmRow=null;
     try{ const {data}=await sb.from('team_members').select('team_role,digest_freq').eq('user_id',uid).maybeSingle(); tmRow=data; }catch(e){}
     currentAccount.teamRole=(tmRow&&tmRow.team_role)||'consultant';
+    if(prof.role==='firm' && currentAccount.teamRole==='manager') currentAccount.teamRole='consultant';   /* practices: owner + Tax Consultants only */
     currentAccount.digestFreq=(tmRow&&tmRow.digest_freq)||'off';
     try{ const {data:fp}=await sb.from('profiles').select('name,invite_code,plan').eq('id',prof.parent_firm_id).maybeSingle(); if(fp){ currentAccount.firmName=fp.name; currentAccount.plan=normalisePlan(prof.role, fp.plan).id; if(prof.role==='firm') currentAccount.inviteCode=fp.invite_code||''; if(prof.role==='business') currentAccount.companyName=fp.name; } }catch(e){}
   } else { currentAccount.teamRole='owner'; }
@@ -3419,6 +3442,7 @@ async function enterFromSession(session, expectRole){
   enterApp(prof.role);
 }
 function enterApp(r){
+  try{ var ps=document.getElementById('parkedScreen'); if(ps) ps.style.display='none'; }catch(e){}
   document.getElementById('login').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   updatePlanPill();
@@ -3437,6 +3461,7 @@ async function logout(){
     try{ await Promise.race([flushAccountData(), new Promise(function(r){ setTimeout(r,5000); })]); }catch(e){}
   }
   try{ if(sb){ var so=sb.auth.signOut(); if(needFlush) await so; } }catch(e){}
+  try{ var ps=document.getElementById('parkedScreen'); if(ps) ps.style.display='none'; }catch(e){}   /* a parked login's holding screen must not outlive it */
   currentAccount=null; myClients=[]; clientMeta={}; recurringJobs=[]; sentLetters=[]; signedLetterIds=[]; svcInvoices=[];
   clients=[]; firmClients=[]; firmTaxReqs=[]; firmAuditReqs=[]; firmReminders=[]; ctScenarios=[]; vatDrafts={}; ctEntity='mainland'; teamMembers=[]; activityLog=[]; notifSeen=[]; lastInvite=null;
   bizTaxDocs=[]; bizAuditDocs=[]; vaultDocs=[]; sharedReports=[];
@@ -5916,7 +5941,6 @@ function vatSelectClient(id){
 }
 function roleBadge(tr){
   if(tr==='owner') return '<span class="pill p-teal" style="font-size:10px">Owner</span>';
-  if(tr==='manager') return '<span class="pill" style="font-size:10px;background:#efe9ff;color:#6b46c1;border-color:#e2d8ff">Manager / Reviewer</span>';
   return '<span class="pill p-gray" style="font-size:10px">Tax Consultant</span>';
 }
 function copyJoinLink(link,btnId){ try{ if(navigator.clipboard) navigator.clipboard.writeText(link); }catch(e){} const b=document.getElementById(btnId); if(b){ b.textContent='Copied ✓'; setTimeout(function(){ if(b) b.textContent='Copy link'; },1800); } }
@@ -5946,10 +5970,9 @@ function renderTeamPage(){
     addBox='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">'
     +'<div class="flabel" style="margin-bottom:8px">Invite a team member</div>'
     +'<div class="grid g2" style="gap:8px"><input id="tmName" class="finput" placeholder="Full name">'
-    +'<select id="tmRole" class="finput"><option value="consultant">Tax Consultant</option><option value="manager">Manager / Reviewer</option></select></div>'
-    +'<input id="tmEmail" class="finput" placeholder="Work email" style="margin-top:8px">'
+    +'<input id="tmEmail" class="finput" placeholder="Work email"></div>'
     +'<button class="btn sm" style="margin-top:10px" onclick="addTeamMember()">'+svgIcon('plus',13)+' Create invite link</button>'
-    +'<p class="muted" style="font-size:11.5px;margin-top:8px">Tax Consultants prepare returns and requests. Managers / Reviewers also get the firm-wide activity &amp; client digest and full reports access.</p>';
+    +'<p class="muted" style="font-size:11.5px;margin-top:8px">Everyone you invite joins as a <b>Tax Consultant</b>: they prepare returns, document requests and reports for your clients. As the owner you remain the only person who can add clients, invite or remove people, change the plan, assign documents and receive the practice digest.</p>';
     if(lastInvite){
       addBox+='<div style="margin-top:12px;background:var(--accent-bg);border:1px dashed var(--accent);border-radius:10px;padding:12px">'
       +'<div style="font-weight:600;font-size:12.5px;margin-bottom:6px">Invite link for '+ctEsc(lastInvite.name)+'</div>'
@@ -5975,7 +5998,7 @@ async function addTeamMember(){
   if(!isOwnerRole()){ toast('Only the firm owner can add team members'); return; }
   const name=(document.getElementById('tmName').value||'').trim();
   const email=(document.getElementById('tmEmail').value||'').trim();
-  const role=(document.getElementById('tmRole')||{}).value||'consultant';
+  const role='consultant';   /* practices have one owner and Tax Consultants — no other seat type */
   if(!name){ toast('Enter a name'); return; }
   if(!sb||!currentAccount){ toast('Not signed in'); return; }
   try{
@@ -5983,14 +6006,14 @@ async function addTeamMember(){
     if(error){ toast('Could not create the invite — please try again'); return; }
     const row=(data&&data[0])||data||{};
     const token=row.invite_token;
-    teamMembers.push({id:row.id, name:name, email:email, position:(role==='manager'?'Manager / Reviewer':'Tax Consultant'), team_role:role, is_owner:false, status:'invited', invite_token:token, created_at:new Date().toISOString()});
+    teamMembers.push({id:row.id, name:name, email:email, position:'Tax Consultant', team_role:role, is_owner:false, status:'invited', invite_token:token, created_at:new Date().toISOString()});
     lastInvite={name:name, link:'https://hisabone.ae/?join='+token, role:role};
-    logActivity('member_invited', 'Invited '+name+' as '+(role==='manager'?'Manager / Reviewer':'Tax Consultant'));
+    logActivity('member_invited', 'Invited '+name+' as Tax Consultant');
     renderPage();
     /* the join link goes to their inbox, not just the clipboard */
     if(email){
       var firmName=currentAccount.firmName||currentAccount.name||'your firm';
-      var roleLbl=(role==='manager'?'Manager / Reviewer':'Tax Consultant');
+      var roleLbl='Tax Consultant';
       var subject='You are invited to join '+firmName+' on HisabOne';
       var body='Hello '+name+',\n\n'
         +firmName+' has invited you to join their practice on HisabOne as '+roleLbl+'.\n\n'
@@ -8416,9 +8439,7 @@ function actorRole(){
   if(!currentAccount) return '';
   if(currentAccount.role==='business') return 'Business';
   var tr=currentAccount.teamRole;
-  if(tr==='manager') return 'Manager / Reviewer';
-  if(tr==='consultant') return 'Tax Consultant';
-  return 'Owner';
+  return (tr && tr!=='owner') ? 'Tax Consultant' : 'Owner';
 }
 function moneyAED(n){ return 'AED '+(isFinite(n)?n:0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function bizNameById(id){ var c=(myClients||[]).find(function(x){return x.business_id===id;}); return c?c.business_name:'client'; }
@@ -9112,12 +9133,12 @@ function renderReturnModal(){
   retSyncApprove();
 }
 
-/* ---- Manager / Reviewer: activity + client digest ---- */
+/* ---- Practice owner: activity + client digest ---- */
 function reportsRoleBanner(){
   if(!currentAccount||currentAccount.role!=='firm') return '';
   var tr=currentAccount.teamRole;
   if(tr==='owner'||!tr) return '';
-  var access = tr==='manager' ? 'full reports access, including the firm-wide audit trail and the activity &amp; client digest' : 'access to prepare and share returns and view compliance reports';
+  var access = 'access to prepare and share returns and view compliance reports. Adding clients, the practice digest and the firm-wide audit trail sit with the practice owner';
   return '<div class="note" style="margin-bottom:14px">'+svgIcon('shield',13)+' Signed in as <b>'+ctEsc(actorRole())+'</b> — you have '+access+'.</div>';
 }
 function digestCardHTML(){
@@ -9197,7 +9218,7 @@ async function handleJoinParam(){
     window._joinToken=token;
     var isBiz=(row.parent_role==='business');
     switchView('signin'); openLogin(isBiz?'business':'firm'); setLfMode('signup');
-    var roleLbl=isBiz?(row.team_role==='manager'?'Manager (oversight)':'Team member'):(row.team_role==='manager'?'Manager / Reviewer':'Tax Consultant');
+    var roleLbl=isBiz?(row.team_role==='manager'?'Manager (oversight)':'Team member'):'Tax Consultant';
     document.getElementById('lfTitle').textContent='Join '+row.firm_name+' as '+roleLbl;
     document.getElementById('lfNameLabel').textContent='Your full name';
     var nm=document.getElementById('lfName'); if(nm){ nm.placeholder='Your full name'; nm.value=row.member_name||''; }
@@ -9269,7 +9290,7 @@ async function offerJoinWhileSignedIn(){
   }
   var roleLbl=(row.parent_role==='business')
     ? (row.team_role==='manager'?'Manager (oversight)':'Team member')
-    : (row.team_role==='manager'?'Manager / Reviewer':'Tax Consultant');
+    : 'Tax Consultant';
   /* clear the token from the address bar either way, so a later refresh does not
      re-open this dialog; the copy below keeps the link usable. */
   try{ history.replaceState(null,'',location.pathname); }catch(e){}
@@ -9414,13 +9435,13 @@ function loadSampleData(){
     firmAuditReqs=[];
     teamMembers=[
       {id:'o',name:(currentAccount.name||'You'),position:'Managing Partner',team_role:'owner',is_owner:true,status:'active'},
-      {id:'m1',name:'Layla Hassan',position:'Manager / Reviewer',team_role:'manager',is_owner:false,status:'active',email:'layla@firm.ae'},
+      {id:'m1',name:'Layla Hassan',position:'Tax Consultant',team_role:'consultant',is_owner:false,status:'active',email:'layla@firm.ae'},
       {id:'c1',name:'Omar Aziz',position:'Tax Consultant',team_role:'consultant',is_owner:false,status:'active',email:'omar@firm.ae'}
     ];
     activityLog=[
       {type:'return_approved',detail:'Al Noor Trading approved VAT Return Q2 2026',actor_name:'Al Noor Trading LLC',created_at:new Date(Date.now()-3600000).toISOString()},
       {type:'request_sent',detail:'Requested "June sales invoices" from Al Noor Trading LLC',actor_name:'Omar Aziz',created_at:new Date(Date.now()-7200000).toISOString()},
-      {type:'member_joined',detail:'Layla Hassan joined the team as Manager / Reviewer',actor_name:'Layla Hassan',created_at:new Date(Date.now()-86400000).toISOString()}
+      {type:'member_joined',detail:'Layla Hassan joined the team as Tax Consultant',actor_name:'Layla Hassan',created_at:new Date(Date.now()-86400000).toISOString()}
     ];
     returnsList=[
       {id:'fr1',firm_id:effFirmId(),business_id:'sb0',kind:'vat',title:'VAT Return — Q2 2026',period:'Q2 2026',status:'approved',created_by:(currentAccount.name||'Your firm'),created_at:new Date(Date.now()-3600000).toISOString(),figures:{sales:[{d:'Standard-rated sales',a:52000,r:5,v:2600}],purch:[{d:'Recoverable purchases',a:18000,r:5,v:900}],salesNet:52000,purchNet:18000,output:2600,input:900,net:1700}},
@@ -11773,7 +11794,7 @@ function isManualClient(id){ return typeof id==='string' && id.indexOf('mc_')===
 function findManualClient(id){ return manualClients.find(function(c){ return c.id===id; })||null; }
 
 function openAddClient(){
-  if(!canManage()){ toast('Only an owner or manager can add clients.'); return; }
+  if(!canManage()){ toast('Only the practice owner can add clients.'); return; }
   if(firmAtCap()){ firmUpsell(); return; }
   var h=document.getElementById('addClientModal');
   if(!h){ h=document.createElement('div'); h.id='addClientModal'; h.className='modal-overlay'; document.body.appendChild(h);
